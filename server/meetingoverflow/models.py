@@ -97,7 +97,7 @@ class Calendar(models.Model):
 class File(models.Model):
     content = models.FileField(null=True)
     # FileField 사용하면 굳이 url을 저장해야하나 고민
-    url = models.TextField(blank=True, null=True)
+    url = models.URLField(blank=True, null=True)
     position_x = models.DecimalField(default=0.0)
     position_y = models.DecimalField(default=0.0)
     note_id = models.IntegerField()
