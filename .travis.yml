@@ -1,10 +1,10 @@
 matrix:
-	include:
-	- language: node_js
-	node_js:
-	- '10'
-	install:
-	- yarn install
-	script:
-	- npm run lint
-	yarn test --coverage --watchAll=false
+include:
+    - language: node_js
+node_js:
+    - '10'
+install:
+    - yarn install
+script:
+    - ./node_modules/.bin/eslint src
+    - yarn test --coverage --watchAll=false
