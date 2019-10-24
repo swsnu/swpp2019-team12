@@ -69,8 +69,8 @@ class Note(models.Model):
 
 class Agenda(models.Model):
     content = models.TextField(blank=True, default="안건과 관련된 회의 내용을 작성하는 부분입니다.")
-    position_x = models.DecimalField()
-    position_y = models.DecimalField()
+    position_x = models.DecimalField(default=0.0, max_digits=10, decimal_places=3)
+    position_y = models.DecimalField(default=0.0, max_digits=10, decimal_places=3)
     note_id = models.IntegerField()
     parent_agenda_id = models.IntegerField()
     is_parent_note = models.BooleanField(default=True)
@@ -84,8 +84,8 @@ class Agenda(models.Model):
 class Calendar(models.Model):
     # content 정의를 어떻게 해야하는지?
     #content = models.
-    position_x = models.DecimalField(default=0.0)
-    position_y = models.DecimalField(default=0.0)
+    position_x = models.DecimalField(default=0.0, max_digits=10, decimal_places=3)
+    position_y = models.DecimalField(default=0.0, max_digits=10, decimal_places=3)
     note_id = models.IntegerField()
     parent_agenda_id = models.IntegerField()
     is_parent_note = models.BooleanField(default=True)
@@ -98,8 +98,8 @@ class File(models.Model):
     content = models.FileField(null=True)
     # FileField 사용하면 굳이 url을 저장해야하나 고민
     url = models.URLField(blank=True, null=True)
-    position_x = models.DecimalField(default=0.0)
-    position_y = models.DecimalField(default=0.0)
+    position_x = models.DecimalField(default=0.0, max_digits=10, decimal_places=3)
+    position_y = models.DecimalField(default=0.0, max_digits=10, decimal_places=3)
     note_id = models.IntegerField()
     parent_agenda_id = models.IntegerField()
     is_parent_note = models.BooleanField(default=True)
@@ -110,8 +110,8 @@ class File(models.Model):
 
 class Image(models.Model):
     content = models.ImageField(null=True)
-    position_x = models.DecimalField(default=0.0)
-    position_y = models.DecimalField(default=0.0)
+    position_x = models.DecimalField(default=0.0, max_digits=10, decimal_places=3)
+    position_y = models.DecimalField(default=0.0, max_digits=10, decimal_places=3)
     note_id = models.IntegerField()
     parent_agenda_id = models.IntegerField()
     is_parent_note = models.BooleanField(default=True)
@@ -123,8 +123,8 @@ class Image(models.Model):
 
 class Table(models.Model):
     # content = 
-    position_x = models.DecimalField(default=0.0)
-    position_y = models.DecimalField(default=0.0)
+    position_x = models.DecimalField(default=0.0, max_digits=10, decimal_places=3)
+    position_y = models.DecimalField(default=0.0, max_digits=10, decimal_places=3)
     note_id = models.IntegerField()
     parent_agenda_id = models.IntegerField()
     is_parent_note = models.BooleanField(default=True)
@@ -135,8 +135,8 @@ class Table(models.Model):
 
 class Todo(models.Model):
     content = models.TextField(null=False, blank=False)
-    position_x = models.DecimalField(default=0.0)
-    position_y = models.DecimalField(default=0.0)
+    position_x = models.DecimalField(default=0.0, max_digits=10, decimal_places=3)
+    position_y = models.DecimalField(default=0.0, max_digits=10, decimal_places=3)
     note_id = models.IntegerField()
     parent_agenda_id = models.IntegerField()
     is_parent_note = models.BooleanField(default=True)
@@ -148,8 +148,8 @@ class Todo(models.Model):
 
 class TextBlock(models.Model):
     content = models.TextField(null=False, blank=True)
-    position_x = models.DecimalField(default=0.0)
-    position_y = models.DecimalField(default=0.0)
+    position_x = models.DecimalField(default=0.0, max_digits=10, decimal_places=3)
+    position_y = models.DecimalField(default=0.0, max_digits=10, decimal_places=3)
     note_id = models.IntegerField()
     parent_agenda_id = models.IntegerField()
     is_parent_note = models.BooleanField(default=True)
