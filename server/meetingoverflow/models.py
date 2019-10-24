@@ -35,8 +35,7 @@ class Workspace(models.Model):
                                 on_delete=models.CASCADE, null=False)
     members = models.ForeignKey(Profile, related_name='workspace_members', 
                                 on_delete=models.CASCADE, null=False)
-    # CASCADE or SET_NULL
-    #notes = models.ForeignKey(Note, on_delete=models.SET_NULL, null=True)
+    notes = models.ManyToManyField(Note, on_delete=models.SET_NULL, null=True)
     def __str__(self):
         return f'name: {self.name}'
 
@@ -68,3 +67,91 @@ class Note(models.Model):
         return f'title: {self.title}, created at: {self.created_at}'
 
 
+class Agenda(models.Model):
+    content = models.TextField(blank=True, default="안건과 관련된 회의 내용을 작성하는 부분입니다.")
+    position_x = models.DecimalField()
+    position_y = models.DecimalField()
+    note_id = models.IntegerField()
+    parent_agenda_id = models.IntegerField()
+    is_parent_note = models.BooleanField(default=True)
+    has_children = models.BooleanField(default=False)
+    containing_block_types = models.CharField(blank=True, null=False) # ex) calendar_image_todo
+
+    def __str__(self):
+        return f'content: {self.content[:100]}'
+
+
+class Calendar(models.Model):
+    # content 정의를 어떻게 해야하는지?
+    #content = models.
+    position_x = models.DecimalField(default=0.0)
+    position_y = models.DecimalField(default=0.0)
+    note_id = models.IntegerField()
+    parent_agenda_id = models.IntegerField()
+    is_parent_note = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f'note_id: {self.note_id}'
+
+
+class File(models.Model):
+    content = models.FileField(null=True)
+    # FileField 사용하면 굳이 url을 저장해야하나 고민
+    url = models.TextField(blank=True, null=True)
+    position_x = models.DecimalField(default=0.0)
+    position_y = models.DecimalField(default=0.0)
+    note_id = models.IntegerField()
+    parent_agenda_id = models.IntegerField()
+    is_parent_note = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f'url: {self.url}'
+
+
+class Image(models.Model):
+    content = models.ImageField(null=True)
+    position_x = models.DecimalField(default=0.0)
+    position_y = models.DecimalField(default=0.0)
+    note_id = models.IntegerField()
+    parent_agenda_id = models.IntegerField()
+    is_parent_note = models.BooleanField(default=True)
+    # image_caption = models.CharField(length=100, null=True, blank=True)
+
+    def __str__(self):
+        return f'note_id: {self.note_id}'
+
+
+class Table(models.Model):
+    # content = 
+    position_x = models.DecimalField(default=0.0)
+    position_y = models.DecimalField(default=0.0)
+    note_id = models.IntegerField()
+    parent_agenda_id = models.IntegerField()
+    is_parent_note = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f'note_id: {self.note_id}'
+
+
+class Todo(models.Model):
+    content = models.TextField(null=False, blank=False)
+    position_x = models.DecimalField(default=0.0)
+    position_y = models.DecimalField(default=0.0)
+    note_id = models.IntegerField()
+    parent_agenda_id = models.IntegerField()
+    is_parent_note = models.BooleanField(default=True)
+    assignees = models.ManyToManyField(Profile)
+
+    def __str__(self):
+        return f'content: {self.content}'
+
+
+class TextBlock(models.Model):
+    content = models.TextField(null=False, blank=True)
+    position_x = models.DecimalField(default=0.0)
+    position_y = models.DecimalField(default=0.0)
+    note_id = models.IntegerField()
+    parent_agenda_id = models.IntegerField()
+    is_parent_note = models.BooleanField(default=True)
+
+    return f'content: {self.content[:100]}'
