@@ -28,18 +28,6 @@ class Profile(models.Model):
         instance.profile.save()
 
 
-class Workspace(models.Model):
-    name = models.CharField(max_length=20, blank=True, null=True)
-    # at least the creator of the workspace should exist as one of admins and also members
-    admins = models.ForeignKey(Profile, related_name='workspace_admins', 
-                                on_delete=models.CASCADE, null=False)
-    members = models.ForeignKey(Profile, related_name='workspace_members', 
-                                on_delete=models.CASCADE, null=False)
-    notes = models.ManyToManyField(Note, on_delete=models.SET_NULL, null=True)
-    def __str__(self):
-        return f'name: {self.name}'
-
-
 class Tag(models.Model):
     content = models.CharField(max_length=100, blank=False, null=False)
 
@@ -65,6 +53,15 @@ class Note(models.Model):
 
     def __str__(self):
         return f'title: {self.title}, created at: {self.created_at}'
+
+class Workspace(models.Model):
+    name = models.CharField(max_length=20, blank=True, null=True)
+    # at least the creator of the workspace should exist as one of admins and also members
+    admins = models.ManyToManyField(Profile, related_name='workspace_admins', null=False)
+    members = models.ManyToManyField(Profile, related_name='workspace_members', null=False)
+    notes = models.ManyToManyField(Note, null=True)
+    def __str__(self):
+        return f'name: {self.name}'
 
 
 class Agenda(models.Model):
@@ -154,4 +151,5 @@ class TextBlock(models.Model):
     parent_agenda_id = models.IntegerField()
     is_parent_note = models.BooleanField(default=True)
 
-    return f'content: {self.content[:100]}'
+    def __str__(self):
+        return f'content: {self.content[:100]}'

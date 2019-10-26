@@ -1,7 +1,12 @@
 from rest_framework import serializers
-from .models import Profile, Workspace, Note, Agenda, Tag, 
-                    Calendar, File, Image, Table, Todo, TextBlock
+from django.contrib.auth.models import User
+from .models import *
 
+class UserSerializer(serializers.ModelSerializer):
+    username = serializers.Char
+    class Meta:
+        model = User
+        fields = ['username', 'password']
 
 class ProfileSerializer(serializers.ModelSerializer):
 
