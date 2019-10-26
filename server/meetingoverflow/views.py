@@ -19,10 +19,23 @@ def index(request):
 @api_view(['GET', 'POST'])
 def signup(request):
     if request.method == 'GET':
-        input_id = request.META['HTTP_INPUTID']
-        print(input_id)
-        # for debug, temporarily set input_id to 1
-        #input_id = 'tyj9327'
+
+        # =============== Real Code=================
+        # ARC나 Frontend로 연결할 때는 이 코드로 변경해서 테스트
+
+        #input_id = request.META['HTTP_INPUTID']
+        #print(input_id)
+
+        # ==========================================
+
+        # ============== Debug Code=================
+        # DRF 에서는 헤더에 값을 넣을 수 없으므로 
+        # get 화면이 켜지기 위해서 임시로 input_id 설정
+
+        input_id = 'tyj9327'
+
+        # ==========================================
+
         try:
             queryset = User.objects.get(username=input_id)
         except(User.DoesNotExist) as e:
@@ -45,8 +58,29 @@ def signup(request):
 @api_view(['POST'])
 def signin(request):
     if request.method == 'POST':
-        pass
+        try:
+            username = request.data['username']
+            password = request.data['password']
+        except(KeyError, json.JSONDecodeError):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        user = auth.authenticate(username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
+
+@api_view(['GET'])
+def signout(request):
+    if request.method == 'GET':
+        print(request.user)
+        if request.user.is_authenticated:
+            auth.logout(request)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        
 
 # 추가된 api / Profile에 닉네임 저장
 @api_view(['PATCH'])
