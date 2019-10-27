@@ -50,6 +50,7 @@ class Note(models.Model):
     last_modified_at = models.DateTimeField(default=timezone.now)
     tags = models.ManyToManyField(Tag)
     ml_speech_text = models.TextField(null=True, blank=True)
+    workspace = models.ForeignKey(workspace, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'title: {self.title}, created at: {self.created_at}'
@@ -59,7 +60,6 @@ class Workspace(models.Model):
     # at least the creator of the workspace should exist as one of admins and also members
     admins = models.ManyToManyField(Profile, related_name='workspace_admins')
     members = models.ManyToManyField(Profile, related_name='workspace_members')
-    notes = models.ManyToManyField(Note)
     def __str__(self):
         return f'name: {self.name}'
 
@@ -68,8 +68,8 @@ class Agenda(models.Model):
     content = models.TextField(blank=True, default="안건과 관련된 회의 내용을 작성하는 부분입니다.")
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
-    note_id = models.IntegerField()
-    parent_agenda_id = models.IntegerField()
+    note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    parent_agenda = models.ForeignKey(Agenda, on_delete=models.SET_NULL, null=True)
     is_parent_note = models.BooleanField(default=True)
     has_children = models.BooleanField(default=False)
     containing_block_types = models.TextField(blank=True, null=False) # ex) calendar_image_todo
@@ -83,8 +83,8 @@ class Calendar(models.Model):
     content = models.TextField(null=True, blank=True)
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
-    note_id = models.IntegerField()
-    parent_agenda_id = models.IntegerField()
+    note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    parent_agenda = models.ForeignKey(Agenda, on_delete=models.SET_NULL, null=True)
     is_parent_note = models.BooleanField(default=True)
 
     def __str__(self):
@@ -97,8 +97,8 @@ class File(models.Model):
     url = models.URLField(blank=True, null=True)
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
-    note_id = models.IntegerField()
-    parent_agenda_id = models.IntegerField()
+    note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    parent_agenda = models.ForeignKey(Agenda, on_delete=models.SET_NULL, null=True)
     is_parent_note = models.BooleanField(default=True)
 
     def __str__(self):
@@ -109,8 +109,8 @@ class Image(models.Model):
     content = models.ImageField(null=True)
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
-    note_id = models.IntegerField()
-    parent_agenda_id = models.IntegerField()
+    note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    parent_agenda = models.ForeignKey(Agenda, on_delete=models.SET_NULL, null=True)
     is_parent_note = models.BooleanField(default=True)
     image_caption = models.CharField(max_length=100, null=True, blank=True)
 
@@ -122,8 +122,8 @@ class Table(models.Model):
     content = models.TextField(null=True, blank=True)
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
-    note_id = models.IntegerField()
-    parent_agenda_id = models.IntegerField()
+    note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    parent_agenda = models.ForeignKey(Agenda, on_delete=models.SET_NULL, null=True)
     is_parent_note = models.BooleanField(default=True)
 
     def __str__(self):
@@ -134,8 +134,8 @@ class Todo(models.Model):
     content = models.TextField(null=False, blank=False)
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
-    note_id = models.IntegerField()
-    parent_agenda_id = models.IntegerField()
+    note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    parent_agenda = models.ForeignKey(Agenda, on_delete=models.SET_NULL, null=True)
     is_parent_note = models.BooleanField(default=True)
     assignees = models.ManyToManyField(Profile)
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
@@ -148,8 +148,8 @@ class TextBlock(models.Model):
     content = models.TextField(null=False, blank=True)
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
-    note_id = models.IntegerField()
-    parent_agenda_id = models.IntegerField()
+    note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    parent_agenda = models.ForeignKey(Agenda, on_delete=models.SET_NULL, null=True)
     is_parent_note = models.BooleanField(default=True)
 
     def __str__(self):
