@@ -19,23 +19,68 @@ def index(request):
 @api_view(['GET', 'POST'])
 def signup(request):
     if request.method == 'GET':
-        input_id = request.META['HTTP_INPUTID']
-        queryset = User.objects.values('username')
-        if input_id not in queryset:
+
+        # =============== Real Code=================
+        # ARC나 Frontend로 연결할 때는 이 코드로 변경해서 테스트
+
+        #input_id = request.META['HTTP_INPUTID']
+        #print(input_id)
+
+        # ==========================================
+
+        # ============== Debug Code=================
+        # DRF 에서는 헤더에 값을 넣을 수 없으므로 
+        # get 화면이 켜지기 위해서 임시로 input_id 설정
+
+        input_id = 'tyj9327'
+
+        # ==========================================
+
+        try:
+            queryset = User.objects.get(username=input_id)
+        except(User.DoesNotExist) as e:
             # 아이디가 생성 가능한 경우
             return Response(status=status.HTTP_200_OK)
-        else:
-            # 아이디가 이미 사용되고 있는 경우 
-            return Response(status=status.HTTP_204__NO_CONTENT)
+        # 아이디가 이미 사용되고 있는 경우 
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
     if request.method == 'POST':
+        print(request.data)
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATE)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['POST'])
+def signin(request):
+    if request.method == 'POST':
+        try:
+            username = request.data['username']
+            password = request.data['password']
+        except(KeyError, json.JSONDecodeError):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        user = auth.authenticate(username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['GET'])
+def signout(request):
+    if request.method == 'GET':
+        print(request.user)
+        if request.user.is_authenticated:
+            auth.logout(request)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        
 
 # 추가된 api / Profile에 닉네임 저장
 @api_view(['PATCH'])

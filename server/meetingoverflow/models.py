@@ -57,9 +57,9 @@ class Note(models.Model):
 class Workspace(models.Model):
     name = models.CharField(max_length=20, blank=True, null=True)
     # at least the creator of the workspace should exist as one of admins and also members
-    admins = models.ManyToManyField(Profile, related_name='workspace_admins', null=False)
-    members = models.ManyToManyField(Profile, related_name='workspace_members', null=False)
-    notes = models.ManyToManyField(Note, null=True)
+    admins = models.ManyToManyField(Profile, related_name='workspace_admins')
+    members = models.ManyToManyField(Profile, related_name='workspace_members')
+    notes = models.ManyToManyField(Note)
     def __str__(self):
         return f'name: {self.name}'
 
@@ -72,7 +72,7 @@ class Agenda(models.Model):
     parent_agenda_id = models.IntegerField()
     is_parent_note = models.BooleanField(default=True)
     has_children = models.BooleanField(default=False)
-    containing_block_types = models.CharField(blank=True, null=False) # ex) calendar_image_todo
+    containing_block_types = models.TextField(blank=True, null=False) # ex) calendar_image_todo
 
     def __str__(self):
         return f'content: {self.content[:100]}'
@@ -112,7 +112,7 @@ class Image(models.Model):
     note_id = models.IntegerField()
     parent_agenda_id = models.IntegerField()
     is_parent_note = models.BooleanField(default=True)
-    image_caption = models.CharField(length=100, null=True, blank=True)
+    image_caption = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f'note_id: {self.note_id}'

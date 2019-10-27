@@ -3,9 +3,10 @@ from django.contrib.auth.models import User
 from .models import *
 
 class UserSerializer(serializers.ModelSerializer):
-    username = serializers.Char
+
     class Meta:
         model = User
+        #fields = '__all__'
         fields = ['username', 'password']
 
 class ProfileSerializer(serializers.ModelSerializer):
