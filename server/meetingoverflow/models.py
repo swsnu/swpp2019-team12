@@ -35,6 +35,14 @@ class Tag(models.Model):
     def __str__(self):
         return f'content: {self.content}'
 
+class Workspace(models.Model):
+    name = models.CharField(max_length=20, blank=True, null=True)
+    # at least the creator of the workspace should exist as one of admins and also members
+    admins = models.ManyToManyField(Profile, related_name='workspace_admins')
+    members = models.ManyToManyField(Profile, related_name='workspace_members')
+    def __str__(self):
+        return f'name: {self.name}'
+
 '''
 Should modify the spec document
 Note - Tag relationship into M:N
@@ -50,18 +58,12 @@ class Note(models.Model):
     last_modified_at = models.DateTimeField(default=timezone.now)
     tags = models.ManyToManyField(Tag)
     ml_speech_text = models.TextField(null=True, blank=True)
-    workspace = models.ForeignKey(workspace, on_delete=models.CASCADE)
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'title: {self.title}, created at: {self.created_at}'
 
-class Workspace(models.Model):
-    name = models.CharField(max_length=20, blank=True, null=True)
-    # at least the creator of the workspace should exist as one of admins and also members
-    admins = models.ManyToManyField(Profile, related_name='workspace_admins')
-    members = models.ManyToManyField(Profile, related_name='workspace_members')
-    def __str__(self):
-        return f'name: {self.name}'
+
 
 
 class Agenda(models.Model):
@@ -69,7 +71,7 @@ class Agenda(models.Model):
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
-    parent_agenda = models.ForeignKey(Agenda, on_delete=models.SET_NULL, null=True)
+    parent_agenda = models.ForeignKey("self", on_delete=models.SET_NULL, null=True)
     is_parent_note = models.BooleanField(default=True)
     has_children = models.BooleanField(default=False)
     containing_block_types = models.TextField(blank=True, null=False) # ex) calendar_image_todo
