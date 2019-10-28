@@ -8,7 +8,10 @@ class SignIn extends Component {
     componentDidMount() {}
 
     render() {
-        return <div>sign in page</div>;
+        return (
+                <div>
+                    sign in page
+                </div>);
     }
 }
 

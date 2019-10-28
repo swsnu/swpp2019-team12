@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import SignUpForm from '../../component/SignupForm/SignupForm';
 class SignUp extends Component {
     constructor(props) {
         super(props);
@@ -8,7 +8,10 @@ class SignUp extends Component {
     componentDidMount() {}
 
     render() {
-        return <div>sign up page</div>;
+        return (<div>
+                    <h1>sign up page</h1>
+                    <SignUpForm/>
+                </div>);
     }
 }
 
