@@ -42,7 +42,7 @@ def signup(request):
             profile = Profile.objects.get(user=user)
             profile.nickname = nickname
             profile.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
