@@ -12,41 +12,36 @@ import json
 from django.db.models import Q
 
 
-@api_view(['GET', 'POST'])
+@api_view(['PATCH', 'POST'])
 def signup(request):
-    if request.method == 'GET':
-
-        # =============== Real Code=================
-        # ARC나 Frontend로 연결할 때는 이 코드로 변경해서 테스트
-
-        #input_id = request.META['HTTP_INPUTID']
-        #print(input_id)
-
-        # ==========================================
-
-        # ============== Debug Code=================
-        # DRF 에서는 헤더에 값을 넣을 수 없으므로 
-        # get 화면이 켜지기 위해서 임시로 input_id 설정
-
-        input_id = 't'
-
-        # ==========================================
-
+    if request.method == 'PATCH':
         try:
-            queryset = User.objects.get(username=input_id)
-            print(queryset)
+            username = request.data['username']
+        except(KeyError):
+            return HttpResponse(status=400)
+        try:
+            user = User.objects.get(username=username)
         except(User.DoesNotExist) as e:
             # 아이디가 생성 가능한 경우
             return Response(status=status.HTTP_200_OK)
         # 아이디가 이미 사용되고 있는 경우 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
     elif request.method == 'POST':
-        print(request.data)
+        try:
+            username = request.data['username']
+            password = request.data['password']
+            nickname = request.data['nickname']
+        except(KeyError):
+            return HttpResponse(status=400)
+        
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            user = User.objects.get(username=username)
+            profile = Profile.objects.get(user=user)
+            profile.nickname = nickname
+            profile.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -58,7 +53,7 @@ def signin(request):
         try:
             username = request.data['username']
             password = request.data['password']
-        except(KeyError, json.JSONDecodeError):
+        except(KeyError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         user = auth.authenticate(username=username, password=password)
         if user is not None:
@@ -233,7 +228,16 @@ def specific_note(request, w_id, n_id):
 
 
 # @api_view(['GET', 'POST'])
-# def textblock(request, w_id, n_id):
-#     queryset = TextBlock.objects.filter(
-#                         Q(is_parent_note=True, note__id=n_id) | 
-#                         Q(is_parent_note=False, parent_agenda__id=n_id))
+# def textblock(request, w_id, n_id, is_parent_note):
+#     if request.method == 'GET':
+#         if is_parent_note:
+#             queryset = TextBlock.objects.filter(
+#                             is_parent_note=True, 
+#                             note__id=n_id
+#             )
+#         else:
+#             queryset = TextBlock.objects.filter(
+#                             is_parent_note=False,
+#                             parent_agenda__id=n_id
+#             )
+        
