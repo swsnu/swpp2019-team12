@@ -12,6 +12,10 @@ button {
     font-size: rem(12px);
     box-shadow: rem(2px) rem(2px) rem(4px) rem(-1px) $lightgray;
 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     &:hover {
         cursor: pointer;
         background: $whitegray;
@@ -36,4 +40,8 @@ button.secondary {
         background: $primary;
         color: $white;
     }
+}
+
+button:focus {
+    outline: 0;
 }

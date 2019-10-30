@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 
 import WorkspaceInfo from '../../component/workspace_leftbar/WorkspaceInfo';
 import MemberInfo from '../../component/workspace_leftbar/MemberInfo';
+import SettingInfo from '../../component/workspace_leftbar/SettingInfo';
+import CreateNote from '../../component/workspace_leftbar/CreateNote';
 
+/**
+ * @description Dummy Data
+ */
 const dummyWI = {
     currentWorkspace: 'SWPP',
     workspaceList: [
@@ -50,6 +55,14 @@ const memberList = [
 const handleInviteMember = () => {
     console.log('Need to Implement invite member function');
 };
+const handleNavigateToSetting = () => {
+    console.log('Need to Implement navigate setting page function');
+};
+const handleCreateMeetingNote = () => {
+    console.log('Need to Implement create meeting note function');
+};
+
+/**************   Dummy Data End   **************/
 
 class Workspace extends Component {
     constructor(props) {
@@ -73,6 +86,12 @@ class Workspace extends Component {
                         <MemberInfo
                             memberList={memberList}
                             handleInviteMember={handleInviteMember}
+                        />
+                        <SettingInfo
+                            handleNavigateToSetting={handleNavigateToSetting}
+                        />
+                        <CreateNote
+                            handleCreateMeetingNote={handleCreateMeetingNote}
                         />
                     </div>
                 </div>
