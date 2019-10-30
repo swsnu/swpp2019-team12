@@ -77,30 +77,30 @@ var/
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
-server/*.manifest
-server/*.spec
+**/*.manifest
+**/*.spec
 
 # Installer logs
-server/pip-log.txt
-server/pip-delete-this-directory.txt
+**/pip-log.txt
+**/pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-server/htmlcov/
-server/.tox/
-server/.coverage
-server/.cache
-server/nosetests.xml
-server/coverage.xml
+**/htmlcov/
+**/.tox/
+**/.coverage
+**/.cache
+**/nosetests.xml
+**/coverage.xml
 
 # Translations
-server/*.mo
-server/*.pot
+**/*.mo
+**/*.pot
 
 # Sphinx documentation
-server/docs/_build/
+**/docs/_build/
 
 # PyBuilder
-server/target/
+**/target/
 
 
 ### Django ###
