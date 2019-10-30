@@ -1,4 +1,6 @@
 .workspace {
+    min-width: rem(1600px);
+    min-height: rem(900px);
     width: 100vw;
     height: 100vh;
 
@@ -6,8 +8,15 @@
 
     border-left: rem(5px) solid $primary;
 
+    .leftbar-component {
+        margin-top: rem(40px);
+    }
+    .leftbar-component:first-child {
+        margin-top: 0;
+    }
+
     .workspace-leftbar {
-        width: 14%;
+        width: rem(230px);
         padding: rem(12px) 0 0 rem(10px);
         border-right: 1px solid $lightgray;
         // box-shadow: 0 rem(2px) rem(5px) rem(7px) $lightgray;

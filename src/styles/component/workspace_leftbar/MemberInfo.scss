@@ -1,0 +1,46 @@
+.memberInfo-container {
+    .leftbar-sublabel {
+        margin-top: rem(15px);
+    }
+    .memberInfo__memberList {
+        width: 100%;
+        height: rem(120px);
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        padding: 0 rem(15px) 0 rem(25px);
+        margin: rem(10px) 0;
+
+        .memberInfo__memberList--element {
+            display: flex;
+            align-items: center;
+
+            margin-top: rem(10px);
+
+            .memberInfo__memberList--element-icon {
+                width: rem(16px);
+                height: rem(16px);
+                margin-right: rem(10px);
+            }
+
+            &:hover {
+                cursor: pointer;
+                color: $primary;
+            }
+        }
+        .memberInfo__memberList--element:first-child {
+            margin-top: 0;
+        }
+    }
+
+    .memberInfo__inviteMemberButton {
+        width: 100%;
+        height: rem(55px);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

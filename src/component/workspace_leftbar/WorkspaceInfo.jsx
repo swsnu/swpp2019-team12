@@ -3,7 +3,7 @@ import { map } from 'lodash';
 
 import { Label, SubLabel } from './Label';
 
-const WorkspaceInfo = ({ props }) => {
+const WorkspaceInfo = props => {
     const {
         currentWorkspace: workspace,
         workspaceList,
@@ -19,8 +19,10 @@ const WorkspaceInfo = ({ props }) => {
             <SubLabel title="Select Workspace" />
 
             <div className="workspaceInfo__workspaceList">
-                {map(workspaceList, w => (
-                    <div className="workspaceInfo__workspaceList--element">
+                {map(workspaceList, (w, i) => (
+                    <div
+                        key={i}
+                        className="workspaceInfo__workspaceList--element">
                         {w.toUpperCase()}
                     </div>
                 ))}

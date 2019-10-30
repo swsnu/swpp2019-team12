@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 
 import WorkspaceInfo from '../../component/workspace_leftbar/WorkspaceInfo';
+import MemberInfo from '../../component/workspace_leftbar/MemberInfo';
 
-const dummyLeftbar = {
+const dummyWI = {
     currentWorkspace: 'SWPP',
     workspaceList: [
         'CHAEMIN',
@@ -16,9 +17,40 @@ const dummyLeftbar = {
         'HOME'
     ],
     handleCreateWorkspace: () => {
-        console.log('created');
+        console.log('Need to Implement create workspace function');
     }
 };
+
+const memberList = [
+    {
+        nickname: 'CHAEMIN',
+        handleShowMember: () => {
+            console.log('Need to Implement show member detail function');
+        }
+    },
+    {
+        nickname: 'PAUL',
+        handleShowMember: () => {
+            console.log('Need to Implement show member detail function');
+        }
+    },
+    {
+        nickname: 'andra',
+        handleShowMember: () => {
+            console.log('Need to Implement show member detail function');
+        }
+    },
+    {
+        nickname: 'YEIN',
+        handleShowMember: () => {
+            console.log('Need to Implement show member detail function');
+        }
+    }
+];
+const handleInviteMember = () => {
+    console.log('Need to Implement invite member function');
+};
+
 class Workspace extends Component {
     constructor(props) {
         super(props);
@@ -31,7 +63,17 @@ class Workspace extends Component {
             <div className="workspace">
                 <div className="workspace-leftbar">
                     <div className="leftbar-container">
-                        <WorkspaceInfo props={dummyLeftbar} />
+                        <WorkspaceInfo
+                            currentWorkspace={dummyWI.currentWorkspace}
+                            workspaceList={dummyWI.workspaceList}
+                            handleCreateWorkspace={
+                                dummyWI.handleCreateWorkspace
+                            }
+                        />
+                        <MemberInfo
+                            memberList={memberList}
+                            handleInviteMember={handleInviteMember}
+                        />
                     </div>
                 </div>
 
