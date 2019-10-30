@@ -17,7 +17,7 @@
         "sourceType": "module"
     },
     "plugins": ["react", "prettier"],
-    "extends": ["eslint-config-airbnb", "plugin:react/recommended"],
+    "extends": ["plugin:react/recommended"],
     "rules": {
         // Error
         "prettier/prettier": "error",
