@@ -19,10 +19,22 @@
     "plugins": ["react", "prettier"],
     "extends": ["eslint-config-airbnb", "plugin:react/recommended"],
     "rules": {
+        // Error
         "prettier/prettier": "error",
         "react/jsx-indent": ["error", 4],
         "indent": ["error", 4],
         "quotes": ["error", "single"],
-        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
+
+        // Warning
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "no-useless-constructor": 1,
+
+        // Ignore
+        "operator-linebreak": 0,
+        "comma-dangle": [0, "never"],
+        "max-len": [0, { "code": 80 }],
+        "arrow-parens": 0,
+        "react/prop-types": 0,
+        "react/button-has-type": 0
     }
 }

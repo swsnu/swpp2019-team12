@@ -47,7 +47,10 @@ def signup(request):
             profile.nickname = nickname
             profile.save()
             return Response(status=status.HTTP_201_CREATED)
+<<<<<<< HEAD
 
+=======
+>>>>>>> f78d4bbf4a84e0c06c13bb9f6944c34825164820
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
