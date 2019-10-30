@@ -62,7 +62,7 @@ const handleCreateMeetingNote = () => {
     console.log('Need to Implement create meeting note function');
 };
 
-/**************   Dummy Data End   **************/
+/** ************   Dummy Data End   ************* */
 
 class Workspace extends Component {
     constructor(props) {
