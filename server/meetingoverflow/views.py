@@ -11,6 +11,10 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 import json
 from django.db.models import Q
 
+@api_view(['GET'])
+def test(request):
+    print(request.headers)
+    return HttpResponse(status=200)
 
 @api_view(['PATCH', 'POST'])
 def signup(request):
@@ -61,6 +65,7 @@ def signin(request):
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
+            print(Response(status=status.HTTP_204_NO_CONTENT).cookies)
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)

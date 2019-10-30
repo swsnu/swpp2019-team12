@@ -40,7 +40,7 @@ class SignUp extends Component {
         }
         else {
             // ID 중복 확인.
-            axios.post('/api/signup/', {'INPUTID': this.state.email})
+            axios.patch('/api/signup/', {"username": this.state.email})
                 .then(res => {
                                 if(res['status'] === 200) {
                                     this.setState({ emailVaildText: "멋진 아이디네요!",
@@ -92,6 +92,7 @@ class SignUp extends Component {
         const user_info = {
             username: this.state.email,
             password: this.state.password,
+            nickname: this.state.nickname
         };
         let isAllFormValid = (
                     this.state.isEmailVaild &&
@@ -101,10 +102,7 @@ class SignUp extends Component {
 
         if(isAllFormValid) {
             axios.post('/api/signup/', user_info)
-                        .then(res => { console.log(res)
-                                        // axios.patch("/api/" + res.data['id'] + "/", {"nickname": this.state.nickname})
-                                                // .then(res => console.log(res))
-                        })
+                        .then(res => this.props.history.push('/dashboard'))
         }
         // 적절하지 않은 input이 존재한다면, 그에 맞는 에러 메시지 띄워주기.
         else {
