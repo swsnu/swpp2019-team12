@@ -16,7 +16,16 @@
         "redux-actions": "^2.6.5",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0",
-        "sass-loader": "^8.0.0"
+        "sass-loader": "^8.0.0",
+        "acorn-jsx": "^5.1.0",
+        "eslint": "^6.5.1",
+        "eslint-config-airbnb": "^18.0.1",
+        "eslint-plugin-import": "^2.18.2",
+        "eslint-plugin-jsx-a11y": "^6.2.3",
+        "eslint-plugin-prettier": "^3.1.1",
+        "eslint-plugin-react": "^7.16.0",
+        "eslint-plugin-react-hooks": "^1.7.0",
+        "prettier": "^1.18.2"
     },
     "scripts": {
         "start": "react-scripts start",
@@ -41,16 +50,5 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
-    },
-    "devDependencies": {
-        "acorn-jsx": "^5.1.0",
-        "eslint": "^6.5.1",
-        "eslint-config-airbnb": "^18.0.1",
-        "eslint-plugin-import": "^2.18.2",
-        "eslint-plugin-jsx-a11y": "^6.2.3",
-        "eslint-plugin-prettier": "^3.1.1",
-        "eslint-plugin-react": "^7.16.0",
-        "eslint-plugin-react-hooks": "^1.7.0",
-        "prettier": "^1.18.2"
     }
 }
