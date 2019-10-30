@@ -1,2 +1,14 @@
 /* normalize */
-@import './styles/normalize.scss';
+@import './styles/Normalize.scss';
+
+/* helper */
+@import './styles/Helper.scss';
+@import './styles/Color.scss';
+@import './styles/Button.scss';
+
+/* component */
+// workspace
+@import './styles/container/Workspace.scss';
+// workspace_leftbar
+@import './styles/component/workspace_leftbar/Label.scss';
+@import './styles/component/workspace_leftbar/WorkspaceInfo.scss';

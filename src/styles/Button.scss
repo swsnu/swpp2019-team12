@@ -1,0 +1,39 @@
+button {
+    width: fit-content;
+    height: rem(23px);
+
+    border-radius: rem(4px);
+    border: 0;
+    padding: rem(4px) rem(25px);
+
+    background: $white;
+    color: $black;
+
+    font-size: rem(12px);
+    box-shadow: rem(2px) rem(2px) rem(4px) rem(-1px) $lightgray;
+
+    &:hover {
+        cursor: pointer;
+        background: $whitegray;
+    }
+}
+
+button.primary {
+    background: $primary;
+    color: $white;
+
+    &:hover {
+        cursor: pointer;
+        background: $quaternary;
+    }
+}
+
+button.secondary {
+    background: $whitegray;
+
+    &:hover {
+        cursor: pointer;
+        background: $primary;
+        color: $white;
+    }
+}
