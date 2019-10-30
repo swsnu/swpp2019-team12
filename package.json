@@ -23,7 +23,8 @@
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
-        "lint": "./node_modules/.bin/eslint . --ext .js,.jsx"
+        "eslint": "./node_modules/.bin/eslint --fix './src/**/*.{js,jsx,json}'",
+        "prettier": "./node_modules/.bin/prettier --write './src/**/*.{js,jsx,json}'"
     },
     "eslintConfig": {
         "extends": "react-app"
