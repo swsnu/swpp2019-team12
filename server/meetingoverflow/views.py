@@ -38,13 +38,21 @@ def signup(request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+<<<<<<< Updated upstream
             user = User.objects.get(username=username)
             profile = Profile.objects.get(user=user)
             profile.nickname = nickname
             profile.save()
             return Response(status=status.HTTP_201_CREATED)
+=======
+            user = User.objects.get(username=serializer.data['username'])
+            
+            return Response({"id": user.id}, status=status.HTTP_201_CREATED)
+>>>>>>> Stashed changes
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    
 
 
 @api_view(['POST'])

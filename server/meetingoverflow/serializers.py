@@ -13,6 +13,11 @@ class UserSerializer(serializers.ModelSerializer):
         #fields = '__all__'
         fields = ['username', 'password']
 
+    def create(self, validated_data):
+        user = super().create(validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:

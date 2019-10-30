@@ -1,6 +1,6 @@
 import React from 'react';
 
-const NotFound = ({ constext }) => {
+const NotFound = ({ context }) => {
     return (
         <div>
             <div>Not Found</div>
