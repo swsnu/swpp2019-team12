@@ -6,5 +6,6 @@ node_js:
 install:
     - yarn install
 script:
-    - ./node_modules/.bin/eslint src
-    - yarn test --coverage --watchAll=false
+    - yarn run prettier
+    - yarn run eslint
+    - yarn coverage
