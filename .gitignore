@@ -114,11 +114,5 @@ var/
 
 **/migrations
 
-<<<<<<< HEAD
-.env
-db.sqlite3
-
-**/migrations/*
-=======
 **/__pycache__
->>>>>>> f78d4bbf4a84e0c06c13bb9f6944c34825164820
+
