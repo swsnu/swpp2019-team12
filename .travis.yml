@@ -3,9 +3,16 @@ include:
     - language: node_js
 node_js:
     - '10'
+    dist: trusty
+    addons:
+        sonarcloud:
+            organization: "your SonarCloud organization key"
+            token:
+                secure: "encrypted value that you just copied"
 install:
     - yarn install
 script:
     - yarn run prettier
     - yarn run eslint
     - yarn coverage
+    - sonar-scanner
