@@ -1,5 +1,5 @@
 .workspace {
-    min-width: rem(1600px);
+    min-width: rem(1200px);
     min-height: rem(900px);
     width: 100vw;
     height: 100vh;
@@ -16,7 +16,7 @@
     }
 
     .workspace-leftbar {
-        width: rem(230px);
+        min-width: rem(210px);
         padding: rem(12px) 0 0 rem(10px);
         border-right: 1px solid $lightgray;
         // box-shadow: 0 rem(2px) rem(5px) rem(7px) $lightgray;
@@ -30,12 +30,12 @@
 
     .workspace-main {
         width: 100%;
+        min-width: rem(1000px);
+
         height: 100%;
 
+        padding: rem(30px) rem(50px);
         display: flex;
-        align-items: center;
-        justify-content: center;
-
         background: $whitegray;
     }
 }

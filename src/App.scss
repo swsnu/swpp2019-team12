@@ -9,9 +9,14 @@
 /* component */
 // workspace
 @import './styles/container/Workspace.scss';
+
 // workspace_leftbar
 @import './styles/component/workspace_leftbar/Label.scss';
 @import './styles/component/workspace_leftbar/WorkspaceInfo.scss';
 @import './styles/component/workspace_leftbar/MemberInfo.scss';
 @import './styles/component/workspace_leftbar/SettingInfo.scss';
 @import './styles/component/workspace_leftbar/CreateNote.scss';
+
+// workspace_main
+@import './styles/component/workspace_main/Label.scss';
+@import './styles/component/workspace_main/AgendaOverview.scss';

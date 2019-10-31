@@ -5,64 +5,21 @@ import MemberInfo from '../../component/workspace_leftbar/MemberInfo';
 import SettingInfo from '../../component/workspace_leftbar/SettingInfo';
 import CreateNote from '../../component/workspace_leftbar/CreateNote';
 
-/**
- * @description Dummy Data
- */
-const dummyWI = {
-    currentWorkspace: 'SWPP',
-    workspaceList: [
-        'CHAEMIN',
-        'workspace',
-        'HOME',
-        'CHAEMIN',
-        'workspace',
-        'HOME',
-        'CHAEMIN',
-        'workspace',
-        'HOME'
-    ],
-    handleCreateWorkspace: () => {
-        console.log('Need to Implement create workspace function');
-    }
-};
+import AgendaOverview from '../../component/workspace_main/AgendaOverview';
 
-const memberList = [
-    {
-        nickname: 'CHAEMIN',
-        handleShowMember: () => {
-            console.log('Need to Implement show member detail function');
-        }
-    },
-    {
-        nickname: 'PAUL',
-        handleShowMember: () => {
-            console.log('Need to Implement show member detail function');
-        }
-    },
-    {
-        nickname: 'andra',
-        handleShowMember: () => {
-            console.log('Need to Implement show member detail function');
-        }
-    },
-    {
-        nickname: 'YEIN',
-        handleShowMember: () => {
-            console.log('Need to Implement show member detail function');
-        }
-    }
-];
-const handleInviteMember = () => {
-    console.log('Need to Implement invite member function');
-};
-const handleNavigateToSetting = () => {
-    console.log('Need to Implement navigate setting page function');
-};
-const handleCreateMeetingNote = () => {
-    console.log('Need to Implement create meeting note function');
-};
-
-/** ************   Dummy Data End   ************* */
+/* Dummy Data */
+import {
+    dummyWI,
+    memberList,
+    handleInviteMember,
+    handleNavigateToSetting,
+    handleCreateMeetingNote,
+    agendas,
+    todos,
+    handleToggleTodo,
+    handleNavigateToAgenda,
+    handleNavigateToTodo
+} from './DummyData';
 
 class Workspace extends Component {
     constructor(props) {
@@ -72,6 +29,11 @@ class Workspace extends Component {
     componentDidMount() {}
 
     render() {
+        const currAgendas = agendas.filter(a => !a.isDone);
+        const doneAgendas = agendas.filter(a => a.isDone);
+
+        const doneTodos = todos.filter(t => t.isDone);
+
         return (
             <div className="workspace">
                 <div className="workspace-leftbar">
@@ -96,7 +58,17 @@ class Workspace extends Component {
                     </div>
                 </div>
 
-                <div className="workspace-main">workspace page</div>
+                <div className="workspace-main">
+                    <AgendaOverview
+                        currAgendas={currAgendas}
+                        doneAgendas={doneAgendas}
+                        todos={todos}
+                        doneTodos={doneTodos}
+                        handleToggleTodo={handleToggleTodo}
+                        handleNavigateToAgenda={handleNavigateToAgenda}
+                        handleNavigateToTodo={handleNavigateToTodo}
+                    />
+                </div>
             </div>
         );
     }

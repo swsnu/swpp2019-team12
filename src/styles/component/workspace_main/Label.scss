@@ -1,0 +1,19 @@
+.workspace-main-label {
+    .workspace-main-label__title {
+        min-width: fit-content;
+
+        font-size: rem(20px);
+        font-weight: 600;
+        color: $tertiary;
+    }
+}
+
+.workspace-main-sublabel {
+    .workspace-main-sublabel__title {
+        min-width: fit-content;
+
+        font-size: rem(16px);
+        font-weight: 400;
+        color: $tertiary;
+    }
+}
