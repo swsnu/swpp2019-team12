@@ -88,4 +88,14 @@ export const todos = [
     }
 ];
 
+export const notes = [
+    { id: 0, title: '노트 1', date: '2019-10-12' },
+    { id: 1, title: '노트 2', date: '2019-10-15' },
+    { id: 2, title: '노트 3', date: '2019-10-19' },
+    { id: 3, title: '노트 4', date: '2019-10-30' }
+];
+
+export const handleNavigateMeetingNote = id => {
+    console.log(`Need to Implement navigate specific meeting note NO.${id}`);
+};
 /** ************   Dummy Data End   ************* */

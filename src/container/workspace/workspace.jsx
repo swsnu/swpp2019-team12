@@ -6,6 +6,7 @@ import SettingInfo from '../../component/workspace_leftbar/SettingInfo';
 import CreateNote from '../../component/workspace_leftbar/CreateNote';
 
 import AgendaOverview from '../../component/workspace_main/AgendaOverview';
+import MeetingNoteOverview from '../../component/workspace_main/MeetingNoteOverview';
 
 /* Dummy Data */
 import {
@@ -18,7 +19,9 @@ import {
     todos,
     handleToggleTodo,
     handleNavigateToAgenda,
-    handleNavigateToTodo
+    handleNavigateToTodo,
+    notes,
+    handleNavigateMeetingNote
 } from './DummyData';
 
 class Workspace extends Component {
@@ -67,6 +70,10 @@ class Workspace extends Component {
                         handleToggleTodo={handleToggleTodo}
                         handleNavigateToAgenda={handleNavigateToAgenda}
                         handleNavigateToTodo={handleNavigateToTodo}
+                    />
+                    <MeetingNoteOverview
+                        notes={notes}
+                        handleNavigateMeetingNote={handleNavigateMeetingNote}
                     />
                 </div>
             </div>

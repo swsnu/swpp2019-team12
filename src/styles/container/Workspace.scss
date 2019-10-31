@@ -31,11 +31,14 @@
     .workspace-main {
         width: 100%;
         min-width: rem(1000px);
-
         height: 100%;
 
-        padding: rem(30px) rem(50px);
+        padding: rem(30px) rem(50px) rem(50px) rem(50px);
+
         display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
         background: $whitegray;
     }
 }
