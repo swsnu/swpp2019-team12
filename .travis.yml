@@ -1,11 +1,11 @@
 matrix:
-include:
+  include:
     - language: node_js
-node_js:
-    - '10'
-install:
+      node_js:
+      - '10'
+    install:
     - yarn install
-script:
+    script:
     - yarn run prettier
     - yarn run eslint
     - yarn coverage
