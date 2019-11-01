@@ -13,7 +13,7 @@ class SignUp extends Component {
         isFooVaild 형태는 각 input들이 적절한 형태로 들어왔는가에 대한 Boolean,
         fooVaildText 형태는 위의 Boolean 값에 따른 메시지 담는 변수
     */
-    state = {
+    state={
         email: '',
         password: '',
         password_confirmation: '',
