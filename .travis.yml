@@ -15,4 +15,3 @@ matrix:
                 - yarn run prettier
                 - yarn run eslint
                 - yarn coverage
-                - sonar-scanner
