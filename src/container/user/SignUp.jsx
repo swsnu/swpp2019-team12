@@ -86,8 +86,9 @@ class SignUp extends Component {
         }
     }
 
-    handleSubmit = (e) => {
+    handleSignUp = (e) => {
         e.preventDefault();
+        console.log("??")
 
         const user_info = {
             username: this.state.email,
@@ -110,6 +111,11 @@ class SignUp extends Component {
         }
     }
 
+    handleNavigateSignIn = (e) => {
+        e.preventDefault()
+        this.props.history.push('/signin')
+    }
+
     componentDidMount() {}
     /* ==== Form Validation 공통 부분 ====
         input field의 OnBlur를 이용해서 유저가 아이디 비밀번호를 입력하고
@@ -118,9 +124,9 @@ class SignUp extends Component {
     render() {
         return (
             <div className="SignUp">
-                <form >
+                <form className="form-container">
                     <input
-                        id="email-input"
+                        id="user_email"
                         placeholder="email"
                         onChange={(e) => this.setState({ email: e.target.value })}
                         onBlur={ this.checkEmail }
@@ -131,7 +137,7 @@ class SignUp extends Component {
                         id="id-validation"
                     >{this.state.emailVaildText}</p>
                     <input
-                        id="pw-input"
+                        id="user_password"
                         type="password"
                         placeholder="password"
                         onChange={(e) => this.setState({ password: e.target.value })}
@@ -141,7 +147,7 @@ class SignUp extends Component {
                     <p>{this.state.pwVaildText}</p>
                     <br/>
                     <input
-                        id="pw-confirm-input"
+                        id="user_password_confirmation"
                         type="password"
                         placeholder="password_confirmation"
                         onChange={(e) => this.setState({ password_confirmation: e.target.value })}
@@ -151,27 +157,34 @@ class SignUp extends Component {
                     <p id="pw-confirm-validation">{this.state.pwConfirmationVaildText}</p>
                     <br/>
                     <input
-                        id="nickname-input"
+                        id="user_nickname"
                         placeholder="nickname"
                         onChange={(e) => this.setState({ nickname: e.target.value })}
                         value = { this.state.nickname }
                     />
                     <br/>
-                    <button
-                        id="signup-button"
-                        className="primary"
-                        onClick={this.handleSubmit}
-                        disabled={
-                                    this.state.email === '' ||
-                                    this.state.password === '' ||
-                                    this.state.password_confirmation === '' ||
-                                    this.state.nickname === ''
-                                }
-                    >
-                        Signup
-                    </button>
-                    
-                    
+                    <div className="button-container">
+                        <button
+                            id="sign_up_button"
+                            className="primary"
+                            onClick={this.handleSignUp}
+                            disabled={
+                                        this.state.email === '' ||
+                                        this.state.password === '' ||
+                                        this.state.password_confirmation === '' ||
+                                        this.state.nickname === ''
+                                    }
+                        >
+                            Signup
+                        </button>
+                        <button
+                            className="primary"
+                            id="navigate_sign_in_button"
+                            onClick={this.handleNavigateSignIn}
+                        >
+                            Signin
+                        </button>
+                    </div>
                 </form>
             </div>);
     }

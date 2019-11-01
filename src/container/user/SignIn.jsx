@@ -17,7 +17,7 @@ class SignIn extends Component {
 
     componentDidMount() {}
 
-    handleSignin = (e) => {
+    handleSignIn = (e) => {
         e.preventDefault()
         const user_info = {
             username: this.state.email,
@@ -28,6 +28,11 @@ class SignIn extends Component {
                 .then(res => {
                     this.props.history.push('/dashboard')})
                 .catch(res => console.log("err"))
+    }
+
+    handleNavigateSignUp = (e) => {
+        e.preventDefault()
+        this.props.history.push('/signup')
     }
     
     render() {
@@ -51,12 +56,22 @@ class SignIn extends Component {
                         <br/>
                         <br/>
                         <p>{this.state.submitText}</p>
-                        <button
-                            id="signin-button"
-                            onClick={this.handleSignin}
-                        >
-                            Signin
-                        </button>
+                        <div className="button-container">
+                            <button
+                                className="primary"
+                                id="sign_in_button"
+                                onClick={this.handleSignIn}
+                            >
+                                Signin
+                            </button>
+                            <button
+                                className="primary"
+                                id="navigate_sign_up_button"
+                                onClick={this.handleNavigateSignUp}
+                            >
+                                Signup
+                            </button>
+                        </div>
                     </form>
                 </div>);
     }
