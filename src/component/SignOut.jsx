@@ -1,13 +1,12 @@
 import React from 'react'
 import axios from 'axios'
 
-const Logout = (props) => {
+const SignOut = (props) => {
 
     const handleClick = (e) => {
         e.preventDefault()
         axios.get('/api/signout/')
-            .then(res => {  console.log(props)
-                            props.history.push('/signin')})
+            .then(res => props.history.push('/signin'))
             .catch(err => console.log("로그인 안된 상태"))
     }
 
@@ -23,4 +22,4 @@ const Logout = (props) => {
     )
 }
 
-export default Logout
+export default SignOut

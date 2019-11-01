@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import OverviewBlock from '../component/OverviewBlock';
-import Logout from '../component/Logout';
+import SignOut from '../component/SignOut';
 class Dashboard extends Component {
     state = {
         current_agenads : [
@@ -12,8 +11,7 @@ class Dashboard extends Component {
         return (
             <div className="Dashboard">
                 <h1>Dashboard</h1>
-                <OverviewBlock elems={this.state.current_agenads}/>
-                <Logout history={this.props.history}/>
+                <SignOut history={this.props.history}/>
             </div>
         );
     }

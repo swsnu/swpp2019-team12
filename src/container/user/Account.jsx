@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios'
-import Logout from '../../component/Logout';
+import SignOut from '../../component/SignOut';
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken"
@@ -17,7 +17,7 @@ class Account extends Component {
             .then(res => console.log(res))
         return (<div>
                     <h1>account page</h1>
-                    <Logout history={this.props.history}/> 
+                    <SignOut history={this.props.history}/> 
                 </div>);
     }
 }

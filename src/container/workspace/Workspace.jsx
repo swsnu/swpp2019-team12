@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import OverviewBlock from '../../component/OverviewBlock';
-
 class Workspace extends Component {
     constructor(props) {
         super(props);

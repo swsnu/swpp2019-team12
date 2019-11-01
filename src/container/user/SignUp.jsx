@@ -27,10 +27,12 @@ class SignUp extends Component {
         pwVaildText: "",
         submitted: false,
     }
+
     /*
     characters other than @ or whitespace followed by an @ sign, 
     followed by more characters (not \'@\', \'.\', or whitespace: co.kr is not allowed in this case), 
     and then a \".\". After the \".\", you can only write 2 to 3 letters from a to z.
+    지금 이건 TEST@TEST.com 처럼 이메일 형태가 제한적이라서 TEST@snu.ac.kr 같은것도 받으려면 조금 수정해야 함.
     */
     checkEmail = () => {
         let isFormVaild = (/^[^@\s]+@[^@\s\.]+[.][a-zA-Z]{2,3}$/.test(this.state.email));
@@ -39,7 +41,6 @@ class SignUp extends Component {
             this.setState({ emailVaildText: "잘못된 형식입니다.", isEmailVaild: false })
         }
         else {
-            // ID 중복 확인.
             axios.patch('/api/signup/', {"username": this.state.email})
                 .then(res => {
                                 if(res['status'] === 200) {
@@ -111,9 +112,9 @@ class SignUp extends Component {
     }
 
     componentDidMount() {}
-    /*
+    /* ==== Form Validation 공통 부분 ====
         input field의 OnBlur를 이용해서 유저가 아이디 비밀번호를 입력하고
-        해당 input field에서 나갔을 때, validation check를 하도록 짰습니다.  
+        해당 input field에서 Focus out 된 후에, validation check이 실행 됩니다.  
     */
     render() {
         return (
