@@ -1,0 +1,13 @@
+.SignUp {
+    min-width: rem(1200px);
+    min-height: rem(900px);
+    width: 100vw;
+    height: 100vh;
+
+    padding: rem(30px) rem(50px) rem(50px) rem(50px);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: $whitegray;
+}

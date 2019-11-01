@@ -118,7 +118,6 @@ class SignUp extends Component {
     render() {
         return (
             <div className="SignUp">
-                <h1>SignUp Page</h1>
                 <form >
                     <input
                         id="email-input"
@@ -160,6 +159,7 @@ class SignUp extends Component {
                     <br/>
                     <button
                         id="signup-button"
+                        className="primary"
                         onClick={this.handleSubmit}
                         disabled={
                                     this.state.email === '' ||
