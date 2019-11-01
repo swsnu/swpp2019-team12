@@ -6,9 +6,9 @@ node_js:
     dist: trusty
     addons:
         sonarcloud:
-            organization: "your SonarCloud organization key"
+            organization: "swsnu"
             token:
-                secure: "encrypted value that you just copied"
+                secure: "u0c/8zXTpp6yrecrxqPyUpwMRU56m+E3hmGPvXp553PYq1xIFbZLtMGvZ1iLkqLaum7/ory/SGT/3atu8szOO9WS1Xk9mkk66oNnhEaHMFIpQ4BFeb4LQf7QhN+ebkaEuCPWSkThVPWQOPc4ngjaEBcmEr0wLNvE/o0r7C3HEtsK9dKjetrpTQP9ByEqZuTBCiu1cGyMwlL5jmWG2eXohPc3c0zvmYJLZTsIcouKnb4qx2biiAMZxMTtWSGXoG+lKIME0H55tgy2duIkgXsl1xydzn45ps/2REvXdGbwMp6jaCgUsDEnNAk//CTlukvKvv7r8t9DhAaBT174cLzVjQdapTTYw3/OyNLRmCm5DdaBWDjy6wS88YtHOrcrDw1jXYlfVxGFOLzhpbagPaSDD1ktfpdxvEmEfw3kR2Ix/tOy1XMkmRtp5c+xw6yG/JHbOyu3pguHkXpzpPqcotmnFY0lHHoZElDJ+0m9vgUcup6hJsRD3Uqo5n6+SKs9S4OuGyM+cN4xfvjjGjh8R/Q/wQLOSod/gAHHKuTV5Tk+I8XWmWwuVLG4PrNU36pfvaxej/cSftZfnn8JCgrrEHTJ9DXECHBr52edJweYW+BrUhaU1RHz1q79LmH3fbd523HI2SWLF8RbFR4atXJgdVV0TV3w61A4Ki2MaZ7PYZ2Au58="
 install:
     - yarn install
 script:
