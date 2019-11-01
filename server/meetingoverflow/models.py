@@ -125,7 +125,7 @@ class Agenda(models.Model):
     is_parent_note = models.BooleanField(default=True)
     has_children = models.BooleanField(default=False)
     containing_block_types = models.TextField(blank=True, null=False) # ex) calendar_image_todo
-
+    is_done = models.BooleanField(default=False)
 
     # def seeding(seed_num):
     #     NUM_OF_SEED_FOR_AGENDA = seed_num
