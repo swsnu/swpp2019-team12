@@ -6,14 +6,13 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken"
 class SignIn extends Component {
     constructor(props) {
         super(props);
-    }
-
-    state = {
-        email: "",
-        password: "",
-        
-        submitText: "",
-        submitted: false
+        this.state = {
+            email: "",
+            password: "",
+            
+            submitText: "",
+            submitted: false
+        }
     }
 
     componentDidMount() {}

@@ -53,10 +53,13 @@
         ]
     },
     "jest": {
-        "collectCoverageFrom" : [ 
-            "src/**/*.{js,jsx}" , 
-            "!src/index.js" , 
+        "collectCoverageFrom": [
+            "src/**/*.{js,jsx}",
+            "!src/index.js",
             "!src/serviceWorker.js"
-        ] }
-        
+        ]
+    },
+    "devDependencies": {
+        "babel-eslint": "^10.0.3"
+    }
 }

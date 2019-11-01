@@ -7,27 +7,26 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken"
 class SignUp extends Component {
     constructor(props) {
         super(props);
+        /*
+            isFooVaild 형태는 각 input들이 적절한 형태로 들어왔는가에 대한 Boolean,
+            fooVaildText 형태는 위의 Boolean 값에 따른 메시지 담는 변수
+        */
+        this.state = {
+            email: '',
+            password: '',
+            password_confirmation: '',
+            nickname: '',
+            isEmailVaild: false,
+            isPwVaild: false,
+            isPwConfirmationVaild: false,
+            // isNicknameValid: false,
+            emailVaildText: "",
+            pwConfirmationVaildText: "",
+            pwVaildText: "",
+            submitted: false,
+        }
+        
     }
-
-    /*
-        isFooVaild 형태는 각 input들이 적절한 형태로 들어왔는가에 대한 Boolean,
-        fooVaildText 형태는 위의 Boolean 값에 따른 메시지 담는 변수
-    */
-    state={
-        email: '',
-        password: '',
-        password_confirmation: '',
-        nickname: '',
-        isEmailVaild: false,
-        isPwVaild: false,
-        isPwConfirmationVaild: false,
-        // isNicknameValid: false,
-        emailVaildText: "",
-        pwConfirmationVaildText: "",
-        pwVaildText: "",
-        submitted: false,
-    }
-
     /*
     characters other than @ or whitespace followed by an @ sign, 
     followed by more characters (not \'@\', \'.\', or whitespace: co.kr is not allowed in this case), 
