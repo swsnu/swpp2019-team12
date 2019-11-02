@@ -1,0 +1,13 @@
+import React from 'react';
+
+export const Label = ({ title }) => (
+    <div className="note-left-label">
+        <div className="note-left-label__title">{title}</div>
+    </div>
+);
+
+export const SubLabel = ({ title }) => (
+    <div className="note-left-sublabel">
+        <div className="note-left-sublabel__title">{title}</div>
+    </div>
+);
