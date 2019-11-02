@@ -1,0 +1,29 @@
+.workspaceSelection {
+    min-width: rem(1200px);
+    min-height: rem(900px);
+    width: 100vw;
+    height: 100vh;
+
+    padding: rem(165px) rem(150px) rem(100px) rem(150px);
+
+    background: $whitegray;
+
+    .workspaceSelection__label {
+        font-size: rem(24px);
+        font-weight: 600;
+
+        text-align: center;
+
+        color: $secondary;
+
+        padding-bottom: rem(100px);
+    }
+
+    .workspaceSelection__workspace-container {
+        height: rem(520px);
+
+        overflow: auto;
+        display: flex;
+        flex-wrap: wrap;
+    }
+}

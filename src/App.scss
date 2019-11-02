@@ -5,10 +5,14 @@
 @import './styles/Helper.scss';
 @import './styles/Color.scss';
 @import './styles/Button.scss';
+@import './styles/Overlay.scss';
+@import './styles/Input.scss';
 
 /* component */
 // workspace
 @import './styles/container/Workspace.scss';
+@import './styles/container/WorkspaceSelection.scss';
+@import './styles/container/CreateModal.scss';
 
 // workspace_leftbar
 @import './styles/component/workspace_leftbar/Label.scss';
@@ -21,3 +25,6 @@
 @import './styles/component/workspace_main/Label.scss';
 @import './styles/component/workspace_main/AgendaOverview.scss';
 @import './styles/component/workspace_main/MeetingNoteOverview.scss';
+
+// workspace_selection
+@import './styles/component/workspace_selection/SelectionCard.scss';
