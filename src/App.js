@@ -8,7 +8,7 @@ import SignUp from './container/user/signup';
 import Account from './container/user/account';
 
 // Workspace Container
-import Workspace from './container/workspace/workspace';
+import Workspace from './container/workspace/Workspace';
 import WorkspaceSelection from './container/workspace/WorkspaceSelection';
 
 // Note Container
