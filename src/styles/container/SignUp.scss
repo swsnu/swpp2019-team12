@@ -1,0 +1,29 @@
+.SignUp {
+    min-width: rem(1200px);
+    min-height: rem(900px);
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: $whitegray;
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .button-container {
+        width: rem(180px);
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    input, .signup-input-label {
+        width: rem(200px);
+        height: rem(20px);
+    }
+
+}

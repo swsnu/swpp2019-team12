@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 class Workspace extends Component {
     constructor(props) {
         super(props);
@@ -8,7 +7,12 @@ class Workspace extends Component {
     componentDidMount() {}
 
     render() {
-        return <div>workspace page</div>;
+
+        return (
+                <div>
+                    <h1>Workspace page</h1>
+
+                </div>);
     }
 }
 
