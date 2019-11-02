@@ -120,9 +120,19 @@ def profile(request, id):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
-def create_workspace(request):
-    if request.method == 'POST':
+@api_view(['GET', 'POST'])
+def workspace(request):
+    if request.method == 'GET':
+        profile = Profile.objects.filter(user__username=request.user.username)
+        queryset = Workspace.objects.filter(members__in=profile)
+
+        if queryset.count() > 0:
+            serializer = WorkspaceSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    elif request.method == 'POST':
         serializer = WorkspaceSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -130,13 +140,14 @@ def create_workspace(request):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['GET', 'PATCH', 'DELETE'])
-def workspace(request, id):
+def specific_workspace(request, id):
     if request.method == 'GET':
-        queryset = Workspace.objects.filter(members__contains=request.user)
+        profile = Profile.objects.filter(user__username=request.user.username)
+        queryset = Workspace.objects.filter(members__in=profile).filter(id=id)
+
         if queryset.count() > 0:
-            serializer = WorkspaceSerializer(queryset)
+            serializer = WorkspaceSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
