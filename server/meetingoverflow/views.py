@@ -11,11 +11,6 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 import json
 from django.db.models import Q
 
-@api_view(['GET'])
-def test(request):
-    print(request.headers)
-    return HttpResponse(status=200)
-
 @api_view(['PATCH', 'POST'])
 def signup(request):
     if request.method == 'PATCH':
@@ -46,6 +41,7 @@ def signup(request):
             profile = Profile.objects.get(user=user)
             profile.nickname = nickname
             profile.save()
+            auth.login(request, user)
             return Response(status=status.HTTP_201_CREATED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
