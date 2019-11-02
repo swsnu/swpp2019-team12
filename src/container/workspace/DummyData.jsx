@@ -98,4 +98,52 @@ export const notes = [
 export const handleNavigateMeetingNote = id => {
     console.log(`Need to Implement navigate specific meeting note NO.${id}`);
 };
+
+export const workspaces = [
+    {
+        id: 0,
+        name: 'SWPP',
+        members: [
+            {
+                nickname: 'CHAEMIN',
+                email: 'CHAEMIN@test.com'
+            },
+            {
+                nickname: 'PAUL',
+                email: 'PAUL@test.com'
+            },
+            {
+                nickname: 'ANDRA',
+                email: 'ANDRA@test.com'
+            },
+            {
+                nickname: 'YIN',
+                email: 'YIN@test.com'
+            }
+        ],
+        admin: {
+            nickname: 'CHAEMIN',
+            email: 'CHAEMIN@test.com'
+        }
+    },
+    {
+        id: 1,
+        name: 'SNU',
+        members: [
+            {
+                nickname: 'PAUL',
+                email: 'PAUL@test.com'
+            },
+            {
+                nickname: 'ANDRA',
+                email: 'ANDRA@test.com'
+            }
+        ],
+        admin: {
+            nickname: 'ANDRA',
+            email: 'ANDRA@test.com'
+        }
+    }
+];
+
 /** ************   Dummy Data End   ************* */
