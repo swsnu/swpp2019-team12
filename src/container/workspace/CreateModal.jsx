@@ -35,6 +35,7 @@ const CreateModalMember = props => {
         handleSelectMember,
         handleDeleteMember
     } = props;
+    console.log(searchedMember);
     return (
         <div className="createModal-member">
             <div className="createModal-member__sublabel">Members</div>
@@ -53,7 +54,7 @@ const CreateModalMember = props => {
                                 key={i}
                                 className="createModal-member__member--searched-email"
                                 onClick={() => handleSelectMember(member)}>
-                                {member.email}
+                                {member.username}
                             </div>
                         ))}
                     </div>
@@ -65,7 +66,7 @@ const CreateModalMember = props => {
                         key={i}
                         className="createModal-member__member--added-element"
                         onClick={() => handleDeleteMember(member)}>
-                        {member.email}
+                        {member.username}
                     </div>
                 ))}
             </div>

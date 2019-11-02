@@ -17,8 +17,7 @@ class SearchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        # fields = ['email', 'username']
-        fields = ['id', 'email', 'username']
+        fields = ['id', 'username']
 
 class ProfileSerializer(serializers.ModelSerializer):
 
