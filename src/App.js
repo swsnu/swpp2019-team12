@@ -9,6 +9,7 @@ import Account from './container/user/account';
 
 // Workspace Container
 import Workspace from './container/workspace/workspace';
+import WorkspaceSelection from './container/workspace/WorkspaceSelection';
 
 // Note Container
 import Note from './container/note/note';
@@ -30,14 +31,16 @@ function App() {
                 <Route exact path="/signup">
                     <SignUp />
                 </Route>
-
                 {/* Cannot access without login */}
                 <Route exact path="/account">
                     <Account />
                 </Route>
-                <Route exact path="/:workspace_name/:w_id">
-                    <Workspace />
-                </Route>
+                <Route exact path="/workspace" component={WorkspaceSelection} />
+                <Route
+                    exact
+                    path="/:workspace_name/:w_id"
+                    component={Workspace}
+                />
                 <Route exact path="/:workspace_name/:w_id/note/:n_id">
                     <Note />
                 </Route>
