@@ -54,7 +54,7 @@ def signin(request):
             username = request.data['username']
             password = request.data['password']
         except(KeyError):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_404_NOT_FOUND)
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
@@ -73,6 +73,24 @@ def signout(request):
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         
+@api_view(['GET'])
+def search_user(request, email):
+    if request.method == 'GET':
+
+        queryset = User.objects.filter(email__contains=email)
+        serializer = SearchSerializer(queryset, many=True)
+        print(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        '''
+        try:
+            queryset = User.objects.filter(email__contains=email)
+            print(queryset)
+            serializer = SearchSerializer(queryset)
+            print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        '''
 
 # 추가된 api / Profile에 닉네임 저장
 @api_view(['GET', 'PATCH'])

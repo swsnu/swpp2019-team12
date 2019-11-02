@@ -10,8 +10,15 @@ class UserSerializer(serializers.ModelSerializer):
         return user
     class Meta:
         model = User
-        #fields = '__all__'
+        # fields = '__all__'
         fields = ['username', 'password']
+
+class SearchSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        # fields = ['email', 'username']
+        fields = ['id', 'email', 'username']
 
 class ProfileSerializer(serializers.ModelSerializer):
 
