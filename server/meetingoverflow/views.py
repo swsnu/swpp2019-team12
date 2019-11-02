@@ -18,32 +18,11 @@ def test(request):
 
 @api_view(['PATCH', 'POST'])
 def signup(request):
-<<<<<<< Updated upstream
     if request.method == 'PATCH':
         try:
             username = request.data['username']
         except(KeyError):
             return HttpResponse(status=400)
-=======
-    if request.method == 'GET':
-
-        # =============== Real Code=================
-        # ARC나 Frontend로 연결할 때는 이 코드로 변경해서 테스트
-
-        input_id = request.META['HTTP_INPUTID']
-        print(input_id)
-
-        # ==========================================
-
-        # ============== Debug Code=================
-        # DRF 에서는 헤더에 값을 넣을 수 없으므로 
-        # get 화면이 켜지기 위해서 임시로 input_id 설정
-
-        # input_id = 'tyj9327'
-
-        # ==========================================
-
->>>>>>> Stashed changes
         try:
             user = User.objects.get(username=username)
         except(User.DoesNotExist) as e:

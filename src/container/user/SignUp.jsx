@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios'
-
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.xsrfHeaderName = "X-CSRFToken"
-
+import { Label, SubLabel} from '../../component/signup/Label'
 class SignUp extends Component {
     constructor(props) {
         super(props);
@@ -88,7 +85,6 @@ class SignUp extends Component {
 
     handleSignUp = (e) => {
         e.preventDefault();
-        console.log("??")
 
         const user_info = {
             username: this.state.email,
@@ -107,7 +103,7 @@ class SignUp extends Component {
         }
         // 적절하지 않은 input이 존재한다면, 그에 맞는 에러 메시지 띄워주기.
         else {
-
+            alert("형식을 다시 확인해주세요.")
         }
     }
 
@@ -125,6 +121,7 @@ class SignUp extends Component {
         return (
             <div className="SignUp">
                 <form className="form-container">
+                    <Label title="Email" />
                     <input
                         id="user_email"
                         placeholder="email"
@@ -132,10 +129,10 @@ class SignUp extends Component {
                         onBlur={ this.checkEmail }
                         value={ this.state.email }
                     />
-                    <br/>
                     <p 
                         id="id-validation"
                     >{this.state.emailVaildText}</p>
+                    <Label title="Password" />
                     <input
                         id="user_password"
                         type="password"
@@ -145,7 +142,7 @@ class SignUp extends Component {
                         value = { this.state.password }
                     />
                     <p>{this.state.pwVaildText}</p>
-                    <br/>
+                    <Label title="Password-Confirmation" />
                     <input
                         id="user_password_confirmation"
                         type="password"
@@ -155,7 +152,7 @@ class SignUp extends Component {
                         value = { this.state.password_confirmation }
                     />
                     <p id="pw-confirm-validation">{this.state.pwConfirmationVaildText}</p>
-                    <br/>
+                    <Label title="Nickname" />
                     <input
                         id="user_nickname"
                         placeholder="nickname"
@@ -169,10 +166,10 @@ class SignUp extends Component {
                             className="primary"
                             onClick={this.handleSignUp}
                             disabled={
-                                        this.state.email === '' ||
-                                        this.state.password === '' ||
-                                        this.state.password_confirmation === '' ||
-                                        this.state.nickname === ''
+                                        !this.state.email ||
+                                        !this.state.password ||
+                                        !this.state.password_confirmation ||
+                                        !this.state.nickname
                                     }
                         >
                             Signup

@@ -4,8 +4,6 @@
     width: 100vw;
     height: 100vh;
 
-    padding: rem(30px) rem(50px) rem(50px) rem(50px);
-
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -17,7 +15,15 @@
         align-items: center;
     }
     .button-container {
+        width: rem(180px);
         display: flex;
-        justify-content: center;
+        flex-direction: row;
+        justify-content: space-around;
     }
+
+    input, .signup-input-label {
+        width: rem(200px);
+        height: rem(20px);
+    }
+
 }
