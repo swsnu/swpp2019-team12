@@ -9,6 +9,10 @@
 @import './styles/Input.scss';
 
 /* component */
+// SignUp
+@import './styles/container/SignUp.scss';
+@import './styles/container/Label.scss';
+
 // workspace
 @import './styles/container/Workspace.scss';
 @import './styles/container/WorkspaceSelection.scss';

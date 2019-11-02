@@ -1,5 +1,6 @@
 {
     "name": "swpp2019-team12",
+    "proxy": "http://localhost:8000",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
@@ -50,5 +51,15 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "jest": {
+        "collectCoverageFrom": [
+            "src/**/*.{js,jsx}",
+            "!src/index.js",
+            "!src/serviceWorker.js"
+        ]
+    },
+    "devDependencies": {
+        "babel-eslint": "^10.0.3"
     }
 }

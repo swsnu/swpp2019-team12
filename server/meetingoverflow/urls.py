@@ -14,5 +14,7 @@ urlpatterns = [
     path('workspace/<int:w_id>/user/<int:u_id>/todos/', views.specific_todo, name='specific_todo'),
     path('workspace/<int:w_id>/notes/', views.notes, name='notes'),
     path('workspace/<int:w_id>/note/<int:n_id>/', views.specific_note, name='specific_note'),
+    path('test/', views.test, name='test'),
+
 
 ]
