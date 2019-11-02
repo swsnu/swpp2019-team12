@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 import WorkspaceInfo from '../../component/workspace_leftbar/WorkspaceInfo';
 import MemberInfo from '../../component/workspace_leftbar/MemberInfo';
@@ -29,7 +30,17 @@ class Workspace extends Component {
         super(props);
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        const {
+            history,
+            history: {
+                location: { pathname }
+            }
+        } = this.props;
+        const id = pathname.split('/')[2];
+
+        // axios.get(`/api/workspace/${id}`).then(res => console.log(res));
+    }
 
     render() {
         const currAgendas = agendas.filter(a => !a.isDone);
