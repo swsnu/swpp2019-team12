@@ -69,7 +69,6 @@ def signin(request):
 @api_view(['GET'])
 def signout(request):
     if request.method == 'GET':
-        print(request.user)
         if request.user.is_authenticated:
             auth.logout(request)
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -168,7 +167,6 @@ def specific_workspace(request, id):
         notes = Note.objects.filter(workspace=workspace)
         agendas = Agenda.objects.filter(note__in=notes)
         todos = Todo.objects.filter(note__in=notes).filter(assignees__in=profile)
-        print(todos)
 
         if workspace is not None:
             workspaces_serializer = WorkspaceSerializer(workspaces, many=True)
@@ -224,7 +222,6 @@ def specific_todo(request, w_id, u_id):
     if request.method == 'GET':
         profile = Profile.objects.get(id=u_id)
         queryset = Todo.objects.filter(workspace__id=w_id, assignees__in=[profile])
-        print(queryset)
         if queryset.count() > 0:
             serializer = TodoSerializer(queryset)
             return Response(serializer.data, status=status.HTTP_200_OK)
