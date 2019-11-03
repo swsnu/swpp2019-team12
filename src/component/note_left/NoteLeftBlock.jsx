@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import PreviewAgenda from '../block/PreviewAgenda';
-import Text from '../block/Text';
-class NoteLeftBlock extends Component {
+import PreviewAgenda from '../blocks/PreviewAgenda';
+import Text from '../blocks/Text';
+class NoteLeftBlock extends Component { 
     constructor(props) {
         super(props);
 
@@ -12,12 +12,12 @@ class NoteLeftBlock extends Component {
         this.state = {
             note_id: this.props.note_id,
             
-            // Redux로 특정 Note의 모든 Block들을 저장해놓고 있어야할 것 같다.
+
             blocks: [
                 {
                     id: 1,
                     block_name: "Agenda",
-                    content: "TEST Agenda",
+                    agenda_disccusion: "TEST Agenda",
                 },
                 {
                     id: 2,
@@ -34,7 +34,7 @@ class NoteLeftBlock extends Component {
                 blocks: this.state.blocks.concat({
                         id: 3,
                         block_name: "Agenda",
-                        content: "Added Agenda"
+                        agenda_disccusion: "Added Agenda"
                     }
                 )
             }
@@ -81,15 +81,16 @@ class NoteLeftBlock extends Component {
                             content={blk.content}
                         />
                     )
-
             }
             else if (blk.block_name === 'Agenda') {
                 return (<PreviewAgenda
-                            content={blk.content}
+                            agenda_disccusion={blk.agenda_disccusion}
                             handleChangeText={this.handleChangeText}
+                            handleClickAgenda={this.props.handleClickAgenda}
                         />
                     )
             }
+
         })
 
         return (

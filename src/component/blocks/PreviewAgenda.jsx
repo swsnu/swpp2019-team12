@@ -16,12 +16,17 @@ class PreviewAgenda extends Component {
 
     render() {
         return (
-            <div className="full-size-block-container PreviewAgenda">
-                <div className="full-size-block-title">
-                    <div className="full-size-block-title__text">Preview Agenda</div>
+            <div 
+                className="full-size-block-container PreviewAgenda"
+            >
+                <div 
+                    className="full-size-block-title PreviewAgenda"
+                    onClick={this.props.handleClickAgenda}
+                >
+                    <div className="full-size-block-title__text PreviewAgenda">Preview Agenda</div>
                 </div>
-                <div className="full-size-block-content">
-                    <div className="full-size-block-content__text">{this.state.agenda_disccusion}</div>
+                <div className="full-size-block-content PreviewAgenda">
+                    <div className="full-size-block-content__text PreviewAgenda">{this.state.agenda_disccusion}</div>
                 </div>
             </div>
         )
