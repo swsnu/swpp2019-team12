@@ -16,7 +16,6 @@ class WorkspaceSelection extends Component {
 
     componentDidMount() {
         axios.get('/api/workspace/').then(res => {
-            console.log(res);
             const { data } = res;
             const { workspaces, admins } = data;
             this.setState({ workspaces, admins });

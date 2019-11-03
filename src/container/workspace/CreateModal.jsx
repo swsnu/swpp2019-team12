@@ -35,7 +35,6 @@ const CreateModalMember = props => {
         handleSelectMember,
         handleDeleteMember
     } = props;
-    console.log(searchedMember);
     return (
         <div className="createModal-member">
             <div className="createModal-member__sublabel">Members</div>
