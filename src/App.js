@@ -29,8 +29,16 @@ function App() {
                     {/* Cannot access without login */}
                     <Route exact path="/account" component={Account} />
                     <Route exact path="/dashboard" component={Dashboard} />
-                    <Route exact path="/:workspace_name/:w_id/note" component={Workspace} />
-                    <Route exact path="/:workspace_name/:w_id/note/:n_id" component={Note} />
+                    <Route
+                        exact
+                        path="/:workspace_name/:w_id/note"
+                        component={Workspace}
+                    />
+                    <Route
+                        exact
+                        path="/:workspace_name/:w_id/note/:n_id"
+                        component={Note}
+                    />
                     <Route component={NotFound} />
                 </Switch>
             </div>
