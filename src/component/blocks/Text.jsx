@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class PreviewAgenda extends Component {
+class Text extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -8,16 +8,18 @@ class PreviewAgenda extends Component {
         };
     }
 
+    handleChangeText = () => {
+        console.log('Need to implement changing text');
+    };
+
     render() {
         return (
-            <div className="full-size-block-container PreviewAgenda">
+            <div className="full-size-block-container Text">
                 <div className="full-size-block-title">
-                    <div className="full-size-block-title__text">
-                        Preview Agenda
-                    </div>
+                    <div className="full-size-block-title__text">Text</div>
                 </div>
                 <div className="full-size-block-content">
-                    <div className="full-size-blokc-content__text">
+                    <div className="full-size-block-content__text">
                         {this.state.content}
                     </div>
                 </div>
@@ -26,4 +28,4 @@ class PreviewAgenda extends Component {
     }
 }
 
-export default PreviewAgenda;
+export default Text;

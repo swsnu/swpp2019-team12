@@ -13,15 +13,16 @@ import {
     handleAddTableBlock,
     handleAddTodoBlock
 } from './DummyData';
-import PreviewAgenda from '../../component/block/PreviewAgenda';
+import NoteLeft from './NoteLeft';
+import NoteRightFocused from './NoteRightFocused';
 
 class Note extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
-            note_id: this.props.note_id,
-
+            isAgendaClicked: false,
+            isNoteLeftClicked: true,
+            isNoteRightClicked: false,
             blocks: [
                 {
                     id: 1,
@@ -32,51 +33,69 @@ class Note extends Component {
         };
     }
 
+    handleClickAgenda = () => {
+        console.log('Agenda Clicked');
+        if (this.state.isNoteLeftClicked) {
+            this.setState({
+                isAgendaClicked: true,
+                isNoteLeftClicked: false
+            });
+            console.log(document.getElementsByClassName('Note-left')[0]);
+            document.getElementsByClassName('Note-left')[0].className =
+                'Note-left-agenda-click';
+        } else {
+            this.setState({
+                isAgendaClicked: false,
+                isNoteLeftClicked: true
+            });
+            document.getElementsByClassName(
+                'Note-left-agenda-click'
+            )[0].className = 'Note-left';
+        }
+    };
+
+    handleClickNoteLeft = e => {
+        if (!e.target.className.includes('PreviewAgenda')) {
+            if (this.state.isAgendaClicked) {
+                this.setState({
+                    isAgendaClicked: false,
+                    isNoteLeftClicked: true,
+                    isNoteRightClicked: false
+                });
+                document.getElementsByClassName(
+                    'Note-left-agenda-click'
+                )[0].className = 'Note-left';
+            } else {
+                this.setState({
+                    isNoteLeftClicked: true,
+                    isNoteRightClicked: false
+                });
+            }
+        }
+    };
+
+    handleClickNoteRight = () => {
+        this.setState({
+            isNoteLeftClicked: false,
+            isNoteRightClicked: true
+        });
+    };
+
     componentDidMount() {}
 
     render() {
-        const block = this.state.blocks.map(blk => {
-            if (blk.block_name === 'Text') {
-                return <Text content={blk.content} />;
-            } else if (blk.block_name === 'Agenda') {
-                return (
-                    <PreviewAgenda
-                        content={blk.content}
-                        handleChangeText={this.handleChangeText}
-                    />
-                );
-            }
-        });
-
         const temp_id = 1;
-        console.log(dummyNote.note_title);
-
         return (
             <div className="Note">
-                <div className="Note-left">
-                    <div className="Note-left-page__title">Note Left</div>
-                    <div className="Note-left-page__line" />
-                    <div className="Note-left-container">
-                        <NoteLeftInfo
-                            note_title={dummyNote.note_title}
-                            meeting_date={dummyNote.meeting_date}
-                            participants={dummyNote.participants}
-                        />
-                        <NoteLeftBlock note_id={temp_id} />
-                    </div>
-                </div>
-
-                <div className="Note-right">
-                    <div className="Note-right-page__title">
-                        Note Right Focused
-                    </div>
-                    <div className="Note-right-page__line" />
-
-                    <div className="Note-right-container">
-                        <div className="Note-right-focused__title">title</div>
-                        <div className="NoteRightBlock__block">{block}</div>
-                    </div>
-                </div>
+                <NoteLeft
+                    note_title={dummyNote.note_title}
+                    meeting_date={dummyNote.meeting_date}
+                    participants={dummyNote.participants}
+                    note_id={temp_id}
+                    handleClickAgenda={this.handleClickAgenda}
+                    handleClickNoteLeft={this.handleClickNoteLeft}
+                />
+                <NoteRightFocused />
             </div>
         );
     }

@@ -18,9 +18,10 @@
 
 // Note
 @import './styles/container/note/Note.scss';
+@import './styles/container/note/NoteLeft.scss';
+@import './styles/container/note/NoteRightFocused.scss';
 
 // note_left
 @import './styles/component/note_left/Label.scss';
 @import './styles/component/note_left/NoteLeftInfo.scss';
 @import './styles/component/note_left/NoteLeftBlock.scss';
-
