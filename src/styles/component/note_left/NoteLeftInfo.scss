@@ -1,0 +1,39 @@
+.NoteLeftInfo {
+    padding: 0 0 0 100px;
+
+    .NoteLeftInfo-title__container {
+        width: 100%;
+        height: rem(50px);
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        .NoteLeftInfo__currentNote {
+            font-size: rem(15px);
+        }
+    }
+
+    .NoteLeftInfo-date__container {
+        width: 100%;
+        height: rem(45px);
+
+        .NoteLeftInfo__meetingDate {
+            padding: 5px 0 0 3px;
+        }
+
+    }
+
+    .NoteLeftInfo-participants__container {
+        width: 100%;
+        height: rem(45px);
+
+        display: flex;
+        flex-direction: column;
+
+        .NoteLeftInfo__participants {
+            padding: 5px 0 0 3px;
+        }
+    }
+
+}

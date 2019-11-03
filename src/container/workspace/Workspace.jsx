@@ -7,12 +7,11 @@ class Workspace extends Component {
     componentDidMount() {}
 
     render() {
-
         return (
-                <div>
-                    <h1>Workspace page</h1>
-
-                </div>);
+            <div>
+                <h1>Workspace page</h1>
+            </div>
+        );
     }
 }
 

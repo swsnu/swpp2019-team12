@@ -4,13 +4,25 @@
    ==========================================================================
  */
 
+* {
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
 /**
  * 1. Correct the line height in all browsers.
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
 
 html {
+    font-size: 14px;
     line-height: 1.15; /* 1 */
+    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+
     -webkit-text-size-adjust: 100%; /* 2 */
 }
 

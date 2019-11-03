@@ -1,0 +1,56 @@
+.NoteLeftBlock-container {
+    width: 100%;
+    min-height: 500px;
+    margin-top: 50px;
+
+    display: flex;
+    flex-direction: row;
+
+    .NoteLeftBlock-create-buttons {
+        width: rem(50px);
+
+        display: flex;
+        flex-direction: column;
+
+        button {
+            width: rem(40px);
+            height: rem(40px);
+            margin: 0 0 3px 0;
+            padding: 0 0 0 0;
+
+            border-top-right-radius: 0.28571rem;
+            border-top-left-radius: 0;
+            border-bottom-right-radius: 0.28571rem;
+            border-bottom-left-radius: 0;
+            background-color: $quaternary;
+        }
+    }
+
+    .NoteLeftBlock__blockList {
+        width: 100%;
+        padding: 0 rem(50px) 0 rem(50px);
+    }
+
+    .full-size-block-container {
+        width: 100%;
+        min-height: rem(100px);
+        margin-bottom: rem(20px);
+
+        background: $white;
+        border-radius: rem(7px);
+        overflow: hidden;
+        border: 0.5px solid $tertiary;
+
+        .full-size-block-title {
+            padding: rem(10px);
+            background: $primary;
+
+            .full-size-block-title__text {
+                font-size: rem(14px);
+                font-weight: 400;
+                color: $white;
+                text-align: center;
+            }
+        }
+    }
+}

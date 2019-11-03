@@ -1,0 +1,31 @@
+.signin-input-label {
+    width: 100%;
+
+    .signin-input-label__title {
+        min-width: fit-content;
+
+        font-size: rem(14px);
+        padding: 0 rem(40px) 0 0;
+
+        color: $darkgray;
+    }
+}
+
+.signin-input-sublabel {
+    width: 100%;
+
+    .signin-input-sublabel__title {
+        min-width: fit-content;
+
+        font-size: rem(12px);
+        padding: 0 rem(10px) 0 rem(15px);
+
+        color: $gray;
+    }
+    .signin-input-sublabel__line {
+        width: calc(100% - 1rem);
+        height: 0px;
+        border-top: 1px solid $lightgray;
+        margin: 0 0 0 rem(14px);
+    }
+}
