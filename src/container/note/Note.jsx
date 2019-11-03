@@ -1,33 +1,25 @@
 import React, { Component } from 'react';
-import NoteLeftInfo from '../../component/note_left/NoteLeftInfo';
-import NoteLeftBlock from '../../component/note_left/NoteLeftBlock';
 // Dummy Data
 import {
     dummyNote,
-    handleAddAgendaBlock,
-    handleAddTextBlock,
-    handleAddImageBlock,
-    handleAddCalendarBlock,
-    handleAddPdfBlock,
-    handleAddTableBlock,
-    handleAddTodoBlock
+    participants
 } from './DummyData';
 import NoteLeft from './NoteLeft';
 class Note extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isAgendaClicked: false,
+            isBlockClicked: false,
             isNoteLeftClicked: true,
             isNoteRightClicked: false,
         }
     }
 
-    handleClickAgenda = () => {
-        console.log("Agenda Clicked")
+    handleClickBlock = (block_name, block_id) => {
+        console.log("Block Clicked")
         if (this.state.isNoteLeftClicked) {
             this.setState({ 
-                            isAgendaClicked: true, 
+                            isBlockClicked: true, 
                             isNoteLeftClicked: false
                         })
             console.log(document.getElementsByClassName('Note-left')[0]);
@@ -35,18 +27,21 @@ class Note extends Component {
         }
         else {
             this.setState({
-                            isAgendaClicked: false,
+                            isBlockClicked: false,
                             isNoteLeftClicked: true
                         })
             document.getElementsByClassName('Note-left-agenda-click')[0].className="Note-left";
         }
+
+        console.log(block_name + " " + block_id);
     }
 
     handleClickNoteLeft = (e) => {
-        if (!e.target.className.includes('PreviewAgenda')) {
-            if (this.state.isAgendaClicked) {
+        // Click한 부분의 className을 받아와서 block과 관련 없는 것들에만 LeftClick을 걸어놓는다.
+        if (!e.target.className.includes('size-block')) {
+            if (this.state.isBlockClicked) {
                 this.setState({
-                                isAgendaClicked: false,
+                                isBlockClicked: false,
                                 isNoteLeftClicked: true,
                                 isNoteRightClicked: false,
                             })
@@ -78,9 +73,9 @@ class Note extends Component {
                 <NoteLeft 
                     note_title={dummyNote.note_title}
                     meeting_date={dummyNote.meeting_date}
-                    participants={dummyNote.participants}
+                    participants={participants}
                     note_id={temp_id}
-                    handleClickAgenda={this.handleClickAgenda}
+                    handleClickBlock={this.handleClickBlock}
                     handleClickNoteLeft={this.handleClickNoteLeft}
                 />
                 <div 

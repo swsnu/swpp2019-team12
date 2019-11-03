@@ -15,14 +15,14 @@ class PreviewAgenda extends Component {
     }
 
     render() {
+        const block_name = "PreviewAgenda";
+        const block_id = 1;
         return (
             <div 
                 className="full-size-block-container PreviewAgenda"
+                onClick={() => this.props.handleClickBlock(block_name,block_id)}
             >
-                <div 
-                    className="full-size-block-title PreviewAgenda"
-                    onClick={this.props.handleClickAgenda}
-                >
+                <div className="full-size-block-title PreviewAgenda">
                     <div className="full-size-block-title__text PreviewAgenda">Preview Agenda</div>
                 </div>
                 <div className="full-size-block-content PreviewAgenda">

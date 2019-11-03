@@ -14,7 +14,10 @@ class Pdf extends Component {
 
     render() {
         return (
-            <div className="full-size-block-container Pdf">
+            <div 
+                className="full-size-block-container Pdf"
+                onClick={this.props.handleClickBlock}    
+            >
                 <div className="full-size-block-title">
                     <div className="full-size-block-title__text">PDF</div>
                 </div>

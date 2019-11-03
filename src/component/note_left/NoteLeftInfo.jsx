@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import moment from 'moment';
 import DateTime from 'react-datetime'
 import { Label } from './Label';
+import ParticipantInfo from './ParticipantInfo';
 
 class NoteLeftInfo extends Component {
     constructor(props) {
@@ -9,7 +10,6 @@ class NoteLeftInfo extends Component {
         this.state = {
             note_title: this.props.note_title,
             meeting_date: this.props.meeting_date,
-            participants: this.props.participants,
             isTitleClicked: false,
             moment: moment()
         }
@@ -28,6 +28,10 @@ class NoteLeftInfo extends Component {
             moment
         });
     }
+
+    // handleDateBlur = () => {
+
+    // }
 
 
     render() {
@@ -56,12 +60,13 @@ class NoteLeftInfo extends Component {
                 </div>
                 <div className="NoteLeftInfo-date__container">
                     <Label title="Date" />
-                    <DateTime />
+                    <DateTime 
+                        // onBlur={handleDateBlur}
+                    />
                 </div>
-                <div className="NoteLeftInfo-participants__container">         
-                    <Label title="Participants" />   
-                    <div className="NoteLeftInfo__participants">{this.state.participants}</div>
-                </div>         
+                <ParticipantInfo 
+                    participants={this.props.participants}
+                />       
             </div>
         )
     }

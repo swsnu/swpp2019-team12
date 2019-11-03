@@ -24,7 +24,10 @@ class Todo extends Component {
 
     render() {
         return (
-            <div className="full-size-block-container Todo">
+            <div 
+                className="full-size-block-container Todo"
+                onClick={this.props.handleClickBlock}    
+            >
                 <div className="full-size-block-title">
                     <div className="full-size-block-title__text">Todo</div>
                 </div>

@@ -79,22 +79,27 @@ class NoteLeftBlock extends Component {
             if(blk.block_name === 'Text') {
                 return(<Text
                             content={blk.content}
+                            handleChangeText={this.handleChangeText}
+                            handleClickBlock={this.props.handleClickBlock}
                         />
                     )
             }
             else if (blk.block_name === 'Agenda') {
                 return (<PreviewAgenda
                             agenda_disccusion={blk.agenda_disccusion}
-                            handleChangeText={this.handleChangeText}
-                            handleClickAgenda={this.props.handleClickAgenda}
+                            handleClickBlock={this.props.handleClickBlock}
                         />
                     )
+            }
+            else {
+                return (<div>To be Completed</div>)
             }
 
         })
 
         return (
             <div className="NoteLeftBlock-container">
+                {/* 이 button들은 스크롤할 떄 따라서 내려가도록 만드는게 좋을 것 같다. */}
                 <div className="NoteLeftBlock-create-buttons">
                     <button 
                         id="add_agenda_block" 

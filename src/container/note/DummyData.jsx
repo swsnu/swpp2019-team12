@@ -2,9 +2,58 @@
 export const dummyNote = {
     note_title: "Dummy Note",
     meeting_date: "01/01/2019",
-    participants: "SangYeon/ChaeMin/TaeYoung/YeJi",
-
 }
+
+export const participants = [
+    {
+        nickname: 'CHAEMIN',
+        handleShowMember: () => {
+            console.log('Need to Implement show member detail function');
+        }
+    },
+    {
+        nickname: 'PAUL',
+        handleShowMember: () => {
+            console.log('Need to Implement show member detail function');
+        }
+    },
+    {
+        nickname: 'andra',
+        handleShowMember: () => {
+            console.log('Need to Implement show member detail function');
+        }
+    },
+    {
+        nickname: 'YEIN',
+        handleShowMember: () => {
+            console.log('Need to Implement show member detail function');
+        }
+    },
+    {
+        nickname: 'CHAEMIN',
+        handleShowMember: () => {
+            console.log('Need to Implement show member detail function');
+        }
+    },
+    {
+        nickname: 'PAUL',
+        handleShowMember: () => {
+            console.log('Need to Implement show member detail function');
+        }
+    },
+    {
+        nickname: 'andra',
+        handleShowMember: () => {
+            console.log('Need to Implement show member detail function');
+        }
+    },
+    {
+        nickname: 'YEIN',
+        handleShowMember: () => {
+            console.log('Need to Implement show member detail function');
+        }
+    }
+];
 
 export const handleAddAgendaBlock = (note_id) => {
     console.log(`Need to Implement adding Agenda Block to specific note whose id is ${note_id}`);

@@ -13,8 +13,13 @@ class Text extends Component {
     }
 
     render() {
+        const block_name = "Text";
+        const block_id = 1;
         return (
-            <div className="full-size-block-container Text">
+            <div 
+                className="full-size-block-container Text"
+                onClick={() => this.props.handleClickBlock(block_name, block_id)}    
+            >
                 <div className="full-size-block-title">
                     <div className="full-size-block-title__text">Text</div>
                 </div>

@@ -15,7 +15,10 @@ class NoteLeft extends Component {
 
     render() {
         return (
-            <div className="Note-left" onClick={this.props.handleClickNoteLeft}>
+            <div 
+                className="Note-left" 
+                onClick={this.props.handleClickNoteLeft}
+            >
                 <div className="Note-left-page__title">Note Left</div>
                     <div className="Note-left-page__line" />
                     <div className="Note-left-container">
@@ -26,7 +29,7 @@ class NoteLeft extends Component {
                             />
                         <NoteLeftBlock 
                             note_id={this.state.temp_id}
-                            handleClickAgenda={this.props.handleClickAgenda}
+                            handleClickBlock={this.props.handleClickBlock}
                         />
                     </div>
             </div>
