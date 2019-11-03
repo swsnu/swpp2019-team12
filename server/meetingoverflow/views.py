@@ -86,6 +86,24 @@ def search_user(request, username):
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def search_user_in_workspace(request, username, workspace_id):
+    if request.method == 'GET':
+        try:
+            workspace = Workspace.objects.get(id=workspace_id)
+            members = workspace.members.all()
+            users = []
+
+            for member in members:
+                user = member.user
+                if username in user.username:
+                    user_serializer = UserSerializer(user)
+                    users.append(user_serializer.data)
+
+            return Response(users, status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 # 추가된 api / Profile에 닉네임 저장
 @api_view(['GET', 'PATCH'])
 def profile(request, id):

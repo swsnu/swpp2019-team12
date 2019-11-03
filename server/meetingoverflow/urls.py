@@ -7,6 +7,7 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('signout/', views.signout, name='signout'),
     path('user/<str:username>/', views.search_user, name='search_user'),
+    path('user/<str:username>/<int:workspace_id>', views.search_user_in_workspace, name='search_user_in_workspace'),
     path('profile/<int:id>', views.profile, name='profile'),
     path('profile/<int:id>/workspace/', views.get_workspace_of_user, name='get_workspace_of_user'),
     path('workspace/', views.workspace, name='workspace'),
