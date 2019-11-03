@@ -14,6 +14,7 @@ import {
     handleAddTodoBlock
 } from './DummyData';
 import PreviewAgenda from '../../component/block/PreviewAgenda';
+import AddMember from '../../component/AddMember';
 class Note extends Component {
     constructor(props) {
         super(props);
@@ -49,6 +50,7 @@ class Note extends Component {
 
         const temp_id = 1;
         console.log(dummyNote.note_title);
+
         return (
             <div className="Note">
                 <div className="Note-left">
