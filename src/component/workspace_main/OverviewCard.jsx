@@ -4,12 +4,7 @@ import { ReactComponent as BulletIcon } from '../../assets/icons/bullet_icon.svg
 import { ReactComponent as CheckIcon } from '../../assets/icons/check_icon.svg';
 
 export const AgendaCard = props => {
-    const {
-        type,
-        agendas,
-        handleNavigateToAgenda,
-        handleNavigateToTodo
-    } = props;
+    const { type, agendas, todos } = props;
 
     return (
         <div className="agendaCard-container">
@@ -24,61 +19,42 @@ export const AgendaCard = props => {
             </div>
 
             <div className="agendaCard-content-container">
-                {map(agendas, (agenda, i) => (
-                    <div key={i} className="agendaCard-content-element">
-                        <div className="agendaCard-content-element__agenda">
-                            {type === 'curr' ? (
-                                <BulletIcon className="agendaCard-content-element__agenda-icon default" />
-                            ) : (
-                                <CheckIcon className="agendaCard-content-element__agenda-icon" />
-                            )}
-                            <div
-                                className="agendaCard-content-element__agenda-text"
-                                onClick={() =>
-                                    handleNavigateToAgenda(agenda.id)
-                                }>
-                                {agenda.agenda}
+                {map(agendas, (agenda, i) => {
+                    const relativeTodos = todos.filter(
+                        t => t.parent_agenda === agenda.id
+                    );
+                    console.log('relative Todos :', relativeTodos);
+                    return (
+                        <div key={i} className="agendaCard-content-element">
+                            <div className="agendaCard-content-element__agenda">
+                                {type === 'curr' ? (
+                                    <BulletIcon className="agendaCard-content-element__agenda-icon default" />
+                                ) : (
+                                    <CheckIcon className="agendaCard-content-element__agenda-icon" />
+                                )}
+                                <div className="agendaCard-content-element__agenda-text">
+                                    {agenda.content}
+                                </div>
+                            </div>
+                            <div className="agendaCard-content-element__todos">
+                                {map(relativeTodos, (todo, j) => (
+                                    <div
+                                        key={j}
+                                        className="agendaCard-content-element__todo">
+                                        {`#${todo.id}`}
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                        <div className="agendaCard-content-element__todos">
-                            {map(agenda.todos, (todo, j) => (
-                                <div
-                                    key={j}
-                                    className="agendaCard-content-element__todo"
-                                    onClick={() => handleNavigateToTodo(todo)}>
-                                    {`#${todo}`}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );
 };
 
 export const TodoCard = props => {
-    const { todos, handleToggleTodo, handleNavigateToTodo } = props;
-
-    const dateToText = date => {
-        const d = new Date(date);
-        const month = [
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
-            'Oct',
-            'Nov',
-            'Dec'
-        ];
-
-        return `${month[d.getMonth()]} ${d.getDate()}`;
-    };
+    const { todos } = props;
 
     return (
         <div className="todoCard-container">
@@ -87,59 +63,30 @@ export const TodoCard = props => {
             </div>
             <div className="todoCard-subtitle">
                 <div className="todoCard-subtitle__todo">Todos</div>
-                <div className="todoCard-subtitle__due">Due Date</div>
             </div>
 
             <div className="todoCard-content-container">
                 {map(todos, (todo, i) => (
                     <div key={i} className="todoCard-content-element">
                         <div className="todoCard-content-element__todo">
-                            {todo.isDone ? (
-                                <div
-                                    className="todoCard-content-element__checkbox-icon done"
-                                    onClick={() => handleToggleTodo(todo.id)}
-                                />
+                            {todo.is_done ? (
+                                <div className="todoCard-content-element__checkbox-icon done" />
                             ) : (
-                                <div
-                                    className="todoCard-content-element__checkbox-icon"
-                                    onClick={() => handleToggleTodo(todo.id)}
-                                />
+                                <div className="todoCard-content-element__checkbox-icon" />
                             )}
 
-                            {todo.isDone ? (
-                                <div
-                                    className="todoCard-content-element__todo-text done"
-                                    onClick={() =>
-                                        handleNavigateToTodo(todo.id)
-                                    }>
+                            {todo.is_done ? (
+                                <div className="todoCard-content-element__todo-text done">
                                     <span>{`#${todo.id}`}</span>
-                                    {`${todo.todo}`}
+                                    {`${todo.content}`}
                                 </div>
                             ) : (
-                                <div
-                                    className="todoCard-content-element__todo-text"
-                                    onClick={() =>
-                                        handleNavigateToTodo(todo.id)
-                                    }>
+                                <div className="todoCard-content-element__todo-text">
                                     <span>{`#${todo.id}`}</span>
-                                    {`${todo.todo}`}
+                                    {`${todo.content}`}
                                 </div>
                             )}
                         </div>
-
-                        {new Date() - new Date(todo.due) > 0 ? (
-                            <div className="todoCard-content-element__due late">
-                                {dateToText(todo.due)}
-                            </div>
-                        ) : todo.isDone ? (
-                            <div className="todoCard-content-element__due done">
-                                {dateToText(todo.due)}
-                            </div>
-                        ) : (
-                            <div className="todoCard-content-element__due">
-                                {dateToText(todo.due)}
-                            </div>
-                        )}
                     </div>
                 ))}
             </div>

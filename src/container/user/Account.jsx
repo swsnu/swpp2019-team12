@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import axios from 'axios'
+import axios from 'axios';
 import SignOut from '../../component/SignOut';
 
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.xsrfHeaderName = "X-CSRFToken"
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 class Account extends Component {
     constructor(props) {
@@ -13,12 +13,13 @@ class Account extends Component {
     componentDidMount() {}
 
     render() {
-        axios.get('/api/test')
-            .then(res => console.log(res))
-        return (<div>
-                    <h1>account page</h1>
-                    <SignOut history={this.props.history}/> 
-                </div>);
+        axios.get('/api/test').then(res => console.log(res));
+        return (
+            <div>
+                <h1>account page</h1>
+                <SignOut history={this.props.history} />
+            </div>
+        );
     }
 }
 

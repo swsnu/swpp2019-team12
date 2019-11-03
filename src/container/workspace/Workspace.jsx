@@ -9,66 +9,78 @@ import CreateNote from '../../component/workspace_leftbar/CreateNote';
 import AgendaOverview from '../../component/workspace_main/AgendaOverview';
 import MeetingNoteOverview from '../../component/workspace_main/MeetingNoteOverview';
 
-/* Dummy Data */
-import {
-    dummyWI,
-    memberList,
-    handleInviteMember,
-    handleNavigateToSetting,
-    handleCreateMeetingNote,
-    agendas,
-    todos,
-    handleToggleTodo,
-    handleNavigateToAgenda,
-    handleNavigateToTodo,
-    notes,
-    handleNavigateMeetingNote
-} from './DummyData';
-
 class Workspace extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            workspaces: [],
+            workspace: {},
+            admins: [],
+            members: [],
+            agendas: [],
+            notes: [],
+            todos: []
+        };
     }
 
     componentDidMount() {
         const {
-            history,
             history: {
                 location: { pathname }
             }
         } = this.props;
         const id = pathname.split('/')[2];
 
-        // axios.get(`/api/workspace/${id}`).then(res => console.log(res));
+        axios.get(`/api/workspace/${id}/`).then(res => {
+            const { data } = res;
+            const {
+                workspaces,
+                workspace,
+                admins,
+                members,
+                agendas,
+                notes,
+                todos
+            } = data;
+            this.setState({
+                workspaces,
+                workspace,
+                admins,
+                members,
+                agendas,
+                notes,
+                todos
+            });
+        });
     }
 
     render() {
-        const currAgendas = agendas.filter(a => !a.isDone);
-        const doneAgendas = agendas.filter(a => a.isDone);
+        const {
+            workspaces,
+            workspace,
+            admins,
+            members,
+            agendas,
+            notes,
+            todos
+        } = this.state;
 
-        const doneTodos = todos.filter(t => t.isDone);
+        const currAgendas = agendas.filter(a => !a.is_done);
+        const doneAgendas = agendas.filter(a => a.is_done);
+
+        const doneTodos = todos.filter(t => t.is_done);
 
         return (
             <div className="workspace">
                 <div className="workspace-leftbar">
                     <div className="leftbar-container">
                         <WorkspaceInfo
-                            currentWorkspace={dummyWI.currentWorkspace}
-                            workspaceList={dummyWI.workspaceList}
-                            handleCreateWorkspace={
-                                dummyWI.handleCreateWorkspace
-                            }
+                            workspace={workspace}
+                            workspaces={workspaces}
                         />
-                        <MemberInfo
-                            memberList={memberList}
-                            handleInviteMember={handleInviteMember}
-                        />
-                        <SettingInfo
-                            handleNavigateToSetting={handleNavigateToSetting}
-                        />
-                        <CreateNote
-                            handleCreateMeetingNote={handleCreateMeetingNote}
-                        />
+                        <MemberInfo members={members} />
+                        <SettingInfo />
+                        <CreateNote />
                     </div>
                 </div>
 
@@ -78,14 +90,8 @@ class Workspace extends Component {
                         doneAgendas={doneAgendas}
                         todos={todos}
                         doneTodos={doneTodos}
-                        handleToggleTodo={handleToggleTodo}
-                        handleNavigateToAgenda={handleNavigateToAgenda}
-                        handleNavigateToTodo={handleNavigateToTodo}
                     />
-                    <MeetingNoteOverview
-                        notes={notes}
-                        handleNavigateMeetingNote={handleNavigateMeetingNote}
-                    />
+                    <MeetingNoteOverview notes={notes} />
                 </div>
             </div>
         );

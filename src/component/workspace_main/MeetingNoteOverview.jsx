@@ -5,7 +5,7 @@ import { Label, SubLabel } from './Label';
 import { ReactComponent as NoteIcon } from '../../assets/icons/note_icon.svg';
 
 const MeetingNoteOverview = props => {
-    const { notes, handleNavigateMeetingNote } = props;
+    const { notes } = props;
     return (
         <div className="meetingNoteOverview-container">
             <SubLabel title="Meeting Note Overview" />
@@ -15,11 +15,13 @@ const MeetingNoteOverview = props => {
                 {map(notes, (note, i) => (
                     <div
                         key={i}
-                        className="meetingNoteOverview-content__element"
-                        onClick={() => handleNavigateMeetingNote(note.id)}>
+                        className="meetingNoteOverview-content__element">
                         <NoteIcon className="meetingNoteOverview-content__img" />
                         <div className="meetingNoteOverview-content__date">
-                            {note.date.substring(2).replace(/-/g, '.')}
+                            {note.created_at
+                                .split('T')[0]
+                                .substring(2)
+                                .replace(/-/g, '.')}
                         </div>
                     </div>
                 ))}

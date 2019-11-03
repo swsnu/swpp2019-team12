@@ -1,19 +1,27 @@
 import React, { Component } from 'react';
 import { map } from 'lodash';
-import { workspaces } from './DummyData';
+// import { workspaces } from './DummyData';
 import {
     WorkspaceSelectionCard,
     WorkspaceCreationCard
 } from '../../component/workspace-selection/SelectionCard';
 import CreateModal from './CreateModal';
+import axios from 'axios';
 
 class WorkspaceSelection extends Component {
     constructor(props) {
         super(props);
-        this.state = { creation: false };
+        this.state = { creation: false, workspaces: [] };
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        axios.get('/api/workspace/').then(res => {
+            console.log(res);
+            const { data } = res;
+            const { workspaces, admins } = data;
+            this.setState({ workspaces, admins });
+        });
+    }
 
     handleNavigateWorkspace = (id, name) => {
         const { history } = this.props;
@@ -30,25 +38,28 @@ class WorkspaceSelection extends Component {
     };
 
     render() {
-        const { creation } = this.state;
+        const { creation, workspaces, admins } = this.state;
         return (
             <div className="workspaceSelection">
                 <div className="workspaceSelection__label">
                     Select Workspace
                 </div>
                 <div className="workspaceSelection__workspace-container">
-                    {map(workspaces, (workspace, i) => (
-                        <WorkspaceSelectionCard
-                            key={i}
-                            id={workspace.id}
-                            name={workspace.name}
-                            members={workspace.members.length}
-                            admin={workspace.admin.nickname}
-                            handleNavigateWorkspace={
-                                this.handleNavigateWorkspace
-                            }
-                        />
-                    ))}
+                    {map(workspaces, (workspace, i) => {
+                        const [admin] = admins[i];
+                        return (
+                            <WorkspaceSelectionCard
+                                key={i}
+                                id={workspace.id}
+                                name={workspace.name}
+                                members={workspace.members.length}
+                                admin={admin.nickname}
+                                handleNavigateWorkspace={
+                                    this.handleNavigateWorkspace
+                                }
+                            />
+                        );
+                    })}
                     <WorkspaceCreationCard
                         handleNavigateToWorkspaceCreateModal={
                             this.handleNavigateToWorkspaceCreateModal

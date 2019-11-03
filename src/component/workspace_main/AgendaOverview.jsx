@@ -4,41 +4,18 @@ import { Label, SubLabel } from './Label';
 import { AgendaCard, TodoCard, StatisticsCard } from './OverviewCard';
 
 const AgendaOverview = props => {
-    const {
-        currAgendas,
-        doneAgendas,
-        todos,
-        doneTodos,
-        handleNavigateToAgenda,
-        handleNavigateToTodo,
-        handleToggleTodo
-    } = props;
+    const { currAgendas, doneAgendas, todos, doneTodos } = props;
     return (
         <div className="agendaOverview-container">
             <SubLabel title="Agenda Overview" />
             <Label title="안건 현황" />
 
             <div className="agendaOverview-cards">
-                <AgendaCard
-                    type="curr"
-                    agendas={currAgendas}
-                    handleNavigateToAgenda={handleNavigateToAgenda}
-                    handleNavigateToTodo={handleNavigateToTodo}
-                />
-                <TodoCard
-                    todos={todos}
-                    handleNavigateToAgenda={handleNavigateToAgenda}
-                    handleNavigateToTodo={handleNavigateToTodo}
-                    handleToggleTodo={handleToggleTodo}
-                />
+                <AgendaCard type="curr" agendas={currAgendas} todos={todos} />
+                <TodoCard todos={todos} />
             </div>
             <div className="agendaOverview-cards">
-                <AgendaCard
-                    type="done"
-                    agendas={doneAgendas}
-                    handleNavigateToAgenda={handleNavigateToAgenda}
-                    handleNavigateToTodo={handleNavigateToTodo}
-                />
+                <AgendaCard type="done" agendas={doneAgendas} todos={todos} />
                 <div className="statistics-container">
                     <StatisticsCard
                         type="agenda"
