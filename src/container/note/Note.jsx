@@ -14,7 +14,7 @@ import {
     handleAddTodoBlock
 } from './DummyData';
 import PreviewAgenda from '../../component/block/PreviewAgenda';
-import AddMember from '../../component/AddMember';
+
 class Note extends Component {
     constructor(props) {
         super(props);
