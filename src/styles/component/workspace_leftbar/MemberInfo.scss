@@ -13,6 +13,8 @@
         padding: 0 rem(15px) 0 rem(25px);
         margin: rem(10px) 0;
 
+        overflow: auto;
+
         .memberInfo__memberList--element {
             display: flex;
             align-items: center;
