@@ -7,7 +7,7 @@ const CreateModalLabel = () => {
     return (
         <div className="createModal-label">
             <div className="createModal-label__sublabel">Basic Information</div>
-            <div className="createModal-label__label">Create Workspace</div>
+            <div className="createModal-label__label">Create Note</div>
         </div>
     );
 };
