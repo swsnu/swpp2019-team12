@@ -161,14 +161,17 @@ def specific_workspace(request, id):
     if request.method == 'GET':
         profile = Profile.objects.filter(user__username=request.user.username)
 
+        workspaces = Workspace.objects.filter(members__in=profile)
         workspace = Workspace.objects.filter(members__in=profile).get(id=id)
         members = workspace.members.all()
         admins = workspace.admins.all()
         notes = Note.objects.filter(workspace=workspace)
         agendas = Agenda.objects.filter(note__in=notes)
-        todos = Todo.objects.filter(note__in=notes)
+        todos = Todo.objects.filter(note__in=notes).filter(assignees__in=profile)
+        print(todos)
 
         if workspace is not None:
+            workspaces_serializer = WorkspaceSerializer(workspaces, many=True)
             workspace_serializer = WorkspaceSerializer(workspace)
             member_serializer = ProfileSerializer(members, many=True)
             admin_serializer = ProfileSerializer(admins, many=True)
@@ -177,6 +180,7 @@ def specific_workspace(request, id):
             todo_serializer = TodoSerializer(todos, many=True)
 
             data = {
+                "workspaces": workspaces_serializer.data,
                 "workspace": workspace_serializer.data,
                 "members": member_serializer.data,
                 "admins": admin_serializer.data,
