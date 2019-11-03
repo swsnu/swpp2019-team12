@@ -116,15 +116,28 @@ def profile(request, id):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+# ===================================================
+# 모든 workspace GET / 워크스페이스 생성 POST
+#
+# 모든 workspace GET 의 경우 admin 정보만 같이 리턴
+# for FE/WorkspaceSelection
+# ===================================================
 @api_view(['GET', 'POST'])
 def workspace(request):
     if request.method == 'GET':
         profile = Profile.objects.filter(user__username=request.user.username)
         queryset = Workspace.objects.filter(members__in=profile)
+        admins = []
+
+        for queryset_element in queryset:
+            admin = queryset_element.admins.all()
+            admin_serializer = ProfileSerializer(admin, many=True)
+            admins.append(admin_serializer.data)
 
         if queryset.count() > 0:
-            serializer = WorkspaceSerializer(queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            workspace_serializer = WorkspaceSerializer(queryset, many=True)
+            serializer = {"workspaces": workspace_serializer.data, "admins": admins }
+            return Response(serializer, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -136,17 +149,46 @@ def workspace(request):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
+# ===================================================
+# workspace id로부터 특정 워크스페이스 GET / PATCH / DELETE
+# 
+# GET의 경우 관련된 모든 정보 리턴 for FE/Workspace
+# (workspace, member, admin, note, agenda, todo)
+# ===================================================
 @api_view(['GET', 'PATCH', 'DELETE'])
 def specific_workspace(request, id):
     if request.method == 'GET':
         profile = Profile.objects.filter(user__username=request.user.username)
-        queryset = Workspace.objects.filter(members__in=profile).filter(id=id)
 
-        if queryset.count() > 0:
-            serializer = WorkspaceSerializer(queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        workspace = Workspace.objects.filter(members__in=profile).get(id=id)
+        members = workspace.members.all()
+        admins = workspace.admins.all()
+        notes = Note.objects.filter(workspace=workspace)
+        agendas = Agenda.objects.filter(note__in=notes)
+        todos = Todo.objects.filter(note__in=notes)
+
+        if workspace is not None:
+            workspace_serializer = WorkspaceSerializer(workspace)
+            member_serializer = ProfileSerializer(members, many=True)
+            admin_serializer = ProfileSerializer(admins, many=True)
+            note_serializer = NoteSerializer(notes, many=True)
+            agenda_serializer = AgendaSerializer(agendas, many=True)
+            todo_serializer = TodoSerializer(todos, many=True)
+
+            data = {
+                "workspace": workspace_serializer.data,
+                "members": member_serializer.data,
+                "admins": admin_serializer.data,
+                "notes": note_serializer.data,
+                "agendas": agenda_serializer.data,
+                "todos": todo_serializer.data
+            }
+
+            return Response(data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
 
     elif request.method == 'PATCH':
         try:
