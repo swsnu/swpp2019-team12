@@ -124,12 +124,12 @@ def create_workspace(request):
 @api_view(['GET', 'PATCH', 'DELETE'])
 def workspace(request, id):
     if request.method == 'GET':
-        queryset = Workspace.objects.filter(members__contains=request.user)
-        if queryset.count() > 0:
-            serializer = WorkspaceSerializer(queryset)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
+        try:
+            workspace = Workspace.objects.get(id=id)
+        except(Workspace.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = WorkspaceSerializer(workspace)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
         try:

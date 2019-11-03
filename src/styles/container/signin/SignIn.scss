@@ -1,0 +1,45 @@
+.SignIn {
+    min-width: rem(1200px);
+    min-height: rem(900px);
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    background: $whitegray;
+
+    .form-container, .signin-info__title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .signin-info__title {
+        font-size: 30px;
+    }
+
+    .signin-info__line {
+        width: 100%;
+        height: 0px;
+        border-top: 1px solid $darkgray;
+        margin: 10px 0 10px 0;
+    }
+
+    .button-container {
+        width: rem(180px);
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    input, .signin-input-label {
+        width: rem(200px);
+        height: rem(20px);
+    }
+
+    input {
+        border: 2px solid $primary;
+        margin-bottom: 10px;
+    }
+
+}
