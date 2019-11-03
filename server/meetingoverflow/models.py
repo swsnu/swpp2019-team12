@@ -358,6 +358,7 @@ class Todo(models.Model):
     is_parent_note = models.BooleanField(default=True)
     assignees = models.ManyToManyField(Profile)
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, null=True)
+    is_done = models.BooleanField(default=False)
 
     def __str__(self):
         return f'content: {self.content}'

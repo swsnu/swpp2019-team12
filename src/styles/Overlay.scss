@@ -1,0 +1,25 @@
+.overlay {
+    position: absolute;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(0, 0, 0, 0.2);
+
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+    min-width: rem(1200px);
+    min-height: rem(900px);
+
+    z-index: 100;
+
+    overflow: auto;
+}
+
+.overlayChild {
+    z-index: 101;
+}

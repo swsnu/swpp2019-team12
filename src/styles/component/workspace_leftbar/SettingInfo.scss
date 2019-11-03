@@ -1,0 +1,27 @@
+.settingInfo-container {
+    .settingInfo__workspaceSetting {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        padding: rem(16px) 0;
+
+        .settingInfo__workspaceSetting--text {
+            &:hover {
+                cursor: pointer;
+                color: $primary;
+            }
+        }
+        .settingInfo__workspaceSetting--icon {
+            width: rem(16px);
+            height: rem(16px);
+            margin-right: rem(10px);
+
+            &:hover {
+                cursor: pointer;
+                // fill: $primary;
+            }
+        }
+    }
+}
