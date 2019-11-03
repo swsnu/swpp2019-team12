@@ -9,6 +9,8 @@ import CreateNote from '../../component/workspace_leftbar/CreateNote';
 import AgendaOverview from '../../component/workspace_main/AgendaOverview';
 import MeetingNoteOverview from '../../component/workspace_main/MeetingNoteOverview';
 
+import CreateNoteModal from '../note/CreateModal';
+
 class Workspace extends Component {
     constructor(props) {
         super(props);
@@ -19,7 +21,9 @@ class Workspace extends Component {
             members: [],
             agendas: [],
             notes: [],
-            todos: []
+            todos: [],
+
+            showCreateNoteModal: false
         };
     }
 
@@ -54,15 +58,23 @@ class Workspace extends Component {
         });
     }
 
+    handleShowCreateNoteModal = () => {
+        this.setState({ showCreateNoteModal: true });
+    };
+    handleCloseCreateNoteModal = () => {
+        this.setState({ showCreateNoteModal: false });
+    };
+
     render() {
         const {
             workspaces,
             workspace,
-            admins,
             members,
             agendas,
             notes,
-            todos
+            todos,
+
+            showCreateNoteModal
         } = this.state;
 
         const currAgendas = agendas.filter(a => !a.is_done);
@@ -80,7 +92,11 @@ class Workspace extends Component {
                         />
                         <MemberInfo members={members} />
                         <SettingInfo />
-                        <CreateNote />
+                        <CreateNote
+                            handleShowCreateNoteModal={
+                                this.handleShowCreateNoteModal
+                            }
+                        />
                     </div>
                 </div>
 
@@ -93,6 +109,18 @@ class Workspace extends Component {
                     />
                     <MeetingNoteOverview notes={notes} />
                 </div>
+
+                {showCreateNoteModal && (
+                    <div
+                        className="overlay"
+                        onClick={this.handleCloseCreateNoteModal}>
+                        <CreateNoteModal
+                            handleCloseCreateNoteModal={
+                                this.handleCloseCreateNoteModal
+                            }
+                        />
+                    </div>
+                )}
             </div>
         );
     }
