@@ -35,15 +35,17 @@
         font-size: 30px;
         margin-bottom: 40px;
     }
-
+    .NoteRightBlock__block {
+        width: 100%;
+    }
     .full-size-block-container {
         width: 100%;
-        min-height: rem(100px);
+        // min-height: rem(100px);
+        min-height: 400px;
         margin-bottom: rem(20px);
 
         background: $white;
         border-radius: rem(7px);
-        overflow: hidden;
         border: 0.5px solid $tertiary;
 
         .full-size-block-title {
@@ -56,9 +58,6 @@
                 color: $white;
                 text-align: center;
             }
-        }
-        .NoteRightBlock__block {
-            height: 150px;
         }
     }
 }

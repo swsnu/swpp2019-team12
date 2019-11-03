@@ -25,7 +25,7 @@ class NoteRightFocused extends Component {
         else if (block_focused.block_name === 'Agenda') {
             block_focused_box = (
                 <PreviewAgenda
-                    agenda_disccusion={block_focused.agenda_disccusion}
+                    agenda_disccusion={block_focused.agenda_discussion}
                     handleChangeText={this.handleChangeText}
                     handleClickAgenda={this.props.handleClickAgenda}
                 />
@@ -44,7 +44,7 @@ class NoteRightFocused extends Component {
                     <div className="Note-right-focused__title">
                         {block_name}
                     </div>
-                    <div className="NoteRightBlock__blockList">
+                    <div className="NoteRightBlock__block">
                         {block_focused_box}
                     </div>
                 </div>

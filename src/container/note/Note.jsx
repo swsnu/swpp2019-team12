@@ -95,7 +95,9 @@ class Note extends Component {
                     handleClickAgenda={this.handleClickAgenda}
                     handleClickNoteLeft={this.handleClickNoteLeft}
                 />
-                <NoteRightFocused />
+                <NoteRightFocused
+                // handleClickNoteRight={this.handleClickNoteRight}
+                />
             </div>
         );
     }
