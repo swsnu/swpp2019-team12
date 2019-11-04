@@ -36,14 +36,22 @@
     }
 }
 
+.createModal-member-admin-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .createModal-member {
+    width: 47%;
     .createModal-member__sublabel {
         margin-bottom: rem(15px);
     }
     .createModal-member__input-container {
         position: relative;
         .createModal-member__input {
-            width: rem(250px);
+            // width: rem(250px);
         }
 
         .createModal-member__member--searched {

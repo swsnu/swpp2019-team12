@@ -29,14 +29,13 @@ const CreateModalTitle = props => {
 };
 
 const CreateModalDatetime = props => {
+    const date = new Date();
     const { handleChangeDatetime } = props;
+
     return (
         <div className="createModal-datetime createNoteModal-datetime">
             <div className="createModal__sublabel">Datetime</div>
-            <Datetime
-                defaultValue={new Date()}
-                onChange={handleChangeDatetime}
-            />
+            <Datetime defaultValue={date} onChange={handleChangeDatetime} />
         </div>
     );
 };
@@ -126,6 +125,7 @@ class CreateModal extends Component {
         super(props);
         this.state = {
             title: '',
+            date: new Date(),
             datetime: '',
             location: '',
             agendaNumber: 1,
@@ -193,19 +193,31 @@ class CreateModal extends Component {
         const {
             title,
             location,
-            agendaNumber,
             addedParticipant,
+            date,
             datetime
         } = this.state;
+        const { workspaceId, history } = this.props;
+
         axios
-            .post('/api/note/', {
+            .post(`/api/workspace/${workspaceId}/notes/`, {
                 title,
-                participant: addedParticipant,
-                createdAt: datetime,
+                participants: addedParticipant.map(p => p.username),
+                createdAt: datetime ? datetime : date.toISOString(),
+                lastModifiedAt: datetime ? datetime : date.toISOString(),
                 location,
-                agendaNumber
+                workspace: workspaceId
             })
-            .then(res => console.log(res));
+            .then(res => {
+                const {
+                    status,
+                    data: { id }
+                } = res;
+
+                if (status === 201) {
+                    history.push(`/note/${id}`);
+                }
+            });
     };
 
     render() {
@@ -233,7 +245,7 @@ class CreateModal extends Component {
                     />
                     <CreateModalLocation
                         location={location}
-                        handleChangeTitle={this.handleChangeLocation}
+                        handleChangeLocation={this.handleChangeLocation}
                     />
                 </div>
                 <CreateModalAgendaNumber
