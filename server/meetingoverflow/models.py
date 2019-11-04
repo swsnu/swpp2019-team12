@@ -70,9 +70,16 @@ class Agenda(models.Model):
     note = models.ForeignKey(Note, on_delete=models.CASCADE, null=True)
     parent_agenda = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True)
     is_parent_note = models.BooleanField(default=True)
-    has_children = models.BooleanField(default=False)
-    containing_block_types = models.TextField(blank=True, null=False) # ex) calendar_image_todo
+    # has_children = models.BooleanField(default=False)
+    # containing_block_types = models.TextField(blank=True, null=False) # ex) calendar_image_todo
     is_done = models.BooleanField(default=False)
+    has_text_block = models.BooleanField(default=False)
+    has_image_block = models.BooleanField(default=False)
+    has_calendar_block = models.BooleanField(default=False)
+    has_table_block = models.BooleanField(default=False)
+    has_todo_block = models.BooleanField(default=False)
+    has_file_block = models.BooleanField(default=False)
+    has_agenda_block = models.BooleanField(default=False)
 
     """
     =============== Seeding ================
