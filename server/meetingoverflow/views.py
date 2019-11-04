@@ -129,7 +129,7 @@ def profile(request, id):
 def workspace(request):
     if request.method == 'GET':
         profile = request.user.profile
-        queryset = Workspace.objects.filter(members__in=profile)
+        queryset = Workspace.objects.filter(members__in=[profile])
         admins = []
 
         for queryset_element in queryset:
@@ -189,60 +189,44 @@ def workspace(request):
 #         return Response(status=status.HTTP_404_NOT_FOUND)
 #     serializer = WorkspaceSerializer(workspace)
 #     return Response(serializer.data, status=status.HTTP_200_OK)
-
+#
 # => workspace와 관련된 정보만을 반환하는 RESTful 한 GET 코드
-
+#
 # Frontend 에서 필요한 각 정보별로 API를 따로 호출하는 것이 더 바람직!
-# 또한 결국 Django 모델 인스턴스 객체를 직접 Json으로 Serialize하는 것이
-# 어렵기 때문에, id값만을 보내도록 구현되어 있어 결국 각 component에서 이 
-# id값을 통해 Todo, Agenda, Note의 데이터를 불러오는 구조로 구성되어야
-# 하므로, 이 api에서 정보를 모두 묶어서 보내는 것이 큰 의미가 없을 것으로 생각됨 
+# 아래의 경우 여러 serializer를 거쳐야 하므로 한 api가 비대해지는 문제점 발생
 # ================================================================
 """
 @api_view(['GET', 'PATCH', 'DELETE'])
 def specific_workspace(request, id):
     if request.method == 'GET':
-        #profile = request.user.profile
-        profile = Profile.objects.get(id=1)
+        profile = request.user.profile
+        #profile = Profile.objects.get(id=1)
         try: 
             workspace = Workspace.objects.get(id=id)
         except(Workspace.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-        members = []
-        for member in workspace.members.all():
-            members.append(member.user.username)
-        admins = []
-        for admin in workspace.admins.all():
-            admins.append(admin.user.username)
-        notes = []
-        agendas = []
-        for note in Note.objects.filter(workspace=workspace):
-            notes.append(note.id)
-            """
-            Agenda 의 경우 Workspace field 가 없으므로
-            Workspace가 가지고 있는 모든 노트들을 순회하며
-            필터링해서 찾아내야함
-            """
-            for agenda in Agenda.objects.filter(note=note):
-                agendas.append(agenda.id)
-        todos = []
-        for todo in Todo.objects.filter(assignees__in=[profile]):
-            todos.append(todo.id)
+        members = workspace.members.all()
+        member_serializer = ProfileSerializer(members, many=True)
+        admins = workspace.admins.all()
+        admin_serializer = ProfileSerializer(admins, many=True)
+        notes = Note.objects.filter(workspace=workspace)
+        note_serializer = NoteSerializer(notes, many=True)
+        agendas = Agenda.objects.filter(note__workspace=workspace)
+        agenda_serializer = AgendaSerializer(agendas, many=True)
+        todos = Todo.objects.filter(assignees__in=[profile])
+        todo_serializer = TodoSerializer(todos, many=True)
 
-        data = {
-            "workspace_name": workspace.name,
-            "members": members,
-            "admins": admins,
-            "notes": notes,
-            "agendas": agendas,
-            "todos": todos
+        serializer = {
+            "members": member_serializer.data,
+            "admins": admin_serializer.data,
+            "notes": note_serializer.data,
+            "agendas": agenda_serializer.data,
+            "todos": todo_serializer.data
         }
-        print(data)
-        return JsonResponse(data, status=200, safe=False)
         
-
-
+        return Response(serializer, status=status.HTTP_200_OK)
+        
     elif request.method == 'PATCH':
         try:
             current_workspace = Workspace.objects.get(id=id)
@@ -264,9 +248,9 @@ def specific_workspace(request, id):
         return Response(status=status.HTTP_200_OK)
 
 
-# 어떤 유저의 워크스페이스 상의 모든 Todo 반환
+# 어떤 유저의 워크스페이스 상의 assign된 모든 Todo 반환
 @api_view(['GET'])
-def specific_todo(request, w_id):
+def workspace_todo(request, w_id):
     if request.method == 'GET':
         profile = request.user.profile
         queryset = Todo.objects.filter(workspace__id=w_id, assignees__in=[profile])
@@ -276,6 +260,17 @@ def specific_todo(request, w_id):
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+
+# 어떤 유저의 워크스페이스 상의 모든 agenda 반환
+@api_view(['GET'])
+def workspace_agenda(request, w_id):
+    if request.method == 'GET':
+        queryset = Agenda.objects.filter(note__workspace=workspace)
+        if queryset.count() > 0:
+            serializer = AgendaSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 # @api_view(['GET'])
 # def get_workspace_of_user(request, id):
