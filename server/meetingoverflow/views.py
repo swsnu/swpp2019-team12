@@ -241,9 +241,9 @@ def specific_workspace(request, id):
 # request.user.id로 가져올 수 있으니 url에 넣을 필요가 있나?
 # ===================================================
 @api_view(['GET'])
-def specific_todo(request, w_id, u_id):
+def specific_todo(request, w_id):
     if request.method == 'GET':
-        profile = Profile.objects.get(id=u_id)
+        profile = request.user.profile
         queryset = Todo.objects.filter(workspace__id=w_id, assignees__in=[profile])
         if queryset.count() > 0:
             serializer = TodoSerializer(queryset, many=True)
