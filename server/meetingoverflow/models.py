@@ -294,7 +294,7 @@ class Agenda(models.Model):
 
 
     def __str__(self):
-        return f'content: {self.content[:100]}'
+        return f'note_id: {self.note.id}'
 
 
 class Calendar(models.Model):
@@ -361,7 +361,7 @@ class Todo(models.Model):
     is_done = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'content: {self.content}'
+        return f'note_id: {self.note.id}'
 
 
 class TextBlock(models.Model):
@@ -373,4 +373,4 @@ class TextBlock(models.Model):
     is_parent_note = models.BooleanField(default=True)
 
     def __str__(self):
-        return f'content: {self.content[:100]}'
+        return f'note_id: {self.note.id}'

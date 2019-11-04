@@ -11,6 +11,9 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 import json
 from django.db.models import Q
 
+from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
+
 @api_view(['PATCH', 'POST'])
 def signup(request):
     if request.method == 'PATCH':
@@ -125,7 +128,7 @@ def profile(request, id):
 @api_view(['GET', 'POST'])
 def workspace(request):
     if request.method == 'GET':
-        profile = Profile.objects.filter(user__username=request.user.username)
+        profile = request.user.profile
         queryset = Workspace.objects.filter(members__in=profile)
         admins = []
 
@@ -177,42 +180,67 @@ def workspace(request):
 # GET의 경우 관련된 모든 정보 리턴 for FE/Workspace
 # (workspace, member, admin, note, agenda, todo)
 # ===================================================
+"""
+# ======================== RESTful Code ==========================
+# if request.method == 'GET':
+#     try: 
+#         workspace = Workspace.objects.get(id=id)
+#     except(Workspace.DoesNotExist):
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+#     serializer = WorkspaceSerializer(workspace)
+#     return Response(serializer.data, status=status.HTTP_200_OK)
+
+# => workspace와 관련된 정보만을 반환하는 RESTful 한 GET 코드
+
+# Frontend 에서 필요한 각 정보별로 API를 따로 호출하는 것이 더 바람직!
+# 또한 결국 Django 모델 인스턴스 객체를 직접 Json으로 Serialize하는 것이
+# 어렵기 때문에, id값만을 보내도록 구현되어 있어 결국 각 component에서 이 
+# id값을 통해 Todo, Agenda, Note의 데이터를 불러오는 구조로 구성되어야
+# 하므로, 이 api에서 정보를 모두 묶어서 보내는 것이 큰 의미가 없을 것으로 생각됨 
+# ================================================================
+"""
 @api_view(['GET', 'PATCH', 'DELETE'])
 def specific_workspace(request, id):
     if request.method == 'GET':
-        profile = Profile.objects.filter(user__username=request.user.username)
-
-        workspaces = Workspace.objects.filter(members__in=profile)
-        workspace = Workspace.objects.filter(members__in=profile).get(id=id)
-        members = workspace.members.all()
-        admins = workspace.admins.all()
-        notes = Note.objects.filter(workspace=workspace)
-        agendas = Agenda.objects.filter(note__in=notes)
-        todos = Todo.objects.filter(note__in=notes).filter(assignees__in=profile)
-        print(todos)
-
-        if workspace is not None:
-            workspaces_serializer = WorkspaceSerializer(workspaces, many=True)
-            workspace_serializer = WorkspaceSerializer(workspace)
-            member_serializer = ProfileSerializer(members, many=True)
-            admin_serializer = ProfileSerializer(admins, many=True)
-            note_serializer = NoteSerializer(notes, many=True)
-            agenda_serializer = AgendaSerializer(agendas, many=True)
-            todo_serializer = TodoSerializer(todos, many=True)
-
-            data = {
-                "workspaces": workspaces_serializer.data,
-                "workspace": workspace_serializer.data,
-                "members": member_serializer.data,
-                "admins": admin_serializer.data,
-                "notes": note_serializer.data,
-                "agendas": agenda_serializer.data,
-                "todos": todo_serializer.data
-            }
-
-            return Response(data, status=status.HTTP_200_OK)
-        else:
+        #profile = request.user.profile
+        profile = Profile.objects.get(id=1)
+        try: 
+            workspace = Workspace.objects.get(id=id)
+        except(Workspace.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        members = []
+        for member in workspace.members.all():
+            members.append(member.user.username)
+        admins = []
+        for admin in workspace.admins.all():
+            admins.append(admin.user.username)
+        notes = []
+        agendas = []
+        for note in Note.objects.filter(workspace=workspace):
+            notes.append(note.id)
+            """
+            Agenda 의 경우 Workspace field 가 없으므로
+            Workspace가 가지고 있는 모든 노트들을 순회하며
+            필터링해서 찾아내야함
+            """
+            for agenda in Agenda.objects.filter(note=note):
+                agendas.append(agenda.id)
+        todos = []
+        for todo in Todo.objects.filter(assignees__in=[profile]):
+            todos.append(todo.id)
+
+        data = {
+            "workspace_name": workspace.name,
+            "members": members,
+            "admins": admins,
+            "notes": notes,
+            "agendas": agendas,
+            "todos": todos
+        }
+        print(data)
+        return JsonResponse(data, status=200, safe=False)
+        
 
 
     elif request.method == 'PATCH':
@@ -236,10 +264,7 @@ def specific_workspace(request, id):
         return Response(status=status.HTTP_200_OK)
 
 
-# ===================================================
-# user id의 경우 로그인한 사람으로부터 
-# request.user.id로 가져올 수 있으니 url에 넣을 필요가 있나?
-# ===================================================
+# 어떤 유저의 워크스페이스 상의 모든 Todo 반환
 @api_view(['GET'])
 def specific_todo(request, w_id):
     if request.method == 'GET':
@@ -282,7 +307,7 @@ def notes(request, w_id):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-@csrf_exempt
+
 @api_view(['GET', 'PATCH', 'DELETE'])
 def specific_note(request, w_id, n_id):
     if request.method == 'GET':
