@@ -14,7 +14,10 @@ class Table extends Component {
 
     render() {
         return (
-            <div className="full-size-block-container Table">
+            <div 
+                className="full-size-block-container Table"
+                onClick={this.props.handleClickBlock}    
+            >
                 <div className="full-size-block-title">
                     <div className="full-size-block-title__text">Table</div>
                 </div>

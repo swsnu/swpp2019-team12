@@ -14,7 +14,10 @@ class Calendar extends Component {
 
     render() {
         return (
-            <div className="full-size-block-container Calendar">
+            <div 
+                className="full-size-block-container Calendar"
+                onClick={this.props.handleClickBlock}
+            >
                 <div className="full-size-block-title">
                     <div className="full-size-block-title__text">Calendar</div>
                 </div>

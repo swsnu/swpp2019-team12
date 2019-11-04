@@ -15,7 +15,10 @@ class Image extends Component {
 
     render() {
         return (
-            <div className="full-size-block-container Image">
+            <div 
+                className="full-size-block-container Image"
+                onClick={this.props.handleClickBlock}    
+            >
                 <div className="full-size-block-title">
                     <div className="full-size-block-title__text">Image</div>
                 </div>
