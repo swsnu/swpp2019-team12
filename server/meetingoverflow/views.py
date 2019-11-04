@@ -323,9 +323,9 @@ def specific_note(request, n_id):
         return Response(status=status.HTTP_200_OK)
 
 
-#/note/:n_id/block
 """
 ===================================================
+url: /api/note/:id/textblock/
 Note에 직접 속해있는 TextBlock을 모두 가져오거나 생성하는 API
 POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
     {
@@ -371,7 +371,19 @@ def textblock_child_of_note(request, n_id):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-#/agenda/:a_id/block
+"""
+==================================================
+url: /api/agenda/:id/textblock/
+Agenda에 속해있는 TextBlock을 모두 가져오거나 생성하는 API
+
+POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+    {
+        "content": "Hello World",
+        "layer_x": 0,
+        "layer_y": 1
+    }
+==================================================
+"""
 @api_view(['GET', 'POST'])
 def textblock_child_of_agenda(request, a_id):
     if request.method == 'GET':
@@ -410,6 +422,17 @@ def textblock_child_of_agenda(request, a_id):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+"""
+================================================
+url: /api/textblock/id/
+PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
+정보를 전달하면 됨. 예를 들어 content만 수정하고자 한다면 
+다음과 같은 Json을 날리면 됨. 
+    {
+        "content": "Modification",
+    }
+================================================
+"""
 @api_view(['GET', 'PATCH', 'DELETE'])
 def modify_textblock(request, id):
     if request.method == 'GET':
@@ -439,4 +462,140 @@ def modify_textblock(request, id):
         except(TextBlock.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         current_textblock.delete()
+        return Response(status=status.HTTP_200_OK)
+
+
+"""
+===================================================
+url: /api/note/:id/agendas/
+Note에 직접 속해있는 Agenda들을 모두 가져오거나 생성하는 API
+POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+    {
+        "content": "Hello World",
+        "layer_x": 0,
+        "layer_y": 1
+    }
+===================================================
+"""
+@api_view(['GET', 'POST'])
+def agenda_child_of_note(request, n_id):
+    # 해당 노트의 모든 TextBlock 리스트 반환
+    if request.method == 'GET':
+        queryset = TextBlock.objects.filter(
+            is_parent_note=True, 
+            note__id=n_id
+        )
+        if queryset.count() > 0:
+            serializer = TextBlockSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    elif request.method == 'POST':
+        try:
+            note = Note.objects.get(id=n_id)
+        except(Note.DeosNotExist) as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        data = {
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'note': n_id,
+            'is_parent_note': True
+        }
+        serializer = AgendaSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+"""
+==================================================
+url: /api/agenda/:id/agendas/
+Agenda에 속해있는 하위 agenda를 모두 가져오거나 생성하는 API
+
+POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+    {
+        "content": "Hello World",
+        "layer_x": 0,
+        "layer_y": 1
+    }
+==================================================
+"""
+@api_view(['GET', 'POST'])
+def agenda_child_of_agenda(request, a_id):
+    try:
+        # parent agenda에 해당함
+        agenda = Agenda.objects.get(id=a_id)
+    except(Agenda.DeosNotExist) as e:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        queryset = Agenda.objects.filter(
+            is_parent_note=False, 
+            # parent agenda가 중첩되어있더라도 결국 가장 최상위
+            # agenda는 note에 속해있으므로 이 방식으로 note id 획득 가능함
+            note__id=agenda.note.id,
+            parent_agenda__id=a_id
+        )
+        if queryset.count() > 0:
+            serializer = AgendaSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    elif request.method == 'POST':
+        data = {
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'note': agenda.note.id,
+            'parent_agenda':a_id,
+            'is_parent_note': False
+        }
+        serializer = AgendaSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+"""
+================================================
+url: /api/agenda/:id/
+PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
+정보를 전달하면 됨. 예를 들어 is_done만 수정하고자 한다면 
+다음과 같은 Json을 날리면 됨. 
+    {
+        "is_done": "true",
+    }
+================================================
+"""
+@api_view(['GET', 'PATCH', 'DELETE'])
+def modify_agenda(request, id):
+    try:
+        current_agenda = Agenda.objects.get(id=id)
+    except(Agenda.DoesNotExist) as e:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = AgendaSerializer(current_agenda)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+    elif request.method == 'PATCH':
+        serializer = AgendaSerializer(current_agenda, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'DELETE':
+        current_agenda.delete()
         return Response(status=status.HTTP_200_OK)
