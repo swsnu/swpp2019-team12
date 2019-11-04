@@ -38,6 +38,7 @@ class WorkspaceSelection extends Component {
 
     render() {
         const { creation, workspaces, admins } = this.state;
+        const { history } = this.props;
         return (
             <div className="workspaceSelection">
                 <div className="workspaceSelection__label">
@@ -69,7 +70,10 @@ class WorkspaceSelection extends Component {
 
                 {creation && (
                     <div className="overlay" onClick={this.handleCancel}>
-                        <CreateModal handleCancel={this.handleCancel} />
+                        <CreateModal
+                            history={history}
+                            handleCancel={this.handleCancel}
+                        />
                     </div>
                 )}
             </div>

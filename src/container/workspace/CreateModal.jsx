@@ -72,28 +72,93 @@ const CreateModalMember = props => {
         </div>
     );
 };
+
+const CreateModalAdmin = props => {
+    const {
+        email,
+        searchedAdmin,
+        addedAdmin,
+        handleChangeEmail,
+        handleSelectAdmin,
+        handleDeleteAdmin
+    } = props;
+    return (
+        <div className="createModal-member">
+            <div className="createModal-member__sublabel">Admins</div>
+            <div className="createModal-member__input-container">
+                <input
+                    type="email"
+                    placeholder="user_email @ email.com"
+                    className="createModal-member__input"
+                    value={email}
+                    onChange={e => handleChangeEmail(e)}
+                />
+                {searchedAdmin.length > 0 && (
+                    <div className="createModal-member__member--searched">
+                        {map(searchedAdmin, (admin, i) => (
+                            <div
+                                key={i}
+                                className="createModal-member__member--searched-email"
+                                onClick={() => handleSelectAdmin(admin)}>
+                                {admin.username}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+            <div className="createModal-member__member--added">
+                {map(addedAdmin, (admin, i) => (
+                    <div
+                        key={i}
+                        className="createModal-member__member--added-element"
+                        onClick={() => handleDeleteAdmin(admin)}>
+                        {admin.username}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
 class CreateModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
             title: '',
-            email: '',
+            emailMember: '',
+            emailAdmin: '',
             searchedMember: [],
-            addedMember: []
+            addedMember: [],
+            searchedAdmin: [],
+            addedAdmin: []
         };
+    }
+
+    componentDidMount() {
+        axios
+            .get('/api/user/')
+            .then(res => {
+                const {
+                    data: { user }
+                } = res;
+                this.setState({ addedAdmin: [user] });
+            })
+            .catch(err => console.error(err));
     }
 
     handleChangeTitle = e => {
         this.setState({ title: e.target.value });
     };
-    handleChangeEmail = e => {
-        this.setState({ email: e.target.value }, this.handleSearchMember);
+    handleChangeEmailMember = e => {
+        this.setState({ emailMember: e.target.value }, this.handleSearchMember);
+    };
+    handleChangeEmailAdmin = e => {
+        this.setState({ emailAdmin: e.target.value }, this.handleSearchAdmin);
     };
 
     handleSearchMember = () => {
-        const { email } = this.state;
-        if (email) {
-            axios.get(`/api/user/${email}`).then(res => {
+        const { emailMember } = this.state;
+        if (emailMember) {
+            axios.get(`/api/user/${emailMember}`).then(res => {
                 const { data } = res;
                 this.setState({ searchedMember: data });
             });
@@ -104,7 +169,7 @@ class CreateModal extends Component {
 
     handleSelectMember = member => {
         const addedMember = uniqBy([...this.state.addedMember, member], 'id');
-        this.setState({ addedMember, email: '', searchedMember: [] });
+        this.setState({ addedMember, emailMember: '', searchedMember: [] });
     };
     handleDeleteMember = member => {
         const removedMember = differenceBy(
@@ -115,20 +180,66 @@ class CreateModal extends Component {
         this.setState({ addedMember: removedMember });
     };
 
+    handleSearchAdmin = () => {
+        const { emailAdmin } = this.state;
+        if (emailAdmin) {
+            axios.get(`/api/user/${emailAdmin}`).then(res => {
+                const { data } = res;
+                this.setState({ searchedAdmin: data });
+            });
+        } else {
+            this.setState({ searchedAdmin: [] });
+        }
+    };
+    handleSelectAdmin = member => {
+        const addedAdmin = uniqBy([...this.state.addedAdmin, member], 'id');
+        this.setState({ addedAdmin, emailAdmin: '', searchedAdmin: [] });
+    };
+    handleDeleteAdmin = member => {
+        const removedAdmin = differenceBy(
+            this.state.addedAdmin,
+            [member],
+            'id'
+        );
+        this.setState({ addedAdmin: removedAdmin });
+    };
+
     handleCreateValidation = () => {
         const { title, addedMember } = this.state;
         return !!(title && addedMember.length);
     };
 
     handleCreateWorkspace = () => {
-        const { title, addedMember } = this.state;
+        const { title, addedMember, addedAdmin } = this.state;
+        const { history } = this.props;
         axios
-            .post('/api/workspace/', { title, addedMember })
-            .then(res => console.log(res));
+            .post('/api/workspace/', {
+                name: title,
+                members: addedMember,
+                admins: addedAdmin
+            })
+            .then(res => {
+                const {
+                    status,
+                    data: { id, name }
+                } = res;
+
+                if (status === 201) {
+                    history.push(`/${name}/${id}`);
+                }
+            });
     };
 
     render() {
-        const { title, email, searchedMember, addedMember } = this.state;
+        const {
+            title,
+            emailMember,
+            emailAdmin,
+            searchedMember,
+            addedMember,
+            searchedAdmin,
+            addedAdmin
+        } = this.state;
         const { handleCancel } = this.props;
         return (
             <div
@@ -139,14 +250,24 @@ class CreateModal extends Component {
                     title={title}
                     handleChangeTitle={this.handleChangeTitle}
                 />
-                <CreateModalMember
-                    email={email}
-                    searchedMember={searchedMember}
-                    addedMember={addedMember}
-                    handleChangeEmail={this.handleChangeEmail}
-                    handleSelectMember={this.handleSelectMember}
-                    handleDeleteMember={this.handleDeleteMember}
-                />
+                <div className="createModal-member-admin-container">
+                    <CreateModalMember
+                        email={emailMember}
+                        searchedMember={searchedMember}
+                        addedMember={addedMember}
+                        handleChangeEmail={this.handleChangeEmailMember}
+                        handleSelectMember={this.handleSelectMember}
+                        handleDeleteMember={this.handleDeleteMember}
+                    />
+                    <CreateModalAdmin
+                        email={emailAdmin}
+                        searchedAdmin={searchedAdmin}
+                        addedAdmin={addedAdmin}
+                        handleChangeEmail={this.handleChangeEmailAdmin}
+                        handleSelectAdmin={this.handleSelectAdmin}
+                        handleDeleteAdmin={this.handleDeleteAdmin}
+                    />
+                </div>
                 <div className="createModal-button-container">
                     <button onClick={handleCancel}>CANCEL</button>
                     {this.handleCreateValidation() ? (
