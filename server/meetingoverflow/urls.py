@@ -18,7 +18,7 @@ urlpatterns = [
     path('workspace/<int:w_id>/notes/', views.notes, name='notes'),
     path('note/<int:n_id>/', views.specific_note, name='specific_note'),
     path('note/<int:n_id>/textblock/', views.textblock_child_of_note, name='textblock_child_of_note'),
-    path('agenda/<int:a_id>/textblock/', views.textblock_child_of_agenda, name='textblock_child_of_agenda')
+    path('agenda/<int:a_id>/textblock/', views.textblock_child_of_agenda, name='textblock_child_of_agenda'),
     path('textblock/<int:id>/', views.modify_textblock, name='modify_textblock'),
 
 ]

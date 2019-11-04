@@ -349,7 +349,7 @@ def textblock_child_of_note(request, n_id):
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-    if request.method == 'POST':
+    elif request.method == 'POST':
         try:
             note = Note.objects.get(id=n_id)
         except(Note.DeosNotExist) as e:
@@ -387,7 +387,7 @@ def textblock_child_of_agenda(request, a_id):
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-    if request.method == 'POST':
+    elif request.method == 'POST':
         try:
             agenda = Agenda.objects.get(id=a_id)
         except(Agenda.DeosNotExist) as e:
@@ -410,6 +410,33 @@ def textblock_child_of_agenda(request, a_id):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['PATCH', 'DELETE'])
+@api_view(['GET', 'PATCH', 'DELETE'])
 def modify_textblock(request, id):
-    pass
+    if request.method == 'GET':
+        try:
+            current_textblock = TextBlock.objects.get(id=id)
+        except(TextBlock.DoesNotExist) as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = TextBlockSerializer(current_textblock)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+
+    elif request.method == 'PATCH':
+        try:
+            current_textblock = TextBlock.objects.get(id=id)
+        except(TextBlock.DoesNotExist) as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = TextBlockSerializer(current_textblock, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'DELETE':
+        try:
+            current_textblock = TextBlock.objects.get(id=id)
+        except(TextBlock.DoesNotExist) as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        current_textblock.delete()
+        return Response(status=status.HTTP_200_OK)
