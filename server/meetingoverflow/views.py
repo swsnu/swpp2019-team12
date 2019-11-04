@@ -414,6 +414,8 @@ def textblock_child_of_agenda(request, a_id):
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
+            agenda.has_text_block = True
+            agenda.save()
             return Response(status=status.HTTP_201_CREATED)
         else:
             print(serializer.errors)
@@ -468,7 +470,7 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
 """
 @api_view(['GET', 'POST'])
 def agenda_child_of_note(request, n_id):
-    # 해당 노트의 모든 TextBlock 리스트 반환
+    # 해당 노트의 모든 agenda block 리스트 반환
     if request.method == 'GET':
         queryset = TextBlock.objects.filter(
             is_parent_note=True, 
@@ -496,6 +498,8 @@ def agenda_child_of_note(request, n_id):
         serializer = AgendaSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
+            agenda.has_agenda_block = True
+            agenda.save()
             return Response(status=status.HTTP_201_CREATED)
         else:
             print(serializer.errors)
@@ -587,4 +591,137 @@ def modify_agenda(request, id):
     
     elif request.method == 'DELETE':
         current_agenda.delete()
+        return Response(status=status.HTTP_200_OK)
+
+
+"""
+===================================================
+url: /api/note/:id/todos/
+Note에 직접 속해있는 Todo를 모두 가져오거나 생성하는 API
+POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+    {
+        "content": "Change the world",
+        "layer_x": 0,
+        "layer_y": 1
+    }
+===================================================
+"""
+@api_view(['GET', 'POST'])
+def todoblock_child_of_note(request, n_id):
+    # 해당 노트의 모든 todoblock 리스트 반환
+    if request.method == 'GET':
+        queryset = Todo.objects.filter(
+            is_parent_note=True, 
+            note__id=n_id
+        )
+        if queryset.count() > 0:
+            serializer = TodoSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    elif request.method == 'POST':
+        try:
+            note = Note.objects.get(id=n_id)
+        except(Note.DeosNotExist) as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        data = {
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'note': n_id,
+            'is_parent_note': True
+        }
+        serializer = TodoSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+"""
+==================================================
+url: /api/agenda/:id/todos/
+Agenda에 속해있는 TextBlock을 모두 가져오거나 생성하는 API
+
+POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+    {
+        "content": "Run the world",
+        "layer_x": 0,
+        "layer_y": 1
+    }
+==================================================
+"""
+@api_view(['GET', 'POST'])
+def todoblock_child_of_agenda(request, a_id):
+    try:
+        agenda = Agenda.objects.get(id=a_id)
+    except(Agenda.DeosNotExist) as e:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        queryset = Todo.objects.filter(
+            is_parent_note=False, 
+            note__id=agenda.note.id,
+            parent_agenda__id=a_id
+        )
+        if queryset.count() > 0:
+            serializer = TodoSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    elif request.method == 'POST':        
+        data = {
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'note': agenda.note.id,
+            'parent_agenda':a_id,
+            'is_parent_note': False
+        }
+        serializer = TodoSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            agenda.has_todo_block = True
+            agenda.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+"""
+================================================
+url: /api/todo/:id/
+PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
+정보를 전달하면 됨. 예를 들어 content만 수정하고자 한다면 
+다음과 같은 Json을 날리면 됨. 
+    {
+        "content": "Modification",
+    }
+================================================
+"""
+@api_view(['GET', 'PATCH', 'DELETE'])
+def modify_todoblock(request, id):
+    try:
+        current_todo = Todo.objects.get(id=id)
+    except(Todo.DoesNotExist) as e:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = TodoSerializer(current_todo)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == 'PATCH':
+        serializer = TodoSerializer(current_todo, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'DELETE':
+        current_todo.delete()
         return Response(status=status.HTTP_200_OK)
