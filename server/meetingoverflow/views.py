@@ -96,7 +96,7 @@ def profile(request, id):
     if request.method == 'GET':
         try: 
             profile = Profile.objects.get(id=id)
-        except(Profile.DoesNotExist):
+        except(Profile.DeosNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -109,7 +109,7 @@ def profile(request, id):
         # queryset = request.user.profile
         try: 
             queryset = Profile.objects.get(id=id)
-        except(Profile.DoesNotExist):
+        except(Profile.DeosNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ProfileSerializer(queryset, data=request.data, partial=True)
         if serializer.is_valid():
@@ -156,14 +156,14 @@ def workspace(request):
         for admin in admins:
             try:
                 admin_list.append(Profile.objects.get(user__username=admin))
-            except(Profile.DoesNotExist):
+            except(Profile.DeosNotExist) as e:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
         member_list = []
         for member in members:
             try:
                 member_list.append(Profile.objects.get(user__username=member))
-            except(Profile.DoesNotExist):
+            except(Profile.DeosNotExist) as e:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
         Workspace.objects.create(name=name)
@@ -185,7 +185,7 @@ def workspace(request):
 # if request.method == 'GET':
 #     try: 
 #         workspace = Workspace.objects.get(id=id)
-#     except(Workspace.DoesNotExist):
+#     except(Workspace.DeosNotExist) as e:
 #         return Response(status=status.HTTP_404_NOT_FOUND)
 #     serializer = WorkspaceSerializer(workspace)
 #     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -203,7 +203,7 @@ def specific_workspace(request, id):
         #profile = Profile.objects.get(id=1)
         try: 
             workspace = Workspace.objects.get(id=id)
-        except(Workspace.DoesNotExist):
+        except(Workspace.DeosNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         members = workspace.members.all()
@@ -293,11 +293,11 @@ def notes(request, w_id):
 
 
 @api_view(['GET', 'PATCH', 'DELETE'])
-def specific_note(request, w_id, n_id):
+def specific_note(request, n_id):
     if request.method == 'GET':
         try:
             current_note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist):
+        except(Note.DeosNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = NoteSerializer(current_note)
         Response(serializer.data, status=status.HTTP_200_OK)
@@ -305,7 +305,7 @@ def specific_note(request, w_id, n_id):
     elif request.method == 'PATCH':
         try:
             current_note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist):
+        except(Note.DeosNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = NoteSerializer(current_note, data=request.data, partial=True)
         if serializer.is_valid():
@@ -352,7 +352,7 @@ def textblock_child_of_note(request, n_id):
     if request.method == 'POST':
         try:
             note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist):
+        except(Note.DeosNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         data = {
@@ -390,7 +390,7 @@ def textblock_child_of_agenda(request, a_id):
     if request.method == 'POST':
         try:
             agenda = Agenda.objects.get(id=a_id)
-        except(Agenda.DoesNotExist):
+        except(Agenda.DeosNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         data = {
@@ -410,3 +410,6 @@ def textblock_child_of_agenda(request, a_id):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['PATCH', 'DELETE'])
+def modify_textblock(request, id):
+    pass
