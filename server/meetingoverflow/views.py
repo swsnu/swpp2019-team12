@@ -386,8 +386,11 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
 """
 @api_view(['GET', 'POST'])
 def textblock_child_of_agenda(request, a_id):
-    if request.method == 'GET':
+    try:
         agenda = Agenda.objects.get(id=a_id)
+    except(Agenda.DeosNotExist) as e:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
         queryset = TextBlock.objects.filter(
             is_parent_note=False, 
             note__id=agenda.note.id,
@@ -399,12 +402,7 @@ def textblock_child_of_agenda(request, a_id):
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-    elif request.method == 'POST':
-        try:
-            agenda = Agenda.objects.get(id=a_id)
-        except(Agenda.DeosNotExist) as e:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        
+    elif request.method == 'POST':        
         data = {
             'content': request.data['content'],
             'layer_x': request.data['layer_x'],
@@ -435,20 +433,15 @@ PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
 """
 @api_view(['GET', 'PATCH', 'DELETE'])
 def modify_textblock(request, id):
+    try:
+        current_textblock = TextBlock.objects.get(id=id)
+    except(TextBlock.DoesNotExist) as e:
+        return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
-        try:
-            current_textblock = TextBlock.objects.get(id=id)
-        except(TextBlock.DoesNotExist) as e:
-            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = TextBlockSerializer(current_textblock)
         return Response(serializer.data, status=status.HTTP_200_OK)
-        
 
     elif request.method == 'PATCH':
-        try:
-            current_textblock = TextBlock.objects.get(id=id)
-        except(TextBlock.DoesNotExist) as e:
-            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = TextBlockSerializer(current_textblock, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -457,10 +450,6 @@ def modify_textblock(request, id):
             return Response(status=status.HTTP_400_BAD_REQUEST)
     
     elif request.method == 'DELETE':
-        try:
-            current_textblock = TextBlock.objects.get(id=id)
-        except(TextBlock.DoesNotExist) as e:
-            return Response(status=status.HTTP_404_NOT_FOUND)
         current_textblock.delete()
         return Response(status=status.HTTP_200_OK)
 
