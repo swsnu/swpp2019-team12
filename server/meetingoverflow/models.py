@@ -373,4 +373,5 @@ class TextBlock(models.Model):
     is_parent_note = models.BooleanField(default=True)
 
     def __str__(self):
-        return f'note_id: {self.note.id}'
+        #return f'note_id: {self.note.id}'
+        return f'content: {self.content}'

@@ -272,17 +272,6 @@ def workspace_agenda(request, w_id):
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-# @api_view(['GET'])
-# def get_workspace_of_user(request, id):
-#     if request.method == 'GET':
-#         profile = Profile.objects.get(id=u_id)
-#         queryset = Workspace.objects.filter(members__in=[profile])
-#         serializer = WorkspaceSerializer(queryset)
-#         if serializer.is_valid():
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         else:
-#             return Response(status.HTTP_404_NOT_FOUND)
-
 
 @api_view(['GET', 'POST'])
 def notes(request, w_id):
@@ -333,21 +322,91 @@ def specific_note(request, w_id, n_id):
         current_note.delete()
         return Response(status=status.HTTP_200_OK)
 
+
 #/note/:n_id/block
+"""
+===================================================
+Note에 직접 속해있는 TextBlock을 모두 가져오거나 생성하는 API
+POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+    {
+        "content": "Hello World",
+        "layer_x": 0,
+        "layer_y": 1
+    }
+===================================================
+"""
 @api_view(['GET', 'POST'])
-def textblock(request, n_id):
+def textblock_child_of_note(request, n_id):
     # 해당 노트의 모든 TextBlock 리스트 반환
     if request.method == 'GET':
         queryset = TextBlock.objects.filter(
-                        is_parent_note=True, 
-                        note__id=n_id
+            is_parent_note=True, 
+            note__id=n_id
         )
-        print(queryset)
-        if queryset.count() != 0:
+        if queryset.count() > 0:
             serializer = TextBlockSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-    # if request.method == 'POST':
+    if request.method == 'POST':
+        try:
+            note = Note.objects.get(id=n_id)
+        except(Note.DoesNotExist):
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        data = {
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'note': n_id,
+            'is_parent_note': True
+        }
+        serializer = TextBlockSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+#/agenda/:a_id/block
+@api_view(['GET', 'POST'])
+def textblock_child_of_agenda(request, a_id):
+    if request.method == 'GET':
+        agenda = Agenda.objects.get(id=a_id)
+        queryset = TextBlock.objects.filter(
+            is_parent_note=False, 
+            note__id=agenda.note.id,
+            parent_agenda__id=a_id
+        )
+        if queryset.count() > 0:
+            serializer = TextBlockSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    if request.method == 'POST':
+        try:
+            agenda = Agenda.objects.get(id=a_id)
+        except(Agenda.DoesNotExist):
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        data = {
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'note': agenda.note.id,
+            'parent_agenda':a_id,
+            'is_parent_note': False
+        }
+        serializer = TextBlockSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
