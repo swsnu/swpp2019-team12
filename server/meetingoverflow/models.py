@@ -50,6 +50,7 @@ class Note(models.Model):
     # =================================================================
     # temporarily set null=True for convenience of testing and seeding
     # =================================================================
+    location= models.CharField(max_length=100, blank=True)
     participants = models.ManyToManyField(Profile)
     created_at = models.DateTimeField(default=timezone.now)
     # added 'last_' before modified_at. 

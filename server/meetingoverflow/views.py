@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 import json
 from django.db.models import Q
+import dateutil.parser
 
 @api_view(['PATCH', 'POST'])
 def signup(request):
@@ -75,6 +76,29 @@ def signout(request):
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         
+
+@api_view(['GET'])
+def get_current_user(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            try:
+                current_user = request.user
+                current_profile = Profile.objects.get(user=current_user)
+
+                user_serializer = SearchSerializer(current_user)
+                profile_serializer = ProfileSerializer(current_profile)
+
+                user_info = { 
+                    'user': user_serializer.data,
+                    'profile': profile_serializer.data
+                }
+                return Response(user_info, status=status.HTTP_200_OK)
+            except(Profile.DoesNotExist):
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else: 
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
 @api_view(['GET'])
 def search_user(request, username):
     if request.method == 'GET':
@@ -159,12 +183,36 @@ def workspace(request):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST':
-        serializer = WorkspaceSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
+        try:
+            name = request.data['name']
+            admins = request.data['admins'] # admin id list
+            members = request.data['members'] # members id list
+        except(KeyError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        admin_list = []
+        for admin in admins:
+            try:
+                admin_list.append(Profile.objects.get(user__username=admin['username']))
+            except(Profile.DoesNotExist):
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+        member_list = []
+        for member in members:
+            try:
+                member_list.append(Profile.objects.get(user__username=member['username']))
+            except(Profile.DoesNotExist):
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+        Workspace.objects.create(name=name)
+        workspace = Workspace.objects.get(name=name)
+        workspace.admins.set(admin_list)
+        workspace.members.set(member_list)
+        workspace.save()
+
+        workspace_serializer = WorkspaceSerializer(workspace)
+        return Response(workspace_serializer.data, status=status.HTTP_201_CREATED)
+
 
 
 # ===================================================
@@ -270,12 +318,37 @@ def notes(request, w_id):
             return Response(status.HTTP_404_NOT_FOUND)
     
     elif request.method == 'POST':
-        serializer = NoteSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
+        try:
+            title = request.data['title']
+            participants= request.data['participants']
+            created_at = dateutil.parser.parse(request.data['createdAt'])
+            last_modified_at = dateutil.parser.parse(request.data['lastModifiedAt'])
+            location = request.data['location']
+            workspace_id = request.data['workspace'] # workspace id
+            workspace = Workspace.objects.get(id=workspace_id)
+            # tags = request.data['tags'] # tag string list
+            # ml_speech_text = request.data['mlSpeechText']
+        except(KeyError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        participants_list = []
+        for participant in participants:
+            try:
+                participants_list.append(Profile.objects.get(user__username=participant))
+            except(Profile.DoesNotExist):
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+        Note.objects.create(title=title, 
+                            location=location,
+                            created_at=created_at,
+                            last_modified_at=last_modified_at,
+                            workspace=workspace)
+        note = Note.objects.all().last()
+        note.participants.set(participants_list)
+        note.save()
+
+        note_serializer = NoteSerializer(note)
+        return Response(note_serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET', 'PATCH', 'DELETE'])
