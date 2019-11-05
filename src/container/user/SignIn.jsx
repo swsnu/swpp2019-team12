@@ -27,7 +27,7 @@ class SignIn extends Component {
         axios
             .post('/api/signin/', user_info)
             .then(res => {
-                this.props.history.push('/dashboard');
+                this.props.history.push('/workspace');
             })
             .catch(res => console.log('err'));
     };

@@ -9,13 +9,13 @@ import Account from './container/user/Account';
 
 // Workspace Container
 import Workspace from './container/workspace/Workspace';
+import WorkspaceSelection from './container/workspace/WorkspaceSelection';
 
 // Note Container
 import Note from './container/note/Note';
 
 // Not Found Component
 import NotFound from './component/NotFound';
-import Dashboard from './container/Dashboard';
 
 function App() {
     return (
@@ -29,10 +29,14 @@ function App() {
                     {/* Cannot access without login */}
                     <Route exact path="/note" component={Note} />
                     <Route exact path="/account" component={Account} />
-                    <Route exact path="/dashboard" component={Dashboard} />
                     <Route
                         exact
-                        path="/:workspace_name/:w_id/note"
+                        path="/workspace"
+                        component={WorkspaceSelection}
+                    />
+                    <Route
+                        exact
+                        path="/:workspace_name/:w_id"
                         component={Workspace}
                     />
                     <Route

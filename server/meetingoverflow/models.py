@@ -50,6 +50,7 @@ class Note(models.Model):
     # =================================================================
     # temporarily set null=True for convenience of testing and seeding
     # =================================================================
+    location= models.CharField(max_length=100, blank=True)
     participants = models.ManyToManyField(Profile)
     created_at = models.DateTimeField(default=timezone.now)
     # added 'last_' before modified_at. 
@@ -358,6 +359,7 @@ class Todo(models.Model):
     is_parent_note = models.BooleanField(default=True)
     assignees = models.ManyToManyField(Profile)
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, null=True)
+    is_done = models.BooleanField(default=False)
 
     def __str__(self):
         return f'content: {self.content}'

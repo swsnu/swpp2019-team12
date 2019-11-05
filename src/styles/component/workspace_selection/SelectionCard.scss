@@ -1,0 +1,81 @@
+.workspaceSelection-card,
+.workspaceCreation-card {
+    width: 22%;
+    min-width: rem(180px);
+    height: rem(220px);
+
+    background: $white;
+    box-shadow: rem(2px) rem(2px) rem(4px) rem(2px) $lightgray;
+
+    border-radius: rem(10px);
+    border: 1px solid transparent;
+
+    margin: 0 3.5% rem(50px) 0;
+
+    &:hover {
+        border: 1px solid $primary;
+        cursor: pointer;
+    }
+
+    &:nth-child(4n) {
+        margin-right: rem(5px);
+    }
+}
+
+.workspaceSelection-card {
+    padding: rem(10px);
+    display: flex;
+    flex-direction: column;
+
+    .workspaceSelection-card__label {
+        font-weight: 300;
+    }
+    .workspaceSelection-card__name {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        height: rem(135px);
+
+        span {
+            font-size: rem(30px);
+            text-align: center;
+        }
+    }
+    .workspaceSelection-card__member-admin-container {
+        display: flex;
+        justify-content: space-between;
+
+        .workspaceSelection-card__admin-container {
+            height: rem(40px);
+            padding-top: rem(5px);
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+        .workspaceSelection-card__member-container {
+            height: rem(40px);
+            padding-top: rem(5px);
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+    }
+}
+
+.workspaceCreation-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .workspaceCreation-card__icon {
+        width: rem(18px);
+        height: auto;
+    }
+}

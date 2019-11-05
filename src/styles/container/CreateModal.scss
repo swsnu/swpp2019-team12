@@ -1,0 +1,164 @@
+.createModal {
+    width: 40%;
+    min-width: rem(600px);
+    height: 80%;
+    min-height: rem(700px);
+
+    background: $white;
+
+    padding: rem(50px);
+
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.createModal-label {
+    padding: rem(30px) rem(150px) rem(75px) rem(150px);
+
+    .createModal-label__sublabel {
+        margin-bottom: rem(5px);
+    }
+    .createModal-label__label {
+        font-size: rem(24px);
+
+        text-align: center;
+        color: $black;
+    }
+}
+
+.createModal-title {
+    .createModal-title__sublabel {
+        margin-bottom: rem(15px);
+    }
+    .createModal-title__input {
+        margin-bottom: rem(80px);
+    }
+}
+
+.createModal-member-admin-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.createModal-member {
+    width: 47%;
+    .createModal-member__sublabel {
+        margin-bottom: rem(15px);
+    }
+    .createModal-member__input-container {
+        position: relative;
+        .createModal-member__input {
+            // width: rem(250px);
+        }
+
+        .createModal-member__member--searched {
+            width: rem(250px);
+            max-height: rem(150px);
+            overflow: auto;
+
+            padding: rem(20px) rem(20px);
+
+            position: absolute;
+            top: rem(35px);
+
+            box-shadow: rem(2px) rem(2px) rem(4px) rem(2px) $lightgray;
+            background: $white;
+            border-radius: rem(5px);
+
+            display: flex;
+            flex-direction: column;
+
+            .createModal-member__member--searched-email {
+                padding-bottom: rem(10px);
+                text-align: center;
+                &:last-child {
+                    padding-bottom: 0;
+                }
+                &:hover {
+                    cursor: pointer;
+                    color: $primary;
+                }
+            }
+        }
+    }
+
+    .createModal-member__member--added {
+        width: 100%;
+        height: rem(220px);
+
+        padding: rem(15px) 0;
+
+        .createModal-member__member--added-element {
+            width: fit-content;
+            height: fit-content;
+
+            padding: rem(5px) rem(15px);
+
+            background: $tertiary;
+            color: $white;
+            border-radius: rem(5px);
+
+            float: left;
+
+            margin: 0 rem(10px) rem(10px) 0;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+.createModal__sublabel,
+.createModal-label__sublabel,
+.createModal-title__sublabel,
+.createModal-member__sublabel {
+    margin-bottom: rem(5px);
+    font-size: rem(16px);
+    color: $secondary;
+}
+
+.createModal-button-container {
+    button:first-child {
+        margin-right: rem(20px);
+    }
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.createNoteModal-title {
+    .createNoteModal-title__input {
+        margin-bottom: 0;
+    }
+}
+.createNoteModal-datetime,
+.createNoteModal-location {
+    width: 45%;
+    input {
+        // margin-bottom: rem(20px);
+    }
+}
+.createNoteModal-agenda-number {
+    .createNoteModal-agenda-number__input {
+        width: 25%;
+    }
+}
+
+.createModal__element-container {
+    width: 100%;
+    height: fit-content;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.createModal-member {
+    .createNoteModal-member__member--added {
+        height: rem(120px);
+    }
+}

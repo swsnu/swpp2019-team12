@@ -1,3 +1,4 @@
+import dateutil.parser
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from rest_framework import status
@@ -48,6 +49,7 @@ def signup(request):
             profile = Profile.objects.get(user=user)
             profile.nickname = nickname
             profile.save()
+            auth.login(request, user)
             return Response(status=status.HTTP_201_CREATED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -60,7 +62,7 @@ def signin(request):
             username = request.data['username']
             password = request.data['password']
         except(KeyError):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_404_NOT_FOUND)
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
@@ -73,13 +75,64 @@ def signin(request):
 @api_view(['GET'])
 def signout(request):
     if request.method == 'GET':
-        print(request.user)
         if request.user.is_authenticated:
             auth.logout(request)
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
+
+@api_view(['GET'])
+def get_current_user(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            try:
+                current_user = request.user
+                current_profile = Profile.objects.get(user=current_user)
+
+                user_serializer = SearchSerializer(current_user)
+                profile_serializer = ProfileSerializer(current_profile)
+
+                user_info = {
+                    'user': user_serializer.data,
+                    'profile': profile_serializer.data
+                }
+                return Response(user_info, status=status.HTTP_200_OK)
+            except(Profile.DoesNotExist):
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['GET'])
+def search_user(request, username):
+    if request.method == 'GET':
+        try:
+            queryset = User.objects.filter(username__contains=username)
+            serializer = SearchSerializer(queryset, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def search_user_in_workspace(request, username, workspace_id):
+    if request.method == 'GET':
+        try:
+            workspace = Workspace.objects.get(id=workspace_id)
+            members = workspace.members.all()
+            users = []
+
+            for member in members:
+                user = member.user
+                if username in user.username:
+                    user_serializer = UserSerializer(user)
+                    users.append(user_serializer.data)
+
+            return Response(users, status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 # 추가된 api / Profile에 닉네임 저장
 @api_view(['GET', 'PATCH'])
@@ -111,23 +164,107 @@ def profile(request, id):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
-def create_workspace(request):
-    if request.method == 'POST':
-        serializer = WorkspaceSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+# ===================================================
+# 모든 workspace GET / 워크스페이스 생성 POST
+#
+# 모든 workspace GET 의 경우 admin 정보만 같이 리턴
+# for FE/WorkspaceSelection
+# ===================================================
+@api_view(['GET', 'POST'])
+def workspace(request):
+    if request.method == 'GET':
+        profile = Profile.objects.filter(user__username=request.user.username)
+        queryset = Workspace.objects.filter(members__in=profile)
+        admins = []
+
+        for queryset_element in queryset:
+            admin = queryset_element.admins.all()
+            admin_serializer = ProfileSerializer(admin, many=True)
+            admins.append(admin_serializer.data)
+
+        if queryset.count() > 0:
+            workspace_serializer = WorkspaceSerializer(queryset, many=True)
+            serializer = {
+                "workspaces": workspace_serializer.data, "admins": admins}
+            return Response(serializer, status=status.HTTP_200_OK)
         else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    elif request.method == 'POST':
+        try:
+            name = request.data['name']
+            admins = request.data['admins']  # admin id list
+            members = request.data['members']  # members id list
+        except(KeyError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+        admin_list = []
+        for admin in admins:
+            try:
+                admin_list.append(Profile.objects.get(
+                    user__username=admin['username']))
+            except(Profile.DoesNotExist):
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
+        member_list = []
+        for member in members:
+            try:
+                member_list.append(Profile.objects.get(
+                    user__username=member['username']))
+            except(Profile.DoesNotExist):
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+        Workspace.objects.create(name=name)
+        workspace = Workspace.objects.get(name=name)
+        workspace.admins.set(admin_list)
+        workspace.members.set(member_list)
+        workspace.save()
+
+        workspace_serializer = WorkspaceSerializer(workspace)
+        return Response(workspace_serializer.data, status=status.HTTP_201_CREATED)
+
+
+# ===================================================
+# workspace id로부터 특정 워크스페이스 GET / PATCH / DELETE
+#
+# GET의 경우 관련된 모든 정보 리턴 for FE/Workspace
+# (workspace, member, admin, note, agenda, todo)
+# ===================================================
 @api_view(['GET', 'PATCH', 'DELETE'])
-def workspace(request, id):
+def specific_workspace(request, id):
     if request.method == 'GET':
-        try:
-            workspace = Workspace.objects.get(id=id)
-        except(Workspace.DoesNotExist) as e:
+        profile = Profile.objects.filter(user__username=request.user.username)
+
+        workspaces = Workspace.objects.filter(members__in=profile)
+        workspace = Workspace.objects.filter(members__in=profile).get(id=id)
+        members = workspace.members.all()
+        admins = workspace.admins.all()
+        notes = Note.objects.filter(workspace=workspace)
+        agendas = Agenda.objects.filter(note__in=notes)
+        todos = Todo.objects.filter(
+            note__in=notes).filter(assignees__in=profile)
+
+        if workspace is not None:
+            workspaces_serializer = WorkspaceSerializer(workspaces, many=True)
+            workspace_serializer = WorkspaceSerializer(workspace)
+            member_serializer = ProfileSerializer(members, many=True)
+            admin_serializer = ProfileSerializer(admins, many=True)
+            note_serializer = NoteSerializer(notes, many=True)
+            agenda_serializer = AgendaSerializer(agendas, many=True)
+            todo_serializer = TodoSerializer(todos, many=True)
+
+            data = {
+                "workspaces": workspaces_serializer.data,
+                "workspace": workspace_serializer.data,
+                "members": member_serializer.data,
+                "admins": admin_serializer.data,
+                "notes": note_serializer.data,
+                "agendas": agenda_serializer.data,
+                "todos": todo_serializer.data
+            }
+
+            return Response(data, status=status.HTTP_200_OK)
+        else:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = WorkspaceSerializer(workspace)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -164,7 +301,6 @@ def specific_todo(request, w_id, u_id):
         profile = Profile.objects.get(id=u_id)
         queryset = Todo.objects.filter(
             workspace__id=w_id, assignees__in=[profile])
-        print(queryset)
         if queryset.count() > 0:
             serializer = TodoSerializer(queryset)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -195,12 +331,39 @@ def notes(request, w_id):
             return Response(status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST':
-        serializer = NoteSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
+        try:
+            title = request.data['title']
+            participants = request.data['participants']
+            created_at = dateutil.parser.parse(request.data['createdAt'])
+            last_modified_at = dateutil.parser.parse(
+                request.data['lastModifiedAt'])
+            location = request.data['location']
+            workspace_id = request.data['workspace']  # workspace id
+            workspace = Workspace.objects.get(id=workspace_id)
+            # tags = request.data['tags'] # tag string list
+            # ml_speech_text = request.data['mlSpeechText']
+        except(KeyError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        participants_list = []
+        for participant in participants:
+            try:
+                participants_list.append(
+                    Profile.objects.get(user__username=participant))
+            except(Profile.DoesNotExist):
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+        Note.objects.create(title=title,
+                            location=location,
+                            created_at=created_at,
+                            last_modified_at=last_modified_at,
+                            workspace=workspace)
+        note = Note.objects.all().last()
+        note.participants.set(participants_list)
+        note.save()
+
+        note_serializer = NoteSerializer(note)
+        return Response(note_serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET', 'PATCH', 'DELETE'])

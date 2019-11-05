@@ -1,10 +1,12 @@
 /* normalize */
-@import './styles/normalize.scss';
+@import './styles/Normalize.scss';
 
 /* helper */
 @import './styles/Helper.scss';
 @import './styles/Color.scss';
 @import './styles/Button.scss';
+@import './styles/Overlay.scss';
+@import './styles/Input.scss';
 @import './styles/Datetime.scss';
 
 /* component */
@@ -26,3 +28,23 @@
 @import './styles/component/note_left/NoteLeftInfo.scss';
 @import './styles/component/note_left/NoteLeftBlock.scss';
 @import './styles/component/note_left/ParticipantInfo.scss';
+
+// workspace
+@import './styles/container/Workspace.scss';
+@import './styles/container/WorkspaceSelection.scss';
+@import './styles/container/CreateModal.scss';
+
+// workspace_leftbar
+@import './styles/component/workspace_leftbar/Label.scss';
+@import './styles/component/workspace_leftbar/WorkspaceInfo.scss';
+@import './styles/component/workspace_leftbar/MemberInfo.scss';
+@import './styles/component/workspace_leftbar/SettingInfo.scss';
+@import './styles/component/workspace_leftbar/CreateNote.scss';
+
+// workspace_main
+@import './styles/component/workspace_main/Label.scss';
+@import './styles/component/workspace_main/AgendaOverview.scss';
+@import './styles/component/workspace_main/MeetingNoteOverview.scss';
+
+// workspace_selection
+@import './styles/component/workspace_selection/SelectionCard.scss';

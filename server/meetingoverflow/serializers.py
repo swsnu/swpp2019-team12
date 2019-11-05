@@ -10,14 +10,15 @@ class UserSerializer(serializers.ModelSerializer):
         return user
     class Meta:
         model = User
-        #fields = '__all__'
+        # fields = '__all__'
         fields = ['username', 'password']
 
-    def create(self, validated_data):
-        user = super().create(validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
+class SearchSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['id', 'username']
+
 class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:

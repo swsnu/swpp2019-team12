@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Label } from '../../component/signup/Label';
+import { Label, SubLabel } from '../../component/signup/Label';
 class SignUp extends Component {
     constructor(props) {
         super(props);
@@ -105,7 +105,7 @@ class SignUp extends Component {
         if (isAllFormValid) {
             axios
                 .post('/api/signup/', user_info)
-                .then(res => this.props.history.push('/dashboard'));
+                .then(res => this.props.history.push('/workspace'));
         }
         // 적절하지 않은 input이 존재한다면, 그에 맞는 에러 메시지 띄워주기.
         else {
