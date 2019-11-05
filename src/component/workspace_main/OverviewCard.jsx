@@ -23,7 +23,6 @@ export const AgendaCard = props => {
                     const relativeTodos = todos.filter(
                         t => t.parent_agenda === agenda.id
                     );
-                    console.log('relative Todos :', relativeTodos);
                     return (
                         <div key={i} className="agendaCard-content-element">
                             <div className="agendaCard-content-element__agenda">
@@ -40,7 +39,8 @@ export const AgendaCard = props => {
                                 {map(relativeTodos, (todo, j) => (
                                     <div
                                         key={j}
-                                        className="agendaCard-content-element__todo">
+                                        className="agendaCard-content-element__todo"
+                                    >
                                         {`#${todo.id}`}
                                     </div>
                                 ))}

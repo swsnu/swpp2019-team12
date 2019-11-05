@@ -36,14 +36,22 @@
     }
 }
 
+.createModal-member-admin-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .createModal-member {
+    width: 47%;
     .createModal-member__sublabel {
         margin-bottom: rem(15px);
     }
     .createModal-member__input-container {
         position: relative;
         .createModal-member__input {
-            width: rem(250px);
+            // width: rem(250px);
         }
 
         .createModal-member__member--searched {
@@ -104,9 +112,11 @@
     }
 }
 
+.createModal__sublabel,
 .createModal-label__sublabel,
 .createModal-title__sublabel,
 .createModal-member__sublabel {
+    margin-bottom: rem(5px);
     font-size: rem(16px);
     color: $secondary;
 }
@@ -118,4 +128,37 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+}
+
+.createNoteModal-title {
+    .createNoteModal-title__input {
+        margin-bottom: 0;
+    }
+}
+.createNoteModal-datetime,
+.createNoteModal-location {
+    width: 45%;
+    input {
+        // margin-bottom: rem(20px);
+    }
+}
+.createNoteModal-agenda-number {
+    .createNoteModal-agenda-number__input {
+        width: 25%;
+    }
+}
+
+.createModal__element-container {
+    width: 100%;
+    height: fit-content;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.createModal-member {
+    .createNoteModal-member__member--added {
+        height: rem(120px);
+    }
 }

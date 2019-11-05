@@ -5,6 +5,9 @@
 @import './styles/Helper.scss';
 @import './styles/Color.scss';
 @import './styles/Button.scss';
+@import './styles/Overlay.scss';
+@import './styles/Input.scss';
+@import './styles/Datetime.scss';
 
 @import './styles/Datetime.scss';
 @import './styles/Overlay.scss';
@@ -27,6 +30,7 @@
 @import './styles/component/workspace_leftbar/SettingInfo.scss';
 @import './styles/component/workspace_leftbar/CreateNote.scss';
 
+// workspace_main
 @import './styles/component/workspace_main/Label.scss';
 @import './styles/component/workspace_main/AgendaOverview.scss';
 @import './styles/component/workspace_main/MeetingNoteOverview.scss';
