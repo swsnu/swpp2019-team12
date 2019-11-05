@@ -11,8 +11,6 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 import json
 from django.db.models import Q
 
-from django.core import serializers
-from django.core.serializers.json import DjangoJSONEncoder
 
 @api_view(['PATCH', 'POST'])
 def signup(request):
@@ -49,8 +47,6 @@ def signup(request):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    
-
 
 @api_view(['POST'])
 def signin(request):
@@ -78,7 +74,8 @@ def signout(request):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        
+
+
 @api_view(['GET'])
 def search_user(request, username):
     if request.method == 'GET':
@@ -89,6 +86,7 @@ def search_user(request, username):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 # 추가된 api / Profile에 닉네임 저장
 @api_view(['GET', 'PATCH'])
