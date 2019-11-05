@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import NoteRightUnfocused from './NoteRightUnfocused';
 
 class Note extends Component {
     constructor(props) {
@@ -8,7 +9,12 @@ class Note extends Component {
     componentDidMount() {}
 
     render() {
-        return <div>meeting note page</div>;
+        return (
+            <div>
+                <div>meeting note page</div>
+                <NoteRightUnfocused />
+            </div>
+        );
     }
 }
 

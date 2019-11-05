@@ -14,6 +14,7 @@ const MeetingNoteOverview = props => {
             <div className="meetingNoteOverview-content">
                 {map(notes, (note, i) => (
                     <div
+                        onClick={() => this.props.handleClick(notes.id)}
                         key={i}
                         className="meetingNoteOverview-content__element">
                         <NoteIcon className="meetingNoteOverview-content__img" />
