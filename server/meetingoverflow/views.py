@@ -12,14 +12,6 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 import json
 from django.db.models import Q
 
-
-@api_view(['GET'])
-def test(request):
-    print(request.headers)
-    return HttpResponse(status=200)
-
-
-
 @api_view(['PATCH', 'POST'])
 def signup(request):
     if request.method == 'PATCH':
