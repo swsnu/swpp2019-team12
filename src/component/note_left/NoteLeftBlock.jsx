@@ -83,14 +83,18 @@ class NoteLeftBlock extends Component {
                     <Text
                         content={blk.content}
                         handleChangeText={this.handleChangeText}
-                        handleClickBlock={this.props.handleClickBlock}
+                        handleClickBlock={() =>
+                            this.props.handleClickBlock('Text', blk.id)
+                        }
                     />
                 );
             } else if (blk.block_name === 'Agenda') {
                 return (
                     <PreviewAgenda
                         agenda_disccusion={blk.agenda_disccusion}
-                        handleClickBlock={this.props.handleClickBlock}
+                        handleClickBlock={() =>
+                            this.props.handleClickBlock('Agenda', blk.id)
+                        }
                     />
                 );
             } else {

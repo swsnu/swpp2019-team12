@@ -27,7 +27,7 @@ class NoteRightFocused extends Component {
                 <PreviewAgenda
                     agenda_disccusion={block_focused.agenda_discussion}
                     handleChangeText={this.handleChangeText}
-                    handleClickAgenda={this.props.handleClickAgenda}
+                    handleClickBlock={this.props.handleClickBlock}
                 />
             );
         }
