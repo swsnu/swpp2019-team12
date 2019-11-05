@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import NoteLeftBlock from "../../component/note_left/NoteLeftBlock";
-import NoteLeftInfo from "../../component/note_left/NoteLeftInfo";
+import React, { Component } from 'react';
+import NoteLeftBlock from '../../component/note_left/NoteLeftBlock';
+import NoteLeftInfo from '../../component/note_left/NoteLeftInfo';
 
 class NoteLeft extends Component {
     constructor(props) {
@@ -32,7 +32,9 @@ class NoteLeft extends Component {
                         blocks={this.props.blocks}
                         handleAddAgendaBlock={this.props.handleAddAgendaBlock}
                         handleAddTextBlock={this.props.handleAddTextBlock}
+                        handleAddTodoBlock={this.props.handleAddTodoBlock}
                         handleClickBlock={this.props.handleClickBlock}
+                        isLeft={true}
                     />
                 </div>
             </div>
