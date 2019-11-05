@@ -67,7 +67,6 @@ def signin(request):
 @api_view(['GET'])
 def signout(request):
     if request.method == 'GET':
-        print(request.user)
         if request.user.is_authenticated:
             auth.logout(request)
             return Response(status=status.HTTP_204_NO_CONTENT)

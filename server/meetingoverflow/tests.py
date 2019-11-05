@@ -153,14 +153,32 @@ class MOFTestCase(TestCase):
                                 json.dumps({
                                     '1': 'test_name',
                                     '2': '1234'
-                                }))
+                                }),
+                                content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
         response = client.post('/api/signin/', 
                                 json.dumps({
                                     'username': 'not_exist',
                                     'password': '1234'
-                                }))
+                                }),
+                                content_type='application/json')
         self.assertEqual(response.status_code, 401)
-        
 
+        login_response = client.post('/api/signin/', 
+                                json.dumps({
+                                    'username': 'test_name',
+                                    'password': '1234'
+                                }),
+                                content_type='application/json')
+        self.assertEqual(login_response.status_code, 204)
+
+        ###########
+        # Signout #
+        ###########        
+        csrftoken = login_response.cookies['csrftoken'].value
+        response = client.get('/api/signout/', HTTP_X_CSRFTOKEN=csrftoken)
+        self.assertEqual(response.status_code, 204)
+
+
+    
