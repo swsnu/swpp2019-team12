@@ -91,7 +91,10 @@ class NoteLeftInfo extends Component {
                         onChange={this.props.handleChangeDatetime}
                     />
                 </div>
-                <ParticipantInfo participants={this.props.participants} />
+                <ParticipantInfo
+                    isRightUnfocused={this.props.isRightUnfocused}
+                    participants={this.props.participants}
+                />
             </div>
         );
     }

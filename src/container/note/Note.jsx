@@ -4,6 +4,7 @@ import moment from 'moment';
 
 import NoteLeft from './NoteLeft';
 import NoteRightFocused from './NoteRightFocused';
+import NoteRightUnfocused from './NoteRightUnfocused';
 
 class Note extends Component {
     constructor(props) {
@@ -92,7 +93,7 @@ class Note extends Component {
 
     handleClickBlock = (block_name, block_id) => {
         this.setState({ block_focused_id: block_id });
-        if (block_name === 'PreviewAgenda')
+        if (block_name === 'agenda')
             this.setState({ block_focused_name: 'agenda' });
         else this.setState({ block_focused_name: block_name });
 
@@ -218,6 +219,8 @@ class Note extends Component {
     };
 
     render() {
+        console.log(this.state.blocks);
+        const { history } = this.props;
         return (
             <div className="Note">
                 <NoteLeft
@@ -234,12 +237,21 @@ class Note extends Component {
                     handleAddAgendaBlock={this.handleAddAgendaBlock}
                     handleAddTextBlock={this.handleAddTextBlock}
                 />
-                <NoteRightFocused
-                    block_focused_id={this.state.block_focused_id}
-                    block_focused_name={this.state.block_focused_name}
-                    blocks={this.state.blocks}
-                    // handleClickNoteRight={this.handleClickNoteRight}
-                />
+
+                {this.state.isBlockClicked ? (
+                    <NoteRightFocused
+                        block_focused_id={this.state.block_focused_id}
+                        block_focused_name={this.state.block_focused_name}
+                        blocks={this.state.blocks}
+                    />
+                ) : (
+                    this.state.note_id && (
+                        <NoteRightUnfocused
+                            history={history}
+                            note_id={this.state.note_id}
+                        />
+                    )
+                )}
             </div>
         );
     }

@@ -1,0 +1,17 @@
+.Note-right-unfocused {
+    position: relative;
+    min-width: 50%;
+}
+.Note-right-unfocused-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    right: 0;
+    top: 0;
+    z-index: 2100000;
+}
+
+.Note-right-page-clickable-area {
+    position: relative;
+    z-index: 2100001;
+}

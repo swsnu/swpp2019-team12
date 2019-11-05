@@ -21,7 +21,7 @@ urlpatterns = [
 
     # Note API
     path('note/<int:n_id>/', views.specific_note, name='specific_note'),
-    
+    path('siblingnotes/<int:n_id>/', views.sibling_notes, name='sibling_notes'),
     # ===================
     #     Block APIs    
     # ===================
