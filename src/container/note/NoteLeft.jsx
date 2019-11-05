@@ -28,7 +28,7 @@ class NoteLeft extends Component {
                             participants={this.state.participants}
                             />
                         <NoteLeftBlock 
-                            note_id={this.state.temp_id}
+                            note_id={this.state.note_id}
                             handleClickBlock={this.props.handleClickBlock}
                         />
                     </div>

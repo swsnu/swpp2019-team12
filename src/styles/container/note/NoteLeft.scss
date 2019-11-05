@@ -1,10 +1,13 @@
 .Note-left {
     min-width: 50%;
+    height: 100%;
+    overflow: inherit;
     border-right: 1px solid $darkgray;
 }
 
-.Note-left-agenda-click {
+.Note-left-block-click {
     min-width: 20%;
+    overflow: inherit;
     border-right: 1px solid $darkgray;
 }
 

@@ -30,25 +30,25 @@ export const participants = [
         }
     },
     {
-        nickname: 'CHAEMIN',
+        nickname: 'JIN',
         handleShowMember: () => {
             console.log('Need to Implement show member detail function');
         }
     },
     {
-        nickname: 'PAUL',
+        nickname: 'FOO',
         handleShowMember: () => {
             console.log('Need to Implement show member detail function');
         }
     },
     {
-        nickname: 'andra',
+        nickname: 'BAR',
         handleShowMember: () => {
             console.log('Need to Implement show member detail function');
         }
     },
     {
-        nickname: 'YEIN',
+        nickname: 'SWPP',
         handleShowMember: () => {
             console.log('Need to Implement show member detail function');
         }

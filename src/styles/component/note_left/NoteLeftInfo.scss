@@ -21,7 +21,11 @@
         .NoteLeftInfo__meetingDate {
             padding: 5px 0 0 3px;
         }
+    }
 
+    .form-control {
+        background: $whitegray;
+        border: 0px none black;
     }
 
 }
