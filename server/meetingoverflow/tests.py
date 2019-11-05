@@ -7,6 +7,9 @@ from .models import *
 
 class MOFTestCase(TestCase):
 
+    def setUp(self):
+        user1 = User.objects.create_user(usernam="test")
+
     def test_models(self):
         User.objects.create_user(username='test@test.com', password="test")
 
@@ -181,4 +184,6 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 204)
 
 
-    
+    def test_workspace_todo(self):
+        client = Client(enforce_csrf_checks=False)
+        client.login()
