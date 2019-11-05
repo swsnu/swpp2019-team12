@@ -331,6 +331,21 @@ def specific_note(request, n_id):
         return Response(status=status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+def sibling_notes(request, n_id):
+    if request.method == 'GET':
+        try:
+            note = Note.objects.get(id=n_id)
+        except(Note.DoesNotExist) as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        workspace = note.workspace
+        sibling_notes = Note.objects.filter(workspace=workspace)
+        if sibling_notes.count() > 0:
+            serializer = NoteSerializer(sibling_notes, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status.HTTP_404_NOT_FOUND)
+
 """
 ===================================================
 url: /api/note/:id/textblock/
