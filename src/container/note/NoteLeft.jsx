@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import NoteLeftBlock from "../../component/note_left/NoteLeftBlock";
-import NoteLeftInfo from "../../component/note_left/NoteLeftInfo";
+import React, { Component } from 'react';
+import NoteLeftBlock from '../../component/note_left/NoteLeftBlock';
+import NoteLeftInfo from '../../component/note_left/NoteLeftInfo';
 
 class NoteLeft extends Component {
     constructor(props) {

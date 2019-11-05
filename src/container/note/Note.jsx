@@ -21,7 +21,9 @@ class Note extends Component {
             ml_speech_text: '',
             participants: [],
             moment: null,
-            blocks: []
+            blocks: [],
+            block_focused_id: '',
+            block_focused_name: ''
         };
     }
 
@@ -36,7 +38,7 @@ class Note extends Component {
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
-                            block_type: 'Agenda',
+                            block_type: 'agenda',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
@@ -54,7 +56,7 @@ class Note extends Component {
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
-                            block_type: 'Text',
+                            block_type: 'textblock',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
@@ -89,26 +91,16 @@ class Note extends Component {
     =================================================================== */
 
     handleClickBlock = (block_name, block_id) => {
-        if (this.state.isNoteLeftClicked) {
+        this.setState({ block_focused_id: block_id });
+        if (block_name === 'PreviewAgenda')
+            this.setState({ block_focused_name: 'agenda' });
+        else this.setState({ block_focused_name: block_name });
+
+        if (this.state.isNoteLeftClicked && !this.state.isBlockClicked) {
             this.setState({
                 isBlockClicked: true,
                 isNoteLeftClicked: false
             });
-            document.getElementsByClassName('Note-left')[0].className =
-                'Note-left-block-click';
-            document.getElementsByClassName('Note-right')[0].className =
-                'Note-right-block-click';
-        } else {
-            this.setState({
-                isBlockClicked: false,
-                isNoteLeftClicked: true
-            });
-            document.getElementsByClassName(
-                'Note-left-block-click'
-            )[0].className = 'Note-left';
-            document.getElementsByClassName(
-                'Note-right-block-click'
-            )[0].className = 'Note-right';
         }
     };
 
@@ -121,12 +113,6 @@ class Note extends Component {
                     isNoteLeftClicked: true,
                     isNoteRightClicked: false
                 });
-                document.getElementsByClassName(
-                    'Note-left-block-click'
-                )[0].className = 'Note-left';
-                document.getElementsByClassName(
-                    'Note-right-block-click'
-                )[0].className = 'Note-right';
             } else {
                 this.setState({
                     isNoteLeftClicked: true,
@@ -166,7 +152,7 @@ class Note extends Component {
             .then(res => {
                 this.setState({
                     blocks: this.state.blocks.concat({
-                        block_type: 'Agenda',
+                        block_type: 'agenda',
                         id: res['data']['id'],
                         content: res['data']['content'],
                         layer_x: res['data']['layer_x'],
@@ -189,7 +175,7 @@ class Note extends Component {
             .then(res => {
                 this.setState({
                     blocks: this.state.blocks.concat({
-                        block_type: 'Text',
+                        block_type: 'textblock',
                         id: res['data']['id'],
                         content: res['data']['content'],
                         layer_x: res['data']['layer_x'],
@@ -232,7 +218,6 @@ class Note extends Component {
     };
 
     render() {
-        console.log(this.state.blocks);
         return (
             <div className="Note">
                 <NoteLeft
@@ -250,7 +235,10 @@ class Note extends Component {
                     handleAddTextBlock={this.handleAddTextBlock}
                 />
                 <NoteRightFocused
-                // handleClickNoteRight={this.handleClickNoteRight}
+                    block_focused_id={this.state.block_focused_id}
+                    block_focused_name={this.state.block_focused_name}
+                    blocks={this.state.blocks}
+                    // handleClickNoteRight={this.handleClickNoteRight}
                 />
             </div>
         );

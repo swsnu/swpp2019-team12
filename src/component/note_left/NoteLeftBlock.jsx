@@ -1,8 +1,9 @@
-import React, { Component } from "react";
-import PreviewAgenda from "../blocks/PreviewAgenda";
-import Text from "../blocks/Text";
-import TodoContainer from "../blocks/TodoContainer";
-import axios from "axios";
+import React, { Component } from 'react';
+import PreviewAgenda from '../blocks/PreviewAgenda';
+import Text from '../blocks/Text';
+import TodoContainer from '../blocks/TodoContainer';
+import axios from 'axios';
+
 class NoteLeftBlock extends Component {
     constructor(props) {
         super(props);
@@ -16,23 +17,27 @@ class NoteLeftBlock extends Component {
 
     render() {
         const blocks = this.props.blocks.map(blk => {
-            if (blk.block_type === "Text") {
+            if (blk.block_type === 'textblock') {
                 return (
                     <Text
+                        id={blk.id}
+                        type={blk.block_type}
                         content={blk.content}
                         handleChangeText={this.handleChangeText}
                         handleClickBlock={this.props.handleClickBlock}
                     />
                 );
-            } else if (blk.block_type === "Agenda") {
+            } else if (blk.block_type === 'agenda') {
                 return (
                     <PreviewAgenda
+                        id={blk.id}
+                        type={blk.block_type}
                         content={blk.content}
-                        agenda_disccusion={blk.agenda_disccusion}
+                        agenda_discussion={blk.agenda_discussion}
                         handleClickBlock={this.props.handleClickBlock}
                     />
                 );
-            } else if (blk.block_type === "TodoContainer") {
+            } else if (blk.block_type === 'TodoContainer') {
                 return (
                     <TodoContainer
                         todos={blk.todos}
