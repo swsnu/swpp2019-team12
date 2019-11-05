@@ -22,11 +22,12 @@ class WorkspaceSelection extends Component {
         });
     }
 
-    handleNavigateWorkspace = (id, name) => {
+    handleNavigateWorkspace = workspace => {
         const { history } = this.props;
+        const { name, id } = workspace;
         history.push({
             pathname: `${name}/${id}`,
-            state: { id }
+            state: { workspace }
         });
     };
     handleNavigateToWorkspaceCreateModal = () => {
@@ -46,14 +47,12 @@ class WorkspaceSelection extends Component {
                 </div>
                 <div className="workspaceSelection__workspace-container">
                     {map(workspaces, (workspace, i) => {
-                        const [admin] = admins[i];
+                        const admin = admins[i];
                         return (
                             <WorkspaceSelectionCard
                                 key={i}
-                                id={workspace.id}
-                                name={workspace.name}
-                                members={workspace.members.length}
-                                admin={admin.nickname}
+                                admin={admin}
+                                workspace={workspace}
                                 handleNavigateWorkspace={
                                     this.handleNavigateWorkspace
                                 }

@@ -135,7 +135,7 @@ class CreateModal extends Component {
 
     componentDidMount() {
         axios
-            .get('/api/user/')
+            .get('/api/profile/')
             .then(res => {
                 const {
                     data: { user }
