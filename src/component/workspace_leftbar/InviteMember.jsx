@@ -1,52 +1,45 @@
 import React, { Component } from 'react';
-// import SearchInput, { createFilter } from 'react-search-input';
 import { map, uniqBy, differenceBy } from 'lodash';
 import axios from 'axios';
 
-// const KEYS_TO_FILTERS = ['user.email'];
-
-const CreateModalParticipant = props => {
+const InviteModalMember = props => {
     const {
         email,
-        searchedParticipant,
-        addedParticipant,
+        searchedMember,
+        addedMember,
         handleChangeEmail,
-        handleSelectParticipant,
-        handleDeleteParticipant
+        handleSelectMember,
+        handleDeleteMember
     } = props;
     return (
-        <div className="createModal-member">
-            <div className="createModal-member__sublabel">Participants</div>
-            <div className="createModal-member__input-container">
+        <div className="invite-member">
+            <div className="invite-member__input-container">
                 <input
                     type="email"
-                    placeholder="user_email @ email.com"
-                    className="createModal-member__input"
+                    placeholder="user_email@email.com"
+                    className="invite-member__input"
                     value={email}
-                    onChange={e => handleChangeEmail(e)}
-                />
-                {searchedParticipant.length > 0 && (
-                    <div className="createModal-member__member--searched">
-                        {map(searchedParticipant, (participant, i) => (
+                    onChange={e => handleChangeEmail(e)}></input>
+                {searchedMember.length > 0 && (
+                    <div className="invite-member__member--searched">
+                        {map(searchedMember, (member, i) => (
                             <div
                                 key={i}
-                                className="createModal-member__member--searched-email"
-                                onClick={() =>
-                                    handleSelectParticipant(participant)
-                                }>
-                                {participant.username}
+                                className="invite-member__member--searched-email"
+                                onClick={() => handleSelectMember(member)}>
+                                {member.username}
                             </div>
                         ))}
                     </div>
                 )}
             </div>
-            <div className="createModal-member__member--added createNoteModal-member__member--added">
-                {map(addedParticipant, (participant, i) => (
+            <div className="invite-member__member--added">
+                {map(addedMember, (member, i) => (
                     <div
                         key={i}
-                        className="createModal-member__member--added-element"
-                        onClick={() => handleDeleteParticipant(participant)}>
-                        {participant.username}
+                        className="invite-member__member--added-element"
+                        onClick={() => handleDeleteMember(member)}>
+                        {member.username}
                     </div>
                 ))}
             </div>
@@ -58,75 +51,82 @@ class InviteMember extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            title: '',
-            date: new Date(),
-            datetime: '',
-            location: '',
-            agendaNumber: 1,
-            email: '',
-            searchedParticipant: [],
-            addedParticipant: []
+            emailMember: '',
+            searchedMember: [],
+            addedMember: []
         };
     }
-    //     constructor(props) {
-    //         super(props);
-    //         this.state = {
-    //             searchKeyword: ''
-    //         };
-    //         this.searchUpdated = this.searchUpdated.bind(this);
-    //     }
 
-    //     searchUpdated(term) {
-    //         this.setState({ searchKeyword: term });
-    //     }
-    handleSearchParticipant = () => {
-        const { email } = this.state;
-        const { workspaceId } = this.props;
-        if (email) {
-            axios.get(`/api/user/${email}/${workspaceId}`).then(res => {
+    componentDidMount() {
+        axios
+            .get('/api/user/')
+            .then(res => {
+                const {
+                    data: { user }
+                } = res;
+                this.setState({ addedAdmin: [user] });
+            })
+            .catch(err => console.error(err));
+    }
+
+    handleSearchMember = () => {
+        const { emailMember } = this.state;
+        if (emailMember) {
+            axios.get(`/api/user/${emailMember}`).then(res => {
                 const { data } = res;
-                this.setState({ searchedParticipant: data });
+                this.setState({ searchedMember: data });
             });
         } else {
-            this.setState({ searchedParticipant: [] });
+            this.setState({ searchedMember: [] });
         }
     };
 
-    render() {
-        const {
-            title,
-            location,
-            email,
-            addedParticipant,
-            searchedParticipant
-        } = this.state;
+    handleSelectMember = member => {
+        const addedMember = uniqBy([...this.state.addedMember, member], 'id');
+        this.setState({ addedMember, emailMember: '', searchedMember: [] });
+    };
 
-        //         const filteredEmails = emails.filter(
-        //             createFilter(this.state.searchKeyword, KEYS_TO_FILTERS)
-        //         );
+    handleDeleteMember = member => {
+        const removedMember = differenceBy(
+            this.state.addedMember,
+            [member],
+            'id'
+        );
+        this.setState({ addedMember: removedMember });
+    };
+
+    handleChangeEmailMember = e => {
+        this.setState({ emailMember: e.target.value }, this.handleSearchMember);
+    };
+
+    /******************* TODO ***********************/
+    handleInviteMembers = () => {
+        const { addedMember } = this.state;
+        const { history } = this.props;
+
+        axios.get('/api/workspace').then(res => {});
+    };
+    /*************************************************/
+
+    render() {
+        const { emailMember, searchedMember, addedMember } = this.state;
+        const { handleCancel } = this.props;
+
         return (
-            //                 <SearchInput
-            //                     className="search-input"
-            //                     onChange={this.searchUpdated}
-            //                 />
-            //                 {filteredEmails.map(email => {
-            //                     return (
-            //                         <div className="mail" key={email.id}>
-            //                             {email.user.name}
-            //                         </div>
-            //                     );
-            //                 })}
-            //             </div>
             <div className="memberInfo__inviteMemberButton">
-                {/* <CreateModalParticipant
-                    email={email}
-                    searchedParticipant={searchedParticipant}
-                    addedParticipant={addedParticipant}
-                    handleChangeEmail={this.handleChangeEmail}
-                    handleSelectParticipant={this.handleSelectParticipant}
-                    handleDeleteParticipant={this.handleDeleteParticipant}
-                /> */}
-                <button className="secondary">Invite Member</button>
+                <InviteModalMember
+                    email={emailMember}
+                    searchedMember={searchedMember}
+                    addedMember={addedMember}
+                    handleChangeEmail={this.handleChangeEmailMember}
+                    handleSelectMember={this.handleSelectMember}
+                    handleDeleteMember={this.handleDeleteMember}
+                />
+                <button
+                    className="invite-confirm-button"
+                    onClick={this.handleInviteMembers}>
+                    Invite Member
+                </button>
             </div>
         );
     }
