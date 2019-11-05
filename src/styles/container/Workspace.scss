@@ -1,0 +1,44 @@
+.workspace {
+    min-width: rem(1200px);
+    min-height: rem(900px);
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+
+    border-left: rem(5px) solid $primary;
+
+    .leftbar-component {
+        margin-top: rem(40px);
+    }
+    .leftbar-component:first-child {
+        margin-top: 0;
+    }
+
+    .workspace-leftbar {
+        min-width: rem(210px);
+        padding: rem(12px) 0 0 rem(10px);
+        border-right: 1px solid $lightgray;
+        // box-shadow: 0 rem(2px) rem(5px) rem(7px) $lightgray;
+
+        .leftbar-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+    }
+
+    .workspace-main {
+        width: 100%;
+        min-width: rem(1000px);
+        height: 100%;
+
+        padding: rem(30px) rem(50px) rem(50px) rem(50px);
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        background: $whitegray;
+    }
+}

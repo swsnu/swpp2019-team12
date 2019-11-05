@@ -1,0 +1,46 @@
+.workspaceInfo-container {
+    .workspaceInfo__currentWorkspace {
+        width: 100%;
+        height: rem(85px);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: rem(18px);
+        font-weight: bold;
+    }
+
+    .workspaceInfo__workspaceList {
+        width: 100%;
+        height: rem(130px);
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        overflow: auto;
+
+        margin: rem(15px) 0;
+
+        .workspaceInfo__workspaceList--element {
+            font-size: rem(14px);
+            padding-top: rem(10px);
+            &:first-child {
+                padding-top: 0;
+            }
+            &:hover {
+                color: $primary;
+                cursor: pointer;
+            }
+        }
+    }
+    .workspaceInfo__workspaceCreateButton {
+        width: 100%;
+        height: rem(55px);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

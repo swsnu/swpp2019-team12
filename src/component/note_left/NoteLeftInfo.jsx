@@ -8,26 +8,17 @@ class NoteLeftInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            note_title: this.props.note_title,
-            meeting_date: this.props.meeting_date,
             isTitleClicked: false,
             isDateClicked: false,
-            moment: moment('2019-12-31 00:00:59'),
         }
     }
 
-    handleChangeTitle = (e) => {
-        this.setState({ note_title: e.target.value })
-    }
+    // handleChangeTitle = (e) => {
+    //     this.setState({ note_title: e.target.value })
+    // }
 
     handleConvertTag_Title = () => {
         this.setState({ isTitleClicked: !this.state.isTitleClicked })
-    }
-
-    handleChangeDatetime = (moment) => {
-        this.setState({
-            moment
-        });
     }
 
     handleConvertTag_Datetime = () => {
@@ -86,10 +77,10 @@ class NoteLeftInfo extends Component {
                         <input
                             className="form-control title"
                             type="text"
-                            value={this.state.note_title}
+                            value={this.props.note_title}
                             // onBlur가 되면 Update API call
                             onBlur={this.handleConvertTag_Title}
-                            onChange={(e) => this.handleChangeTitle(e)}
+                            onChange={this.props.handleChangeTitle}
 
                         />
                     </div>
@@ -97,9 +88,9 @@ class NoteLeftInfo extends Component {
                 <div className="NoteLeftInfo-date__container">
                     <Label title="Date" />
                     <DateTime
-                        value={this.state.moment} 
+                        value={this.props.moment} 
                         onBlur={this.handleConvertTag_Datetime}
-                        onChange={this.handleChangeDatetime}
+                        onChange={this.props.handleChangeDatetime}
                     />
                 </div>
                 <ParticipantInfo 

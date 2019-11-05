@@ -6,7 +6,7 @@ button {
     border: 0;
     padding: rem(4px) rem(25px);
 
-    background: $white;
+    background: $whitegray;
     color: $black;
 
     font-size: rem(12px);
@@ -18,7 +18,8 @@ button {
 
     &:hover {
         cursor: pointer;
-        background: $whitegray;
+        background: $tertiary;
+        color: $white;
     }
 }
 
@@ -39,6 +40,14 @@ button.secondary {
         cursor: pointer;
         background: $primary;
         color: $white;
+    }
+}
+button.disabled {
+    background: $lightgray;
+    color: $white;
+
+    &:hover {
+        cursor: not-allowed;
     }
 }
 

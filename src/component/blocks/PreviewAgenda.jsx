@@ -23,10 +23,14 @@ class PreviewAgenda extends Component {
                 onClick={() => this.props.handleClickBlock(block_name,block_id)}
             >
                 <div className="full-size-block-title PreviewAgenda">
-                    <div className="full-size-block-title__text PreviewAgenda">Preview Agenda</div>
+                    <div className="full-size-block-title__text PreviewAgenda">
+                        Preview Agenda
+                    </div>
                 </div>
                 <div className="full-size-block-content PreviewAgenda">
-                    <div className="full-size-block-content__text PreviewAgenda">{this.state.agenda_disccusion}</div>
+                    <div className="full-size-block-content__text PreviewAgenda">
+                        {this.props.content}
+                    </div>
                 </div>
             </div>
         )
