@@ -151,18 +151,20 @@ def workspace(request):
             members = request.data['members'] # members id list
         except(KeyError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
+        print(admins)
+        print(members)
         admin_list = []
         for admin in admins:
+            print(admin)
             try:
-                admin_list.append(Profile.objects.get(user__username=admin))
-            except(Profile.DeosNotExist) as e:
+                admin_list.append(Profile.objects.get(id=admin))
+            except(Profile.DoesNotExist) as e:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
         member_list = []
         for member in members:
             try:
-                member_list.append(Profile.objects.get(user__username=member))
+                member_list.append(Profile.objects.get(id=member))
             except(Profile.DeosNotExist) as e:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
