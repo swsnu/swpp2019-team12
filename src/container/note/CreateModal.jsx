@@ -98,9 +98,9 @@ const CreateModalParticipant = props => {
                                 key={i}
                                 className="createModal-member__member--searched-email"
                                 onClick={() =>
-                                    handleSelectParticipant(participant)
+                                    handleSelectParticipant(participant.user)
                                 }>
-                                {participant.username}
+                                {participant.user.username}
                             </div>
                         ))}
                     </div>
@@ -159,10 +159,15 @@ class CreateModal extends Component {
         const { email } = this.state;
         const { workspaceId } = this.props;
         if (email) {
-            axios.get(`/api/user/${email}/${workspaceId}`).then(res => {
-                const { data } = res;
-                this.setState({ searchedParticipant: data });
-            });
+            axios
+                .post(`/api/profile/`, {
+                    username: email,
+                    workspace_id: workspaceId
+                })
+                .then(res => {
+                    const { data } = res;
+                    this.setState({ searchedParticipant: data });
+                });
         } else {
             this.setState({ searchedParticipant: [] });
         }
@@ -216,6 +221,7 @@ class CreateModal extends Component {
 
                 if (status === 201) {
                     history.push(`/note/${id}`);
+                    window.location.reload();
                 }
             });
     };
@@ -254,6 +260,7 @@ class CreateModal extends Component {
                 />
 
                 <CreateModalParticipant
+                    hastory
                     email={email}
                     searchedParticipant={searchedParticipant}
                     addedParticipant={addedParticipant}

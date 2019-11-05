@@ -37,6 +37,7 @@ class Workspace extends Component {
 
         axios.get(`/api/workspace/${id}/`).then(res => {
             const { data } = res;
+            console.log(data);
             const {
                 workspaces,
                 workspace,
@@ -76,6 +77,7 @@ class Workspace extends Component {
 
             showCreateNoteModal
         } = this.state;
+        const { history } = this.props;
 
         const currAgendas = agendas.filter(a => !a.is_done);
         const doneAgendas = agendas.filter(a => a.is_done);
@@ -87,6 +89,7 @@ class Workspace extends Component {
                 <div className="workspace-leftbar">
                     <div className="leftbar-container">
                         <WorkspaceInfo
+                            history={history}
                             workspace={workspace}
                             workspaces={workspaces}
                         />
@@ -107,14 +110,16 @@ class Workspace extends Component {
                         todos={todos}
                         doneTodos={doneTodos}
                     />
-                    <MeetingNoteOverview notes={notes} />
+                    <MeetingNoteOverview notes={notes} history={history} />
                 </div>
 
                 {showCreateNoteModal && (
                     <div
                         className="overlay"
-                        onClick={this.handleCloseCreateNoteModal}>
+                        onClick={this.handleCloseCreateNoteModal}
+                    >
                         <CreateNoteModal
+                            history={history}
                             workspaceId={workspace.id}
                             handleCloseCreateNoteModal={
                                 this.handleCloseCreateNoteModal
