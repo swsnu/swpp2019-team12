@@ -90,26 +90,28 @@ class Note extends Component {
     =================================================================== */
 
     handleClickBlock = (block_name, block_id) => {
-        if (this.state.isNoteLeftClicked) {
+        if (this.state.isNoteLeftClicked && !this.state.isBlockClicked) {
             this.setState({
                 isBlockClicked: true,
                 isNoteLeftClicked: false
             });
-            document.getElementsByClassName('Note-left')[0].className =
-                'Note-left-block-click';
+            // document.getElementsByClassName('Note-left')[0].className =
+            //     'Note-left-block-click';
             // document.getElementsByClassName('Note-right')[0].className =
             //     'Note-right-block-click';
         } else {
-            this.setState({
-                isBlockClicked: false,
-                isNoteLeftClicked: true
-            });
-            document.getElementsByClassName(
-                'Note-left-block-click'
-            )[0].className = 'Note-left';
-            // document.getElementsByClassName(
-            //     'Note-right-block-click'
-            // )[0].className = 'Note-right';
+            if (this.state.isBlockClicked) {
+                // this.setState({
+                //     isBlockClicked: false,
+                //     isNoteLeftClicked: true
+                // });
+                // document.getElementsByClassName(
+                //     'Note-left-block-click'
+                // )[0].className = 'Note-left';
+                // document.getElementsByClassName(
+                //     'Note-right-block-click'
+                // )[0].className = 'Note-right';
+            }
         }
     };
 
@@ -122,9 +124,9 @@ class Note extends Component {
                     isNoteLeftClicked: true,
                     isNoteRightClicked: false
                 });
-                document.getElementsByClassName(
-                    'Note-left-block-click'
-                )[0].className = 'Note-left';
+                // document.getElementsByClassName(
+                //     'Note-left-block-click'
+                // )[0].className = 'Note-left';
                 // document.getElementsByClassName(
                 //     'Note-right-block-click'
                 // )[0].className = 'Note-right';
