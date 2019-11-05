@@ -1,0 +1,11 @@
+.Note {
+    min-width: rem(1200px);
+    min-height: rem(1000px);
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    overflow: auto;
+    background: $whitegray;
+
+}

@@ -219,10 +219,11 @@ def workspace(request):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST':
+        print(request.data) # members id list
         try:
             name = request.data['name']
             admins = request.data['admins'] # admin id list
-            members = request.data['members'] # members id list
+            members = request.data['members']
         except(KeyError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         admin_list = []
@@ -413,7 +414,7 @@ def specific_note(request, n_id):
         except(Note.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = NoteSerializer(current_note)
-        Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
         try:
@@ -438,7 +439,7 @@ def specific_note(request, n_id):
 
 """
 ===================================================
-url: /api/note/:id/textblock/
+url: /api/note/:id/textblocks/
 Note에 직접 속해있는 TextBlock을 모두 가져오거나 생성하는 API
 POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
     {
@@ -478,7 +479,7 @@ def textblock_child_of_note(request, n_id):
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -610,10 +611,10 @@ def agenda_child_of_note(request, n_id):
         }
         serializer = AgendaSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
+            agenda = serializer.save()
             agenda.has_agenda_block = True
             agenda.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -749,7 +750,7 @@ def todoblock_child_of_note(request, n_id):
         serializer = TodoSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)

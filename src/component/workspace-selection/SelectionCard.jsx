@@ -8,7 +8,8 @@ export const WorkspaceSelectionCard = props => {
     return (
         <div
             className="workspaceSelection-card"
-            onClick={() => handleNavigateWorkspace(workspace)}>
+            onClick={() => handleNavigateWorkspace(workspace)}
+        >
             <div className="workspaceSelection-card__label">TITLE</div>
             <div className="workspaceSelection-card__name">
                 <span>{name}</span>
@@ -33,7 +34,8 @@ export const WorkspaceCreationCard = props => {
     return (
         <div
             className="workspaceCreation-card"
-            onClick={handleNavigateToWorkspaceCreateModal}>
+            onClick={handleNavigateToWorkspaceCreateModal}
+        >
             <PlusIcon className="workspaceCreation-card__icon" />
         </div>
     );

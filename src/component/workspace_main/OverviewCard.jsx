@@ -39,7 +39,8 @@ export const AgendaCard = props => {
                                 {map(relativeTodos, (todo, j) => (
                                     <div
                                         key={j}
-                                        className="agendaCard-content-element__todo">
+                                        className="agendaCard-content-element__todo"
+                                    >
                                         {`#${todo.id}`}
                                     </div>
                                 ))}

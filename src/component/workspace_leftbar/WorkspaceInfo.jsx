@@ -24,7 +24,8 @@ const WorkspaceInfo = props => {
                             history.push(`/${w.name}/${w.id}/`);
                             window.location.reload();
                         }}
-                        className="workspaceInfo__workspaceList--element">
+                        className="workspaceInfo__workspaceList--element"
+                    >
                         {w.name.toUpperCase()}
                     </div>
                 ))}

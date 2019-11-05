@@ -9,7 +9,7 @@ const MeetingNoteOverview = props => {
     return (
         <div className="meetingNoteOverview-container">
             <SubLabel title="Meeting Note Overview" />
-            <Label title="회의 진행 상황" />
+            <Label title="회의 진행 상황 " />
 
             <div className="meetingNoteOverview-content">
                 {map(notes, (note, i) => (

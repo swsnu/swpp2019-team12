@@ -27,6 +27,7 @@ function App() {
                     <Route exact path="/signin" component={SignIn} />
                     <Route exact path="/signup" component={SignUp} />
                     {/* Cannot access without login */}
+                    <Route exact path='/note/:n_id' component={Note} />
                     <Route exact path="/account" component={Account} />
                     <Route
                         exact
