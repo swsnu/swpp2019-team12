@@ -52,8 +52,12 @@ const CreateModalMember = props => {
                             <div
                                 key={i}
                                 className="createModal-member__member--searched-email"
-                                onClick={() => handleSelectMember(member)}>
-                                {member.username}
+                                onClick={() =>
+                                    handleSelectMember(
+                                        member.user && member.user
+                                    )
+                                }>
+                                {member.user && member.user.username}
                             </div>
                         ))}
                     </div>
@@ -99,8 +103,10 @@ const CreateModalAdmin = props => {
                             <div
                                 key={i}
                                 className="createModal-member__member--searched-email"
-                                onClick={() => handleSelectAdmin(admin)}>
-                                {admin.username}
+                                onClick={() =>
+                                    handleSelectAdmin(admin.user && admin.user)
+                                }>
+                                {admin.user && admin.user.username}
                             </div>
                         ))}
                     </div>
@@ -158,7 +164,7 @@ class CreateModal extends Component {
     handleSearchMember = () => {
         const { emailMember } = this.state;
         if (emailMember) {
-            axios.get(`/api/user/${emailMember}`).then(res => {
+            axios.post(`/api/profile/`, { username: emailMember }).then(res => {
                 const { data } = res;
                 this.setState({ searchedMember: data });
             });
@@ -169,7 +175,13 @@ class CreateModal extends Component {
 
     handleSelectMember = member => {
         const addedMember = uniqBy([...this.state.addedMember, member], 'id');
-        this.setState({ addedMember, emailMember: '', searchedMember: [] });
+        const addedMemberId = map(addedMember, m => m.id);
+        this.setState({
+            addedMember,
+            addedMemberId,
+            emailMember: '',
+            searchedMember: []
+        });
     };
     handleDeleteMember = member => {
         const removedMember = differenceBy(
@@ -183,7 +195,7 @@ class CreateModal extends Component {
     handleSearchAdmin = () => {
         const { emailAdmin } = this.state;
         if (emailAdmin) {
-            axios.get(`/api/user/${emailAdmin}`).then(res => {
+            axios.post(`/api/profile/`, { username: emailAdmin }).then(res => {
                 const { data } = res;
                 this.setState({ searchedAdmin: data });
             });
@@ -193,7 +205,13 @@ class CreateModal extends Component {
     };
     handleSelectAdmin = member => {
         const addedAdmin = uniqBy([...this.state.addedAdmin, member], 'id');
-        this.setState({ addedAdmin, emailAdmin: '', searchedAdmin: [] });
+        const addedAdminId = map(addedAdmin, a => a.id);
+        this.setState({
+            addedAdmin,
+            addedAdminId,
+            emailAdmin: '',
+            searchedAdmin: []
+        });
     };
     handleDeleteAdmin = member => {
         const removedAdmin = differenceBy(
@@ -210,13 +228,13 @@ class CreateModal extends Component {
     };
 
     handleCreateWorkspace = () => {
-        const { title, addedMember, addedAdmin } = this.state;
+        const { title, addedMemberId, addedAdminId } = this.state;
         const { history } = this.props;
         axios
             .post('/api/workspace/', {
                 name: title,
-                members: addedMember,
-                admins: addedAdmin
+                members: addedMemberId,
+                admins: addedAdminId
             })
             .then(res => {
                 const {
@@ -237,7 +255,9 @@ class CreateModal extends Component {
             emailAdmin,
             searchedMember,
             addedMember,
+            addedMemberId,
             searchedAdmin,
+            addedAdminId,
             addedAdmin
         } = this.state;
         const { handleCancel } = this.props;
@@ -255,6 +275,7 @@ class CreateModal extends Component {
                         email={emailMember}
                         searchedMember={searchedMember}
                         addedMember={addedMember}
+                        addedMemberId={addedMemberId}
                         handleChangeEmail={this.handleChangeEmailMember}
                         handleSelectMember={this.handleSelectMember}
                         handleDeleteMember={this.handleDeleteMember}
@@ -263,6 +284,7 @@ class CreateModal extends Component {
                         email={emailAdmin}
                         searchedAdmin={searchedAdmin}
                         addedAdmin={addedAdmin}
+                        addedAdminId={addedAdminId}
                         handleChangeEmail={this.handleChangeEmailAdmin}
                         handleSelectAdmin={this.handleSelectAdmin}
                         handleDeleteAdmin={this.handleDeleteAdmin}
