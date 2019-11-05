@@ -146,7 +146,7 @@ class CreateModal extends Component {
                 const {
                     data: { user }
                 } = res;
-                this.setState({ addedAdmin: [user] });
+                this.setState({ addedAdmin: [user], addedAdminId: [user.id] });
             })
             .catch(err => console.error(err));
     }
@@ -244,6 +244,7 @@ class CreateModal extends Component {
 
                 if (status === 201) {
                     history.push(`/${name}/${id}`);
+                    window.location.reload();
                 }
             });
     };
