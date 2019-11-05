@@ -4,7 +4,7 @@ import { map } from 'lodash';
 import { Label, SubLabel } from './Label';
 
 const WorkspaceInfo = props => {
-    const { workspace, workspaces } = props;
+    const { workspace, workspaces, history } = props;
 
     return (
         <div className="leftbar-component workspaceInfo-container">
@@ -20,6 +20,10 @@ const WorkspaceInfo = props => {
                 {map(workspaces, (w, i) => (
                     <div
                         key={i}
+                        onClick={() => {
+                            history.push(`/${w.name}/${w.id}/`);
+                            window.location.reload();
+                        }}
                         className="workspaceInfo__workspaceList--element">
                         {w.name.toUpperCase()}
                     </div>

@@ -16,18 +16,18 @@ class WorkspaceSelection extends Component {
 
     componentDidMount() {
         axios.get('/api/workspace/').then(res => {
-            console.log(res);
             const { data } = res;
             const { workspaces, admins } = data;
             this.setState({ workspaces, admins });
         });
     }
 
-    handleNavigateWorkspace = (id, name) => {
+    handleNavigateWorkspace = workspace => {
         const { history } = this.props;
+        const { name, id } = workspace;
         history.push({
             pathname: `${name}/${id}`,
-            state: { id }
+            state: { workspace }
         });
     };
     handleNavigateToWorkspaceCreateModal = () => {
@@ -39,6 +39,7 @@ class WorkspaceSelection extends Component {
 
     render() {
         const { creation, workspaces, admins } = this.state;
+        const { history } = this.props;
         return (
             <div className="workspaceSelection">
                 <div className="workspaceSelection__label">
@@ -46,14 +47,12 @@ class WorkspaceSelection extends Component {
                 </div>
                 <div className="workspaceSelection__workspace-container">
                     {map(workspaces, (workspace, i) => {
-                        const [admin] = admins[i];
+                        const admin = admins[i];
                         return (
                             <WorkspaceSelectionCard
                                 key={i}
-                                id={workspace.id}
-                                name={workspace.name}
-                                members={workspace.members.length}
-                                admin={admin.nickname}
+                                admin={admin}
+                                workspace={workspace}
                                 handleNavigateWorkspace={
                                     this.handleNavigateWorkspace
                                 }
@@ -70,7 +69,10 @@ class WorkspaceSelection extends Component {
 
                 {creation && (
                     <div className="overlay" onClick={this.handleCancel}>
-                        <CreateModal handleCancel={this.handleCancel} />
+                        <CreateModal
+                            history={history}
+                            handleCancel={this.handleCancel}
+                        />
                     </div>
                 )}
             </div>

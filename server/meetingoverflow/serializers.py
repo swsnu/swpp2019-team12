@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
         # fields = '__all__'
         fields = ['username', 'password']
 
-class SearchSerializer(serializers.ModelSerializer):
+class EncapsulatedUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
