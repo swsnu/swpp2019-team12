@@ -125,6 +125,16 @@ def profile(request, id):
 # 모든 workspace GET 의 경우 admin 정보만 같이 리턴
 # for FE/WorkspaceSelection
 # ===================================================
+"""
+====================================
+POST 예시:
+    {
+        "name":"workspace[2]", 
+        "admins":[1, 2], 
+        "members":[1, 2, 3]
+    }
+====================================
+"""
 @api_view(['GET', 'POST'])
 def workspace(request):
     if request.method == 'GET':
@@ -151,8 +161,6 @@ def workspace(request):
             members = request.data['members'] # members id list
         except(KeyError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        print(admins)
-        print(members)
         admin_list = []
         for admin in admins:
             print(admin)
