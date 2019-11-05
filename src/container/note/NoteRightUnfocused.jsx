@@ -115,6 +115,7 @@ export default class NoteRightUnfocused extends Component {
                     meeting_date={this.state.meeting_date}
                     participants={this.state.participants}
                     moment={this.state.moment}
+                    isRightUnfocused={true}
                 />
                 <NoteLeftBlock
                     note_id={this.state.note_id}
