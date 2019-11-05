@@ -2,13 +2,13 @@
     width: 100%;
     min-height: 500px;
     margin-top: 50px;
-    
+
     display: flex;
     flex-direction: row;
 
-    .NoteLeftBlock-create-buttons{
+    .NoteLeftBlock-create-buttons {
         width: rem(50px);
-        
+
         display: flex;
         flex-direction: column;
 
@@ -17,13 +17,12 @@
             height: rem(40px);
             margin: 0 0 rem(3px) 0;
             padding: 0 0 0 0;
-            
+
             border-top-right-radius: 0.28571rem;
             border-top-left-radius: 0;
             border-bottom-right-radius: 0.28571rem;
             border-bottom-left-radius: 0;
             background-color: $quaternary;
-            
         }
 
         .auto-type-button {
@@ -31,7 +30,7 @@
             height: rem(40px);
             margin: rem(25px) 0 rem(3px) 0;
             padding: 0 0 0 0;
-            
+
             border-top-right-radius: 0.28571rem;
             border-top-left-radius: 0;
             border-bottom-right-radius: 0.28571rem;
@@ -54,7 +53,7 @@
         border-radius: rem(7px);
         overflow: hidden;
         border: 0.5px solid $tertiary;
-        
+
         .full-size-block-title {
             padding: rem(10px);
             background: $primary;

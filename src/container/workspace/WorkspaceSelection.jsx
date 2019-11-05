@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { map } from 'lodash';
-// import { workspaces } from './DummyData';
 import {
     WorkspaceSelectionCard,
     WorkspaceCreationCard

@@ -3,6 +3,8 @@ import axios from 'axios';
 import moment from 'moment';
 
 import NoteLeft from './NoteLeft';
+import NoteRightFocused from './NoteRightFocused';
+
 class Note extends Component {
     constructor(props) {
         super(props);
@@ -94,6 +96,8 @@ class Note extends Component {
             });
             document.getElementsByClassName('Note-left')[0].className =
                 'Note-left-block-click';
+            document.getElementsByClassName('Note-right')[0].className =
+                'Note-right-block-click';
         } else {
             this.setState({
                 isBlockClicked: false,
@@ -102,6 +106,9 @@ class Note extends Component {
             document.getElementsByClassName(
                 'Note-left-block-click'
             )[0].className = 'Note-left';
+            document.getElementsByClassName(
+                'Note-right-block-click'
+            )[0].className = 'Note-right';
         }
     };
 
@@ -117,6 +124,9 @@ class Note extends Component {
                 document.getElementsByClassName(
                     'Note-left-block-click'
                 )[0].className = 'Note-left';
+                document.getElementsByClassName(
+                    'Note-right-block-click'
+                )[0].className = 'Note-right';
             } else {
                 this.setState({
                     isNoteLeftClicked: true,
@@ -239,9 +249,9 @@ class Note extends Component {
                     handleAddAgendaBlock={this.handleAddAgendaBlock}
                     handleAddTextBlock={this.handleAddTextBlock}
                 />
-                <div className="Note-right" onClick={this.handleClickNoteRight}>
-                    <div className="Note-right-container">RIGHT</div>
-                </div>
+                <NoteRightFocused
+                // handleClickNoteRight={this.handleClickNoteRight}
+                />
             </div>
         );
     }

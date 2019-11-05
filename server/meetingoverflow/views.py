@@ -1,3 +1,4 @@
+import dateutil.parser
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from rest_framework import status
@@ -10,8 +11,6 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 import json
 from django.db.models import Q
-import dateutil.parser
-
 
 @api_view(['PATCH', 'POST'])
 def signup(request):
@@ -25,7 +24,7 @@ def signup(request):
         except(User.DoesNotExist) as e:
             # 아이디가 생성 가능한 경우
             return Response(status=status.HTTP_200_OK)
-        # 아이디가 이미 사용되고 있는 경우 
+        # 아이디가 이미 사용되고 있는 경우
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     elif request.method == 'POST':
@@ -35,7 +34,7 @@ def signup(request):
             nickname = request.data['nickname']
         except(KeyError):
             return HttpResponse(status=400)
-        
+
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -171,11 +170,12 @@ def profile(request):
     # ==========================================
     elif request.method == 'PATCH':
         # queryset = request.user.profile
-        try: 
+        try:
             queryset = Profile.objects.get(id=id)
         except(Profile.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = ProfileSerializer(queryset, data=request.data, partial=True)
+        serializer = ProfileSerializer(
+            queryset, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
@@ -213,7 +213,8 @@ def workspace(request):
 
         if queryset.count() > 0:
             workspace_serializer = WorkspaceSerializer(queryset, many=True)
-            serializer = {"workspaces": workspace_serializer.data, "admins": admins }
+            serializer = {
+                "workspaces": workspace_serializer.data, "admins": admins}
             return Response(serializer, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -256,7 +257,7 @@ def workspace(request):
 
 # ===================================================
 # workspace id로부터 특정 워크스페이스 GET / PATCH / DELETE
-# 
+#
 # GET의 경우 관련된 모든 정보 리턴 for FE/Workspace
 # (workspace, member, admin, note, agenda, todo)
 # ===================================================
@@ -321,7 +322,8 @@ def specific_workspace(request, id):
             current_workspace = Workspace.objects.get(id=id)
         except(Workspace.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = WorkspaceSerializer(current_workspace, data=request.data, partial=True)
+        serializer = WorkspaceSerializer(
+            current_workspace, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
@@ -371,15 +373,16 @@ def notes(request, w_id):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(status.HTTP_404_NOT_FOUND)
-    
+
     elif request.method == 'POST':
         try:
             title = request.data['title']
-            participants= request.data['participants']
+            participants = request.data['participants']
             created_at = dateutil.parser.parse(request.data['createdAt'])
-            last_modified_at = dateutil.parser.parse(request.data['lastModifiedAt'])
+            last_modified_at = dateutil.parser.parse(
+                request.data['lastModifiedAt'])
             location = request.data['location']
-            workspace_id = request.data['workspace'] # workspace id
+            workspace_id = request.data['workspace']  # workspace id
             workspace = Workspace.objects.get(id=workspace_id)
             # tags = request.data['tags'] # tag string list
             # ml_speech_text = request.data['mlSpeechText']
@@ -389,11 +392,12 @@ def notes(request, w_id):
         participants_list = []
         for participant in participants:
             try:
-                participants_list.append(Profile.objects.get(user__username=participant))
+                participants_list.append(
+                    Profile.objects.get(user__username=participant))
             except(Profile.DoesNotExist):
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
-        Note.objects.create(title=title, 
+        Note.objects.create(title=title,
                             location=location,
                             created_at=created_at,
                             last_modified_at=last_modified_at,
@@ -421,13 +425,14 @@ def specific_note(request, n_id):
             current_note = Note.objects.get(id=n_id)
         except(Note.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = NoteSerializer(current_note, data=request.data, partial=True)
+        serializer = NoteSerializer(
+            current_note, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-    
+
     elif request.method == 'DELETE':
         try:
             current_note = Note.objects.get(id=n_id)

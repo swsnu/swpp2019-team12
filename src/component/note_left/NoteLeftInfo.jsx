@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import moment from 'moment';
-import DateTime from 'react-datetime'
+import DateTime from 'react-datetime';
 import { Label } from './Label';
 import ParticipantInfo from './ParticipantInfo';
 
@@ -9,8 +9,8 @@ class NoteLeftInfo extends Component {
         super(props);
         this.state = {
             isTitleClicked: false,
-            isDateClicked: false,
-        }
+            isDateClicked: false
+        };
     }
 
     // handleChangeTitle = (e) => {
@@ -18,13 +18,12 @@ class NoteLeftInfo extends Component {
     // }
 
     handleConvertTag_Title = () => {
-        this.setState({ isTitleClicked: !this.state.isTitleClicked })
-    }
+        this.setState({ isTitleClicked: !this.state.isTitleClicked });
+    };
 
     handleConvertTag_Datetime = () => {
-        this.setState({ isDateClicked: !this.state.isDateClicked })
-    }
-
+        this.setState({ isDateClicked: !this.state.isDateClicked });
+    };
 
     render() {
         // Click하는 순간 바로 Cursor가 활성화 되게끔 만들어야 한다.
@@ -57,13 +56,13 @@ class NoteLeftInfo extends Component {
 
         // let dateTimeElement = null;
         // if (!this.state.isDateClicked) {
-        //     dateTimeElement = 
+        //     dateTimeElement =
         //                     <div onClick={this.handleConvertTag_Datetime}>
         //                         {this.state.moment.format('MM/DD/YYYY h:mm a')}
         //                     </div>
         // }
         // else {
-        //     dateTimeElement = <DateTime 
+        //     dateTimeElement = <DateTime
         //                             onBlur={this.handleConvertTag_Datetime}
         //                             onChange={this.handleChangeDatetime}
         //                         />
@@ -72,7 +71,7 @@ class NoteLeftInfo extends Component {
         return (
             <div className="NoteLeftInfo">
                 <div className="NoteLeftInfo-title__container">
-                    <Label title="Note Title"/>
+                    <Label title="Note Title" />
                     <div className="NoteLeftInfo__currentNote">
                         <input
                             className="form-control title"
@@ -81,24 +80,21 @@ class NoteLeftInfo extends Component {
                             // onBlur가 되면 Update API call
                             onBlur={this.handleConvertTag_Title}
                             onChange={this.props.handleChangeTitle}
-
                         />
                     </div>
                 </div>
                 <div className="NoteLeftInfo-date__container">
                     <Label title="Date" />
                     <DateTime
-                        value={this.props.moment} 
+                        value={this.props.moment}
                         onBlur={this.handleConvertTag_Datetime}
                         onChange={this.props.handleChangeDatetime}
                     />
                 </div>
-                <ParticipantInfo 
-                    participants={this.props.participants}
-                />       
+                <ParticipantInfo participants={this.props.participants} />
             </div>
-        )
+        );
     }
 }
 
-export default NoteLeftInfo
+export default NoteLeftInfo;
