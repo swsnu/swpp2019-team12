@@ -142,9 +142,7 @@ def profile(request):
         else:
             try:
                 users = User.objects.filter(username__contains=username)
-                print(users)
                 profiles = Profile.objects.filter(user__username__contains=username)
-                print(profiles)
             except (User.DoesNotExist) as e:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -299,6 +297,7 @@ def specific_workspace(request, id):
         #profile = Profile.objects.get(id=1)
         try: 
             workspace = Workspace.objects.get(id=id)
+            workspaces = Workspace.objects.filter(members__in=[profile])
         except(Workspace.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
@@ -313,12 +312,20 @@ def specific_workspace(request, id):
         todos = Todo.objects.filter(assignees__in=[profile])
         todo_serializer = TodoSerializer(todos, many=True)
 
+        # Add workspaces, workspace info
+        workspace_serializer = WorkspaceSerializer(workspace)
+        workspaces_serializer = WorkspaceSerializer(workspaces, many=True)
+
+
+
         serializer = {
             "members": member_serializer.data,
             "admins": admin_serializer.data,
             "notes": note_serializer.data,
             "agendas": agenda_serializer.data,
-            "todos": todo_serializer.data
+            "todos": todo_serializer.data,
+            "workspace": workspace_serializer.data,
+            "workspaces": workspaces_serializer.data
         }
         
         return Response(serializer, status=status.HTTP_200_OK)
