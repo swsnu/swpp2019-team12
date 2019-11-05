@@ -101,5 +101,3 @@ class TextBlockSerializer(serializers.ModelSerializer):
     class Meta:
         model = TextBlock
         fields = '__all__'
-
-
