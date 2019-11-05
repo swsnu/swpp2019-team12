@@ -1,0 +1,85 @@
+.memberInfo__inviteMemberButton {
+    width: 100%;
+    height: rem(120px);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.invite-confirm-button {
+    background: $whitegray;
+    &:hover {
+        cursor: pointer;
+        background: $primary;
+        color: $white;
+    }
+}
+
+.invite-member {
+    width: 80%;
+    .invite-member__input-container {
+        .invite-member__input {
+            margin-top: 10px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .invite-member__member--searched {
+            width: rem(250px);
+            max-height: rem(100px);
+            overflow: auto;
+
+            padding: rem(20px) rem(20px);
+
+            position: absolute;
+
+            box-shadow: rem(2px) rem(2px) rem(4px) rem(2px) $lightgray;
+            background: $white;
+            border-radius: rem(5px);
+
+            display: flex;
+            flex-direction: column;
+
+            .invite-member__member--searched-email {
+                padding-bottom: rem(10px);
+                text-align: center;
+                &:last-child {
+                    padding-bottom: 0;
+                }
+                &:hover {
+                    cursor: pointer;
+                    color: $primary;
+                }
+            }
+        }
+    }
+    .invite-member__member--added {
+        width: 100%;
+        padding: 5px 0;
+
+        display: flex;
+        flex-direction: row;
+        overflow: scroll;
+
+        .invite-member__member--added-element {
+            width: fit-content;
+            height: fit-content;
+
+            padding: 5px 5px;
+
+            background: $tertiary;
+            color: $white;
+            border-radius: rem(5px);
+
+            float: left;
+
+            margin: 0 rem(10px) rem(10px) 0;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+}

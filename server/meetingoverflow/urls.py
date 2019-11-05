@@ -7,8 +7,7 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('signin/', views.signin, name='signin'),
     path('signout/', views.signout, name='signout'),
-    path('user/<str:username>/', views.search_user, name='search_user'),
-    path('profile/<int:id>', views.profile, name='profile'),
+    path('profile/', views.profile, name='profile'),
 
     # Workspace APIs
     path('workspace/', views.workspace, name='workspace'),

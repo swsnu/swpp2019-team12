@@ -9,6 +9,8 @@ import CreateNote from '../../component/workspace_leftbar/CreateNote';
 import AgendaOverview from '../../component/workspace_main/AgendaOverview';
 import MeetingNoteOverview from '../../component/workspace_main/MeetingNoteOverview';
 
+import CreateNoteModal from '../note/CreateModal';
+
 class Workspace extends Component {
     constructor(props) {
         super(props);
@@ -19,7 +21,9 @@ class Workspace extends Component {
             members: [],
             agendas: [],
             notes: [],
-            todos: []
+            todos: [],
+
+            showCreateNoteModal: false
         };
     }
 
@@ -33,6 +37,7 @@ class Workspace extends Component {
 
         axios.get(`/api/workspace/${id}/`).then(res => {
             const { data } = res;
+            console.log(data);
             const {
                 workspaces,
                 workspace,
@@ -54,16 +59,25 @@ class Workspace extends Component {
         });
     }
 
+    handleShowCreateNoteModal = () => {
+        this.setState({ showCreateNoteModal: true });
+    };
+    handleCloseCreateNoteModal = () => {
+        this.setState({ showCreateNoteModal: false });
+    };
+
     render() {
         const {
             workspaces,
             workspace,
-            admins,
             members,
             agendas,
             notes,
-            todos
+            todos,
+
+            showCreateNoteModal
         } = this.state;
+        const { history } = this.props;
 
         const currAgendas = agendas.filter(a => !a.is_done);
         const doneAgendas = agendas.filter(a => a.is_done);
@@ -75,12 +89,17 @@ class Workspace extends Component {
                 <div className="workspace-leftbar">
                     <div className="leftbar-container">
                         <WorkspaceInfo
+                            history={history}
                             workspace={workspace}
                             workspaces={workspaces}
                         />
                         <MemberInfo members={members} />
                         <SettingInfo />
-                        <CreateNote />
+                        <CreateNote
+                            handleShowCreateNoteModal={
+                                this.handleShowCreateNoteModal
+                            }
+                        />
                     </div>
                 </div>
 
@@ -91,8 +110,23 @@ class Workspace extends Component {
                         todos={todos}
                         doneTodos={doneTodos}
                     />
-                    <MeetingNoteOverview notes={notes} />
+                    <MeetingNoteOverview notes={notes} history={history} />
                 </div>
+
+                {showCreateNoteModal && (
+                    <div
+                        className="overlay"
+                        onClick={this.handleCloseCreateNoteModal}
+                    >
+                        <CreateNoteModal
+                            history={history}
+                            workspaceId={workspace.id}
+                            handleCloseCreateNoteModal={
+                                this.handleCloseCreateNoteModal
+                            }
+                        />
+                    </div>
+                )}
             </div>
         );
     }

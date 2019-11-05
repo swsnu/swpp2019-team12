@@ -1,0 +1,28 @@
+.NoteLeftInfo-participants__container {
+    width: 30%;
+    min-height: rem(80px);
+
+    display: flex;
+    flex-direction: column;
+    
+    .NoteLeftInfo__participantList {
+        height: rem(70px);
+        padding: 5px 0 0 3px;
+        overflow: auto;
+    }
+
+    .Participants-title__container {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+
+        button {
+            width: rem(15px);
+            height: rem(15px);
+            padding: 0 0 0 0;
+        }
+
+
+    }
+
+}
