@@ -55,11 +55,10 @@ def signin(request):
             username = request.data['username']
             password = request.data['password']
         except(KeyError):
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            print(Response(status=status.HTTP_204_NO_CONTENT).cookies)
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
