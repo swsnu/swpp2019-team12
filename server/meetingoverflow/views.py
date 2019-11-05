@@ -96,7 +96,7 @@ def profile(request, id):
     if request.method == 'GET':
         try: 
             profile = Profile.objects.get(id=id)
-        except(Profile.DeosNotExist) as e:
+        except(Profile.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -109,7 +109,7 @@ def profile(request, id):
         # queryset = request.user.profile
         try: 
             queryset = Profile.objects.get(id=id)
-        except(Profile.DeosNotExist) as e:
+        except(Profile.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ProfileSerializer(queryset, data=request.data, partial=True)
         if serializer.is_valid():
@@ -173,7 +173,7 @@ def workspace(request):
         for member in members:
             try:
                 member_list.append(Profile.objects.get(id=member))
-            except(Profile.DeosNotExist) as e:
+            except(Profile.DoesNotExist) as e:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
         Workspace.objects.create(name=name)
@@ -195,7 +195,7 @@ def workspace(request):
 # if request.method == 'GET':
 #     try: 
 #         workspace = Workspace.objects.get(id=id)
-#     except(Workspace.DeosNotExist) as e:
+#     except(Workspace.DoesNotExist) as e:
 #         return Response(status=status.HTTP_404_NOT_FOUND)
 #     serializer = WorkspaceSerializer(workspace)
 #     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -213,7 +213,7 @@ def specific_workspace(request, id):
         #profile = Profile.objects.get(id=1)
         try: 
             workspace = Workspace.objects.get(id=id)
-        except(Workspace.DeosNotExist) as e:
+        except(Workspace.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         members = workspace.members.all()
@@ -307,7 +307,7 @@ def specific_note(request, n_id):
     if request.method == 'GET':
         try:
             current_note = Note.objects.get(id=n_id)
-        except(Note.DeosNotExist) as e:
+        except(Note.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = NoteSerializer(current_note)
         Response(serializer.data, status=status.HTTP_200_OK)
@@ -315,7 +315,7 @@ def specific_note(request, n_id):
     elif request.method == 'PATCH':
         try:
             current_note = Note.objects.get(id=n_id)
-        except(Note.DeosNotExist) as e:
+        except(Note.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = NoteSerializer(current_note, data=request.data, partial=True)
         if serializer.is_valid():
@@ -362,7 +362,7 @@ def textblock_child_of_note(request, n_id):
     elif request.method == 'POST':
         try:
             note = Note.objects.get(id=n_id)
-        except(Note.DeosNotExist) as e:
+        except(Note.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         data = {
@@ -398,7 +398,7 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
 def textblock_child_of_agenda(request, a_id):
     try:
         agenda = Agenda.objects.get(id=a_id)
-    except(Agenda.DeosNotExist) as e:
+    except(Agenda.DoesNotExist) as e:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         queryset = TextBlock.objects.filter(
@@ -495,7 +495,7 @@ def agenda_child_of_note(request, n_id):
     elif request.method == 'POST':
         try:
             note = Note.objects.get(id=n_id)
-        except(Note.DeosNotExist) as e:
+        except(Note.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         data = {
@@ -534,7 +534,7 @@ def agenda_child_of_agenda(request, a_id):
     try:
         # parent agenda에 해당함
         agenda = Agenda.objects.get(id=a_id)
-    except(Agenda.DeosNotExist) as e:
+    except(Agenda.DoesNotExist) as e:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
@@ -633,7 +633,7 @@ def todoblock_child_of_note(request, n_id):
     elif request.method == 'POST':
         try:
             note = Note.objects.get(id=n_id)
-        except(Note.DeosNotExist) as e:
+        except(Note.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         data = {
@@ -669,7 +669,7 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
 def todoblock_child_of_agenda(request, a_id):
     try:
         agenda = Agenda.objects.get(id=a_id)
-    except(Agenda.DeosNotExist) as e:
+    except(Agenda.DoesNotExist) as e:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         queryset = Todo.objects.filter(
