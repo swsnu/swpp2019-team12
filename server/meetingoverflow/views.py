@@ -12,6 +12,7 @@ import json
 from django.db.models import Q
 import dateutil.parser
 
+
 @api_view(['PATCH', 'POST'])
 def signup(request):
     if request.method == 'PATCH':
@@ -47,8 +48,6 @@ def signup(request):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    
-
 
 @api_view(['POST'])
 def signin(request):
@@ -75,69 +74,94 @@ def signout(request):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+'''
+# ===================================================
+# Profile 관련 GET POST PATCH
+# ===================================================
+'''
+# 추가된 api / Profile에 닉네임 저장
+@api_view(['GET', 'POST', 'PATCH'])
+def profile(request):
         
-
-@api_view(['GET'])
-def get_current_user(request):
+    # ===========Front implementation===========
+    # 현재 로그인한 유저의 User, Profile 정보 리턴
+    # axios.get('/api/profile/')
+    # ==========================================
     if request.method == 'GET':
-        if request.user.is_authenticated:
+        try: 
+            user = request.user
+            profile = request.user.profile
+        except(Profile.DoesNotExist) as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        user_serializer = EncapsulatedUserSerializer(user)
+        profile_serializer = ProfileSerializer(profile)
+
+        data = {
+            "user": user_serializer.data,
+            "profile": profile_serializer.data,
+        }
+        return Response(data, status=status.HTTP_200_OK)
+
+    elif request.method == 'POST':
+        user = request.user
+        profile = request.user.profile
+        workspace_id = ''
+
+        try:
+            username = request.data['username'] # search string
+            workspace_id = request.data['workspace_id']
+        except (KeyError):
+            username = request.data['username'] # search string
+
+        if workspace_id:
             try:
-                current_user = request.user
-                current_profile = Profile.objects.get(user=current_user)
-
-                user_serializer = SearchSerializer(current_user)
-                profile_serializer = ProfileSerializer(current_profile)
-
-                user_info = { 
-                    'user': user_serializer.data,
-                    'profile': profile_serializer.data
-                }
-                return Response(user_info, status=status.HTTP_200_OK)
-            except(Profile.DoesNotExist):
+                workspace = Workspace.objects.get(id=workspace_id)
+            except(Workspace.DoesNotExist) as e:
                 return Response(status=status.HTTP_404_NOT_FOUND)
-        else: 
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-
-@api_view(['GET'])
-def search_user(request, username):
-    if request.method == 'GET':
-        try:
-            queryset = User.objects.filter(username__contains=username)
-            serializer = SearchSerializer(queryset, many=True)
-            
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET'])
-def search_user_in_workspace(request, username, workspace_id):
-    if request.method == 'GET':
-        try:
-            workspace = Workspace.objects.get(id=workspace_id)
             members = workspace.members.all()
-            users = []
+            data = []
 
             for member in members:
                 user = member.user
+                profile = member.user.profile
                 if username in user.username:
-                    user_serializer = UserSerializer(user)
-                    users.append(user_serializer.data)
+                    user_serializer = EncapsulatedUserSerializer(user)
+                    profile_serializer = ProfileSerializer(profile)
 
-            return Response(users, status=status.HTTP_200_OK)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+                    element = {
+                        'user': user_serializer.data,
+                        'profile': profile_serializer.data,
+                    }
+                    data.append(element)
 
-# 추가된 api / Profile에 닉네임 저장
-@api_view(['GET', 'PATCH'])
-def profile(request, id):
-    if request.method == 'GET':
-        try: 
-            profile = Profile.objects.get(id=id)
-        except(Profile.DoesNotExist):
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = ProfileSerializer(profile)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            try:
+                users = User.objects.filter(username__contains=username)
+                print(users)
+                profiles = Profile.objects.filter(user__username__contains=username)
+                print(profiles)
+            except (User.DoesNotExist) as e:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+            user_serializer = EncapsulatedUserSerializer(users, many=True)
+            profile_serializer = ProfileSerializer(profiles, many=True)
+
+            data = {
+                "user": user_serializer.data,
+                "profile": profile_serializer.data,
+            }
+            return Response(data, status=status.HTTP_200_OK)
+    
+
+        
+
+
+
     
     # ===========Front implementation===========
     # Signup 성공시 Response로 반환되는 새 유저의 id 로
@@ -147,7 +171,7 @@ def profile(request, id):
         # queryset = request.user.profile
         try: 
             queryset = Profile.objects.get(id=id)
-        except(Profile.DoesNotExist):
+        except(Profile.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ProfileSerializer(queryset, data=request.data, partial=True)
         if serializer.is_valid():
@@ -163,11 +187,21 @@ def profile(request, id):
 # 모든 workspace GET 의 경우 admin 정보만 같이 리턴
 # for FE/WorkspaceSelection
 # ===================================================
+"""
+====================================
+POST 예시:
+    {
+        "name":"workspace[2]", 
+        "admins":[1, 2], 
+        "members":[1, 2, 3]
+    }
+====================================
+"""
 @api_view(['GET', 'POST'])
 def workspace(request):
     if request.method == 'GET':
-        profile = Profile.objects.filter(user__username=request.user.username)
-        queryset = Workspace.objects.filter(members__in=profile)
+        profile = request.user.profile
+        queryset = Workspace.objects.filter(members__in=[profile])
         admins = []
 
         for queryset_element in queryset:
@@ -189,6 +223,27 @@ def workspace(request):
             members = request.data['members'] # members id list
         except(KeyError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        admin_list = []
+        for admin in admins:
+            print(admin)
+            try:
+                admin_list.append(Profile.objects.get(id=admin))
+            except(Profile.DoesNotExist) as e:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+        member_list = []
+        for member in members:
+            try:
+                member_list.append(Profile.objects.get(id=member))
+            except(Profile.DoesNotExist) as e:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+        Workspace.objects.create(name=name)
+        workspace = Workspace.objects.get(name=name)
+        workspace.admins.set(admin_list)
+        workspace.members.set(member_list)
+        workspace.save()
+        return Response(status=status.HTTP_201_CREATED)
 
         admin_list = []
         for admin in admins:
@@ -221,43 +276,53 @@ def workspace(request):
 # GET의 경우 관련된 모든 정보 리턴 for FE/Workspace
 # (workspace, member, admin, note, agenda, todo)
 # ===================================================
+"""
+# ======================== RESTful Code ==========================
+# if request.method == 'GET':
+#     try: 
+#         workspace = Workspace.objects.get(id=id)
+#     except(Workspace.DoesNotExist) as e:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+#     serializer = WorkspaceSerializer(workspace)
+#     return Response(serializer.data, status=status.HTTP_200_OK)
+#
+# => workspace와 관련된 정보만을 반환하는 RESTful 한 GET 코드
+#
+# Frontend 에서 필요한 각 정보별로 API를 따로 호출하는 것이 더 바람직!
+# 아래의 경우 여러 serializer를 거쳐야 하므로 한 api가 비대해지는 문제점 발생
+# ================================================================
+"""
 @api_view(['GET', 'PATCH', 'DELETE'])
 def specific_workspace(request, id):
     if request.method == 'GET':
-        profile = Profile.objects.filter(user__username=request.user.username)
-
-        workspaces = Workspace.objects.filter(members__in=profile)
-        workspace = Workspace.objects.filter(members__in=profile).get(id=id)
-        members = workspace.members.all()
-        admins = workspace.admins.all()
-        notes = Note.objects.filter(workspace=workspace)
-        agendas = Agenda.objects.filter(note__in=notes)
-        todos = Todo.objects.filter(note__in=notes).filter(assignees__in=profile)
-
-        if workspace is not None:
-            workspaces_serializer = WorkspaceSerializer(workspaces, many=True)
-            workspace_serializer = WorkspaceSerializer(workspace)
-            member_serializer = ProfileSerializer(members, many=True)
-            admin_serializer = ProfileSerializer(admins, many=True)
-            note_serializer = NoteSerializer(notes, many=True)
-            agenda_serializer = AgendaSerializer(agendas, many=True)
-            todo_serializer = TodoSerializer(todos, many=True)
-
-            data = {
-                "workspaces": workspaces_serializer.data,
-                "workspace": workspace_serializer.data,
-                "members": member_serializer.data,
-                "admins": admin_serializer.data,
-                "notes": note_serializer.data,
-                "agendas": agenda_serializer.data,
-                "todos": todo_serializer.data
-            }
-
-            return Response(data, status=status.HTTP_200_OK)
-        else:
+        profile = request.user.profile
+        #profile = Profile.objects.get(id=1)
+        try: 
+            workspace = Workspace.objects.get(id=id)
+        except(Workspace.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        members = workspace.members.all()
+        member_serializer = ProfileSerializer(members, many=True)
+        admins = workspace.admins.all()
+        admin_serializer = ProfileSerializer(admins, many=True)
+        notes = Note.objects.filter(workspace=workspace)
+        note_serializer = NoteSerializer(notes, many=True)
+        agendas = Agenda.objects.filter(note__workspace=workspace)
+        agenda_serializer = AgendaSerializer(agendas, many=True)
+        todos = Todo.objects.filter(assignees__in=[profile])
+        todo_serializer = TodoSerializer(todos, many=True)
 
-
+        serializer = {
+            "members": member_serializer.data,
+            "admins": admin_serializer.data,
+            "notes": note_serializer.data,
+            "agendas": agenda_serializer.data,
+            "todos": todo_serializer.data
+        }
+        
+        return Response(serializer, status=status.HTTP_200_OK)
+        
     elif request.method == 'PATCH':
         try:
             current_workspace = Workspace.objects.get(id=id)
@@ -279,32 +344,29 @@ def specific_workspace(request, id):
         return Response(status=status.HTTP_200_OK)
 
 
-# ===================================================
-# user id의 경우 로그인한 사람으로부터 
-# request.user.id로 가져올 수 있으니 url에 넣을 필요가 있나?
-# ===================================================
+# 어떤 유저의 워크스페이스 상의 assign된 모든 Todo 반환
 @api_view(['GET'])
-def specific_todo(request, w_id, u_id):
+def workspace_todo(request, w_id):
     if request.method == 'GET':
-        profile = Profile.objects.get(id=u_id)
+        profile = request.user.profile
         queryset = Todo.objects.filter(workspace__id=w_id, assignees__in=[profile])
         if queryset.count() > 0:
-            serializer = TodoSerializer(queryset)
+            serializer = TodoSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
+# 어떤 유저의 워크스페이스 상의 모든 agenda 반환
 @api_view(['GET'])
-def get_workspace_of_user(request, id):
+def workspace_agenda(request, w_id):
     if request.method == 'GET':
-        profile = Profile.objects.get(id=u_id)
-        queryset = Workspace.objects.filter(members__in=[profile])
-        serializer = WorkspaceSerializer(queryset)
-        if serializer.is_valid():
+        queryset = Agenda.objects.filter(note__workspace=workspace)
+        if queryset.count() > 0:
+            serializer = AgendaSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['GET', 'POST'])
@@ -352,22 +414,19 @@ def notes(request, w_id):
 
 
 @api_view(['GET', 'PATCH', 'DELETE'])
-def specific_note(request, w_id, n_id):
+def specific_note(request, n_id):
     if request.method == 'GET':
         try:
             current_note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist):
+        except(Note.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = NoteSerializer(note)
-        if serializer.is_valid():
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer = NoteSerializer(current_note)
+        Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
         try:
             current_note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist):
+        except(Note.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = NoteSerializer(current_note, data=request.data, partial=True)
         if serializer.is_valid():
@@ -385,17 +444,405 @@ def specific_note(request, w_id, n_id):
         return Response(status=status.HTTP_200_OK)
 
 
-# @api_view(['GET', 'POST'])
-# def textblock(request, w_id, n_id, is_parent_note):
-#     if request.method == 'GET':
-#         if is_parent_note:
-#             queryset = TextBlock.objects.filter(
-#                             is_parent_note=True, 
-#                             note__id=n_id
-#             )
-#         else:
-#             queryset = TextBlock.objects.filter(
-#                             is_parent_note=False,
-#                             parent_agenda__id=n_id
-#             )
+"""
+===================================================
+url: /api/note/:id/textblock/
+Note에 직접 속해있는 TextBlock을 모두 가져오거나 생성하는 API
+POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+    {
+        "content": "Hello World",
+        "layer_x": 0,
+        "layer_y": 1
+    }
+===================================================
+"""
+@api_view(['GET', 'POST'])
+def textblock_child_of_note(request, n_id):
+    # 해당 노트의 모든 TextBlock 리스트 반환
+    if request.method == 'GET':
+        queryset = TextBlock.objects.filter(
+            is_parent_note=True, 
+            note__id=n_id
+        )
+        if queryset.count() > 0:
+            serializer = TextBlockSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         
+    elif request.method == 'POST':
+        try:
+            note = Note.objects.get(id=n_id)
+        except(Note.DoesNotExist) as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        data = {
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'note': n_id,
+            'is_parent_note': True
+        }
+        serializer = TextBlockSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+"""
+==================================================
+url: /api/agenda/:id/textblock/
+Agenda에 속해있는 TextBlock을 모두 가져오거나 생성하는 API
+
+POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+    {
+        "content": "Hello World",
+        "layer_x": 0,
+        "layer_y": 1
+    }
+==================================================
+"""
+@api_view(['GET', 'POST'])
+def textblock_child_of_agenda(request, a_id):
+    try:
+        agenda = Agenda.objects.get(id=a_id)
+    except(Agenda.DoesNotExist) as e:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        queryset = TextBlock.objects.filter(
+            is_parent_note=False, 
+            note__id=agenda.note.id,
+            parent_agenda__id=a_id
+        )
+        if queryset.count() > 0:
+            serializer = TextBlockSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    elif request.method == 'POST':        
+        data = {
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'note': agenda.note.id,
+            'parent_agenda':a_id,
+            'is_parent_note': False
+        }
+        serializer = TextBlockSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            agenda.has_text_block = True
+            agenda.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+"""
+================================================
+url: /api/textblock/id/
+PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
+정보를 전달하면 됨. 예를 들어 content만 수정하고자 한다면 
+다음과 같은 Json을 날리면 됨. 
+    {
+        "content": "Modification",
+    }
+================================================
+"""
+@api_view(['GET', 'PATCH', 'DELETE'])
+def modify_textblock(request, id):
+    try:
+        current_textblock = TextBlock.objects.get(id=id)
+    except(TextBlock.DoesNotExist) as e:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        serializer = TextBlockSerializer(current_textblock)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == 'PATCH':
+        serializer = TextBlockSerializer(current_textblock, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'DELETE':
+        current_textblock.delete()
+        return Response(status=status.HTTP_200_OK)
+
+
+"""
+===================================================
+url: /api/note/:id/agendas/
+Note에 직접 속해있는 Agenda들을 모두 가져오거나 생성하는 API
+POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+    {
+        "content": "Hello World",
+        "layer_x": 0,
+        "layer_y": 1
+    }
+===================================================
+"""
+@api_view(['GET', 'POST'])
+def agenda_child_of_note(request, n_id):
+    # 해당 노트의 모든 agenda block 리스트 반환
+    if request.method == 'GET':
+        queryset = TextBlock.objects.filter(
+            is_parent_note=True, 
+            note__id=n_id
+        )
+        if queryset.count() > 0:
+            serializer = TextBlockSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    elif request.method == 'POST':
+        try:
+            note = Note.objects.get(id=n_id)
+        except(Note.DoesNotExist) as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        data = {
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'note': n_id,
+            'is_parent_note': True
+        }
+        serializer = AgendaSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            agenda.has_agenda_block = True
+            agenda.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+"""
+==================================================
+url: /api/agenda/:id/agendas/
+Agenda에 속해있는 하위 agenda를 모두 가져오거나 생성하는 API
+
+POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+    {
+        "content": "Hello World",
+        "layer_x": 0,
+        "layer_y": 1
+    }
+==================================================
+"""
+@api_view(['GET', 'POST'])
+def agenda_child_of_agenda(request, a_id):
+    try:
+        # parent agenda에 해당함
+        agenda = Agenda.objects.get(id=a_id)
+    except(Agenda.DoesNotExist) as e:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        queryset = Agenda.objects.filter(
+            is_parent_note=False, 
+            # parent agenda가 중첩되어있더라도 결국 가장 최상위
+            # agenda는 note에 속해있으므로 이 방식으로 note id 획득 가능함
+            note__id=agenda.note.id,
+            parent_agenda__id=a_id
+        )
+        if queryset.count() > 0:
+            serializer = AgendaSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    elif request.method == 'POST':
+        data = {
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'note': agenda.note.id,
+            'parent_agenda':a_id,
+            'is_parent_note': False
+        }
+        serializer = AgendaSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+"""
+================================================
+url: /api/agenda/:id/
+PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
+정보를 전달하면 됨. 예를 들어 is_done만 수정하고자 한다면 
+다음과 같은 Json을 날리면 됨. 
+    {
+        "is_done": "true",
+    }
+================================================
+"""
+@api_view(['GET', 'PATCH', 'DELETE'])
+def modify_agenda(request, id):
+    try:
+        current_agenda = Agenda.objects.get(id=id)
+    except(Agenda.DoesNotExist) as e:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = AgendaSerializer(current_agenda)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+    elif request.method == 'PATCH':
+        serializer = AgendaSerializer(current_agenda, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'DELETE':
+        current_agenda.delete()
+        return Response(status=status.HTTP_200_OK)
+
+
+"""
+===================================================
+url: /api/note/:id/todos/
+Note에 직접 속해있는 Todo를 모두 가져오거나 생성하는 API
+POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+    {
+        "content": "Change the world",
+        "layer_x": 0,
+        "layer_y": 1
+    }
+===================================================
+"""
+@api_view(['GET', 'POST'])
+def todoblock_child_of_note(request, n_id):
+    # 해당 노트의 모든 todoblock 리스트 반환
+    if request.method == 'GET':
+        queryset = Todo.objects.filter(
+            is_parent_note=True, 
+            note__id=n_id
+        )
+        if queryset.count() > 0:
+            serializer = TodoSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    elif request.method == 'POST':
+        try:
+            note = Note.objects.get(id=n_id)
+        except(Note.DoesNotExist) as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        data = {
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'note': n_id,
+            'is_parent_note': True
+        }
+        serializer = TodoSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+"""
+==================================================
+url: /api/agenda/:id/todos/
+Agenda에 속해있는 TextBlock을 모두 가져오거나 생성하는 API
+
+POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+    {
+        "content": "Run the world",
+        "layer_x": 0,
+        "layer_y": 1
+    }
+==================================================
+"""
+@api_view(['GET', 'POST'])
+def todoblock_child_of_agenda(request, a_id):
+    try:
+        agenda = Agenda.objects.get(id=a_id)
+    except(Agenda.DoesNotExist) as e:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        queryset = Todo.objects.filter(
+            is_parent_note=False, 
+            note__id=agenda.note.id,
+            parent_agenda__id=a_id
+        )
+        if queryset.count() > 0:
+            serializer = TodoSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    elif request.method == 'POST':        
+        data = {
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'note': agenda.note.id,
+            'parent_agenda':a_id,
+            'is_parent_note': False
+        }
+        serializer = TodoSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            agenda.has_todo_block = True
+            agenda.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+"""
+================================================
+url: /api/todo/:id/
+PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
+정보를 전달하면 됨. 예를 들어 content만 수정하고자 한다면 
+다음과 같은 Json을 날리면 됨. 
+    {
+        "content": "Modification",
+    }
+================================================
+"""
+@api_view(['GET', 'PATCH', 'DELETE'])
+def modify_todoblock(request, id):
+    try:
+        current_todo = Todo.objects.get(id=id)
+    except(Todo.DoesNotExist) as e:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = TodoSerializer(current_todo)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == 'PATCH':
+        serializer = TodoSerializer(current_todo, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'DELETE':
+        current_todo.delete()
+        return Response(status=status.HTTP_200_OK)
