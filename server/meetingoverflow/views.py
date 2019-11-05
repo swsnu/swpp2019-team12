@@ -142,17 +142,21 @@ def profile(request):
         else:
             try:
                 users = User.objects.filter(username__contains=username)
-                profiles = Profile.objects.filter(user__username__contains=username)
             except (User.DoesNotExist) as e:
                 return Response(status=status.HTTP_404_NOT_FOUND)
+            
+            data = []
 
-            user_serializer = EncapsulatedUserSerializer(users, many=True)
-            profile_serializer = ProfileSerializer(profiles, many=True)
+            for user in users:
+                user_serializer = EncapsulatedUserSerializer(user)
+                profile_serializer = ProfileSerializer(user.profile)
 
-            data = {
-                "user": user_serializer.data,
-                "profile": profile_serializer.data,
-            }
+                element= {
+                    "user": user_serializer.data,
+                    "profile": profile_serializer.data,
+                }
+                data.append(element)
+
             return Response(data, status=status.HTTP_200_OK)
     
 
@@ -223,38 +227,18 @@ def workspace(request):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         admin_list = []
         for admin in admins:
+            print()
             print(admin)
             try:
-                admin_list.append(Profile.objects.get(id=admin))
+                admin_list.append(Profile.objects.get(user__id=admin))
             except(Profile.DoesNotExist) as e:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
         member_list = []
         for member in members:
             try:
-                member_list.append(Profile.objects.get(id=member))
+                member_list.append(Profile.objects.get(user__id=member))
             except(Profile.DoesNotExist) as e:
-                return Response(status=status.HTTP_404_NOT_FOUND)
-
-        Workspace.objects.create(name=name)
-        workspace = Workspace.objects.get(name=name)
-        workspace.admins.set(admin_list)
-        workspace.members.set(member_list)
-        workspace.save()
-        return Response(status=status.HTTP_201_CREATED)
-
-        admin_list = []
-        for admin in admins:
-            try:
-                admin_list.append(Profile.objects.get(user__username=admin['username']))
-            except(Profile.DoesNotExist):
-                return Response(status=status.HTTP_404_NOT_FOUND)
-
-        member_list = []
-        for member in members:
-            try:
-                member_list.append(Profile.objects.get(user__username=member['username']))
-            except(Profile.DoesNotExist):
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
         Workspace.objects.create(name=name)
@@ -265,6 +249,7 @@ def workspace(request):
 
         workspace_serializer = WorkspaceSerializer(workspace)
         return Response(workspace_serializer.data, status=status.HTTP_201_CREATED)
+
 
 
 
