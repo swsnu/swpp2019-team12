@@ -26,9 +26,8 @@ export default class NoteRightUnfocused extends Component {
     componentDidMount() {
         // 현재 노트의 형제 노트들을 모두 가져와서 state에 저장
         axios.get(`/api/siblingnotes/${this.props.note_id}`).then(res => {
-            console.log(res);
             this.setState({
-                other_notes: res.data.filter(r => r.id != this.props.n_id)
+                other_notes: res.data.filter(r => r.id != this.props.note_id)
             });
         });
     }
@@ -51,7 +50,7 @@ export default class NoteRightUnfocused extends Component {
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
-                            block_type: 'Agenda',
+                            block_type: 'agenda',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
@@ -69,7 +68,7 @@ export default class NoteRightUnfocused extends Component {
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
-                            block_type: 'Text',
+                            block_type: 'textblock',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
@@ -97,7 +96,6 @@ export default class NoteRightUnfocused extends Component {
     render() {
         return (
             <div className="Note-right-unfocused">
-                <div className="Note-right-unfocused-overlay" />
                 <div className="Note-right-page-unfocused__title">
                     Note Right Unfocused
                 </div>
@@ -110,18 +108,21 @@ export default class NoteRightUnfocused extends Component {
                         is_NoteRight
                     />
                 </div>
-                <NoteLeftInfo
-                    note_title={this.state.title}
-                    meeting_date={this.state.meeting_date}
-                    participants={this.state.participants}
-                    moment={this.state.moment}
-                    isRightUnfocused={true}
-                />
-                <NoteLeftBlock
-                    note_id={this.state.note_id}
-                    blocks={this.state.blocks}
-                    isLeft={false}
-                />
+                <div className="Note-Info-Area">
+                    <NoteLeftInfo
+                        note_title={this.state.title}
+                        meeting_date={this.state.meeting_date}
+                        participants={this.state.participants}
+                        moment={this.state.moment}
+                        isRightUnfocused={true}
+                    />
+                    <NoteLeftBlock
+                        className="Note-block-area"
+                        note_id={this.state.note_id}
+                        blocks={this.state.blocks}
+                        isLeft={false}
+                    />
+                </div>
             </div>
         );
     }

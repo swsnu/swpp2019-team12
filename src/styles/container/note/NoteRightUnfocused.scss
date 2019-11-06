@@ -1,6 +1,7 @@
 .Note-right-unfocused {
     position: relative;
     min-width: 50%;
+    overflow: auto;
 }
 .Note-right-unfocused-overlay {
     position: absolute;
@@ -14,4 +15,10 @@
 .Note-right-page-clickable-area {
     position: relative;
     z-index: 2100001;
+}
+
+.Note-Info-area {
+    margin: 30px;
+    border: 1px solid #000000;
+    padding: 30px;
 }
