@@ -2,6 +2,7 @@ import React from 'react';
 import { map } from 'lodash';
 
 import { Label, SubLabel } from './Label';
+import InviteMember from './InviteMember';
 import { ReactComponent as UserIcon } from '../../assets/icons/member_default_icon.svg';
 
 const MemberInfo = props => {
@@ -23,9 +24,7 @@ const MemberInfo = props => {
             </div>
 
             <SubLabel title="Invite Member" />
-            <div className="memberInfo__inviteMemberButton">
-                <button className="secondary">Invite Member</button>
-            </div>
+            <InviteMember />
         </div>
     );
 };

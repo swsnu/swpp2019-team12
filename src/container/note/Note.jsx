@@ -3,6 +3,8 @@ import axios from 'axios';
 import moment from 'moment';
 
 import NoteLeft from './NoteLeft';
+import NoteRightFocused from './NoteRightFocused';
+
 class Note extends Component {
     constructor(props) {
         super(props);
@@ -96,6 +98,7 @@ class Note extends Component {
                     ...this.state,
                     note_id: res['data']['id'],
                     title: res['data']['title'],
+                    location: res['data']['location'],
                     created_at: res['data']['created_at'],
                     last_modified_at: res['data']['last_modified_at'],
                     ml_speech_text: res['data']['ml_speech_text'],
@@ -188,6 +191,10 @@ class Note extends Component {
         this.setState({
             moment
         });
+    };
+
+    handleChangeLocation = e => {
+        this.setState({ location: e.target.value });
     };
 
     handleAddAgendaBlock = note_id => {
@@ -316,19 +323,21 @@ class Note extends Component {
                     participants={this.state.participants}
                     note_id={this.state.note_id}
                     moment={this.state.moment}
+                    location={this.state.location}
                     blocks={this.state.blocks}
                     handleClickBlock={this.handleClickBlock}
                     handleClickNoteLeft={this.handleClickNoteLeft}
                     handleChangeTitle={this.handleChangeTitle}
                     handleChangeDatetime={this.handleChangeDatetime}
+                    handleChangeLocation={this.handleChangeLocation}
                     handleAddAgendaBlock={this.handleAddAgendaBlock}
                     handleAddTextBlock={this.handleAddTextBlock}
                     handleAddTodoBlock={this.handleAddTodoBlock}
                     handleAddParticipant={this.handleAddParticipant}
                 />
-                <div className="Note-right" onClick={this.handleClickNoteRight}>
-                    <div className="Note-right-container">RIGHT</div>
-                </div>
+                <NoteRightFocused
+                // handleClickNoteRight={this.handleClickNoteRight}
+                />
             </div>
         );
     }

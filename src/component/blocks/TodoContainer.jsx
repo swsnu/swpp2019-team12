@@ -25,59 +25,52 @@ class TodoContainer extends Component {
                         Assignees
                     </div>
                 </div>
-                <div className="full-size-block-content">
-                    <div className="full-size-block todoCard-content-container">
-                        {map(this.props.todos, (todo, i) => (
-                            <div
-                                key={i}
-                                className="full-size-block todoCard-content-element">
-                                <div className="full-size-block todoCard-content-element__todo">
-                                    <div className="full-size-block todoCard-content-element__todo-todo-part">
-                                        {todo.is_done ? (
-                                            <div
-                                                className="full-size-block todoCard-content-element__checkbox-icon done"
-                                                onClick={() =>
-                                                    this.handleToggleTodo(
-                                                        todo.id
-                                                    )
-                                                }
-                                            />
-                                        ) : (
-                                            <div
-                                                className="full-size-block todoCard-content-element__checkbox-icon"
-                                                onClick={() =>
-                                                    this.handleToggleTodo(
-                                                        todo.id
-                                                    )
-                                                }
-                                            />
-                                        )}
+                <div className="full-size-block todoCard-content-container">
+                    {map(this.props.todos, (todo, i) => (
+                        <div
+                            key={i}
+                            className="full-size-block todoCard-content-element">
+                            <div className="full-size-block todoCard-content-element__todo">
+                                <div className="full-size-block todoCard-content-element__todo-todo-part">
+                                    {todo.is_done ? (
+                                        <div
+                                            className="full-size-block todoCard-content-element__checkbox-icon done"
+                                            onClick={() =>
+                                                this.handleToggleTodo(todo.id)
+                                            }
+                                        />
+                                    ) : (
+                                        <div
+                                            className="full-size-block todoCard-content-element__checkbox-icon"
+                                            onClick={() =>
+                                                this.handleToggleTodo(todo.id)
+                                            }
+                                        />
+                                    )}
 
-                                        {todo.is_done ? (
-                                            <div className="full-size-block todoCard-content-element__todo-text done">
-                                                <span>{`#${todo.id}`}</span>
-                                                {`${todo.content}`}
-                                            </div>
-                                        ) : (
-                                            <div className="full-size-block todoCard-content-element__todo-text">
-                                                <span>{`#${todo.id}`}</span>
-                                                {`${todo.content}`}
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="full-size-block todoCard-content-element__todo-assignee-part">
-                                        <div className="full-size-block todoCard-content-element__todo-assignee">
-                                            {map(
-                                                todo.assignees_info,
-                                                (info, i) =>
-                                                    info['nickname'] + ' '
-                                            )}
+                                    {todo.is_done ? (
+                                        <div className="full-size-block todoCard-content-element__todo-text done">
+                                            <span>{`#${todo.id}`}</span>
+                                            {`${todo.content}`}
                                         </div>
+                                    ) : (
+                                        <div className="full-size-block todoCard-content-element__todo-text">
+                                            <span>{`#${todo.id}`}</span>
+                                            {`${todo.content}`}
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="full-size-block todoCard-content-element__todo-assignee-part">
+                                    <div className="full-size-block todoCard-content-element__todo-assignee">
+                                        {map(
+                                            todo.assignees_info,
+                                            (info, i) => info['nickname'] + ' '
+                                        )}
                                     </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         );

@@ -1,13 +1,32 @@
 .NoteLeftBlock-container {
     width: 100%;
-    min-height: 500px;
-    margin-top: 50px;
+    min-height: rem(500px);
+    margin-top: rem(50px);
 
     display: flex;
     flex-direction: row;
 
-    .NoteLeftBlock-create-buttons {
+    .NoteLeftBlock-button-container {
+        position: fixed;
         width: rem(50px);
+        top: 20%;
+        height: 60%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:hover {
+            .NoteLeftBlock-create-buttons {
+                left: 0;
+            }
+        }
+    }
+    .NoteLeftBlock-create-buttons {
+        position: relative;
+        width: rem(50px);
+        left: rem(-60px);
+        transition: left 300ms ease;
 
         display: flex;
         flex-direction: column;
@@ -22,7 +41,8 @@
             border-top-left-radius: 0;
             border-bottom-right-radius: 0.28571rem;
             border-bottom-left-radius: 0;
-            background-color: $quaternary;
+            // background-color: $gray;
+            border-color: $quaternary;
         }
 
         .auto-type-button {
@@ -49,32 +69,47 @@
         min-height: rem(100px);
         margin-bottom: rem(20px);
 
-        background: $white;
+        border-top: rem(4px) solid $secondary;
         border-radius: rem(7px);
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+
+        background: $white;
         overflow: hidden;
-        border: 0.5px solid $tertiary;
+
+        &:hover {
+            box-shadow: rem(2px) rem(2px) rem(4px) rem(2px) $lightgray;
+        }
 
         .full-size-block-title {
-            padding: rem(10px);
-            background: $primary;
+            padding: rem(10px) rem(10px) 0 rem(10px);
+            // background: $primary;
 
-            .full-size-block-title__text {
+            .full-size-block-title__label {
+                color: $secondary;
+            }
+            .full-size-block-content__text {
                 font-size: rem(14px);
                 font-weight: 400;
-                color: $white;
+                color: $black;
                 text-align: center;
             }
         }
 
         .full-size-block-subtitle {
-            width: 100%;
-
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            padding: rem(5px) rem(25px) 0 rem(20px);
+        }
 
-            padding: rem(10px) rem(30px) rem(10px) rem(20px);
-            color: $gray;
+        .full-size-block-content {
+            max-height: rem(120px);
+            padding: rem(10px);
+            overflow: auto;
+            display: flex;
+            .full-size-block-content__text {
+                color: $black;
+            }
         }
     }
 }

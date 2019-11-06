@@ -56,8 +56,7 @@ const CreateModalMember = props => {
                                     handleSelectMember(
                                         member.user && member.user
                                     )
-                                }
-                            >
+                                }>
                                 {member.user && member.user.username}
                             </div>
                         ))}
@@ -69,8 +68,7 @@ const CreateModalMember = props => {
                     <div
                         key={i}
                         className="createModal-member__member--added-element"
-                        onClick={() => handleDeleteMember(member)}
-                    >
+                        onClick={() => handleDeleteMember(member)}>
                         {member.username}
                     </div>
                 ))}
@@ -107,8 +105,7 @@ const CreateModalAdmin = props => {
                                 className="createModal-member__member--searched-email"
                                 onClick={() =>
                                     handleSelectAdmin(admin.user && admin.user)
-                                }
-                            >
+                                }>
                                 {admin.user && admin.user.username}
                             </div>
                         ))}
@@ -120,8 +117,7 @@ const CreateModalAdmin = props => {
                     <div
                         key={i}
                         className="createModal-member__member--added-element"
-                        onClick={() => handleDeleteAdmin(admin)}
-                    >
+                        onClick={() => handleDeleteAdmin(admin)}>
                         {admin.username}
                     </div>
                 ))}
@@ -150,7 +146,7 @@ class CreateModal extends Component {
                 const {
                     data: { user }
                 } = res;
-                this.setState({ addedAdmin: [user] });
+                this.setState({ addedAdmin: [user], addedAdminId: [user.id] });
             })
             .catch(err => console.error(err));
     }
@@ -248,6 +244,7 @@ class CreateModal extends Component {
 
                 if (status === 201) {
                     history.push(`/${name}/${id}`);
+                    window.location.reload();
                 }
             });
     };
@@ -268,8 +265,7 @@ class CreateModal extends Component {
         return (
             <div
                 className="createModal overlayChild"
-                onClick={e => e.stopPropagation()}
-            >
+                onClick={e => e.stopPropagation()}>
                 <CreateModalLabel />
                 <CreateModalTitle
                     title={title}
@@ -300,8 +296,7 @@ class CreateModal extends Component {
                     {this.handleCreateValidation() ? (
                         <button
                             className="primary"
-                            onClick={this.handleCreateWorkspace}
-                        >
+                            onClick={this.handleCreateWorkspace}>
                             CONFIRM
                         </button>
                     ) : (

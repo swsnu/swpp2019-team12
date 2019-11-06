@@ -17,7 +17,7 @@ const MeetingNoteOverview = props => {
                         key={i}
                         onClick={() => {
                             history.push(`/note/${note.id}/`);
-                            window.location.reload();
+                            // window.location.reload();
                         }}
                         className="meetingNoteOverview-content__element">
                         <NoteIcon className="meetingNoteOverview-content__img" />

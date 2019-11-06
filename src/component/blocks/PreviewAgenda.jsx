@@ -23,8 +23,8 @@ class PreviewAgenda extends Component {
                     this.props.handleClickBlock(this.props.type, this.props.id)
                 }>
                 <div className="full-size-block-title PreviewAgenda">
-                    <div className="full-size-block-title__text PreviewAgenda">
-                        Preview Agenda
+                    <div className="full-size-block-title__label PreviewAgenda">
+                        Agenda
                     </div>
                 </div>
                 <div className="full-size-block-content PreviewAgenda">
