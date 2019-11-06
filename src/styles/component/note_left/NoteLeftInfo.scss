@@ -1,31 +1,56 @@
 .NoteLeftInfo {
-    padding: 0 0 0 100px;
+    padding: 0 rem(60px);
+    // padding: 0 0 0 100px;
 
     .NoteLeftInfo-title__container {
-        width: 100%;
-        height: rem(50px);
+        // width: 100%;
+        // height: rem(50px);
 
         display: flex;
         flex-direction: column;
         align-items: center;
-        
+        margin-bottom: rem(20px);
+
         .NoteLeftInfo__currentNote {
-            font-size: rem(15px);
+            position: relative;
+            // font-size: rem(15px);
         }
     }
 
     .NoteLeftInfo-date__container {
-        width: 100%;
-        height: rem(45px);
+        width: 50%;
+        // height: rem(45px);
 
         .NoteLeftInfo__meetingDate {
             padding: 5px 0 0 3px;
         }
     }
 
+    .NoteLeftInfo__currentNote {
+        max-width: 100%;
+    }
+    .rdt {
+        width: 70%;
+    }
     .form-control {
-        background: $whitegray;
-        border: 0px none black;
+        // width: 100%;
+        color: $black;
+        background: $white;
+        border: 1px solid transparent;
+
+        &.title {
+            text-align: center;
+            font-size: rem(30px);
+            font-weight: 700;
+            color: $black;
+            width: fit-content;
+        }
+        &:focus {
+            border-bottom: 1px solid $primary;
+        }
     }
 
+    .NoteLeftInfo-data-participant__container {
+        display: flex;
+    }
 }

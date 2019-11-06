@@ -71,8 +71,8 @@ class NoteLeftInfo extends Component {
         return (
             <div className="NoteLeftInfo">
                 <div className="NoteLeftInfo-title__container">
-                    <Label title="Note Title" />
                     <div className="NoteLeftInfo__currentNote">
+                        <Label title="Meeting Note Title" isTitle />
                         <input
                             className="form-control title"
                             type="text"
@@ -83,15 +83,17 @@ class NoteLeftInfo extends Component {
                         />
                     </div>
                 </div>
-                <div className="NoteLeftInfo-date__container">
-                    <Label title="Date" />
-                    <DateTime
-                        value={this.props.moment}
-                        onBlur={this.handleConvertTag_Datetime}
-                        onChange={this.props.handleChangeDatetime}
-                    />
+                <div className="NoteLeftInfo-data-participant__container">
+                    <div className="NoteLeftInfo-date__container">
+                        <Label title="Meeting Date & Time" />
+                        <DateTime
+                            value={this.props.moment}
+                            onBlur={this.handleConvertTag_Datetime}
+                            onChange={this.props.handleChangeDatetime}
+                        />
+                    </div>
+                    <ParticipantInfo participants={this.props.participants} />
                 </div>
-                <ParticipantInfo participants={this.props.participants} />
             </div>
         );
     }

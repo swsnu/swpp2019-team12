@@ -70,6 +70,7 @@ class Note extends Component {
                 ...this.state,
                 note_id: res['data']['id'],
                 title: res['data']['title'],
+                location: res['data']['location'],
                 created_at: res['data']['created_at'],
                 last_modified_at: res['data']['last_modified_at'],
                 ml_speech_text: res['data']['ml_speech_text'],
