@@ -308,7 +308,6 @@ def specific_workspace(request, id):
         return Response(serializer, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
-        print(Workspace.objects.all())
         try:
             current_workspace = Workspace.objects.get(id=id)
         except(Workspace.DoesNotExist) as e:
