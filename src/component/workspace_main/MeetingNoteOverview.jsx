@@ -26,7 +26,7 @@ const MeetingNoteOverview = props => {
                                 props.handleClick(note.id);
                             } else {
                                 history.push(`/note/${note.id}/`);
-                                window.location.reload();
+                                // window.location.reload();
                             }
                         }}
                         key={i}
