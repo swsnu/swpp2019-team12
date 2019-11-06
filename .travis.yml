@@ -19,20 +19,4 @@ matrix:
     - sonar-scanner
     after_success:
     - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-  - language: python
-    python:
-    - '3.6'
-    before_install:
-    - cd server
-    install:
-    - pip3 install django
-    - pip3 install pylint
-    - pip3 install pylint-django
-    - pip3 install coverage
-    - pip3 install coveralls
-    script:
-    - pylint **/*.py --load-plugins=pylint_django
-    - coverage run --source="./meetingoverflow/" manage.py test
-    after_success:
-    - coveralls
     
