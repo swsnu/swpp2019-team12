@@ -306,7 +306,7 @@ def specific_workspace(request, id):
         note_serializer = NoteSerializer(notes, many=True)
         agendas = Agenda.objects.filter(note__workspace=workspace)
         agenda_serializer = AgendaSerializer(agendas, many=True)
-        todos = Todo.objects.filter(assignees__in=[profile])
+        todos = Todo.objects.filter(workspace__id=id).filter(assignees__in=[profile])
         todo_serializer = TodoSerializer(todos, many=True)
 
         # Add workspaces, workspace info
