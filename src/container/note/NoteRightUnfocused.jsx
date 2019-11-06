@@ -99,29 +99,36 @@ export default class NoteRightUnfocused extends Component {
                 <div className="Note-right-page-unfocused__title">
                     Note Right Unfocused
                 </div>
-                <div className="Note-right-page-clickable-area">
-                    <MeetingNoteOverview
-                        className="Meeting-note-overview"
-                        history={this.props.history}
-                        notes={this.state.other_notes}
-                        handleClick={this.handleClick}
-                        is_NoteRight
-                    />
-                </div>
-                <div className="Note-Info-Area">
-                    <NoteLeftInfo
-                        note_title={this.state.title}
-                        meeting_date={this.state.meeting_date}
-                        participants={this.state.participants}
-                        moment={this.state.moment}
-                        isRightUnfocused={true}
-                    />
-                    <NoteLeftBlock
-                        className="Note-block-area"
-                        note_id={this.state.note_id}
-                        blocks={this.state.blocks}
-                        isLeft={false}
-                    />
+                <div className="Note-right-page__line" />
+                <div className="Note-right-page-unfocused-container">
+                    <div className="Note-right-page-clickable-area">
+                        <MeetingNoteOverview
+                            className="Meeting-note-overview"
+                            history={this.props.history}
+                            notes={this.state.other_notes}
+                            handleClick={this.handleClick}
+                            is_NoteRight
+                        />
+                    </div>
+                    <div className="Note-overview-text">Note Overview</div>
+                    <div className="Note-right-page-unfocused-overview">
+                        <div className="Note-right-unfocused-info">
+                            <NoteLeftInfo
+                                note_title={this.state.title}
+                                meeting_date={this.state.meeting_date}
+                                participants={this.state.participants}
+                                moment={this.state.moment}
+                                isRightUnfocused={true}
+                            />
+                        </div>
+                        <div className="Note-right-unfocused-block">
+                            <NoteLeftBlock
+                                note_id={this.state.note_id}
+                                blocks={this.state.blocks}
+                                isLeft={false}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         );

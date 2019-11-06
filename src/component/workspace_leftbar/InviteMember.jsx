@@ -26,8 +26,12 @@ const InviteModalMember = props => {
                             <div
                                 key={i}
                                 className="invite-member__member--searched-email"
-                                onClick={() => handleSelectMember(member)}>
-                                {member.username}
+                                onClick={() =>
+                                    handleSelectMember(
+                                        member.user && member.user
+                                    )
+                                }>
+                                {member.user && member.user.username}
                             </div>
                         ))}
                     </div>
@@ -59,12 +63,11 @@ class InviteMember extends Component {
 
     componentDidMount() {
         axios
-            .get('/api/user/')
+            .get('/api/profile/')
             .then(res => {
                 const {
                     data: { user }
                 } = res;
-                this.setState({ addedAdmin: [user] });
             })
             .catch(err => console.error(err));
     }
@@ -72,7 +75,7 @@ class InviteMember extends Component {
     handleSearchMember = () => {
         const { emailMember } = this.state;
         if (emailMember) {
-            axios.get(`/api/user/${emailMember}`).then(res => {
+            axios.post('/api/profile/', { username: emailMember }).then(res => {
                 const { data } = res;
                 this.setState({ searchedMember: data });
             });
@@ -83,7 +86,13 @@ class InviteMember extends Component {
 
     handleSelectMember = member => {
         const addedMember = uniqBy([...this.state.addedMember, member], 'id');
-        this.setState({ addedMember, emailMember: '', searchedMember: [] });
+        const addedMemberId = map(addedMember, m => m.id);
+        this.setState({
+            addedMember,
+            addedMemberId,
+            emailMember: '',
+            searchedMember: []
+        });
     };
 
     handleDeleteMember = member => {
@@ -101,10 +110,17 @@ class InviteMember extends Component {
 
     /******************* TODO ***********************/
     handleInviteMembers = () => {
-        const { addedMember } = this.state;
+        const { addedMemberId } = this.state;
         const { history } = this.props;
+        console.log(this.props.workspace);
 
-        axios.get('/api/workspace').then(res => {});
+        axios
+            .patch(`/api/workspace/${this.props.workspace.id}/`, {
+                members: addedMemberId
+            })
+            .then(res => {
+                console.log(res.data);
+            });
     };
     /*************************************************/
 

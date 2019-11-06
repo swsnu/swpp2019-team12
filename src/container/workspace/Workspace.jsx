@@ -93,7 +93,7 @@ class Workspace extends Component {
                             workspace={workspace}
                             workspaces={workspaces}
                         />
-                        <MemberInfo members={members} />
+                        <MemberInfo members={members} workspace={workspace} />
                         <SettingInfo />
                         <CreateNote
                             handleShowCreateNoteModal={
@@ -116,8 +116,7 @@ class Workspace extends Component {
                 {showCreateNoteModal && (
                     <div
                         className="overlay"
-                        onClick={this.handleCloseCreateNoteModal}
-                    >
+                        onClick={this.handleCloseCreateNoteModal}>
                         <CreateNoteModal
                             history={history}
                             workspaceId={workspace.id}

@@ -308,12 +308,19 @@ def specific_workspace(request, id):
         return Response(serializer, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
+        print(Workspace.objects.all())
         try:
             current_workspace = Workspace.objects.get(id=id)
         except(Workspace.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        current_members = current_workspace.members.all()
+        new_members = request.data['members']
+        data = new_members
+        for current_member in current_members:
+            if current_member.id not in new_members:
+                data.append(current_member.id)
         serializer = WorkspaceSerializer(
-            current_workspace, data=request.data, partial=True)
+            current_workspace, data={'members': data}, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

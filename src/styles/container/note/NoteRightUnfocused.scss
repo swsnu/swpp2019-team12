@@ -6,19 +6,45 @@
 .Note-right-unfocused-overlay {
     position: absolute;
     width: 100%;
-    height: 100%;
     right: 0;
     top: 0;
+    height: 200vh;
     z-index: 2100000;
+}
+
+.Note-right-page-unfocused__title {
+    font-size: 30px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.Note-right-page-unfocused-container {
+    margin: 40px 40px;
 }
 
 .Note-right-page-clickable-area {
     position: relative;
     z-index: 2100001;
 }
+.Note-overview-text {
+    margin-top: 40px;
+    font-size: 25px;
+    color: $tertiary;
+}
+.Note-right-page-unfocused-overview {
+    width: 90%;
+    margin: auto;
+    margin-top: 50px;
+    min-height: rem(400px);
+    border: 1px solid black;
+    background-color: $lightgray;
+    padding-top: 50px;
 
-.Note-Info-area {
-    margin: 30px;
-    border: 1px solid #000000;
-    padding: 30px;
+    // padding-left: -40px;
+}
+.Note-right-unfocused-info {
+    padding-right: 110px;
+}
+.Note-right-unfocused-block {
+    width: 100%;
 }
