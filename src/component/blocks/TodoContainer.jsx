@@ -30,7 +30,7 @@ class TodoContainer extends Component {
                         <div
                             key={i}
                             className="full-size-block todoCard-content-element">
-                            <div className="full-size-block todoCard-content-element__todo">
+                            <div className="full-size-block todoCard-content-element__todo between">
                                 <div className="full-size-block todoCard-content-element__todo-todo-part">
                                     {todo.is_done ? (
                                         <div
