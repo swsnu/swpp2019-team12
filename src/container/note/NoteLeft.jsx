@@ -26,12 +26,14 @@ class NoteLeft extends Component {
                         moment={this.props.moment}
                         handleChangeTitle={this.props.handleChangeTitle}
                         handleChangeDatetime={this.props.handleChangeDatetime}
+                        handleAddParticipant={this.props.handleAddParticipant}
                     />
                     <NoteLeftBlock
                         note_id={this.props.note_id}
                         blocks={this.props.blocks}
                         handleAddAgendaBlock={this.props.handleAddAgendaBlock}
                         handleAddTextBlock={this.props.handleAddTextBlock}
+                        handleAddTodoBlock={this.props.handleAddTodoBlock}
                         handleClickBlock={this.props.handleClickBlock}
                     />
                 </div>

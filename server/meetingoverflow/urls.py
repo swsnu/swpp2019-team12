@@ -8,6 +8,7 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('signout/', views.signout, name='signout'),
     path('profile/', views.profile, name='profile'),
+    path('profile/<int:u_id>/', views.specific_profile, name='specific_profile'),
 
     # Workspace APIs
     path('workspace/', views.workspace, name='workspace'),

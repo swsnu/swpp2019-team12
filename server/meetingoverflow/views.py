@@ -160,9 +160,22 @@ def profile(request):
             return Response(data, status=status.HTTP_200_OK)
     
 
-        
-
-
+'''
+# ===================================================
+# user_id로 특정 user Profile GET
+# /api/profile/u_id
+# ===================================================
+'''
+# 추가된 api / Profile에 닉네임 저장
+@api_view(['GET'])
+def specific_profile(request, u_id):
+    if request.method == 'GET':
+        try:
+            profile = Profile.objects.get(id=u_id)
+        except (Profile.DoesNotExist) as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = ProfileSerializer(profile)  
+        return Response(serializer.data, status=status.HTTP_200_OK)   
 
     
     # ===========Front implementation===========
@@ -586,7 +599,7 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
 def agenda_child_of_note(request, n_id):
     # 해당 노트의 모든 agenda block 리스트 반환
     if request.method == 'GET':
-        queryset = TextBlock.objects.filter(
+        queryset = Agenda.objects.filter(
             is_parent_note=True, 
             note__id=n_id
         )
@@ -744,6 +757,7 @@ def todoblock_child_of_note(request, n_id):
             'content': request.data['content'],
             'layer_x': request.data['layer_x'],
             'layer_y': request.data['layer_y'],
+            'assignees': request.data['assignees'],
             'note': n_id,
             'is_parent_note': True
         }

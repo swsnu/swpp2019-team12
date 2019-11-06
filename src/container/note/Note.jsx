@@ -17,6 +17,7 @@ class Note extends Component {
             created_at: '',
             last_modified_at: '',
             ml_speech_text: '',
+            participants_id: [],
             participants: [],
             moment: null,
             blocks: []
@@ -30,11 +31,10 @@ class Note extends Component {
         axios
             .get(`/api/note/${n_id}/agendas/`)
             .then(res => {
-                console.log(res);
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
-                            block_type: 'Agenda',
+                            block_type: 'agenda',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
@@ -48,11 +48,10 @@ class Note extends Component {
         axios
             .get(`/api/note/${n_id}/textblocks/`)
             .then(res => {
-                console.log(res);
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
-                            block_type: 'Text',
+                            block_type: 'textblock',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
@@ -63,19 +62,67 @@ class Note extends Component {
             })
             .catch(err => console.log('No Texts'));
 
-        axios.get(`/api/note/${n_id}/`).then(res => {
-            this.setState({
-                ...this.state,
-                note_id: res['data']['id'],
-                title: res['data']['title'],
-                created_at: res['data']['created_at'],
-                last_modified_at: res['data']['last_modified_at'],
-                ml_speech_text: res['data']['ml_speech_text'],
-                participants: res['data']['participants'],
-                moment: moment(res['data']['created_at'])
+        axios
+            .get(`/api/note/${n_id}/todos/`)
+            .then(res => {
+                let todoContainer = {
+                    block_type: 'TodoContainer',
+                    todos: res['data']
+                };
+                todoContainer.todos.forEach(todo => {
+                    todo.assignees_info = [];
+                    todo.assignees.forEach(assignee_id => {
+                        axios.get(`/api/profile/${assignee_id}`).then(res => {
+                            todo.assignees_info.push({
+                                id: res['data']['id'],
+                                nickname: res['data']['nickname']
+                            });
+                        });
+                    });
+                });
+
+                this.setState({
+                    blocks: this.state.blocks.concat(todoContainer)
+                });
+            })
+            .catch(err => {
+                console.log(err);
             });
-        });
+
+        axios
+            .get(`/api/note/${n_id}/`)
+            .then(res => {
+                this.setState({
+                    ...this.state,
+                    note_id: res['data']['id'],
+                    title: res['data']['title'],
+                    created_at: res['data']['created_at'],
+                    last_modified_at: res['data']['last_modified_at'],
+                    ml_speech_text: res['data']['ml_speech_text'],
+                    participants_id: res['data']['participants'],
+                    moment: moment(res['data']['created_at'])
+                });
+                return res['data']['participants'];
+            })
+            .then(participants => {
+                participants.forEach(participant => {
+                    axios.get(`/api/profile/${participant}`).then(res => {
+                        this.setState({
+                            participants: this.state.participants.concat({
+                                id: res['data']['id'],
+                                nickname: res['data']['nickname']
+                            })
+                        });
+                    });
+                });
+            });
     }
+
+    getNickName = u_id => {
+        axios.get(`/api/profile/${u_id}`).then(res => {
+            return res['data']['nickname'];
+        });
+    };
 
     /* ==================================================================
         ## handleClickBlock & handleNoteLeft
@@ -92,16 +139,16 @@ class Note extends Component {
                 isBlockClicked: true,
                 isNoteLeftClicked: false
             });
-            document.getElementsByClassName('Note-left')[0].className =
-                'Note-left-block-click';
+            // document.getElementsByClassName('Note-left')[0].className =
+            //     'Note-left-block-click';
         } else {
             this.setState({
                 isBlockClicked: false,
                 isNoteLeftClicked: true
             });
-            document.getElementsByClassName(
-                'Note-left-block-click'
-            )[0].className = 'Note-left';
+            // document.getElementsByClassName(
+            //     'Note-left-block-click'
+            // )[0].className = 'Note-left';
         }
     };
 
@@ -114,9 +161,9 @@ class Note extends Component {
                     isNoteLeftClicked: true,
                     isNoteRightClicked: false
                 });
-                document.getElementsByClassName(
-                    'Note-left-block-click'
-                )[0].className = 'Note-left';
+                // document.getElementsByClassName(
+                //     'Note-left-block-click'
+                // )[0].className = 'Note-left';
             } else {
                 this.setState({
                     isNoteLeftClicked: true,
@@ -151,20 +198,18 @@ class Note extends Component {
             layer_x: 0,
             layer_y: 0
         };
-        axios
-            .post(`/api/note/${this.state.note_id}/agendas/`, agenda_info)
-            .then(res => {
-                this.setState({
-                    blocks: this.state.blocks.concat({
-                        block_type: 'Agenda',
-                        id: res['data']['id'],
-                        content: res['data']['content'],
-                        layer_x: res['data']['layer_x'],
-                        layer_y: res['data']['layer_y'],
-                        child_blocks: []
-                    })
-                });
+        axios.post(`/api/note/${note_id}/agendas/`, agenda_info).then(res => {
+            this.setState({
+                blocks: this.state.blocks.concat({
+                    block_type: 'agenda',
+                    id: res['data']['id'],
+                    content: res['data']['content'],
+                    layer_x: res['data']['layer_x'],
+                    layer_y: res['data']['layer_y'],
+                    child_blocks: []
+                })
             });
+        });
     };
 
     handleAddTextBlock = note_id => {
@@ -174,23 +219,58 @@ class Note extends Component {
             layer_x: 0,
             layer_y: 0
         };
-        axios
-            .post(`/api/note/${this.state.note_id}/textblocks/`, text_info)
-            .then(res => {
-                this.setState({
-                    blocks: this.state.blocks.concat({
-                        block_type: 'Text',
-                        id: res['data']['id'],
-                        content: res['data']['content'],
-                        layer_x: res['data']['layer_x'],
-                        layer_y: res['data']['layer_y']
-                    })
-                });
+        axios.post(`/api/note/${note_id}/textblocks/`, text_info).then(res => {
+            this.setState({
+                blocks: this.state.blocks.concat({
+                    block_type: 'textblock',
+                    id: res['data']['id'],
+                    content: res['data']['content'],
+                    layer_x: res['data']['layer_x'],
+                    layer_y: res['data']['layer_y']
+                })
             });
+        });
     };
 
     handleAddTodoBlock = note_id => {
         // Where need to call Todo Create API.
+        // To find out whether there is at least one todo.
+        axios
+            .get(`/api/note/${note_id}/todos/`)
+            // when there is some todos in Note.
+            .then(() => {
+                this.state.blocks.map(blk => {
+                    if (blk.block_type === 'TodoContainer') {
+                        const todo_info = {
+                            content: '할 일을 추가해보세요!',
+                            layer_x: 0,
+                            layer_y: 0,
+                            assignees: [1]
+                        };
+                        axios
+                            .post(`/api/note/${note_id}/todos/`, todo_info)
+                            .then(res => {
+                                console.log(res);
+                                let new_todos = blk.todos.concat(res['data']);
+                                this.setState({
+                                    ...this.state,
+                                    blocks: [
+                                        ...this.state.blocks.filter(
+                                            b =>
+                                                b.block_type !== 'TodoContainer'
+                                        ),
+                                        {
+                                            block_type: 'TodoContainer',
+                                            todos: new_todos
+                                        }
+                                    ]
+                                });
+                            });
+                    } else {
+                        return { ...blk };
+                    }
+                });
+            });
     };
 
     handleAddImageBlock = note_id => {
@@ -221,8 +301,13 @@ class Note extends Component {
         console.log(`Need to Implement auto-typing in the note ${note_id}`);
     };
 
+    handleAddParticipant = () => {
+        console.log(
+            'Need to implement add Participant who is a member of specific workspace'
+        );
+    };
+
     render() {
-        console.log(this.state.blocks);
         return (
             <div className="Note">
                 <NoteLeft
@@ -238,6 +323,8 @@ class Note extends Component {
                     handleChangeDatetime={this.handleChangeDatetime}
                     handleAddAgendaBlock={this.handleAddAgendaBlock}
                     handleAddTextBlock={this.handleAddTextBlock}
+                    handleAddTodoBlock={this.handleAddTodoBlock}
+                    handleAddParticipant={this.handleAddParticipant}
                 />
                 <div className="Note-right" onClick={this.handleClickNoteRight}>
                     <div className="Note-right-container">RIGHT</div>
