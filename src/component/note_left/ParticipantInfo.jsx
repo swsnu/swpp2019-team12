@@ -22,11 +22,11 @@ class ParticipantInfo extends Component {
             <div className="NoteLeftInfo-participants__container">
                 <div className="Participants-title__container">
                     <Label title="Participants" />
-                    <button
+                    {/* <button
                         className="add_participant"
                         onClick={this.handleAddParticipant}>
                         +
-                    </button>
+                    </button> */}
                 </div>
                 <div className="NoteLeftInfo__participantList">
                     {map(this.state.participants, (p, i) => (

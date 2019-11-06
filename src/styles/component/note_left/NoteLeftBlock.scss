@@ -1,13 +1,33 @@
 .NoteLeftBlock-container {
     width: 100%;
-    min-height: 500px;
-    margin-top: 50px;
+    min-height: rem(500px);
+    margin-top: rem(50px);
 
     display: flex;
     flex-direction: row;
+    // position: relative;
 
-    .NoteLeftBlock-create-buttons {
+    .NoteLeftBlock-button-container {
+        position: fixed;
         width: rem(50px);
+        top: 20%;
+        height: 60%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:hover {
+            .NoteLeftBlock-create-buttons {
+                left: 0;
+            }
+        }
+    }
+    .NoteLeftBlock-create-buttons {
+        position: relative;
+        width: rem(50px);
+        // left: rem(-60px);
+        transition: left 300ms ease;
 
         display: flex;
         flex-direction: column;
