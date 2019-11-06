@@ -3,11 +3,6 @@
     //border-left: 1px solid $darkgray;
 }
 
-.Note-right-block-click {
-    min-width: 80%;
-    //border-right: 1px solid $darkgray;
-}
-
 .Note-right-page__title {
     font-size: 30px;
     margin-top: 10px;
@@ -38,6 +33,11 @@
     .NoteRightBlock__block {
         width: 100%;
     }
+
+    input {
+        height: rem(500px);
+    }
+
     .full-size-block-container {
         width: 100%;
         // min-height: rem(100px);

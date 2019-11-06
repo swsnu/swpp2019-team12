@@ -5,7 +5,7 @@ class PreviewAgenda extends Component {
         super(props);
         this.state = {
             agenda_title: this.props.agenda_title,
-            agenda_disccusion: this.props.agenda_disccusion
+            agenda_discussion: this.props.agenda_discussion
         };
     }
 

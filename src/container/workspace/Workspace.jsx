@@ -106,7 +106,7 @@ class Workspace extends Component {
                                 this.handleShowCreateWorkspaceModal
                             }
                         />
-                        <MemberInfo members={members} />
+                        <MemberInfo members={members} workspace={workspace} />
                         <SettingInfo />
                         <CreateNote
                             handleShowCreateNoteModal={

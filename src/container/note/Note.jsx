@@ -4,6 +4,7 @@ import moment from 'moment';
 
 import NoteLeft from './NoteLeft';
 import NoteRightFocused from './NoteRightFocused';
+import NoteRightUnfocused from './NoteRightUnfocused';
 
 class Note extends Component {
     constructor(props) {
@@ -22,7 +23,9 @@ class Note extends Component {
             participants_id: [],
             participants: [],
             moment: null,
-            blocks: []
+            blocks: [],
+            block_focused_id: '',
+            block_focused_name: ''
         };
     }
 
@@ -137,7 +140,12 @@ class Note extends Component {
     =================================================================== */
 
     handleClickBlock = (block_name, block_id) => {
-        if (this.state.isNoteLeftClicked) {
+        this.setState({ block_focused_id: block_id });
+        if (block_name === 'agenda')
+            this.setState({ block_focused_name: 'agenda' });
+        else this.setState({ block_focused_name: block_name });
+
+        if (this.state.isNoteLeftClicked && !this.state.isBlockClicked) {
             this.setState({
                 isBlockClicked: true,
                 isNoteLeftClicked: false
@@ -315,6 +323,7 @@ class Note extends Component {
     };
 
     render() {
+        const { history } = this.props;
         return (
             <div className="Note">
                 <NoteLeft
@@ -335,9 +344,21 @@ class Note extends Component {
                     handleAddTodoBlock={this.handleAddTodoBlock}
                     handleAddParticipant={this.handleAddParticipant}
                 />
-                <NoteRightFocused
-                // handleClickNoteRight={this.handleClickNoteRight}
-                />
+
+                {this.state.isBlockClicked ? (
+                    <NoteRightFocused
+                        block_focused_id={this.state.block_focused_id}
+                        block_focused_name={this.state.block_focused_name}
+                        blocks={this.state.blocks}
+                    />
+                ) : (
+                    this.state.note_id && (
+                        <NoteRightUnfocused
+                            history={history}
+                            note_id={this.state.note_id}
+                        />
+                    )
+                )}
             </div>
         );
     }

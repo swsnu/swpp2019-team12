@@ -105,7 +105,11 @@ class NoteLeftInfo extends Component {
                             onChange={this.props.handleChangeLocation}
                         />
                     </div>
-                    <ParticipantInfo participants={this.props.participants} />
+                    {/* <ParticipantInfo participants={this.props.participants} /> */}
+                    <ParticipantInfo
+                        isRightUnfocused={this.props.isRightUnfocused}
+                        participants={this.props.participants}
+                    />
                 </div>
             </div>
         );

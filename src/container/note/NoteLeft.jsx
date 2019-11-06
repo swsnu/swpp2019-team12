@@ -37,6 +37,7 @@ class NoteLeft extends Component {
                         handleAddTextBlock={this.props.handleAddTextBlock}
                         handleAddTodoBlock={this.props.handleAddTodoBlock}
                         handleClickBlock={this.props.handleClickBlock}
+                        isLeft={true}
                     />
                 </div>
             </div>
