@@ -11,8 +11,11 @@ matrix:
           secure: "A4pZaN99Q6qDpAM/kcDJmy8d/njIuU1U5hXISOPrO/QEIy13AQ25n+uLckERLniiLEGYZ5MD8g8NueU5P/nC+zehGl8pQ2BLaahph5eC7FOzNpl/LtAgPGRu7oArkw+PjrnrjcUUqeIHe2ZURHyzkBTKdAoi2Oz0F8IXjX5e5CvFD75neM7chhLRrUDDtR6Zi3H2T7Kl1ElDxW4WOFRdgKl5EH+XxE93fFRlNRSXQ6GOM8jidjHVMcJJb8mTi3Pjul7iYz40m8JC0iAWcWqkzTAeBZqrpdn0DsEOsD9nLXv3w0dTbqd/kgW++ETfcmCBtPMqkUsU2iDr9egzMmlZ5smZT2iK1AIe6ST+5LnJmFEn+qcWmpfynLjsH3XhgiaHwBuMinVEm19pR1fgxdpH/HEYfZi85QeKD26jEXGZcZ1piWzKSRpcW+ZNIJ1YzrsnWBJD9T9e03hYRBw/fIHpZe9tw9fp9f/WCaAFbpcqNSIykKgn4AkrRM1p2ROJYkS0uf33e69evyS17Dr8ryO1NYcHhicGVuDrgPXnV+DWLPtTpMR5tfTzjPJ24FQChIl6He+iyhCYXqAEaTWY90eFRgNabcIfUEDkyhNAVWThriJYyexaoZMuaA+RySYmqLxravOEyCkFEc+w8tcyysMeSPDT2vii6J0v0W8FhTPL9AY="
     install:
     - yarn install
+    - yarn add coveralls
     script:
     - yarn run prettier
     - yarn run eslint
     - yarn coverage
     - sonar-scanner
+    after_success:
+    - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
