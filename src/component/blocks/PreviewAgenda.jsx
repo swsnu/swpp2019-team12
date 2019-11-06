@@ -29,7 +29,7 @@ class PreviewAgenda extends Component {
                 </div>
                 <div className="full-size-block-content PreviewAgenda">
                     <div className="full-size-block-content__text PreviewAgenda">
-                        {this.props.content}
+                        <pre>{this.props.content}</pre>
                     </div>
                 </div>
             </div>
