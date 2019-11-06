@@ -28,7 +28,7 @@ export default class NoteRightUnfocused extends Component {
         axios.get(`/api/siblingnotes/${this.props.note_id}`).then(res => {
             console.log(res);
             this.setState({
-                other_notes: res.data.filter(r => r.id != this.props.n_id)
+                other_notes: res.data.filter(r => r.id != this.props.note_id)
             });
         });
     }
@@ -51,7 +51,7 @@ export default class NoteRightUnfocused extends Component {
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
-                            block_type: 'Agenda',
+                            block_type: 'agenda',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
@@ -69,7 +69,7 @@ export default class NoteRightUnfocused extends Component {
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
-                            block_type: 'Text',
+                            block_type: 'textblock',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
@@ -101,27 +101,37 @@ export default class NoteRightUnfocused extends Component {
                 <div className="Note-right-page-unfocused__title">
                     Note Right Unfocused
                 </div>
-                <div className="Note-right-page-clickable-area">
-                    <MeetingNoteOverview
-                        className="Meeting-note-overview"
-                        history={this.props.history}
-                        notes={this.state.other_notes}
-                        handleClick={this.handleClick}
-                        is_NoteRight
-                    />
+                <div className="Note-right-page__line" />
+                <div className="Note-right-page-unfocused-container">
+                    <div className="Note-right-page-clickable-area">
+                        <MeetingNoteOverview
+                            className="Meeting-note-overview"
+                            history={this.props.history}
+                            notes={this.state.other_notes}
+                            handleClick={this.handleClick}
+                            is_NoteRight
+                        />
+                    </div>
+                    <div className="Note-overview-text">Note Overview</div>
+                    <div className="Note-right-page-unfocused-overview">
+                        <div className="Note-right-unfocused-info">
+                            <NoteLeftInfo
+                                note_title={this.state.title}
+                                meeting_date={this.state.meeting_date}
+                                participants={this.state.participants}
+                                moment={this.state.moment}
+                                isRightUnfocused={true}
+                            />
+                        </div>
+                        <div className="Note-right-unfocused-block">
+                            <NoteLeftBlock
+                                note_id={this.state.note_id}
+                                blocks={this.state.blocks}
+                                isLeft={false}
+                            />
+                        </div>
+                    </div>
                 </div>
-                <NoteLeftInfo
-                    note_title={this.state.title}
-                    meeting_date={this.state.meeting_date}
-                    participants={this.state.participants}
-                    moment={this.state.moment}
-                    isRightUnfocused={true}
-                />
-                <NoteLeftBlock
-                    note_id={this.state.note_id}
-                    blocks={this.state.blocks}
-                    isLeft={false}
-                />
             </div>
         );
     }

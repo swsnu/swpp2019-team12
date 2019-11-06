@@ -38,27 +38,17 @@ class NoteRightFocused extends Component {
     };
 
     render() {
-        console.log(this.props.blocks);
         let block_focused = null;
-        console.log(this.props.block_focused_id);
-        console.log(this.props.block_focused_name);
-        console.log('~~~~~');
         const block_data = this.props.blocks.filter(
             t =>
                 t.id === this.props.block_focused_id &&
                 t.block_type === this.props.block_focused_name
         );
-        console.log(this.props.blocks);
-        console.log(this.props.block_focused_name);
-        console.log('=========');
-        console.log(block_data[0]);
-        console.log(this.state.block_id);
         if (
             block_data.length > 0 &&
             (this.state.block_type !== block_data[0].block_type ||
                 this.state.block_id !== block_data[0].id)
         ) {
-            console.log(block_data[0]);
             block_focused = block_data[0];
 
             this.setState({
@@ -70,7 +60,6 @@ class NoteRightFocused extends Component {
 
         let block_focused_box;
         let block_name;
-        console.log(this.state.block_type);
         if (this.state.block_type && this.state.block_type === 'textblock') {
             block_focused_box = (
                 <input
