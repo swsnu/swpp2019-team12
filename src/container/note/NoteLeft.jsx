@@ -24,8 +24,10 @@ class NoteLeft extends Component {
                         meeting_date={this.props.meeting_date}
                         participants={this.props.participants}
                         moment={this.props.moment}
+                        location={this.props.location}
                         handleChangeTitle={this.props.handleChangeTitle}
                         handleChangeDatetime={this.props.handleChangeDatetime}
+                        handleChangeLocation={this.props.handleChangeLocation}
                     />
                     <NoteLeftBlock
                         note_id={this.props.note_id}

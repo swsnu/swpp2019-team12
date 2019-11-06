@@ -154,6 +154,10 @@ class Note extends Component {
         });
     };
 
+    handleChangeLocation = e => {
+        this.setState({ location: e.target.value });
+    };
+
     handleAddAgendaBlock = note_id => {
         // Block Create API call 할 곳.
         const agenda_info = {
@@ -242,11 +246,13 @@ class Note extends Component {
                     participants={this.state.participants}
                     note_id={this.state.note_id}
                     moment={this.state.moment}
+                    location={this.state.location}
                     blocks={this.state.blocks}
                     handleClickBlock={this.handleClickBlock}
                     handleClickNoteLeft={this.handleClickNoteLeft}
                     handleChangeTitle={this.handleChangeTitle}
                     handleChangeDatetime={this.handleChangeDatetime}
+                    handleChangeLocation={this.handleChangeLocation}
                     handleAddAgendaBlock={this.handleAddAgendaBlock}
                     handleAddTextBlock={this.handleAddTextBlock}
                 />

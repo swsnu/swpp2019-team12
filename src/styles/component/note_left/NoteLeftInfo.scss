@@ -45,6 +45,9 @@
             color: $black;
             width: fit-content;
         }
+        &.location {
+            width: 70%;
+        }
         &:focus {
             border-bottom: 1px solid $primary;
         }

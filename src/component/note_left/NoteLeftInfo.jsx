@@ -9,7 +9,8 @@ class NoteLeftInfo extends Component {
         super(props);
         this.state = {
             isTitleClicked: false,
-            isDateClicked: false
+            isDateClicked: false,
+            isLocationClicked: false
         };
     }
 
@@ -23,6 +24,9 @@ class NoteLeftInfo extends Component {
 
     handleConvertTag_Datetime = () => {
         this.setState({ isDateClicked: !this.state.isDateClicked });
+    };
+    handleConvertTag_Location = () => {
+        this.setState({ isLocationClicked: !this.state.isLocationClicked });
     };
 
     render() {
@@ -90,6 +94,15 @@ class NoteLeftInfo extends Component {
                             value={this.props.moment}
                             onBlur={this.handleConvertTag_Datetime}
                             onChange={this.props.handleChangeDatetime}
+                        />
+                        <Label title="Location" />
+                        <input
+                            className="form-control location"
+                            type="text"
+                            value={this.props.location}
+                            // onBlur가 되면 Update API call
+                            onBlur={this.handleConvertTag_Location}
+                            onChange={this.props.handleChangeLocation}
                         />
                     </div>
                     <ParticipantInfo participants={this.props.participants} />
