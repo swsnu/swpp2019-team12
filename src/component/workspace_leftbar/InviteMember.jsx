@@ -28,7 +28,8 @@ const InviteModalMember = props => {
                                 className="invite-member__member--searched-email"
                                 onClick={() =>
                                     handleSelectMember(
-                                        member.user && member.user
+                                        // member.user && member.user
+                                        member.user
                                     )
                                 }>
                                 {member.user && member.user.username}
