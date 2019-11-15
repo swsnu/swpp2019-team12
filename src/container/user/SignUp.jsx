@@ -107,10 +107,6 @@ class SignUp extends Component {
                 .post('/api/signup/', user_info)
                 .then(res => this.props.history.push('/workspace'));
         }
-        // 적절하지 않은 input이 존재한다면, 그에 맞는 에러 메시지 띄워주기.
-        else {
-            alert('형식을 다시 확인해주세요.');
-        }
     };
 
     handleNavigateSignIn = e => {

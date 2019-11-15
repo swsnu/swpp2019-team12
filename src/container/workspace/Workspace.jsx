@@ -10,6 +10,7 @@ import AgendaOverview from '../../component/workspace_main/AgendaOverview';
 import MeetingNoteOverview from '../../component/workspace_main/MeetingNoteOverview';
 
 import CreateNoteModal from '../note/CreateModal';
+import CreateWorkspaceModal from './CreateModal';
 
 class Workspace extends Component {
     constructor(props) {
@@ -23,7 +24,8 @@ class Workspace extends Component {
             notes: [],
             todos: [],
 
-            showCreateNoteModal: false
+            showCreateNoteModal: false,
+            showCreateWorkspaceModal: false
         };
     }
 
@@ -66,6 +68,13 @@ class Workspace extends Component {
         this.setState({ showCreateNoteModal: false });
     };
 
+    handleShowCreateWorkspaceModal = () => {
+        this.setState({ showCreateWorkspaceModal: true });
+    };
+    handleCloseCreateWorkspaceModal = () => {
+        this.setState({ showCreateWorkspaceModal: false });
+    };
+
     render() {
         const {
             workspaces,
@@ -75,7 +84,8 @@ class Workspace extends Component {
             notes,
             todos,
 
-            showCreateNoteModal
+            showCreateNoteModal,
+            showCreateWorkspaceModal
         } = this.state;
         const { history } = this.props;
 
@@ -92,6 +102,9 @@ class Workspace extends Component {
                             history={history}
                             workspace={workspace}
                             workspaces={workspaces}
+                            handleShowCreateWorkspaceModal={
+                                this.handleShowCreateWorkspaceModal
+                            }
                         />
                         <MemberInfo members={members} workspace={workspace} />
                         <SettingInfo />
@@ -122,6 +135,20 @@ class Workspace extends Component {
                             workspaceId={workspace.id}
                             handleCloseCreateNoteModal={
                                 this.handleCloseCreateNoteModal
+                            }
+                        />
+                    </div>
+                )}
+
+                {showCreateWorkspaceModal && (
+                    <div
+                        className="overlay"
+                        onClick={this.handleCloseCreateWorkspaceModal}>
+                        <CreateWorkspaceModal
+                            history={history}
+                            workspaceId={workspace.id}
+                            handleCloseCreateNoteModal={
+                                this.handleCloseCreateWorkspaceModal
                             }
                         />
                     </div>

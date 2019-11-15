@@ -112,8 +112,6 @@ class NoteRightFocused extends Component {
             <div
                 className="Note-right"
                 onClick={this.props.handleClickNoteLeft}>
-                <div className="Note-right-page__title">Note Right Focused</div>
-                <div className="Note-right-page__line" />
                 <div className="Note-right-container">
                     <div className="Note-right-focused__title">
                         {block_name}

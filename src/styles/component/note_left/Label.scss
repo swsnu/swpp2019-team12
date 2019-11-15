@@ -1,16 +1,24 @@
 .note-left-label {
-    width: 100%;
+    // width: 100%;
 
     .note-left-label__title {
         min-width: fit-content;
-        
-        font-size: rem(14px);
-        color: $darkgray;
+
+        color: $secondary;
+    }
+
+    &.--title {
+        position: absolute;
+        top: rem(-20px);
+        left: rem(-20px);
+        font-size: rem(16px);
+        // width: 100%;
+        // padding-left: 30%;
     }
 }
 
 .note-left-sublabel {
-    width: 100%;
+    // width: 100%;
 
     .note-left-sublabel__title {
         min-width: fit-content;
@@ -20,5 +28,8 @@
 
         color: $gray;
     }
+}
 
+.NoteLeftInfo-title__label {
+    margin-left: 20%;
 }

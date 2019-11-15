@@ -20,7 +20,7 @@ class Text extends Component {
                     this.props.handleClickBlock(this.props.type, this.props.id)
                 }>
                 <div className="full-size-block-title">
-                    <div className="full-size-block-title__text">Text</div>
+                    <div className="full-size-block-title__label">Text</div>
                 </div>
                 <div className="full-size-block-content">
                     <div className="full-size-block-content__text">

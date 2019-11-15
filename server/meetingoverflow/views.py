@@ -158,6 +158,24 @@ def profile(request):
 
             return Response(data, status=status.HTTP_200_OK)
 
+'''
+# ===================================================
+# user_id로 특정 user Profile GET
+# /api/profile/u_id
+# ===================================================
+'''
+# 추가된 api / Profile에 닉네임 저장
+@api_view(['GET'])
+def specific_profile(request, u_id):
+    if request.method == 'GET':
+        try:
+            profile = Profile.objects.get(id=u_id)
+        except (Profile.DoesNotExist) as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = ProfileSerializer(profile)  
+        return Response(serializer.data, status=status.HTTP_200_OK)   
+
+    
     # ===========Front implementation===========
     # Signup 성공시 Response로 반환되는 새 유저의 id 로
     # /api/profile/:id/ PATCH 호출해서 닉네임 수정
@@ -288,7 +306,7 @@ def specific_workspace(request, id):
         note_serializer = NoteSerializer(notes, many=True)
         agendas = Agenda.objects.filter(note__workspace=workspace)
         agenda_serializer = AgendaSerializer(agendas, many=True)
-        todos = Todo.objects.filter(assignees__in=[profile])
+        todos = Todo.objects.filter(workspace__id=id).filter(assignees__in=[profile])
         todo_serializer = TodoSerializer(todos, many=True)
 
         # Add workspaces, workspace info
@@ -312,8 +330,14 @@ def specific_workspace(request, id):
             current_workspace = Workspace.objects.get(id=id)
         except(Workspace.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        current_members = current_workspace.members.all()
+        new_members = request.data['members']
+        data = new_members
+        for current_member in current_members:
+            if current_member.id not in new_members:
+                data.append(current_member.id)
         serializer = WorkspaceSerializer(
-            current_workspace, data=request.data, partial=True)
+            current_workspace, data={'members': data}, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
@@ -599,7 +623,7 @@ def agenda_child_of_note(request, n_id):
     # 해당 노트의 모든 agenda block 리스트 반환
     if request.method == 'GET':
         queryset = Agenda.objects.filter(
-            is_parent_note=True,
+            is_parent_note=True, 
             note__id=n_id
         )
         if queryset.count() > 0:
@@ -757,6 +781,7 @@ def todoblock_child_of_note(request, n_id):
             'content': request.data['content'],
             'layer_x': request.data['layer_x'],
             'layer_y': request.data['layer_y'],
+            'assignees': request.data['assignees'],
             'note': n_id,
             'is_parent_note': True
         }

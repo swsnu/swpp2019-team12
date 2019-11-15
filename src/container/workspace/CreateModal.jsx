@@ -54,7 +54,8 @@ const CreateModalMember = props => {
                                 className="createModal-member__member--searched-email"
                                 onClick={() =>
                                     handleSelectMember(
-                                        member.user && member.user
+                                        member.user
+                                        // member.user && member.user
                                     )
                                 }>
                                 {member.user && member.user.username}
@@ -146,7 +147,7 @@ class CreateModal extends Component {
                 const {
                     data: { user }
                 } = res;
-                this.setState({ addedAdmin: [user] });
+                this.setState({ addedAdmin: [user], addedAdminId: [user.id] });
             })
             .catch(err => console.error(err));
     }
@@ -164,7 +165,7 @@ class CreateModal extends Component {
     handleSearchMember = () => {
         const { emailMember } = this.state;
         if (emailMember) {
-            axios.post('/api/profile/', { username: emailMember }).then(res => {
+            axios.post(`/api/profile/`, { username: emailMember }).then(res => {
                 const { data } = res;
                 this.setState({ searchedMember: data });
             });
@@ -195,7 +196,7 @@ class CreateModal extends Component {
     handleSearchAdmin = () => {
         const { emailAdmin } = this.state;
         if (emailAdmin) {
-            axios.post('/api/profile/', { username: emailAdmin }).then(res => {
+            axios.post(`/api/profile/`, { username: emailAdmin }).then(res => {
                 const { data } = res;
                 this.setState({ searchedAdmin: data });
             });
@@ -244,6 +245,7 @@ class CreateModal extends Component {
 
                 if (status === 201) {
                     history.push(`/${name}/${id}`);
+                    window.location.reload();
                 }
             });
     };
