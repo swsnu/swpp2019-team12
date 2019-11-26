@@ -116,8 +116,7 @@ class Workspace extends Component {
                 {showCreateNoteModal && (
                     <div
                         className="overlay"
-                        onClick={this.handleCloseCreateNoteModal}
-                    >
+                        onClick={this.handleCloseCreateNoteModal}>
                         <CreateNoteModal
                             history={history}
                             workspaceId={workspace.id}

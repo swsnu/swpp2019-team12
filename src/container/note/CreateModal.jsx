@@ -160,7 +160,7 @@ class CreateModal extends Component {
         const { workspaceId } = this.props;
         if (email) {
             axios
-                .post(`/api/profile/`, {
+                .post('/api/profile/', {
                     username: email,
                     workspace_id: workspaceId
                 })
