@@ -228,6 +228,7 @@ class CreateModal extends Component {
     };
 
     handleCreateWorkspace = () => {
+        console.log('handleCreateWorkspace');
         const { title, addedMemberId, addedAdminId } = this.state;
         const { history } = this.props;
         axios

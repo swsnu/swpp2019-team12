@@ -349,7 +349,11 @@ module.exports = function(webpackEnv) {
                 // It's important to do this before Babel processes the JS.
                 // 추가한 부분
                 {
-                    test: /\.css$/,
+                    test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+                    use: ['raw-loader']
+                },
+                {
+                    test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
                     use: [
                         {
                             loader: 'style-loader',
@@ -370,6 +374,7 @@ module.exports = function(webpackEnv) {
                         }
                     ]
                 },
+
                 // 여기까지
                 {
                     test: /\.(js|mjs|jsx|ts|tsx)$/,
@@ -478,7 +483,10 @@ module.exports = function(webpackEnv) {
                         // By default we support CSS Modules with the extension .module.css
                         {
                             test: cssRegex,
-                            exclude: cssModuleRegex,
+                            exclude: [
+                                cssModuleRegex,
+                                /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
+                            ],
                             use: getStyleLoaders({
                                 importLoaders: 1,
                                 sourceMap: isEnvProduction && shouldUseSourceMap
@@ -493,6 +501,9 @@ module.exports = function(webpackEnv) {
                         // using the extension .module.css
                         {
                             test: cssModuleRegex,
+                            exclude: [
+                                /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
+                            ],
                             use: getStyleLoaders({
                                 importLoaders: 1,
                                 sourceMap:
@@ -550,7 +561,9 @@ module.exports = function(webpackEnv) {
                             exclude: [
                                 /\.(js|mjs|jsx|ts|tsx)$/,
                                 /\.html$/,
-                                /\.json$/
+                                /\.json$/,
+                                /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+                                /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
                             ],
                             options: {
                                 name: 'static/media/[name].[hash:8].[ext]'

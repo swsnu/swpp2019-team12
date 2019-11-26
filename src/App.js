@@ -17,11 +17,15 @@ import Note from './container/note/Note';
 // Not Found Component
 import NotFound from './component/NotFound';
 
+// Editor
+import EditorWrapper from './component/texteditor/EditorWrapper';
+
 function App() {
     return (
         <Router>
             <div className="App">
                 <Switch>
+                    <Route exact path="/editor" component={EditorWrapper} />
                     {/* Can access without login */}
                     <Route exact path="/" component={SignIn} />
                     <Route exact path="/signin" component={SignIn} />

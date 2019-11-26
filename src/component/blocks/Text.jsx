@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import EditorWrapper from '../texteditor/EditorWrapper';
 
 class Text extends Component {
     constructor(props) {
@@ -24,6 +25,7 @@ class Text extends Component {
                 <div className="full-size-block-title">
                     <div className="full-size-block-title__text">Text</div>
                 </div>
+                <EditorWrapper></EditorWrapper>
                 <div className="full-size-block-content">
                     <div className="full-size-block-content__text">
                         {this.state.content}
