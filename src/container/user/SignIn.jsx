@@ -15,8 +15,6 @@ class SignIn extends Component {
         };
     }
 
-    componentDidMount() {}
-
     handleSignIn = e => {
         e.preventDefault();
         const user_info = {
@@ -30,7 +28,6 @@ class SignIn extends Component {
                 this.props.history.push('/workspace');
             })
             .catch(err => {
-                console.log('?????????catcg');
                 this.setState({
                     submitText:
                         '가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.'
