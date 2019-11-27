@@ -13,7 +13,6 @@ class Account extends Component {
     componentDidMount() {}
 
     render() {
-        axios.get('/api/test').then(res => console.log(res));
         return (
             <div>
                 <h1>account page</h1>
