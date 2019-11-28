@@ -41,16 +41,20 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
-const initialData = `
-	<h2>텍스트 입력하는 부분</h2>
-`;
+/**
+ * 추후 이곳에 기존의 데이터를 뽑아서 넣어야함
+ */
+// const initialData = `
+// 	<h2>텍스트 입력하는 부분</h2>
+// `;
 
 export default class Sample extends Component {
     state = {
         // You need this state to render the <CKEditor /> component after the layout is ready.
         // <CKEditor /> needs HTMLElements of `Sidebar` and `PresenceList` plugins provided through
         // the `config` property and you have to ensure that both are already rendered.
-        isLayoutReady: false
+        isLayoutReady: false,
+        initialData: '기존의 데이터'
     };
 
     sidebarElementRef = React.createRef();
@@ -225,7 +229,7 @@ export default class Sample extends Component {
                                 container: this.presenceListElementRef.current
                             }
                         }}
-                        data={initialData}
+                        data={this.state.initialData}
                     />
                 )}
                 <div ref={this.sidebarElementRef} className="sidebar"></div>
