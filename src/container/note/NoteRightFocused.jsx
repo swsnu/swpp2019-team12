@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PreviewAgenda from '../../component/blocks/PreviewAgenda';
+import PreviewAgenda from '../../component/blocks/Agenda';
 import Text from '../../component/blocks/Text';
 import { AST_Block } from 'terser';
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class PreviewAgenda extends Component {
+class Agenda extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -43,4 +43,4 @@ class PreviewAgenda extends Component {
     }
 }
 
-export default PreviewAgenda;
+export default Agenda;

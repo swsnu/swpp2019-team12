@@ -7,7 +7,7 @@ class NoteLeft extends Component {
         super(props);
         // this.state = {
         //     note_title: this.props.note_title,
-        //     note_id: this.props.note_id,
+        //     noteId: this.props.noteId,
         //     meeting_date: this.props.meeting_date,
         //     participants: this.props.participants,
         // }
@@ -28,7 +28,7 @@ class NoteLeft extends Component {
                         handleChangeDatetime={this.props.handleChangeDatetime}
                     />
                     <NoteLeftBlock
-                        note_id={this.props.note_id}
+                        noteId={this.props.noteId}
                         blocks={this.props.blocks}
                         handleAddAgendaBlock={this.props.handleAddAgendaBlock}
                         handleAddTextBlock={this.props.handleAddTextBlock}

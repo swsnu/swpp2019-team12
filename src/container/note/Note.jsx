@@ -9,12 +9,13 @@ class Note extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentUserProfile: null,
             isBlockClicked: false,
             isNoteLeftClicked: true,
             // isNoteRightClicked: false,
             isTitleClicked: false,
             isDateClicked: false,
-            note_id: null,
+            noteId: null,
             title: '',
             created_at: '',
             last_modified_at: '',
@@ -69,13 +70,20 @@ class Note extends Component {
         axios.get(`/api/note/${n_id}/`).then(res => {
             this.setState({
                 ...this.state,
-                note_id: res['data']['id'],
+                noteId: res['data']['id'],
                 title: res['data']['title'],
                 created_at: res['data']['created_at'],
                 last_modified_at: res['data']['last_modified_at'],
                 ml_speech_text: res['data']['ml_speech_text'],
                 participants: res['data']['participants'],
                 moment: moment(res['data']['created_at'])
+            });
+        });
+
+        // 현재 사용자 Profile 정보 가져옴
+        axios.get('/api/profile/').then(res => {
+            this.setState({
+                currentUserProfile: res['data']['profile']
             });
         });
     }
@@ -89,60 +97,11 @@ class Note extends Component {
         
     =================================================================== */
 
-    handleClickBlock = (block_name, block_id) => {
-        // if (this.state.isNoteLeftClicked) {
-        //     this.setState({
-        //         isBlockClicked: true,
-        //         isNoteLeftClicked: false
-        //     });
-        //     document.getElementsByClassName('Note-left')[0].className =
-        //         'Note-left-block-click';
-        //     document.getElementsByClassName('Note-right')[0].className =
-        //         'Note-right-block-click';
-        // } else {
-        //     this.setState({
-        //         isBlockClicked: false,
-        //         isNoteLeftClicked: true
-        //     });
-        //     document.getElementsByClassName(
-        //         'Note-left-block-click'
-        //     )[0].className = 'Note-left';
-        //     document.getElementsByClassName(
-        //         'Note-right-block-click'
-        //     )[0].className = 'Note-right';
-        // }
-    };
+    handleClickBlock = (block_name, block_id) => {};
 
-    handleClickNoteLeft = e => {
-        // // Click한 부분의 className을 받아와서 block과 관련 없는 것들에만 NoteLeftClick을 걸어놓는다.
-        // if (!e.target.className.includes('size-block')) {
-        //     if (this.state.isBlockClicked) {
-        //         this.setState({
-        //             isBlockClicked: false,
-        //             isNoteLeftClicked: true,
-        //             isNoteRightClicked: false
-        //         });
-        //         document.getElementsByClassName(
-        //             'Note-left-block-click'
-        //         )[0].className = 'Note-left';
-        //         document.getElementsByClassName(
-        //             'Note-right-block-click'
-        //         )[0].className = 'Note-right';
-        //     } else {
-        //         this.setState({
-        //             isNoteLeftClicked: true,
-        //             isNoteRightClicked: false
-        //         });
-        //     }
-        // }
-    };
+    handleClickNoteLeft = e => {};
 
-    handleClickNoteRight = () => {
-        // this.setState({
-        //     isNoteLeftClicked: false,
-        //     isNoteRightClicked: true
-        // });
-    };
+    handleClickNoteRight = () => {};
 
     handleChangeTitle = e => {
         this.setState({ title: e.target.value });
@@ -154,7 +113,7 @@ class Note extends Component {
         });
     };
 
-    handleAddAgendaBlock = note_id => {
+    handleAddAgendaBlock = noteId => {
         // Block Create API call 할 곳.
         const agenda_info = {
             content: 'Empty Content in Agenda',
@@ -163,7 +122,7 @@ class Note extends Component {
             layer_y: 0
         };
         axios
-            .post(`/api/note/${this.state.note_id}/agendas/`, agenda_info)
+            .post(`/api/note/${this.state.noteId}/agendas/`, agenda_info)
             .then(res => {
                 this.setState({
                     blocks: this.state.blocks.concat({
@@ -178,7 +137,7 @@ class Note extends Component {
             });
     };
 
-    handleAddTextBlock = note_id => {
+    handleAddTextBlock = noteId => {
         // Block Create API call 할 곳.
         const text_info = {
             content: '새로 생성된 텍스트 블록',
@@ -186,7 +145,7 @@ class Note extends Component {
             layer_y: 0
         };
         axios
-            .post(`/api/note/${this.state.note_id}/textblocks/`, text_info)
+            .post(`/api/note/${this.state.noteId}/textblocks/`, text_info)
             .then(res => {
                 this.setState({
                     blocks: this.state.blocks.concat({
@@ -200,36 +159,36 @@ class Note extends Component {
             });
     };
 
-    handleAddTodoBlock = note_id => {
+    handleAddTodoBlock = noteId => {
         // Where need to call Todo Create API.
     };
 
-    handleAddImageBlock = note_id => {
+    handleAddImageBlock = noteId => {
         console.log(
-            `Need to Implement adding Image Block to specific note whose id is ${note_id}`
+            `Need to Implement adding Image Block to specific note whose id is ${noteId}`
         );
     };
 
-    handleAddCalendarBlock = note_id => {
+    handleAddCalendarBlock = noteId => {
         console.log(
-            `Need to Implement adding Calendar Block to specific note whose id is ${note_id}`
+            `Need to Implement adding Calendar Block to specific note whose id is ${noteId}`
         );
     };
 
-    handleAddPdfBlock = note_id => {
+    handleAddPdfBlock = noteId => {
         console.log(
-            `Need to Implement adding Pdf Block to specific note whose id is ${note_id}`
+            `Need to Implement adding Pdf Block to specific note whose id is ${noteId}`
         );
     };
 
-    handleAddTableBlock = note_id => {
+    handleAddTableBlock = noteId => {
         console.log(
-            `Need to Implement adding Table Block to specific note whose id is ${note_id}`
+            `Need to Implement adding Table Block to specific note whose id is ${noteId}`
         );
     };
 
-    handleStartAutoTyping = note_id => {
-        console.log(`Need to Implement auto-typing in the note ${note_id}`);
+    handleStartAutoTyping = noteId => {
+        console.log(`Need to Implement auto-typing in the note ${noteId}`);
     };
 
     render() {
@@ -240,7 +199,7 @@ class Note extends Component {
                     note_title={this.state.title}
                     meeting_date={this.state.created_at}
                     participants={this.state.participants}
-                    note_id={this.state.note_id}
+                    noteId={this.state.noteId}
                     moment={this.state.moment}
                     blocks={this.state.blocks}
                     handleClickBlock={this.handleClickBlock}
