@@ -17,16 +17,20 @@ class NoteLeftBlock extends Component {
     render() {
         const blocks = this.props.blocks.map(blk => {
             if (blk.block_type === 'Text') {
+                console.log('block type text: ', blk);
                 return (
                     <Text
+                        blk_id={blk.id}
                         content={blk.content}
                         handleChangeText={this.handleChangeText}
                         handleClickBlock={this.props.handleClickBlock}
                     />
                 );
             } else if (blk.block_type === 'Agenda') {
+                console.log('block type agenda: ', blk);
                 return (
                     <PreviewAgenda
+                        blk_id={blk.id}
                         content={blk.content}
                         agenda_disccusion={blk.agenda_disccusion}
                         handleClickBlock={this.props.handleClickBlock}
@@ -53,15 +57,17 @@ class NoteLeftBlock extends Component {
                         id="add_agenda_block"
                         onClick={() =>
                             this.props.handleAddAgendaBlock(this.state.note_id)
-                        }
-                    />
+                        }>
+                        안건
+                    </button>
                     <button
                         className="add-block-button"
                         id="add_text_block"
                         onClick={() =>
                             this.props.handleAddTextBlock(this.state.note_id)
-                        }
-                    />
+                        }>
+                        Text
+                    </button>
                     <button
                         className="add-block-button"
                         id="add_todo_block"

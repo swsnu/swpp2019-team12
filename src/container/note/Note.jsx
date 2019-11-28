@@ -11,14 +11,14 @@ class Note extends Component {
         this.state = {
             isBlockClicked: false,
             isNoteLeftClicked: true,
-            isNoteRightClicked: false,
+            // isNoteRightClicked: false,
             isTitleClicked: false,
             isDateClicked: false,
             note_id: null,
             title: '',
             created_at: '',
             last_modified_at: '',
-            ml_speech_text: '',
+            // ml_speech_text: '',
             participants: [],
             moment: null,
             blocks: []
@@ -47,10 +47,11 @@ class Note extends Component {
             })
             .catch(err => console.log('No agendas'));
 
+        // 추후 여기에서 그냥 순서대로 넣는 것이 아닌, 기존의 위치대로 배열에 넣어야함
         axios
             .get(`/api/note/${n_id}/textblocks/`)
             .then(res => {
-                console.log(res);
+                console.log('axios get textblocks', res);
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
@@ -180,7 +181,7 @@ class Note extends Component {
     handleAddTextBlock = note_id => {
         // Block Create API call 할 곳.
         const text_info = {
-            content: 'Empty Content in Text',
+            content: '새로 생성된 텍스트 블록',
             layer_x: 0,
             layer_y: 0
         };
@@ -232,7 +233,7 @@ class Note extends Component {
     };
 
     render() {
-        console.log(this.state.blocks);
+        console.log('note blocks: ', this.state.blocks);
         return (
             <div className="Note">
                 <NoteLeft
