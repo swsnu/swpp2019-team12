@@ -41,13 +41,6 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
-/**
- * 추후 이곳에 기존의 데이터를 뽑아서 넣어야함
- */
-// const initialData = `
-// 	<h2>텍스트 입력하는 부분</h2>
-// `;
-
 export default class Sample extends Component {
     state = {
         // You need this state to render the <CKEditor /> component after the layout is ready.
@@ -68,7 +61,7 @@ export default class Sample extends Component {
     render() {
         return (
             <div className="App">
-                {this.renderHeader()}
+                {/* {this.renderHeader()} */}
 
                 <main>
                     <div className="message">
@@ -85,7 +78,7 @@ export default class Sample extends Component {
                     </div>
                 </main>
 
-                {this.renderFooter()}
+                {/* {this.renderFooter()} */}
             </div>
         );
     }
@@ -240,9 +233,7 @@ export default class Sample extends Component {
     renderFooter() {
         return (
             <footer>
-                <div className="centered">
-                    <p>footer 위치하는 곳</p>
-                </div>
+                <div className="centered"></div>
             </footer>
         );
     }
