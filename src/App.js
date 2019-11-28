@@ -25,6 +25,7 @@ function App() {
         <Router>
             <div className="App">
                 <Switch>
+                    {/* For Developing Editor */}
                     <Route exact path="/editor" component={EditorWrapper} />
                     {/* Can access without login */}
                     <Route exact path="/" component={SignIn} />

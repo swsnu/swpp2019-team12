@@ -89,58 +89,58 @@ class Note extends Component {
     =================================================================== */
 
     handleClickBlock = (block_name, block_id) => {
-        if (this.state.isNoteLeftClicked) {
-            this.setState({
-                isBlockClicked: true,
-                isNoteLeftClicked: false
-            });
-            document.getElementsByClassName('Note-left')[0].className =
-                'Note-left-block-click';
-            document.getElementsByClassName('Note-right')[0].className =
-                'Note-right-block-click';
-        } else {
-            this.setState({
-                isBlockClicked: false,
-                isNoteLeftClicked: true
-            });
-            document.getElementsByClassName(
-                'Note-left-block-click'
-            )[0].className = 'Note-left';
-            document.getElementsByClassName(
-                'Note-right-block-click'
-            )[0].className = 'Note-right';
-        }
+        // if (this.state.isNoteLeftClicked) {
+        //     this.setState({
+        //         isBlockClicked: true,
+        //         isNoteLeftClicked: false
+        //     });
+        //     document.getElementsByClassName('Note-left')[0].className =
+        //         'Note-left-block-click';
+        //     document.getElementsByClassName('Note-right')[0].className =
+        //         'Note-right-block-click';
+        // } else {
+        //     this.setState({
+        //         isBlockClicked: false,
+        //         isNoteLeftClicked: true
+        //     });
+        //     document.getElementsByClassName(
+        //         'Note-left-block-click'
+        //     )[0].className = 'Note-left';
+        //     document.getElementsByClassName(
+        //         'Note-right-block-click'
+        //     )[0].className = 'Note-right';
+        // }
     };
 
     handleClickNoteLeft = e => {
-        // Click한 부분의 className을 받아와서 block과 관련 없는 것들에만 NoteLeftClick을 걸어놓는다.
-        if (!e.target.className.includes('size-block')) {
-            if (this.state.isBlockClicked) {
-                this.setState({
-                    isBlockClicked: false,
-                    isNoteLeftClicked: true,
-                    isNoteRightClicked: false
-                });
-                document.getElementsByClassName(
-                    'Note-left-block-click'
-                )[0].className = 'Note-left';
-                document.getElementsByClassName(
-                    'Note-right-block-click'
-                )[0].className = 'Note-right';
-            } else {
-                this.setState({
-                    isNoteLeftClicked: true,
-                    isNoteRightClicked: false
-                });
-            }
-        }
+        // // Click한 부분의 className을 받아와서 block과 관련 없는 것들에만 NoteLeftClick을 걸어놓는다.
+        // if (!e.target.className.includes('size-block')) {
+        //     if (this.state.isBlockClicked) {
+        //         this.setState({
+        //             isBlockClicked: false,
+        //             isNoteLeftClicked: true,
+        //             isNoteRightClicked: false
+        //         });
+        //         document.getElementsByClassName(
+        //             'Note-left-block-click'
+        //         )[0].className = 'Note-left';
+        //         document.getElementsByClassName(
+        //             'Note-right-block-click'
+        //         )[0].className = 'Note-right';
+        //     } else {
+        //         this.setState({
+        //             isNoteLeftClicked: true,
+        //             isNoteRightClicked: false
+        //         });
+        //     }
+        // }
     };
 
     handleClickNoteRight = () => {
-        this.setState({
-            isNoteLeftClicked: false,
-            isNoteRightClicked: true
-        });
+        // this.setState({
+        //     isNoteLeftClicked: false,
+        //     isNoteRightClicked: true
+        // });
     };
 
     handleChangeTitle = e => {
@@ -243,14 +243,11 @@ class Note extends Component {
                     moment={this.state.moment}
                     blocks={this.state.blocks}
                     handleClickBlock={this.handleClickBlock}
-                    handleClickNoteLeft={this.handleClickNoteLeft}
+                    // handleClickNoteLeft={this.handleClickNoteLeft}
                     handleChangeTitle={this.handleChangeTitle}
                     handleChangeDatetime={this.handleChangeDatetime}
                     handleAddAgendaBlock={this.handleAddAgendaBlock}
                     handleAddTextBlock={this.handleAddTextBlock}
-                />
-                <NoteRightFocused
-                // handleClickNoteRight={this.handleClickNoteRight}
                 />
             </div>
         );
