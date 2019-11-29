@@ -8,8 +8,8 @@ export default class EditorWrapper extends Component {
         selectedUser: {
             // id: this.props.currentUserProfile['id'],
             // name: this.props.currentUserProfile.nickname
-            id: null,
-            name: null
+            id: 1,
+            name: '임시'
         },
         configuration: {
             documentId: '36ur9q8hprg',
@@ -22,18 +22,13 @@ export default class EditorWrapper extends Component {
     };
 
     componentDidMount() {
-        axios.get('api/profile/').then(res => {
-            console.log('res in wrapper:', res);
-            this.setState({
-                selectedUser: {
-                    id: res.data.profile.id,
-                    name: res.data.profile.nickname
-                }
-            });
-        });
-    }
-
-    setTokenUrl(data) {
+        const nickname = sessionStorage.getItem('LoggedInUserNickname');
+        const userId = sessionStorage.getItem('LoggedInUserId');
+        console.log('세션스토리지 nickname, id: ', nickname, userId);
+        const data = {
+            id: userId,
+            name: nickname
+        };
         console.log('Set token url');
         console.log('config: ', this.state.configuration);
         let config = this.state.configuration;
@@ -50,17 +45,27 @@ export default class EditorWrapper extends Component {
                 })
                 .join('&');
 
-        this.setState({ config: config, updated: true });
+        this.setState({
+            config: config,
+            updated: true,
+            selectedUser: {
+                id: userId,
+                name: nickname
+            }
+        });
     }
 
     render() {
-        console.log('Editor Wrapper rendered');
-        if (!this.state.updated) this.setTokenUrl(this.state.selectedUser);
+        // console.log('Editor Wrapper rendered');
+        // console.log('에디터에서 선택된 사람', this.state.selectedUser);
+
         return (
-            <Editor
-                selectedUser={this.state.selectedUser}
-                configuration={this.state.configuration}
-            />
+            this.state.updated && (
+                <Editor
+                    selectedUser={this.state.selectedUser}
+                    configuration={this.state.configuration}
+                />
+            )
         );
     }
 }

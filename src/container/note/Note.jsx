@@ -79,14 +79,6 @@ class Note extends Component {
                 moment: moment(res['data']['created_at'])
             });
         });
-
-        // 현재 사용자 Profile 정보 가져옴
-        axios.get('/api/profile/').then(res => {
-            this.setState({
-                currentUserProfile: res['data']['profile']
-            });
-            console.log('profile axios get', this.state.currentUserProfile);
-        });
     }
 
     /* ==================================================================
@@ -194,11 +186,9 @@ class Note extends Component {
 
     render() {
         console.log('note blocks: ', this.state.blocks);
-        console.log('현재 유저 Note ', this.state.currentUserProfile);
         return (
             <div className="Note">
                 <NoteLeft
-                    currentUserProfile={this.state.currentUserProfile}
                     note_title={this.state.title}
                     meeting_date={this.state.created_at}
                     participants={this.state.participants}

@@ -27,10 +27,11 @@ class SignIn extends Component {
         axios
             .post('/api/signin/', user_info)
             .then(res => {
-                sessionStorage.setItem('LoggedInUser', res.data);
+                sessionStorage.setItem('LoggedInUserNickname', nickname);
+                sessionStorage.setItem('LoggedInUserId', userId);
                 this.props.history.push('/workspace');
             })
-            .catch(res => console.log('err'));
+            .catch(res => console.log('로그인 에러'));
     };
 
     handleNavigateSignUp = e => {

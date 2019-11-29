@@ -105,8 +105,10 @@ class SignUp extends Component {
         if (isAllFormValid) {
             axios.post('/api/signup/', user_info).then(res => {
                 // session storage에 로그인한 유저 정보 저장
-                sessionStorage.setItem('LoggedInUser', res.data);
-                console.log('signup: ', res.data);
+                const nickname = res.data.nickname;
+                const userId = res.data.id;
+                sessionStorage.setItem('LoggedInUserNickname', nickname);
+                sessionStorage.setItem('LoggedInUserId', userId);
                 this.props.history.push('/workspace');
             });
         }

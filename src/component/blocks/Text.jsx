@@ -18,8 +18,10 @@ class Text extends Component {
 
     render() {
         const block_name = 'Text';
-        console.log('text에서 현재 유저', this.state.currentUserProfile);
-        console.log('text에서 현재 유저', this.props.currentUserProfile);
+        const user = sessionStorage.getItem('LoggedInUser');
+        console.log('text에서 유저: ', user);
+        // console.log('text에서 현재 유저', this.state.currentUserProfile);
+        // console.log('text에서 현재 유저', this.props.currentUserProfile);
 
         return (
             <div

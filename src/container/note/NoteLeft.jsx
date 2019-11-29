@@ -5,9 +5,7 @@ import NoteLeftInfo from '../../component/note_left/NoteLeftInfo';
 class NoteLeft extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            currentUserProfile: this.props.currentUserProfile
-        };
+        this.state = {};
         // this.state = {
         //     note_title: this.props.note_title,
         //     noteId: this.props.noteId,
@@ -31,7 +29,6 @@ class NoteLeft extends Component {
                         handleChangeDatetime={this.props.handleChangeDatetime}
                     />
                     <NoteLeftBlock
-                        currentUserProfile={this.props.currentUserProfile}
                         noteId={this.props.noteId}
                         blocks={this.props.blocks}
                         handleAddAgendaBlock={this.props.handleAddAgendaBlock}

@@ -70,8 +70,8 @@ def signin(request):
                 'username': user.username
             }
             auth.login(request, user)
-            print(Response(status=status.HTTP_204_NO_CONTENT).cookies)
-            return JsonResponse(response, status=status.HTTP_204_NO_CONTENT)
+            print(response)
+            return JsonResponse(response, status=200)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 

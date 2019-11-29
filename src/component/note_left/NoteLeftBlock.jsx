@@ -12,7 +12,6 @@ class NoteLeftBlock extends Component {
         super(props);
 
         this.state = {
-            currentUserProfile: this.props.currentUserProfile,
             blocks: []
         };
     }
@@ -22,10 +21,9 @@ class NoteLeftBlock extends Component {
     render() {
         const blocks = this.props.blocks.map(blk => {
             if (blk.block_type === TEXT) {
-                console.log('block type text: ', blk);
+                // console.log('block type text: ', blk);
                 return (
                     <Text
-                        currentUserProfile={this.props.currentUserProfile}
                         blk_id={blk.id}
                         content={blk.content}
                         handleChangeText={this.handleChangeText}
@@ -33,10 +31,9 @@ class NoteLeftBlock extends Component {
                     />
                 );
             } else if (blk.block_type === AGENDA) {
-                console.log('block type agenda: ', blk);
+                // console.log('block type agenda: ', blk);
                 return (
                     <Agenda
-                        currentUserProfile={this.props.currentUserProfile}
                         blk_id={blk.id}
                         content={blk.content}
                         agenda_disccusion={blk.agenda_disccusion}
