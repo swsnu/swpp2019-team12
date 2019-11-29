@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'i*6_@zz&=^75i)#ht_a=h66j8s3jz^)izk!^jjrx6&xlug(0x$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['52.141.6.169', 'www.meetingoverflow.space','localohst']
 
 
 # Application definition
