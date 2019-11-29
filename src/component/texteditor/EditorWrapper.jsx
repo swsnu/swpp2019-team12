@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 // import ConfigurationDialog from './configuration-dialog';
 import Editor from './Editor';
+import axios from 'axios';
 
-export default class Something extends Component {
+export default class EditorWrapper extends Component {
     state = {
         selectedUser: {
-            id: 'e1',
-            name: 'Taeyoung',
-            // avatar: "https://randomuser.me/api/portraits/men/30.jpg",
-            role: 'writer'
+            // id: this.props.currentUserProfile['id'],
+            // name: this.props.currentUserProfile.nickname
+            id: null,
+            name: null
         },
         configuration: {
             documentId: '36ur9q8hprg',
@@ -19,6 +20,18 @@ export default class Something extends Component {
         },
         updated: false
     };
+
+    componentDidMount() {
+        axios.get('api/profile/').then(res => {
+            console.log('res in wrapper:', res);
+            this.setState({
+                selectedUser: {
+                    id: res.data.profile.id,
+                    name: res.data.profile.nickname
+                }
+            });
+        });
+    }
 
     setTokenUrl(data) {
         console.log('Set token url');
@@ -41,18 +54,8 @@ export default class Something extends Component {
     }
 
     render() {
-        console.log('Something rendered');
+        console.log('Editor Wrapper rendered');
         if (!this.state.updated) this.setTokenUrl(this.state.selectedUser);
-        // if (!this.state.configuration) {
-        //     return (
-        //         <ConfigurationDialog
-        //             onSubmit={configuration => {
-        //                 console.log(configuration);
-        //                 this.setState({ configuration });
-        //             }}
-        //         />
-        //     );
-        // }
         return (
             <Editor
                 selectedUser={this.state.selectedUser}

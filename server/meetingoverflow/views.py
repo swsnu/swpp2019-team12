@@ -42,8 +42,13 @@ def signup(request):
             profile = Profile.objects.get(user=user)
             profile.nickname = nickname
             profile.save()
+            response = {
+                'id': profile.id,
+                'nickname': profile.nickname,
+                'username': user.username
+            }
             auth.login(request, user)
-            return Response(status=status.HTTP_201_CREATED)
+            return JsonResponse(response, status=status.HTTP_201_CREATED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -58,9 +63,15 @@ def signin(request):
             return Response(status=status.HTTP_404_NOT_FOUND)
         user = auth.authenticate(username=username, password=password)
         if user is not None:
+            profile = Profile.objects.get(user=user)
+            response = {
+                'id': profile.id,
+                'nickname': profile.nickname,
+                'username': user.username
+            }
             auth.login(request, user)
             print(Response(status=status.HTTP_204_NO_CONTENT).cookies)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return JsonResponse(response, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 

@@ -85,6 +85,7 @@ class Note extends Component {
             this.setState({
                 currentUserProfile: res['data']['profile']
             });
+            console.log('profile axios get', this.state.currentUserProfile);
         });
     }
 
@@ -193,9 +194,11 @@ class Note extends Component {
 
     render() {
         console.log('note blocks: ', this.state.blocks);
+        console.log('현재 유저 Note ', this.state.currentUserProfile);
         return (
             <div className="Note">
                 <NoteLeft
+                    currentUserProfile={this.state.currentUserProfile}
                     note_title={this.state.title}
                     meeting_date={this.state.created_at}
                     participants={this.state.participants}

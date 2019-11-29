@@ -12,11 +12,12 @@ class NoteLeftBlock extends Component {
         super(props);
 
         this.state = {
+            currentUserProfile: this.props.currentUserProfile,
             blocks: []
         };
     }
 
-    handleChangeText = () => {};
+    handleChangeText = (noteId, editedText) => {};
 
     render() {
         const blocks = this.props.blocks.map(blk => {
@@ -24,6 +25,7 @@ class NoteLeftBlock extends Component {
                 console.log('block type text: ', blk);
                 return (
                     <Text
+                        currentUserProfile={this.props.currentUserProfile}
                         blk_id={blk.id}
                         content={blk.content}
                         handleChangeText={this.handleChangeText}
@@ -34,6 +36,7 @@ class NoteLeftBlock extends Component {
                 console.log('block type agenda: ', blk);
                 return (
                     <Agenda
+                        currentUserProfile={this.props.currentUserProfile}
                         blk_id={blk.id}
                         content={blk.content}
                         agenda_disccusion={blk.agenda_disccusion}

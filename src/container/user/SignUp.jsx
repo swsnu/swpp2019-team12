@@ -103,9 +103,12 @@ class SignUp extends Component {
             this.state.isPwConfirmationVaild;
 
         if (isAllFormValid) {
-            axios
-                .post('/api/signup/', user_info)
-                .then(res => this.props.history.push('/workspace'));
+            axios.post('/api/signup/', user_info).then(res => {
+                // session storage에 로그인한 유저 정보 저장
+                sessionStorage.setItem('LoggedInUser', res.data);
+                console.log('signup: ', res.data);
+                this.props.history.push('/workspace');
+            });
         }
         // 적절하지 않은 input이 존재한다면, 그에 맞는 에러 메시지 띄워주기.
         else {
