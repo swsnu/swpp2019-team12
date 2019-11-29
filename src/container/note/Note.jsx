@@ -60,7 +60,8 @@ class Note extends Component {
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
-                            layer_y: blk['layer_y']
+                            layer_y: blk['layer_y'],
+                            documentId: blk['document_id']
                         })
                     });
                 });
@@ -131,11 +132,14 @@ class Note extends Component {
     };
 
     handleAddTextBlock = noteId => {
+        const documentId = handleDocIdInUrl();
+        console.log('새 document Id: ', documentId);
         // Block Create API call 할 곳.
         const text_info = {
             content: '새로 생성된 텍스트 블록',
             layer_x: 0,
-            layer_y: 0
+            layer_y: 0,
+            document_id: documentId
         };
         axios
             .post(`/api/note/${this.state.noteId}/textblocks/`, text_info)
@@ -146,7 +150,8 @@ class Note extends Component {
                         id: res['data']['id'],
                         content: res['data']['content'],
                         layer_x: res['data']['layer_x'],
-                        layer_y: res['data']['layer_y']
+                        layer_y: res['data']['layer_y'],
+                        documentId: res['data']['document_id']
                     })
                 });
             });
@@ -205,6 +210,35 @@ class Note extends Component {
             </div>
         );
     }
+}
+
+function handleDocIdInUrl() {
+    // let id = getDocIdFromUrl();
+
+    //if (!id) {
+    let id = randomString();
+    updateDocIdInUrl(id);
+    //}
+
+    return id;
+}
+
+function updateDocIdInUrl(id) {
+    window.history.replaceState({}, document.title, generateUrlWithDocId(id));
+}
+
+function generateUrlWithDocId(id) {
+    return `${window.location.href.split('?')[0]}?docId=${id}`;
+}
+
+function getDocIdFromUrl() {
+    const docIdMatch = window.location.search.match(/docId=(.+)$/);
+
+    return docIdMatch ? decodeURIComponent(docIdMatch[1]) : null;
+}
+
+function randomString() {
+    return Math.floor(Math.random() * Math.pow(2, 52)).toString(32);
 }
 
 export default Note;

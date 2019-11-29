@@ -47,7 +47,7 @@ export default class Sample extends Component {
         // <CKEditor /> needs HTMLElements of `Sidebar` and `PresenceList` plugins provided through
         // the `config` property and you have to ensure that both are already rendered.
         isLayoutReady: false,
-        initialData: '기존의 데이터'
+        initialData: ''
     };
 
     sidebarElementRef = React.createRef();

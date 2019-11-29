@@ -5,9 +5,9 @@ class Text extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentUserProfile: this.props.currentUserProfile,
             blk_id: this.props.block_id,
-            content: this.props.content
+            content: this.props.content,
+            documentId: this.props.documentId
         };
     }
 
@@ -20,6 +20,7 @@ class Text extends Component {
         const block_name = 'Text';
         const user = sessionStorage.getItem('LoggedInUser');
         console.log('text에서 유저: ', user);
+        console.log('text block content: ', this.state.content);
         // console.log('text에서 현재 유저', this.state.currentUserProfile);
         // console.log('text에서 현재 유저', this.props.currentUserProfile);
 
@@ -33,12 +34,12 @@ class Text extends Component {
                     <div className="full-size-block-title__text">Text</div>
                 </div>
                 <EditorWrapper
-                    currentUserProfile={this.props.currentUserProfile}
+                    documentId={this.state.documentId}
                     handleChangeText={this.handleChangeText}></EditorWrapper>
                 <div className="full-size-block-content">
-                    <div className="full-size-block-content__text">
+                    {/* <div className="full-size-block-content__text">
                         {this.state.content}
-                    </div>
+                    </div> */}
                 </div>
             </div>
         );

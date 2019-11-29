@@ -21,9 +21,10 @@ class NoteLeftBlock extends Component {
     render() {
         const blocks = this.props.blocks.map(blk => {
             if (blk.block_type === TEXT) {
-                // console.log('block type text: ', blk);
+                console.log('block type text: ', blk);
                 return (
                     <Text
+                        documentId={blk.documentId}
                         blk_id={blk.id}
                         content={blk.content}
                         handleChangeText={this.handleChangeText}

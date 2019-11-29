@@ -489,6 +489,7 @@ def textblock_child_of_note(request, n_id):
             'content': request.data['content'],
             'layer_x': request.data['layer_x'],
             'layer_y': request.data['layer_y'],
+            'document_id': request.data['document_id'],
             'note': n_id,
             'is_parent_note': True
         }

@@ -44,9 +44,10 @@ export default class EditorWrapper extends Component {
                     return `user.${key}=${data[key]}`;
                 })
                 .join('&');
-
+        config.documentId = this.props.documentId;
+        console.log('changed config: ', config);
         this.setState({
-            config: config,
+            configuration: config,
             updated: true,
             selectedUser: {
                 id: userId,
