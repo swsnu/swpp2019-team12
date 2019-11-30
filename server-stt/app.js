@@ -48,16 +48,31 @@ app.use((err, req, res, next) => {
 
 // =========================== SOCKET.IO ================================ //
 
+let room;
+
 io.on('connection', client => {
     console.log(`Client Connected to server : ${client.id}`);
     let recognizeStream = null;
 
     client.on('join', data => {
-        client.emit('messages', 'Socket Connected to Server');
+        room = data.room;
+
+        client.join(room);
+        io.to(room).emit(
+            'messages',
+            `Socket Connected to Server - room name : ${room}`
+        );
+    });
+
+    client.on('leave', data => {
+        client.leave(room);
+        client.leave(data.room);
+        console.log('Socket Disconnected to Server');
     });
 
     client.on('messages', data => {
-        client.emit('broad', data);
+        // io.sockets.in(room).emit('broad', data);
+        io.to(room).emit('broad', data);
     });
 
     client.on('startGoogleCloudStream', data => {
@@ -71,7 +86,7 @@ io.on('connection', client => {
         console.log('========= LOG =========');
         console.log('end google cloud stream');
         console.log('========= END =========');
-        stopRecognitionStream();
+        stopRecognitionStream(client);
     });
 
     client.on('binaryData', data => {
@@ -93,7 +108,8 @@ io.on('connection', client => {
                         ? `Transcription: ${data.results[0].alternatives[0].transcript}\n`
                         : `\n\nReached transcription time limit, press Ctrl+C\n`
                 );
-                client.emit('speechData', data);
+                io.to(room).emit('speechData', data);
+                // io.sockets.in(room).emit('speechData', data);
 
                 // if end of utterance, let's restart stream
                 // this is a small hack. After 65 seconds of silence, the stream will still throw an error for speech length limit
@@ -107,11 +123,12 @@ io.on('connection', client => {
             });
     };
 
-    const stopRecognitionStream = () => {
+    const stopRecognitionStream = client => {
         if (recognizeStream) {
             recognizeStream.end();
         }
         recognizeStream = null;
+        client.leave(room);
     };
 });
 

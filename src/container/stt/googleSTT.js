@@ -5,8 +5,6 @@ import { map } from 'lodash';
 const END_POINT = '127.0.0.1:9000/';
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 
-const socket = io.connect(END_POINT);
-
 // Stream Audio Configuration
 const bufferSize = 2048;
 const context = new AudioContext();
@@ -16,6 +14,8 @@ let globalStream = null;
 
 let finalWord = false;
 let streamStreaming = false;
+
+const socket = io.connect(END_POINT);
 
 // AudioStream Constraints
 const constraints = {
@@ -29,6 +29,7 @@ class googleSTT extends Component {
         super(props);
 
         this.state = {
+            room: '',
             recording: false,
             texts: []
         };
@@ -38,12 +39,15 @@ class googleSTT extends Component {
     }
 
     componentDidMount() {
-        // resultText = document.querySelector('#resultText');
+        this.initSocket();
+    }
+
+    initSocket = () => {
         //================= SOCKET IO =================
         socket.on('connect', data => {
-            socket.emit('join', 'Server Connected to Client');
+            console.log(data);
+            console.log('Server Connected to Client');
         });
-
         socket.on('messages', data => {
             console.log(data);
         });
@@ -57,7 +61,16 @@ class googleSTT extends Component {
             }
             // resultText.innerText = data.results[0] && data.results[0].alternatives[0].transcript;
         });
-    }
+    };
+
+    startSocket = () => {
+        // TODO convert room id to block id
+        socket.emit('join', { room: this.state.room });
+    };
+
+    stopSocket = () => {
+        socket.emit('leave', { room: this.state.room });
+    };
 
     //================= RECORDING =================
     initRecording = () => {
@@ -183,6 +196,16 @@ class googleSTT extends Component {
                     disabled={!recording}
                     className={recording ? '' : 'disabled'}>
                     Stop recording
+                </button>
+                <input
+                    onChange={e => this.setState({ room: e.target.value })}
+                    value={this.state.room}
+                />
+                <button type="button" onClick={this.startSocket}>
+                    Start Socket
+                </button>
+                <button type="button" onClick={this.stopSocket}>
+                    Stop Socket
                 </button>
 
                 <div>
