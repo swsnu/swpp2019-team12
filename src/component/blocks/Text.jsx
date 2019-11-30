@@ -57,9 +57,9 @@ class Text extends Component {
                     documentId={this.state.documentId}
                     handleChangeText={this.handleChangeText}></EditorWrapper>
                 <div className="full-size-block-content">
-                    {/* <div className="full-size-block-content__text">
+                    <div className="full-size-block-content__text">
                         {this.state.content}
-                    </div> */}
+                    </div>
                 </div>
             </div>
         );

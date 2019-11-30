@@ -3,8 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 import NoteLeft from './NoteLeft';
-import NoteRightFocused from './NoteRightFocused';
-import NoteRightUnfocused from './NoteRightUnfocused';
+import Signout from '../../component/signout/Signout';
 
 const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
@@ -38,6 +37,14 @@ class Note extends Component {
     }
 
     componentDidMount() {
+        const loggedInUserNickname = sessionStorage.getItem(
+            'LoggedInUserNickname'
+        );
+        if (!loggedInUserNickname) {
+            this.props.history.push('/signin');
+        }
+
+        // sessionStorage.setItem('LoggedInUserId');
         const n_id = this.props.match.params.n_id;
 
         //이거 동시에 나오게 처리하기, 저장된 순서 처리
@@ -314,6 +321,7 @@ class Note extends Component {
         const { history } = this.props;
         return (
             <div className="Note">
+                <Signout history={history} />
                 <NoteLeft
                     note_title={this.state.title}
                     meeting_date={this.state.created_at}
