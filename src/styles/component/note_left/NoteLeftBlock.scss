@@ -7,6 +7,7 @@
     flex-direction: row;
 
     .NoteLeftBlock-button-container {
+        all: none;
         position: fixed;
         width: rem(50px);
         top: 20%;
@@ -23,7 +24,7 @@
         }
     }
     .NoteLeftBlock-create-buttons {
-        position: relative;
+        position: fixed;
         width: rem(50px);
         left: rem(0px);
         transition: left 300ms ease;

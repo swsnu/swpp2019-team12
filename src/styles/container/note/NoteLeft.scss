@@ -1,9 +1,11 @@
 .Note-left {
-    position: relative;
-    min-width: 50%;
-    width: 100vw;
-    height: 100vh;
-    overflow: inherit;
+    // position: relative;
+    // min-width: 50%;
+    width: rem(900px);
+    // overflow: inherit;
+    margin: auto;
+    margin-top: 3vh;
+    min-height: 94vh;
     // border-right: 1px solid $darkgray;
 
     padding: rem(50px) 0;
@@ -16,7 +18,6 @@
         right: 0;
         bottom: 5%;
 
-        width: 1px;
         height: 90%;
 
         background: $tertiary;
