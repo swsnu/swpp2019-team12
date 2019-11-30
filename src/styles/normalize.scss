@@ -12,6 +12,14 @@
     -o-user-select: none;
     user-select: none;
 }
+input,
+textarea {
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
 
 /**
  * 1. Correct the line height in all browsers.
