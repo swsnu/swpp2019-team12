@@ -25,7 +25,8 @@ SECRET_KEY = 'i*6_@zz&=^75i)#ht_a=h66j8s3jz^)izk!^jjrx6&xlug(0x$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['meetingoverflow.space', '52.141.6.169','www.meetingoverflow.space','localhost']
+ALLOWED_HOSTS = ['meetingoverflow.space', '52.141.6.169',
+                 'www.meetingoverflow.space', 'localhost']
 
 
 # Application definition
@@ -39,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -120,3 +123,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+ASGI_APPLICATION = "server.routing.application"  # websocket
+
+CHANNEL_LAYER = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "HOSTS": [('127.0.0.1', 6379)]
+        },
+    },
+}
