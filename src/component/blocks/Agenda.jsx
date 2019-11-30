@@ -4,7 +4,7 @@ class Agenda extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            agenda_id: this.props.agenda_id,
+            agenda_id: this.props.blk_id,
             agenda_title: this.props.agenda_title,
             agenda_discussion: this.props.agenda_discussion
         };
@@ -21,7 +21,10 @@ class Agenda extends Component {
             <div
                 className="full-size-block-container PreviewAgenda"
                 onClick={() =>
-                    this.props.handleClickBlock(this.props.type, this.props.id)
+                    this.props.handleClickBlock(
+                        this.props.type,
+                        this.props.blk_id
+                    )
                 }>
                 <div className="full-size-block-title PreviewAgenda">
                     <div className="full-size-block-title__label PreviewAgenda">

@@ -7,6 +7,11 @@ import axios from 'axios';
 const TEXT = 'Text';
 const AGENDA = 'Agenda';
 const TODO_CONTAINER = 'TodoContainer';
+const IMAGE = 'Image';
+const TABLE = 'Table';
+const CALENDAR = 'Calendar';
+const PDF = 'PDF';
+
 class NoteLeftBlock extends Component {
     constructor(props) {
         super(props);
@@ -31,7 +36,6 @@ class NoteLeftBlock extends Component {
                     <Text
                         documentId={blk.documentId}
                         blk_id={blk.id}
-                        id={blk.id}
                         type={blk.block_type}
                         content={blk.content}
                         handleChangeText={this.handleChangeText}
@@ -41,7 +45,6 @@ class NoteLeftBlock extends Component {
             } else if (blk.block_type === AGENDA) {
                 return (
                     <Agenda
-                        id={blk.id}
                         blk_id={blk.id}
                         type={blk.block_type}
                         content={blk.content}

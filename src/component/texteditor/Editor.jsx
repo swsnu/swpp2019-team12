@@ -155,7 +155,7 @@ export default class Sample extends Component {
                                 MediaEmbed,
                                 Paragraph,
                                 PasteFromOffice,
-                                PresenceList,
+                                //PresenceList,
                                 RealTimeCollaborativeComments,
                                 RealTimeCollaborativeTrackChanges,
                                 RemoveFormat,
