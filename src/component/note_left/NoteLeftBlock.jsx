@@ -114,51 +114,6 @@ class NoteLeftBlock extends Component {
     handleChangeText = () => {};
 
     render() {
-        this.state.blocks.map(blk => {
-            console.log('this is state: ' + blk.id);
-        });
-        const block_array = [];
-        // console.log('inside render', this.props.blocks);
-        // const blocks = this.props.blocks.map((blk, index) => {
-        //     console.log(this.props.blocks);
-        //     let result;
-        //     if (blk.block_type === 'textblock') {
-        //         result = (
-        //             <Text
-        //                 id={blk.id}
-        //                 type={blk.block_type}
-        //                 content={blk.content}
-        //                 handleChangeText={this.handleChangeText}
-        //                 handleClickBlock={this.props.handleClickBlock}
-        //             />
-        //         );
-        //     } else if (blk.block_type === 'agenda') {
-        //         result = (
-        //             <PreviewAgenda
-        //                 id={blk.id}
-        //                 type={blk.block_type}
-        //                 content={blk.content}
-        //                 agenda_discussion={blk.agenda_discussion}
-        //                 handleClickBlock={this.props.handleClickBlock}
-        //             />
-        //         );
-        //     } else if (blk.block_type === 'TodoContainer') {
-        //         result = (
-        //             <TodoContainer
-        //                 todos={blk.todos}
-        //                 handleClickBlock={this.props.handleClickBlock}
-        //             />
-        //         );
-        //     } else {
-        //         result = <div>Not Implemented yet.</div>;
-        //     }
-        //     block_array.push({
-        //         id: `block-${index}`,
-        //         content: result
-        //     });
-        //     return result;
-        // });
-
         return (
             <div className="NoteLeftBlock-container">
                 {/* 이 button들은 스크롤할 떄 따라서 내려가도록 만드는게 좋을 것 같다. */}

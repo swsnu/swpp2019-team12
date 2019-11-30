@@ -1,14 +1,28 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 class Agenda extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            agenda_id: this.props.blk_id,
+            agenda_id: this.props.id,
             agenda_title: this.props.agenda_title,
             agenda_discussion: this.props.agenda_discussion
         };
     }
+
+    handleClickDelete = e => {
+        e.preventDefault();
+        axios
+            .delete(`/api/agenda/${this.state.agenda_id}`)
+            .then(res => {
+                console.log('res.data:' + res.data);
+            })
+            .catch(err => {
+                console.log('err: ' + err);
+            });
+        window.location.reload();
+    };
 
     handleClickToDetail = () => {
         console.log(
@@ -30,6 +44,11 @@ class Agenda extends Component {
                     <div className="full-size-block-title__label PreviewAgenda">
                         Agenda
                     </div>
+                    <button
+                        onClick={this.handleClickDelete}
+                        className="delete-button">
+                        X
+                    </button>
                 </div>
                 <div className="full-size-block-content PreviewAgenda">
                     <div className="full-size-block-content__text PreviewAgenda">
