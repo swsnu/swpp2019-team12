@@ -83,11 +83,21 @@
         }
 
         .full-size-block-title {
+            width: 100%;
             padding: rem(10px) rem(10px) 0 rem(10px);
+            // flex-direction: row;
+            display: flex;
+            justify-content: space-between;
             // background: $primary;
 
             .full-size-block-title__label {
                 color: $secondary;
+            }
+
+            .delete-button {
+                all: unset;
+                float: right;
+                cursor: pointer;
             }
             .full-size-block-content__text {
                 font-size: rem(14px);

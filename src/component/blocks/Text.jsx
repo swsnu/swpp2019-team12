@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import EditorWrapper from '../texteditor/EditorWrapper';
+import axios from 'axios';
 
 class Text extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            blk_id: this.props.block_id,
+            blk_id: this.props.blk_id,
             content: this.props.content,
             documentId: this.props.documentId
         };
@@ -14,6 +15,19 @@ class Text extends Component {
     handleChangeText = changedText => {
         console.log(changedText);
         console.log('Need to implement changing text');
+    };
+
+    handleClickDelete = e => {
+        e.preventDefault();
+        axios
+            .delete(`/api/textblock/${this.state.blk_id}`)
+            .then(res => {
+                console.log('res.data:' + res.data);
+            })
+            .catch(err => {
+                console.log('err: ' + err);
+            });
+        window.location.reload();
     };
 
     render() {
@@ -32,6 +46,11 @@ class Text extends Component {
                 }>
                 <div className="full-size-block-title">
                     <div className="full-size-block-title__label">Text</div>
+                    <button
+                        className="delete-button"
+                        onClick={this.handleClickDelete}>
+                        X
+                    </button>
                 </div>
                 <EditorWrapper
                     documentId={this.state.documentId}
