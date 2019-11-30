@@ -170,6 +170,7 @@ def profile(request):
 
             return Response(data, status=status.HTTP_200_OK)
 
+
 '''
 # ===================================================
 # user_id로 특정 user Profile GET
@@ -184,10 +185,9 @@ def specific_profile(request, u_id):
             profile = Profile.objects.get(id=u_id)
         except (Profile.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = ProfileSerializer(profile)  
-        return Response(serializer.data, status=status.HTTP_200_OK)   
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    
     # ===========Front implementation===========
     # Signup 성공시 Response로 반환되는 새 유저의 id 로
     # /api/profile/:id/ PATCH 호출해서 닉네임 수정
@@ -318,7 +318,8 @@ def specific_workspace(request, id):
         note_serializer = NoteSerializer(notes, many=True)
         agendas = Agenda.objects.filter(note__workspace=workspace)
         agenda_serializer = AgendaSerializer(agendas, many=True)
-        todos = Todo.objects.filter(workspace__id=id).filter(assignees__in=[profile])
+        todos = Todo.objects.filter(
+            workspace__id=id).filter(assignees__in=[profile])
         todo_serializer = TodoSerializer(todos, many=True)
 
         # Add workspaces, workspace info
@@ -484,6 +485,7 @@ def sibling_notes(request, n_id):
         else:
             return Response(status.HTTP_404_NOT_FOUND)
 
+
 """
 ===================================================
 url: /api/note/:id/textblocks/
@@ -511,21 +513,29 @@ def textblock_child_of_note(request, n_id):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST':
+
         try:
+
             note = Note.objects.get(id=n_id)
         except(Note.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        try:
 
-        data = {
-            'content': request.data['content'],
-            'layer_x': request.data['layer_x'],
-            'layer_y': request.data['layer_y'],
-            'document_id': request.data['document_id'],
-            'note': n_id,
-            'is_parent_note': True
-        }
+            data = {
+                'content': request.data['content'],
+                'layer_x': request.data['layer_x'],
+                'layer_y': request.data['layer_y'],
+                'document_id': request.data['document_id'],
+                'note': n_id,
+                'is_parent_note': True
+            }
+            print(data)
+        except(Exception) as e:
+            print(e)
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
+            print("valid")
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
@@ -636,7 +646,7 @@ def agenda_child_of_note(request, n_id):
     # 해당 노트의 모든 agenda block 리스트 반환
     if request.method == 'GET':
         queryset = Agenda.objects.filter(
-            is_parent_note=True, 
+            is_parent_note=True,
             note__id=n_id
         )
         if queryset.count() > 0:

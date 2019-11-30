@@ -6,6 +6,13 @@ import NoteLeft from './NoteLeft';
 import NoteRightFocused from './NoteRightFocused';
 import NoteRightUnfocused from './NoteRightUnfocused';
 
+const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+    return result;
+};
+
 class Note extends Component {
     constructor(props) {
         super(props);
@@ -230,7 +237,7 @@ class Note extends Component {
                             assignees: [1]
                         };
                         axios
-                            .post(`/api/note/${note_id}/todos/`, todo_info)
+                            .post(`/api/note/${noteId}/todos/`, todo_info)
                             .then(res => {
                                 console.log(res);
                                 let new_todos = blk.todos.concat(res['data']);
@@ -289,6 +296,19 @@ class Note extends Component {
         );
     };
 
+    onDragEnd = result => {
+        if (!result.destination) {
+            return;
+        }
+        const blocks = reorder(
+            this.state.blocks,
+            result.source.index,
+            result.destination.index
+        );
+        console.log(result.source.index + ' ' + result.destination.index);
+        this.setState({ blocks: blocks });
+    };
+
     render() {
         console.log('note blocks: ', this.state.blocks);
         const { history } = this.props;
@@ -311,6 +331,7 @@ class Note extends Component {
                     handleAddTextBlock={this.handleAddTextBlock}
                     handleAddTodoBlock={this.handleAddTodoBlock}
                     handleAddParticipant={this.handleAddParticipant}
+                    onDragEnd={this.onDragEnd}
                 />
             </div>
         );
