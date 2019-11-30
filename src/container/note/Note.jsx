@@ -6,6 +6,13 @@ import NoteLeft from './NoteLeft';
 import NoteRightFocused from './NoteRightFocused';
 import NoteRightUnfocused from './NoteRightUnfocused';
 
+const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+    return result;
+};
+
 class Note extends Component {
     constructor(props) {
         super(props);
@@ -322,6 +329,24 @@ class Note extends Component {
         );
     };
 
+    onDragEnd = result => {
+        if (!result.destination) {
+            return;
+        }
+        const blocks = reorder(
+            this.state.blocks,
+            result.source.index,
+            result.destination.index
+        );
+        console.log(result.source.index + ' ' + result.destination.index);
+
+        blocks.map(blk => {
+            console.log('this is const: ' + blk.id);
+        });
+
+        this.setState({ blocks: blocks });
+    };
+
     render() {
         const { history } = this.props;
         return (
@@ -343,6 +368,7 @@ class Note extends Component {
                     handleAddTextBlock={this.handleAddTextBlock}
                     handleAddTodoBlock={this.handleAddTodoBlock}
                     handleAddParticipant={this.handleAddParticipant}
+                    onDragEnd={this.onDragEnd}
                 />
 
                 {this.state.isBlockClicked ? (

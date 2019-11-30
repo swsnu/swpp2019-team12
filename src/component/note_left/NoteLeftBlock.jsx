@@ -26,7 +26,7 @@ class NoteLeftBlock extends Component {
         super(props);
 
         this.state = {
-            blocks: [],
+            blocks: this.props.blocks,
             isLeft: this.props.isLeft,
             isUpdate: false
         };
@@ -94,9 +94,6 @@ class NoteLeftBlock extends Component {
                     };
                     return _result;
                 });
-            // block_array.map(blk => {
-            //     console.log(blk.id);
-            // });
             return { blocks: block_array };
         }
         return null;
@@ -232,7 +229,7 @@ class NoteLeftBlock extends Component {
                     )}
                 </div>
 
-                <DragDropContext onDragEnd={this.onDragEnd}>
+                <DragDropContext onDragEnd={this.props.onDragEnd}>
                     <Droppable droppableId="droppable">
                         {(provided, snapshot) => (
                             <div
