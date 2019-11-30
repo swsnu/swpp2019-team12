@@ -61,6 +61,7 @@ export default class EditorWrapper extends Component {
     }
 
     render() {
+        //console.log('editor wrapper render');
         return (
             this.state.updated && (
                 <Editor

@@ -63,7 +63,6 @@ export default class Sample extends Component {
         return (
             <div className="App">
                 {/* {this.renderHeader()} */}
-
                 <main>
                     <div className="message">
                         <div className="centered"></div>
@@ -72,13 +71,12 @@ export default class Sample extends Component {
                     <div className="centered">
                         <div className="row-presence">
                             <div
-                                ref={this.presenceListElementRef}
+                                // ref={this.presenceListElementRef}
                                 className="presence"></div>
                         </div>
                         {this.renderEditor()}
                     </div>
                 </main>
-
                 {/* {this.renderFooter()} */}
             </div>
         );
@@ -128,7 +126,10 @@ export default class Sample extends Component {
                         onChange={(event, editor) =>
                             console.log({ event, editor })
                         }
-                        onReady={this.onEditorReady}
+                        onReady={console.log(
+                            'onready: ',
+                            cloudServicesConfig.documentId
+                        )}
                         editor={BalloonEditor}
                         config={{
                             plugins: [

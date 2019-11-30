@@ -53,9 +53,9 @@ class NoteLeftBlock extends Component {
         );
         console.log(result.source.index + ' ' + result.destination.index);
 
-        blocks.map(blk => {
-            console.log('this is const: ' + blk.id);
-        });
+        // blocks.map(blk => {
+        //     console.log('this is const: ' + blk.id);
+        // });
 
         this.setState({ blocks: blocks });
     };
