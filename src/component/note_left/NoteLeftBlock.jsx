@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import Agenda from "../blocks/Agenda";
-import Text from "../blocks/Text";
-import TodoContainer from "../blocks/TodoContainer";
-import axios from "axios";
+import React, { Component } from 'react';
+import Agenda from '../blocks/Agenda';
+import Text from '../blocks/Text';
+import TodoContainer from '../blocks/TodoContainer';
+import axios from 'axios';
 
-const TEXT = "Text";
-const AGENDA = "Agenda";
-const TODO_CONTAINER = "TodoContainer";
+const TEXT = 'Text';
+const AGENDA = 'Agenda';
+const TODO_CONTAINER = 'TodoContainer';
 class NoteLeftBlock extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            blocks: [],
+            blocks: []
             // isLeft: this.props.isLeft
         };
     }
@@ -20,8 +20,13 @@ class NoteLeftBlock extends Component {
     handleChangeText = (noteId, editedText) => {};
 
     render() {
+        let count = 0;
         const blocks = this.props.blocks.map(blk => {
+            console.log('blk: ', blk);
+            count = count + 1;
+            console.log('count: ', count);
             if (blk.block_type === TEXT) {
+                console.log('blk type: text');
                 return (
                     <Text
                         documentId={blk.documentId}
@@ -35,7 +40,7 @@ class NoteLeftBlock extends Component {
                 );
             } else if (blk.block_type === AGENDA) {
                 return (
-                    <PreviewAgenda
+                    <Agenda
                         id={blk.id}
                         blk_id={blk.id}
                         type={blk.block_type}
@@ -65,8 +70,7 @@ class NoteLeftBlock extends Component {
                         id="add_agenda_block"
                         onClick={() =>
                             this.props.handleAddAgendaBlock(this.state.noteId)
-                        }
-                    >
+                        }>
                         안건
                     </button>
                     <button
@@ -74,8 +78,7 @@ class NoteLeftBlock extends Component {
                         id="add_text_block"
                         onClick={() =>
                             this.props.handleAddTextBlock(this.state.noteId)
-                        }
-                    >
+                        }>
                         Text
                     </button>
                     <button

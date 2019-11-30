@@ -40,7 +40,7 @@ class Note extends Component {
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
-                            block_type: 'agenda',
+                            block_type: 'Agenda',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
@@ -59,7 +59,7 @@ class Note extends Component {
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
-                            block_type: 'textblock',
+                            block_type: 'Text',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
@@ -174,7 +174,7 @@ class Note extends Component {
         axios.post(`/api/note/${noteId}/agendas/`, agenda_info).then(res => {
             this.setState({
                 blocks: this.state.blocks.concat({
-                    block_type: 'agenda',
+                    block_type: 'Agenda',
                     id: res['data']['id'],
                     content: res['data']['content'],
                     layer_x: res['data']['layer_x'],
@@ -198,7 +198,7 @@ class Note extends Component {
         axios.post(`/api/note/${noteId}/textblocks/`, text_info).then(res => {
             this.setState({
                 blocks: this.state.blocks.concat({
-                    block_type: 'textblock',
+                    block_type: 'Text',
                     id: res['data']['id'],
                     content: res['data']['content'],
                     layer_x: res['data']['layer_x'],

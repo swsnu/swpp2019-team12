@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 class Agenda extends Component {
     constructor(props) {
@@ -12,7 +12,7 @@ class Agenda extends Component {
 
     handleClickToDetail = () => {
         console.log(
-            "Need to implement changing to Detail mode from preview mode"
+            'Need to implement changing to Detail mode from preview mode'
         );
     };
 
@@ -22,8 +22,7 @@ class Agenda extends Component {
                 className="full-size-block-container PreviewAgenda"
                 onClick={() =>
                     this.props.handleClickBlock(this.props.type, this.props.id)
-                }
-            >
+                }>
                 <div className="full-size-block-title PreviewAgenda">
                     <div className="full-size-block-title__label PreviewAgenda">
                         Agenda

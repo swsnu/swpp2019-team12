@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { map } from "lodash";
+import React, { Component } from 'react';
+import { map } from 'lodash';
 
 class TodoContainer extends Component {
     constructor(props) {
@@ -15,8 +15,7 @@ class TodoContainer extends Component {
         return (
             <div
                 className="full-size-block-container TodoContainer"
-                onClick={this.props.handleClickBlock}
-            >
+                onClick={this.props.handleClickBlock}>
                 <div className="full-size-block-title">
                     <div className="full-size-block-title__text">Todos</div>
                 </div>
@@ -30,8 +29,7 @@ class TodoContainer extends Component {
                     {map(this.props.todos, (todo, i) => (
                         <div
                             key={i}
-                            className="full-size-block todoCard-content-element"
-                        >
+                            className="full-size-block todoCard-content-element">
                             <div className="full-size-block todoCard-content-element__todo between">
                                 <div className="full-size-block todoCard-content-element__todo-todo-part">
                                     {todo.is_done ? (
@@ -66,7 +64,7 @@ class TodoContainer extends Component {
                                     <div className="full-size-block todoCard-content-element__todo-assignee">
                                         {map(
                                             todo.assignees_info,
-                                            (info, i) => info["nickname"] + " "
+                                            (info, i) => info['nickname'] + ' '
                                         )}
                                     </div>
                                 </div>
