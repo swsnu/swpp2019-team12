@@ -529,13 +529,11 @@ def textblock_child_of_note(request, n_id):
                 'note': n_id,
                 'is_parent_note': True
             }
-            print(data)
         except(Exception) as e:
             print(e)
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
-            print("valid")
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:

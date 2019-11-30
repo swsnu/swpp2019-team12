@@ -110,10 +110,6 @@ class NoteLeftBlock extends Component {
     handleChangeText = () => {};
 
     render() {
-        this.state.blocks.map(blk => {
-            console.log('this is state: ' + blk.id);
-        });
-
         return (
             <div className="NoteLeftBlock-container">
                 {/* 이 button들은 스크롤할 떄 따라서 내려가도록 만드는게 좋을 것 같다. */}
