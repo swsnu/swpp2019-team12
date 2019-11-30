@@ -7,7 +7,8 @@
   },
   "dependencies": {
     "@google-cloud/speech": "^3.4.0",
-    "cookie-parser": "~1.4.4",
+    "compromise": "^12.1.0",
+    "cookie-parser": "^1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
     "ejs": "^3.0.1",
