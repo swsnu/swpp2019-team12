@@ -35,7 +35,10 @@ class Agenda extends Component {
             <div
                 className="full-size-block-container PreviewAgenda"
                 onClick={() =>
-                    this.props.handleClickBlock(this.props.type, this.props.id)
+                    this.props.handleClickBlock(
+                        this.props.type,
+                        this.props.blk_id
+                    )
                 }>
                 <div className="full-size-block-title PreviewAgenda">
                     <div className="full-size-block-title__label PreviewAgenda">

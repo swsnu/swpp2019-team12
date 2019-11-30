@@ -6,6 +6,7 @@ import {
 } from '../../component/workspace-selection/SelectionCard';
 import CreateModal from './CreateModal';
 import axios from 'axios';
+import Signout from '../../component/signout/Signout';
 
 class WorkspaceSelection extends Component {
     constructor(props) {
@@ -14,6 +15,13 @@ class WorkspaceSelection extends Component {
     }
 
     componentDidMount() {
+        const loggedInUserNickname = sessionStorage.getItem(
+            'LoggedInUserNickname'
+        );
+        if (!loggedInUserNickname) {
+            this.props.history.push('/signin');
+        }
+
         axios.get('/api/workspace/').then(res => {
             const { data } = res;
             const { workspaces, admins } = data;
@@ -41,6 +49,7 @@ class WorkspaceSelection extends Component {
         const { history } = this.props;
         return (
             <div className="workspaceSelection">
+                <Signout history={history} />
                 <div className="workspaceSelection__label">
                     Select Workspace
                 </div>
