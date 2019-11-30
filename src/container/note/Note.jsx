@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-
 import NoteLeft from './NoteLeft';
 import Signout from '../../component/signout/Signout';
 
@@ -44,7 +43,6 @@ class Note extends Component {
             this.props.history.push('/signin');
         }
 
-        // sessionStorage.setItem('LoggedInUserId');
         const n_id = this.props.match.params.n_id;
 
         //이거 동시에 나오게 처리하기, 저장된 순서 처리
