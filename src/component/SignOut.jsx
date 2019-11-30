@@ -1,12 +1,17 @@
-import React from 'react';
-import axios from 'axios';
+import React from "react";
+import axios from "axios";
 
 const SignOut = props => {
     const handleClick = e => {
         e.preventDefault();
         axios
-            .get('/api/signout/')
-            .finally(res => props.history.push('/signin'));
+            .get("/api/signout/")
+            .then(res => {
+                sessionStorage.removeItem("LoggedInUserNickname");
+                sessionStorage.removeItem("LoggedInUserId");
+            })
+            .catch(err => console.log("로그인 안된 상태"))
+            .finally(res => props.history.push("/signin"));
     };
 
     return (

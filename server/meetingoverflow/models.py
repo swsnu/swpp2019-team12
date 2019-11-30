@@ -12,16 +12,13 @@ class Profile(models.Model):
     # created_at = models.DateTimeField(default=timezone.now)
     # last_login_at = models.DateTimeField(default=timezone.now)
 
-
     def __str__(self):
         return f'id: {self.user.id}, nickname: {self.nickname}'
-
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
             Profile.objects.create(user=instance)
-
 
     @receiver(post_save, sender=User)
     def save_user_profile(sender, instance, **kwargs):
@@ -31,9 +28,9 @@ class Profile(models.Model):
 class Tag(models.Model):
     content = models.CharField(max_length=100, blank=False, null=False)
 
-
     def __str__(self):
         return f'content: {self.content}'
+
 
 class Workspace(models.Model):
     name = models.CharField(max_length=20, blank=True, null=True)
@@ -50,26 +47,28 @@ class Note(models.Model):
     # =================================================================
     # temporarily set null=True for convenience of testing and seeding
     # =================================================================
-    location= models.CharField(max_length=100, blank=True)
+    location = models.CharField(max_length=100, blank=True)
     participants = models.ManyToManyField(Profile)
     created_at = models.DateTimeField(default=timezone.now)
-    # added 'last_' before modified_at. 
+    # added 'last_' before modified_at.
     last_modified_at = models.DateTimeField(default=timezone.now)
     tags = models.ManyToManyField(Tag, blank=True)
     ml_speech_text = models.TextField(null=True, blank=True)
-    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, null=True)
-            
+    workspace = models.ForeignKey(
+        Workspace, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f'title: {self.title}'
 
 
 class Agenda(models.Model):
-    content = models.TextField(blank=True, default="안건과 관련된 회의 내용을 작성하는 부분입니다.")
+    content = models.TextField(
+        blank=True, default="안건과 관련된 회의 내용을 작성하는 부분입니다.")
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
     note = models.ForeignKey(Note, on_delete=models.CASCADE, null=True)
-    parent_agenda = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True)
+    parent_agenda = models.ForeignKey(
+        "self", on_delete=models.SET_NULL, null=True, blank=True)
     is_parent_note = models.BooleanField(default=True)
     # has_children = models.BooleanField(default=False)
     # containing_block_types = models.TextField(blank=True, null=False) # ex) calendar_image_todo
@@ -107,7 +106,7 @@ class Agenda(models.Model):
 
     #     """
     #     ======= User / Profile Seeding =======
-        
+
     #     10명 단위로 맞춰둔 것, 되도록 변경하지 않을 것
     #     변경하고자 한다면 :
     #     아래의 Workspace 내부 admins와 members
@@ -117,7 +116,7 @@ class Agenda(models.Model):
     #     for i in range(1, NUM_OF_SEED_FOR_ACCOUNT + 1):
     #         username = f'{i}@{i}.com'
     #         password = '1234'
-            
+
     #         User.objects.create_user(
     #             username = username,
     #             password = password,
@@ -126,11 +125,11 @@ class Agenda(models.Model):
     #         user=User.objects.get(username=username)
     #         user.profile.nickname = f'user{i}'
     #         user.profile.save()
-        
+
     #     """
     #     ========== Workspace Seeding =========
-    #     각 workspace별로 admin은 Profile 
-    #     10명 단위로 맨 앞의 2명을 지정해두었음. 
+    #     각 workspace별로 admin은 Profile
+    #     10명 단위로 맨 앞의 2명을 지정해두었음.
     #     멤버는 10명 단위로 전원을 지정
     #     ======================================
     #     """
@@ -149,7 +148,7 @@ class Agenda(models.Model):
     #         """
     #         ============= Note Seeding ============
     #         각 Note의 participants는 해당 Note가 속한
-    #         Workspace의 모든 참여자로 지정해두었음. 
+    #         Workspace의 모든 참여자로 지정해두었음.
     #         =======================================
     #         """
     #         for j in range(1, NUM_OF_SEED_FOR_NOTE + 1):
@@ -166,7 +165,7 @@ class Agenda(models.Model):
     #             """
     #             ============ Blocks Seeding ============
     #             Note에 직접 속해있는 Block들 시딩한 부분
-    #             추후 Calendar, File, Image, Table 의 
+    #             추후 Calendar, File, Image, Table 의
     #             구성 요소 추가할 필요가 있다면 이곳에 추가 바람
     #             ========================================
     #             """
@@ -205,7 +204,7 @@ class Agenda(models.Model):
     #                     Todo.objects.create(
     #                         is_parent_note=True,
     #                         content=f"""
-    #                                     random todo content 
+    #                                     random todo content
     #                                     workspace: {i}
     #                                     note: {j}
     #                                     this: {k}
@@ -219,8 +218,8 @@ class Agenda(models.Model):
     #             ============ Agenda Seeding ============
     #             Note에 속해있는 Agenda들을 시딩한 부분
     #             아직 Agenda에 속해있는 Agenda는 시딩을 구현하지
-    #             않은 상태이므로, 필요로 하는 경우가 있다면 
-    #             이 부분에 구현 바람. 
+    #             않은 상태이므로, 필요로 하는 경우가 있다면
+    #             이 부분에 구현 바람.
     #             ========================================
     #             """
     #             for k in range(1, NUM_OF_SEED_FOR_AGENDA):
@@ -237,11 +236,11 @@ class Agenda(models.Model):
     #                                 this: {k}
     #                             """
     #                 )
-                    
+
     #                 """
     #                 ============ Blocks Seeding ============
     #                 Agenda에 속해있는 Block들 시딩한 부분
-    #                 추후 Calendar, File, Image, Table 의 
+    #                 추후 Calendar, File, Image, Table 의
     #                 구성 요소 추가할 필요가 있다면 이곳에 추가 바람
     #                 ========================================
     #                 """
@@ -275,7 +274,7 @@ class Agenda(models.Model):
     #                         is_parent_note=False,
     #                         parent_agenda=parent_agenda,
     #                         content=f"""
-    #                                     random text content 
+    #                                     random text content
     #                                     workspace: {i}
     #                                     note: {j}
     #                                     agenda: {k}
@@ -288,7 +287,7 @@ class Agenda(models.Model):
     #                         is_parent_note=False,
     #                         parent_agenda=parent_agenda,
     #                         content=f"""
-    #                                     random todo content 
+    #                                     random todo content
     #                                     workspace: {i}
     #                                     note: {j}
     #                                     agenda: {k}
@@ -300,7 +299,6 @@ class Agenda(models.Model):
     #                     todo.assignees.set(participants[:3])
     #                     todo.save()
 
-
     def __str__(self):
         return f'note_id: {self.note.id}'
 
@@ -311,7 +309,8 @@ class Calendar(models.Model):
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
     note = models.ForeignKey(Note, on_delete=models.CASCADE, null=True)
-    parent_agenda = models.ForeignKey(Agenda, on_delete=models.SET_NULL, null=True, blank=True)
+    parent_agenda = models.ForeignKey(
+        Agenda, on_delete=models.SET_NULL, null=True, blank=True)
     is_parent_note = models.BooleanField(default=True)
 
     def __str__(self):
@@ -325,7 +324,8 @@ class File(models.Model):
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
     note = models.ForeignKey(Note, on_delete=models.CASCADE, null=True)
-    parent_agenda = models.ForeignKey(Agenda, on_delete=models.SET_NULL, null=True, blank=True)
+    parent_agenda = models.ForeignKey(
+        Agenda, on_delete=models.SET_NULL, null=True, blank=True)
     is_parent_note = models.BooleanField(default=True)
 
     def __str__(self):
@@ -337,7 +337,8 @@ class Image(models.Model):
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
     note = models.ForeignKey(Note, on_delete=models.CASCADE, null=True)
-    parent_agenda = models.ForeignKey(Agenda, on_delete=models.SET_NULL, null=True, blank=True)
+    parent_agenda = models.ForeignKey(
+        Agenda, on_delete=models.SET_NULL, null=True, blank=True)
     is_parent_note = models.BooleanField(default=True)
     image_caption = models.CharField(max_length=100, null=True, blank=True)
 
@@ -350,7 +351,8 @@ class Table(models.Model):
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
     note = models.ForeignKey(Note, on_delete=models.CASCADE, null=True)
-    parent_agenda = models.ForeignKey(Agenda, on_delete=models.SET_NULL, null=True, blank=True)
+    parent_agenda = models.ForeignKey(
+        Agenda, on_delete=models.SET_NULL, null=True, blank=True)
     is_parent_note = models.BooleanField(default=True)
 
     def __str__(self):
@@ -362,10 +364,12 @@ class Todo(models.Model):
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
     note = models.ForeignKey(Note, on_delete=models.CASCADE, null=True)
-    parent_agenda = models.ForeignKey(Agenda, on_delete=models.SET_NULL, null=True, blank=True)
+    parent_agenda = models.ForeignKey(
+        Agenda, on_delete=models.SET_NULL, null=True, blank=True)
     is_parent_note = models.BooleanField(default=True)
     assignees = models.ManyToManyField(Profile)
-    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, null=True, blank=True)
+    workspace = models.ForeignKey(
+        Workspace, on_delete=models.CASCADE, null=True, blank=True)
     is_done = models.BooleanField(default=False)
 
     def __str__(self):
@@ -376,10 +380,12 @@ class TextBlock(models.Model):
     content = models.TextField(null=False, blank=True)
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
+    document_id = models.CharField(max_length=100, null=True, blank=True)
     note = models.ForeignKey(Note, on_delete=models.CASCADE, null=True)
-    parent_agenda = models.ForeignKey(Agenda, on_delete=models.SET_NULL, null=True, blank=True)
+    parent_agenda = models.ForeignKey(
+        Agenda, on_delete=models.SET_NULL, null=True, blank=True)
     is_parent_note = models.BooleanField(default=True)
 
     def __str__(self):
-        #return f'note_id: {self.note.id}'
+        # return f'note_id: {self.note.id}'
         return f'content: {self.content}'

@@ -103,9 +103,14 @@ class SignUp extends Component {
             this.state.isPwConfirmationVaild;
 
         if (isAllFormValid) {
-            axios
-                .post('/api/signup/', user_info)
-                .then(res => this.props.history.push('/workspace'));
+            axios.post('/api/signup/', user_info).then(res => {
+                // session storage에 로그인한 유저 정보 저장
+                const nickname = res.data.nickname;
+                const userId = res.data.id;
+                sessionStorage.setItem('LoggedInUserNickname', nickname);
+                sessionStorage.setItem('LoggedInUserId', userId);
+                this.props.history.push('/workspace');
+            });
         }
     };
 

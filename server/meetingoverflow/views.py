@@ -43,8 +43,13 @@ def signup(request):
             profile = Profile.objects.get(user=user)
             profile.nickname = nickname
             profile.save()
+            response = {
+                'id': profile.id,
+                'nickname': profile.nickname,
+                'username': user.username
+            }
             auth.login(request, user)
-            return Response(status=status.HTTP_201_CREATED)
+            return JsonResponse(response, status=status.HTTP_201_CREATED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -59,8 +64,15 @@ def signin(request):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         user = auth.authenticate(username=username, password=password)
         if user is not None:
+            profile = Profile.objects.get(user=user)
+            response = {
+                'id': profile.id,
+                'nickname': profile.nickname,
+                'username': user.username
+            }
             auth.login(request, user)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            print(response)
+            return JsonResponse(response, status=200)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
@@ -508,6 +520,7 @@ def textblock_child_of_note(request, n_id):
             'content': request.data['content'],
             'layer_x': request.data['layer_x'],
             'layer_y': request.data['layer_y'],
+            'document_id': request.data['document_id'],
             'note': n_id,
             'is_parent_note': True
         }
