@@ -7,6 +7,7 @@ import React, { Component } from 'react';
 import CKEditor from '@ckeditor/ckeditor5-react';
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
@@ -128,7 +129,7 @@ export default class Sample extends Component {
                             console.log({ event, editor })
                         }
                         onReady={this.onEditorReady}
-                        editor={ClassicEditor}
+                        editor={BalloonEditor}
                         config={{
                             plugins: [
                                 Alignment,
@@ -222,7 +223,7 @@ export default class Sample extends Component {
                                 container: this.presenceListElementRef.current
                             }
                         }}
-                        data={this.state.initialData}
+                        // data={this.state.initialData}
                     />
                 )}
                 <div ref={this.sidebarElementRef} className="sidebar"></div>

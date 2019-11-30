@@ -21,7 +21,9 @@ class NoteLeftBlock extends Component {
     render() {
         const blocks = this.props.blocks.map(blk => {
             if (blk.block_type === TEXT) {
-                console.log('block type text: ', blk);
+                // console.log('block type text: ', blk);
+                // document ID 전달
+                // 사실 content는 무의미
                 return (
                     <Text
                         documentId={blk.documentId}

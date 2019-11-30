@@ -6,13 +6,12 @@ import axios from 'axios';
 export default class EditorWrapper extends Component {
     state = {
         selectedUser: {
-            // id: this.props.currentUserProfile['id'],
-            // name: this.props.currentUserProfile.nickname
             id: 1,
             name: '임시'
         },
         configuration: {
             documentId: '36ur9q8hprg',
+            // 토큰 만료 주의
             tokenUrl:
                 'https://43733.cke-cs.com/token/dev/3TvgNvZRyzXDDc7dsBXDBuM0cFITPrq26HUfIlLHXo0Zjcwgm3nxOWSeBSU8',
             uploadUrl: 'https://43733.cke-cs.com/easyimage/upload/',
@@ -21,6 +20,12 @@ export default class EditorWrapper extends Component {
         updated: false
     };
 
+    /* 
+    [열어야 하는 Editor configuration 정의]
+    - props로 전달된 document Id
+    - 로그인한 유저로 토큰 url 재설정
+    - updated = True
+    */
     componentDidMount() {
         const nickname = sessionStorage.getItem('LoggedInUserNickname');
         const userId = sessionStorage.getItem('LoggedInUserId');
@@ -29,8 +34,7 @@ export default class EditorWrapper extends Component {
             id: userId,
             name: nickname
         };
-        console.log('Set token url');
-        console.log('config: ', this.state.configuration);
+
         let config = this.state.configuration;
         config.tokenUrl =
             `${getRawTokenUrl(config.tokenUrl)}?` +
@@ -45,7 +49,7 @@ export default class EditorWrapper extends Component {
                 })
                 .join('&');
         config.documentId = this.props.documentId;
-        console.log('changed config: ', config);
+
         this.setState({
             configuration: config,
             updated: true,
@@ -57,9 +61,6 @@ export default class EditorWrapper extends Component {
     }
 
     render() {
-        // console.log('Editor Wrapper rendered');
-        // console.log('에디터에서 선택된 사람', this.state.selectedUser);
-
         return (
             this.state.updated && (
                 <Editor
