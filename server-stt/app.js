@@ -93,7 +93,6 @@ io.on('connection', client => {
                         ? `Transcription: ${data.results[0].alternatives[0].transcript}\n`
                         : `\n\nReached transcription time limit, press Ctrl+C\n`
                 );
-                // console.log(data);
                 client.emit('speechData', data);
 
                 // if end of utterance, let's restart stream
