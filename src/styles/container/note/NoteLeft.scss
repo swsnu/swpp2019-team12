@@ -1,8 +1,27 @@
 .Note-left {
-    min-width: 50%;
-    height: 100%;
-    overflow: inherit;
-    border-right: 1px solid $darkgray;
+    // position: relative;
+    // min-width: 50%;
+    width: rem(900px);
+    // overflow: inherit;
+    margin: auto;
+    margin-top: 3vh;
+    min-height: 94vh;
+    // border-right: 1px solid $darkgray;
+
+    padding: rem(50px) 0;
+
+    background: $white;
+
+    &:after {
+        content: '';
+        position: absolute;
+        right: 0;
+        bottom: 5%;
+
+        height: 90%;
+
+        background: $tertiary;
+    }
 }
 
 .Note-left-block-click {

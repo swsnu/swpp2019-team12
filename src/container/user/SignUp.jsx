@@ -103,13 +103,14 @@ class SignUp extends Component {
             this.state.isPwConfirmationVaild;
 
         if (isAllFormValid) {
-            axios
-                .post('/api/signup/', user_info)
-                .then(res => this.props.history.push('/workspace'));
-        }
-        // 적절하지 않은 input이 존재한다면, 그에 맞는 에러 메시지 띄워주기.
-        else {
-            alert('형식을 다시 확인해주세요.');
+            axios.post('/api/signup/', user_info).then(res => {
+                // session storage에 로그인한 유저 정보 저장
+                const nickname = res.data.nickname;
+                const userId = res.data.id;
+                sessionStorage.setItem('LoggedInUserNickname', nickname);
+                sessionStorage.setItem('LoggedInUserId', userId);
+                this.props.history.push('/workspace');
+            });
         }
     };
 
@@ -118,7 +119,6 @@ class SignUp extends Component {
         this.props.history.push('/signin');
     };
 
-    componentDidMount() {}
     /* ==== Form Validation 공통 부분 ====
         input field의 OnBlur를 이용해서 유저가 아이디 비밀번호를 입력하고
         해당 input field에서 Focus out 된 후에, validation check이 실행 됩니다.  

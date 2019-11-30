@@ -1,11 +1,8 @@
 .Note-right {
     min-width: 50%;
+    padding: rem(50px);
+    background: $white;
     //border-left: 1px solid $darkgray;
-}
-
-.Note-right-block-click {
-    min-width: 80%;
-    //border-right: 1px solid $darkgray;
 }
 
 .Note-right-page__title {
@@ -23,7 +20,6 @@
 
 .Note-right-container {
     width: 100%;
-    padding: 10px 40px 10px 40px;
     /**********MY OWN*************/
     min-height: 500px;
     display: flex;
@@ -37,7 +33,18 @@
     }
     .NoteRightBlock__block {
         width: 100%;
+        box-shadow: rem(2px) rem(2px) rem(4px) rem(2px) $lightgray;
     }
+
+    input {
+        height: rem(500px);
+        border-bottom: 1px solid transparent;
+
+        &:focus {
+            border-bottom: 1px solid $primary;
+        }
+    }
+
     .full-size-block-container {
         width: 100%;
         // min-height: rem(100px);

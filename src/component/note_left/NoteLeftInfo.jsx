@@ -9,7 +9,8 @@ class NoteLeftInfo extends Component {
         super(props);
         this.state = {
             isTitleClicked: false,
-            isDateClicked: false
+            isDateClicked: false,
+            isLocationClicked: false
         };
     }
 
@@ -23,6 +24,9 @@ class NoteLeftInfo extends Component {
 
     handleConvertTag_Datetime = () => {
         this.setState({ isDateClicked: !this.state.isDateClicked });
+    };
+    handleConvertTag_Location = () => {
+        this.setState({ isLocationClicked: !this.state.isLocationClicked });
     };
 
     render() {
@@ -71,8 +75,8 @@ class NoteLeftInfo extends Component {
         return (
             <div className="NoteLeftInfo">
                 <div className="NoteLeftInfo-title__container">
-                    <Label title="Note Title" />
                     <div className="NoteLeftInfo__currentNote">
+                        <Label title="Meeting Note Title" isTitle />
                         <input
                             className="form-control title"
                             type="text"
@@ -83,15 +87,30 @@ class NoteLeftInfo extends Component {
                         />
                     </div>
                 </div>
-                <div className="NoteLeftInfo-date__container">
-                    <Label title="Date" />
-                    <DateTime
-                        value={this.props.moment}
-                        onBlur={this.handleConvertTag_Datetime}
-                        onChange={this.props.handleChangeDatetime}
+                <div className="NoteLeftInfo-data-participant__container">
+                    <div className="NoteLeftInfo-date__container">
+                        <Label title="Meeting Date & Time" />
+                        <DateTime
+                            value={this.props.moment}
+                            onBlur={this.handleConvertTag_Datetime}
+                            onChange={this.props.handleChangeDatetime}
+                        />
+                        <Label title="Location" />
+                        <input
+                            className="form-control location"
+                            type="text"
+                            value={this.props.location}
+                            // onBlur가 되면 Update API call
+                            onBlur={this.handleConvertTag_Location}
+                            onChange={this.props.handleChangeLocation}
+                        />
+                    </div>
+                    {/* <ParticipantInfo participants={this.props.participants} /> */}
+                    <ParticipantInfo
+                        isRightUnfocused={this.props.isRightUnfocused}
+                        participants={this.props.participants}
                     />
                 </div>
-                <ParticipantInfo participants={this.props.participants} />
             </div>
         );
     }

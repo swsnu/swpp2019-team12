@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react';
 
 class Todo extends Component {
     constructor(props) {
@@ -7,20 +7,22 @@ class Todo extends Component {
             content: this.props.content,
             is_done: this.props.is_done,
             assignee: this.props.assignee
-        }
+        };
     }
 
     handleChangeTodo = () => {
-        console.log("Need to implement changing todo");
-    }
+        console.log('Need to implement changing todo');
+    };
 
     handleChangeStatus = () => {
-        console.log("Need to implement changing status of Todo (isDone or not)");
-    }
+        console.log(
+            'Need to implement changing status of Todo (isDone or not)'
+        );
+    };
 
     handleAssign = () => {
-        console.log("Need to implement assigning memeber to specific Todo");
-    }
+        console.log('Need to implement assigning memeber to specific Todo');
+    };
 
     render() {
         return (
@@ -31,8 +33,8 @@ class Todo extends Component {
                     <div className="todo__assignee">{this.state.assignee}</div>
                 </div>
             </div>
-        )
+        );
     }
 }
 
-export default Todo
+export default Todo;

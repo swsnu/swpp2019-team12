@@ -1,7 +1,7 @@
 import React from 'react';
 
 const NotFound = () => (
-    <div>
+    <div className="NotFound">
         <div>Not Found</div>
         <button>go to back</button>
     </div>

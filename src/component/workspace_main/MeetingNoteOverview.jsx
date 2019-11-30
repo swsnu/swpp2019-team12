@@ -8,17 +8,24 @@ const MeetingNoteOverview = props => {
     const { notes, history } = props;
     return (
         <div className="meetingNoteOverview-container">
-            <SubLabel title="Meeting Note Overview" />
-            <Label title="회의 진행 상황 " />
-
+            {props.is_NoteRight ? (
+                <SubLabel title="Meeting Notes in the same Workspace" />
+            ) : (
+                <SubLabel title="Meeting Note Overview" />
+            )}
+            {props.is_NoteRight ? (
+                <Label title="다른 회의록 보기" />
+            ) : (
+                <Label title="회의 진행 상황 " />
+            )}
             <div className="meetingNoteOverview-content">
                 {map(notes, (note, i) => (
                     <div
-                        key={i}
                         onClick={() => {
                             history.push(`/note/${note.id}/`);
-                            window.location.reload();
+                            // window.location.reload();
                         }}
+                        key={i}
                         className="meetingNoteOverview-content__element">
                         <NoteIcon className="meetingNoteOverview-content__img" />
                         <div className="meetingNoteOverview-content__date">
