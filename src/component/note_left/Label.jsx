@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const Label = ({ title, isTitle }) => (
-    <div className={`note-left-label ${isTitle ? '--title' : ''}`}>
+    <div className={'note-left-label'}>
         <div className="note-left-label__title">{title}</div>
     </div>
 );

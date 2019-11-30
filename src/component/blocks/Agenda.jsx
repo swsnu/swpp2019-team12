@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 
-class PreviewAgenda extends Component {
+class Agenda extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            agenda_id: this.props.agenda_id,
             agenda_title: this.props.agenda_title,
             agenda_discussion: this.props.agenda_discussion
         };
@@ -37,4 +38,4 @@ class PreviewAgenda extends Component {
     }
 }
 
-export default PreviewAgenda;
+export default Agenda;
