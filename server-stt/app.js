@@ -49,7 +49,7 @@ app.use((err, req, res, next) => {
 // =========================== SOCKET.IO ================================ //
 
 io.on('connection', client => {
-    console.log('Client Connected to server');
+    console.log(`Client Connected to server : ${client.id}`);
     let recognizeStream = null;
 
     client.on('join', data => {
@@ -64,7 +64,7 @@ io.on('connection', client => {
         console.log('========= LOG =========');
         console.log('start google cloud stream');
         console.log('========= END =========');
-        startRecognitionStream(client, data);
+        startRecognitionStream(client);
     });
 
     client.on('endGoogleCloudStream', data => {
@@ -75,13 +75,15 @@ io.on('connection', client => {
     });
 
     client.on('binaryData', data => {
-        console.log('get binary data');
         if (recognizeStream !== null) {
             recognizeStream.write(data);
         }
+        if (recognizeStream !== null && recognizeStream.destroyed) {
+            startRecognitionStream(client);
+        }
     });
 
-    const startRecognitionStream = (client, data) => {
+    const startRecognitionStream = client => {
         recognizeStream = speechClient
             .streamingRecognize(request)
             .on('error', console.error)
@@ -91,7 +93,7 @@ io.on('connection', client => {
                         ? `Transcription: ${data.results[0].alternatives[0].transcript}\n`
                         : `\n\nReached transcription time limit, press Ctrl+C\n`
                 );
-                console.log(data);
+                // console.log(data);
                 client.emit('speechData', data);
 
                 // if end of utterance, let's restart stream
@@ -130,14 +132,6 @@ const request = {
         languageCode: languageCode,
         profanityFilter: false,
         enableWordTimeOffsets: true
-        /*
-        // add your own speech context for better recognition
-        speechContexts: [
-            {
-                phrases: ['hoful', 'shwazil']
-            }
-        ]
-        */
     },
     interimResults: true // If you want interim results, set this to true
 };
