@@ -47,7 +47,6 @@ app.use((err, req, res, next) => {
 });
 
 // =========================== SOCKET.IO ================================ //
-
 let room;
 
 io.on('connection', client => {
@@ -128,7 +127,6 @@ io.on('connection', client => {
             recognizeStream.end();
         }
         recognizeStream = null;
-        client.leave(room);
     };
 });
 

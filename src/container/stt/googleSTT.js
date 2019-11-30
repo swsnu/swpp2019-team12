@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { map } from 'lodash';
+import axios from 'axios';
 
 const END_POINT = '127.0.0.1:9000/';
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -40,6 +41,13 @@ class googleSTT extends Component {
 
     componentDidMount() {
         this.initSocket();
+
+        //TODO fetch recorded text from DB
+        /*
+        axios
+            .get(`api/${this.state.room}/recordedText/`)
+            .then(res => this.setState({ texts: res.split('\n') }));
+        */
     }
 
     initSocket = () => {
@@ -57,7 +65,17 @@ class googleSTT extends Component {
             const isFinal = data.results[0].isFinal;
             if (isFinal) {
                 console.log(transcript);
-                this.setState({ texts: [...this.state.texts, transcript] });
+                this.setState(
+                    { texts: [...this.state.texts, transcript] },
+                    () => {
+                        //TODO save to DB
+                        /*
+                        axios.patch(`api/${this.state.room}/`, {
+                            recordedText: this.state.texts.join('\n')
+                        });
+                        */
+                    }
+                );
             }
             // resultText.innerText = data.results[0] && data.results[0].alternatives[0].transcript;
         });
