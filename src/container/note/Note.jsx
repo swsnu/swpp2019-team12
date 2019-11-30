@@ -163,7 +163,8 @@ class Note extends Component {
         this.setState({ location: e.target.value });
     };
 
-    handleAddAgendaBlock = noteId => {
+    handleAddAgendaBlock = () => {
+        const noteId = this.props.match.params.n_id;
         // Block Create API call 할 곳.
         const agenda_info = {
             content: 'Empty Content in Agenda',
@@ -185,7 +186,9 @@ class Note extends Component {
         });
     };
 
-    handleAddTextBlock = noteId => {
+    handleAddTextBlock = () => {
+        const noteId = this.props.match.params.n_id;
+
         const documentId = handleDocIdInUrl();
         console.log('새 document Id: ', documentId);
         // Block Create API call 할 곳.
@@ -209,7 +212,9 @@ class Note extends Component {
         });
     };
 
-    handleAddTodoBlock = noteId => {
+    handleAddTodoBlock = () => {
+        const noteId = this.props.match.params.n_id;
+
         // Where need to call Todo Create API.
         // To find out whether there is at least one todo.
         axios
@@ -315,10 +320,8 @@ class Note extends Component {
 function handleDocIdInUrl() {
     // let id = getDocIdFromUrl();
 
-    //if (!id) {
     let id = randomString();
     updateDocIdInUrl(id);
-    //}
 
     return id;
 }
