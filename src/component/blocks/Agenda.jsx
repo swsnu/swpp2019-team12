@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 class Agenda extends Component {
     constructor(props) {
@@ -6,36 +6,32 @@ class Agenda extends Component {
         this.state = {
             agenda_id: this.props.agenda_id,
             agenda_title: this.props.agenda_title,
-            agenda_disccusion: this.props.agenda_disccusion
+            agenda_discussion: this.props.agenda_discussion
         };
     }
 
     handleClickToDetail = () => {
         console.log(
-            'Need to implement changing to Detail mode from preview mode'
+            "Need to implement changing to Detail mode from preview mode"
         );
     };
 
     render() {
-        const block_name = 'PreviewAgenda';
-
         return (
             <div
                 className="full-size-block-container PreviewAgenda"
                 onClick={() =>
-                    this.props.handleClickBlock(
-                        block_name,
-                        this.state.agenda_id
-                    )
-                }>
+                    this.props.handleClickBlock(this.props.type, this.props.id)
+                }
+            >
                 <div className="full-size-block-title PreviewAgenda">
-                    <div className="full-size-block-title__text PreviewAgenda">
-                        안건
+                    <div className="full-size-block-title__label PreviewAgenda">
+                        Agenda
                     </div>
                 </div>
                 <div className="full-size-block-content PreviewAgenda">
                     <div className="full-size-block-content__text PreviewAgenda">
-                        {this.props.content}
+                        <pre>{this.props.content}</pre>
                     </div>
                 </div>
             </div>

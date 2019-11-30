@@ -1,18 +1,19 @@
-import React, { Component } from 'react';
-import Agenda from '../blocks/Agenda';
-import Text from '../blocks/Text';
-import TodoContainer from '../blocks/TodoContainer';
-import axios from 'axios';
+import React, { Component } from "react";
+import Agenda from "../blocks/Agenda";
+import Text from "../blocks/Text";
+import TodoContainer from "../blocks/TodoContainer";
+import axios from "axios";
 
-const TEXT = 'Text';
-const AGENDA = 'Agenda';
-const TODO_CONTAINER = 'TodoContainer';
+const TEXT = "Text";
+const AGENDA = "Agenda";
+const TODO_CONTAINER = "TodoContainer";
 class NoteLeftBlock extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            blocks: []
+            blocks: [],
+            // isLeft: this.props.isLeft
         };
     }
 
@@ -21,25 +22,25 @@ class NoteLeftBlock extends Component {
     render() {
         const blocks = this.props.blocks.map(blk => {
             if (blk.block_type === TEXT) {
-                // console.log('block type text: ', blk);
-                // document ID 전달
-                // 사실 content는 무의미
                 return (
                     <Text
                         documentId={blk.documentId}
                         blk_id={blk.id}
+                        id={blk.id}
+                        type={blk.block_type}
                         content={blk.content}
                         handleChangeText={this.handleChangeText}
                         handleClickBlock={this.props.handleClickBlock}
                     />
                 );
             } else if (blk.block_type === AGENDA) {
-                // console.log('block type agenda: ', blk);
                 return (
-                    <Agenda
+                    <PreviewAgenda
+                        id={blk.id}
                         blk_id={blk.id}
+                        type={blk.block_type}
                         content={blk.content}
-                        agenda_disccusion={blk.agenda_disccusion}
+                        agenda_discussion={blk.agenda_discussion}
                         handleClickBlock={this.props.handleClickBlock}
                     />
                 );
@@ -64,7 +65,8 @@ class NoteLeftBlock extends Component {
                         id="add_agenda_block"
                         onClick={() =>
                             this.props.handleAddAgendaBlock(this.state.noteId)
-                        }>
+                        }
+                    >
                         안건
                     </button>
                     <button
@@ -72,7 +74,8 @@ class NoteLeftBlock extends Component {
                         id="add_text_block"
                         onClick={() =>
                             this.props.handleAddTextBlock(this.state.noteId)
-                        }>
+                        }
+                    >
                         Text
                     </button>
                     <button

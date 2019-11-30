@@ -4,6 +4,7 @@ import moment from 'moment';
 
 import NoteLeft from './NoteLeft';
 import NoteRightFocused from './NoteRightFocused';
+import NoteRightUnfocused from './NoteRightUnfocused';
 
 class Note extends Component {
     constructor(props) {
@@ -19,10 +20,13 @@ class Note extends Component {
             title: '',
             created_at: '',
             last_modified_at: '',
-            // ml_speech_text: '',
+            //ml_speech_text: '',
+            participants_id: [],
             participants: [],
             moment: null,
-            blocks: []
+            blocks: [],
+            block_focused_id: '',
+            block_focused_name: ''
         };
     }
 
@@ -33,11 +37,10 @@ class Note extends Component {
         axios
             .get(`/api/note/${n_id}/agendas/`)
             .then(res => {
-                console.log(res);
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
-                            block_type: 'Agenda',
+                            block_type: 'agenda',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
@@ -56,7 +59,7 @@ class Note extends Component {
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
-                            block_type: 'Text',
+                            block_type: 'textblock',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
@@ -68,19 +71,68 @@ class Note extends Component {
             })
             .catch(err => console.log('No Texts'));
 
-        axios.get(`/api/note/${n_id}/`).then(res => {
-            this.setState({
-                ...this.state,
-                noteId: res['data']['id'],
-                title: res['data']['title'],
-                created_at: res['data']['created_at'],
-                last_modified_at: res['data']['last_modified_at'],
-                ml_speech_text: res['data']['ml_speech_text'],
-                participants: res['data']['participants'],
-                moment: moment(res['data']['created_at'])
+        axios
+            .get(`/api/note/${n_id}/todos/`)
+            .then(res => {
+                let todoContainer = {
+                    block_type: 'TodoContainer',
+                    todos: res['data']
+                };
+                todoContainer.todos.forEach(todo => {
+                    todo.assignees_info = [];
+                    todo.assignees.forEach(assignee_id => {
+                        axios.get(`/api/profile/${assignee_id}`).then(res => {
+                            todo.assignees_info.push({
+                                id: res['data']['id'],
+                                nickname: res['data']['nickname']
+                            });
+                        });
+                    });
+                });
+
+                this.setState({
+                    blocks: this.state.blocks.concat(todoContainer)
+                });
+            })
+            .catch(err => {
+                console.log(err);
             });
-        });
+
+        axios
+            .get(`/api/note/${n_id}/`)
+            .then(res => {
+                this.setState({
+                    ...this.state,
+                    note_id: res['data']['id'],
+                    title: res['data']['title'],
+                    location: res['data']['location'],
+                    created_at: res['data']['created_at'],
+                    last_modified_at: res['data']['last_modified_at'],
+                    ml_speech_text: res['data']['ml_speech_text'],
+                    participants_id: res['data']['participants'],
+                    moment: moment(res['data']['created_at'])
+                });
+                return res['data']['participants'];
+            })
+            .then(participants => {
+                participants.forEach(participant => {
+                    axios.get(`/api/profile/${participant}`).then(res => {
+                        this.setState({
+                            participants: this.state.participants.concat({
+                                id: res['data']['id'],
+                                nickname: res['data']['nickname']
+                            })
+                        });
+                    });
+                });
+            });
     }
+
+    getNickName = u_id => {
+        axios.get(`/api/profile/${u_id}`).then(res => {
+            return res['data']['nickname'];
+        });
+    };
 
     /* ==================================================================
         ## handleClickBlock & handleNoteLeft
@@ -107,6 +159,10 @@ class Note extends Component {
         });
     };
 
+    handleChangeLocation = e => {
+        this.setState({ location: e.target.value });
+    };
+
     handleAddAgendaBlock = noteId => {
         // Block Create API call 할 곳.
         const agenda_info = {
@@ -115,20 +171,18 @@ class Note extends Component {
             layer_x: 0,
             layer_y: 0
         };
-        axios
-            .post(`/api/note/${this.state.noteId}/agendas/`, agenda_info)
-            .then(res => {
-                this.setState({
-                    blocks: this.state.blocks.concat({
-                        block_type: 'Agenda',
-                        id: res['data']['id'],
-                        content: res['data']['content'],
-                        layer_x: res['data']['layer_x'],
-                        layer_y: res['data']['layer_y'],
-                        child_blocks: []
-                    })
-                });
+        axios.post(`/api/note/${noteId}/agendas/`, agenda_info).then(res => {
+            this.setState({
+                blocks: this.state.blocks.concat({
+                    block_type: 'agenda',
+                    id: res['data']['id'],
+                    content: res['data']['content'],
+                    layer_x: res['data']['layer_x'],
+                    layer_y: res['data']['layer_y'],
+                    child_blocks: []
+                })
             });
+        });
     };
 
     handleAddTextBlock = noteId => {
@@ -141,24 +195,59 @@ class Note extends Component {
             layer_y: 0,
             document_id: documentId
         };
-        axios
-            .post(`/api/note/${this.state.noteId}/textblocks/`, text_info)
-            .then(res => {
-                this.setState({
-                    blocks: this.state.blocks.concat({
-                        block_type: 'Text',
-                        id: res['data']['id'],
-                        content: res['data']['content'],
-                        layer_x: res['data']['layer_x'],
-                        layer_y: res['data']['layer_y'],
-                        documentId: res['data']['document_id']
-                    })
-                });
+        axios.post(`/api/note/${noteId}/textblocks/`, text_info).then(res => {
+            this.setState({
+                blocks: this.state.blocks.concat({
+                    block_type: 'textblock',
+                    id: res['data']['id'],
+                    content: res['data']['content'],
+                    layer_x: res['data']['layer_x'],
+                    layer_y: res['data']['layer_y'],
+                    documentId: res['data']['document_id']
+                })
             });
+        });
     };
 
     handleAddTodoBlock = noteId => {
         // Where need to call Todo Create API.
+        // To find out whether there is at least one todo.
+        axios
+            .get(`/api/note/${noteId}/todos/`)
+            // when there is some todos in Note.
+            .then(() => {
+                this.state.blocks.map(blk => {
+                    if (blk.block_type === 'TodoContainer') {
+                        const todo_info = {
+                            content: '할 일을 추가해보세요!',
+                            layer_x: 0,
+                            layer_y: 0,
+                            assignees: [1]
+                        };
+                        axios
+                            .post(`/api/note/${note_id}/todos/`, todo_info)
+                            .then(res => {
+                                console.log(res);
+                                let new_todos = blk.todos.concat(res['data']);
+                                this.setState({
+                                    ...this.state,
+                                    blocks: [
+                                        ...this.state.blocks.filter(
+                                            b =>
+                                                b.block_type !== 'TodoContainer'
+                                        ),
+                                        {
+                                            block_type: 'TodoContainer',
+                                            todos: new_todos
+                                        }
+                                    ]
+                                });
+                            });
+                    } else {
+                        return { ...blk };
+                    }
+                });
+            });
     };
 
     handleAddImageBlock = noteId => {
@@ -189,8 +278,15 @@ class Note extends Component {
         console.log(`Need to Implement auto-typing in the note ${noteId}`);
     };
 
+    handleAddParticipant = () => {
+        console.log(
+            'Need to implement add Participant who is a member of specific workspace'
+        );
+    };
+
     render() {
         console.log('note blocks: ', this.state.blocks);
+        const { history } = this.props;
         return (
             <div className="Note">
                 <NoteLeft
@@ -199,13 +295,17 @@ class Note extends Component {
                     participants={this.state.participants}
                     noteId={this.state.noteId}
                     moment={this.state.moment}
+                    location={this.state.location}
                     blocks={this.state.blocks}
                     handleClickBlock={this.handleClickBlock}
                     // handleClickNoteLeft={this.handleClickNoteLeft}
                     handleChangeTitle={this.handleChangeTitle}
                     handleChangeDatetime={this.handleChangeDatetime}
+                    handleChangeLocation={this.handleChangeLocation}
                     handleAddAgendaBlock={this.handleAddAgendaBlock}
                     handleAddTextBlock={this.handleAddTextBlock}
+                    handleAddTodoBlock={this.handleAddTodoBlock}
+                    handleAddParticipant={this.handleAddParticipant}
                 />
             </div>
         );

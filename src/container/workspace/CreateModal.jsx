@@ -54,7 +54,8 @@ const CreateModalMember = props => {
                                 className="createModal-member__member--searched-email"
                                 onClick={() =>
                                     handleSelectMember(
-                                        member.user && member.user
+                                        member.user
+                                        // member.user && member.user
                                     )
                                 }>
                                 {member.user && member.user.username}
@@ -146,7 +147,7 @@ class CreateModal extends Component {
                 const {
                     data: { user }
                 } = res;
-                this.setState({ addedAdmin: [user] });
+                this.setState({ addedAdmin: [user], addedAdminId: [user.id] });
             })
             .catch(err => console.error(err));
     }
@@ -245,6 +246,7 @@ class CreateModal extends Component {
 
                 if (status === 201) {
                     history.push(`/${name}/${id}`);
+                    window.location.reload();
                 }
             });
     };

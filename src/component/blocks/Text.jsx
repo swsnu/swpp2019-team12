@@ -28,10 +28,10 @@ class Text extends Component {
             <div
                 className="full-size-block-container Text"
                 onClick={() =>
-                    this.props.handleClickBlock(block_name, this.state.blk_id)
+                    this.props.handleClickBlock(this.props.type, this.props.id)
                 }>
                 <div className="full-size-block-title">
-                    <div className="full-size-block-title__text">Text</div>
+                    <div className="full-size-block-title__label">Text</div>
                 </div>
                 <EditorWrapper
                     documentId={this.state.documentId}

@@ -8,6 +8,7 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('signout/', views.signout, name='signout'),
     path('profile/', views.profile, name='profile'),
+    path('profile/<int:u_id>/', views.specific_profile, name='specific_profile'),
 
     # Workspace APIs
     path('workspace/', views.workspace, name='workspace'),
@@ -21,7 +22,7 @@ urlpatterns = [
 
     # Note API
     path('note/<int:n_id>/', views.specific_note, name='specific_note'),
-    
+    path('siblingnotes/<int:n_id>/', views.sibling_notes, name='sibling_notes'),
     # ===================
     #     Block APIs    
     # ===================

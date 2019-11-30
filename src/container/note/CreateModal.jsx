@@ -221,7 +221,7 @@ class CreateModal extends Component {
 
                 if (status === 201) {
                     history.push(`/note/${id}`);
-                    window.location.reload();
+                    // window.location.reload();
                 }
             });
     };
