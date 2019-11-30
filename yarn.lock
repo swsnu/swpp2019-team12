@@ -8973,6 +8973,11 @@ react-test-renderer@^16.0.0-0:
     react-is "^16.8.6"
     scheduler "^0.18.0"
 
+react-websocket@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-websocket/-/react-websocket-2.1.0.tgz#1150ce55aaa38e845f5711684266a823781ee2e4"
+  integrity sha512-VstINrNXmp08aol9TQt1LZQgtzmad6CjTvEX8TYAFxU7K0ByMtDP7T2WMtgNEttWtPThVA7TDhHNu+fGTaAExQ==
+
 react@^16.10.2:
   version "16.11.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.11.0.tgz#d294545fe62299ccee83363599bf904e4a07fdbb"

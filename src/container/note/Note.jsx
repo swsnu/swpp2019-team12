@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment';
+import Websocket from 'react-websocket';
 
 import NoteLeft from './NoteLeft';
 import NoteRightFocused from './NoteRightFocused';
@@ -30,6 +31,7 @@ class Note extends Component {
     }
 
     componentDidMount() {
+        console.log(this.refs);
         const n_id = this.props.match.params.n_id;
 
         //이거 동시에 나오게 처리하기, 저장된 순서 처리
@@ -207,24 +209,33 @@ class Note extends Component {
 
     handleAddAgendaBlock = note_id => {
         // Block Create API call 할 곳.
+        // const agenda_info = {
+        //     content: 'Empty Content in Agenda',
+        //     // *******이 부분 실제로 Drag & Drop 구현시 변경해야 함*******
+        //     layer_x: 0,
+        //     layer_y: 0
+        // };
+        // axios.post(`/api/note/${note_id}/agendas/`, agenda_info).then(res => {
+        //     this.setState({
+        //         blocks: this.state.blocks.concat({
+        //             block_type: 'agenda',
+        //             id: res['data']['id'],
+        //             content: res['data']['content'],
+        //             layer_x: res['data']['layer_x'],
+        //             layer_y: res['data']['layer_y'],
+        //             child_blocks: []
+        //         })
+        //     });
+        // });
         const agenda_info = {
-            content: 'Empty Content in Agenda',
-            // *******이 부분 실제로 Drag & Drop 구현시 변경해야 함*******
+            n_id: note_id,
+            content: '',
             layer_x: 0,
             layer_y: 0
         };
-        axios.post(`/api/note/${note_id}/agendas/`, agenda_info).then(res => {
-            this.setState({
-                blocks: this.state.blocks.concat({
-                    block_type: 'agenda',
-                    id: res['data']['id'],
-                    content: res['data']['content'],
-                    layer_x: res['data']['layer_x'],
-                    layer_y: res['data']['layer_y'],
-                    child_blocks: []
-                })
-            });
-        });
+
+        const socket = this.refs.socket;
+        socket.state.ws.send(JSON.stringify(agenda_info));
     };
 
     handleAddTextBlock = note_id => {
@@ -322,8 +333,24 @@ class Note extends Component {
         );
     };
 
+    handleData(data) {
+        let res = JSON.parse(data);
+        console.log(res);
+        this.setState({
+            blocks: this.state.blocks.concat({
+                block_type: res['block_type'],
+                id: res['id'],
+                content: res['content'],
+                layer_x: res['layer_x'],
+                layer_y: res['layer_y'],
+                child_blocks: []
+            })
+        });
+    }
+
     render() {
         const { history } = this.props;
+        const n_id = this.props.match.params.n_id;
         return (
             <div className="Note">
                 <NoteLeft
@@ -343,6 +370,11 @@ class Note extends Component {
                     handleAddTextBlock={this.handleAddTextBlock}
                     handleAddTodoBlock={this.handleAddTodoBlock}
                     handleAddParticipant={this.handleAddParticipant}
+                />
+                <Websocket
+                    url={`ws://localhost:8000/ws/${n_id}/agenda/`}
+                    ref="socket"
+                    onMessage={this.handleData.bind(this)}
                 />
 
                 {this.state.isBlockClicked ? (

@@ -29,6 +29,7 @@
         "react-router-dom": "^5.1.2",
         "react-scripts": "3.2.0",
         "react-search-input": "^0.11.3",
+        "react-websocket": "^2.1.0",
         "redux": "^4.0.4",
         "redux-actions": "^2.6.5",
         "redux-logger": "^3.0.6",
