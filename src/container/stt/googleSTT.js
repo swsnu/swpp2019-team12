@@ -23,14 +23,25 @@ const constraints = {
     audio: true,
     video: false
 };
-// let resultText = null;
 
+/**
+ * @description Google STT component
+ *
+ * @usage
+ * import googleSTT from 'googleSTT.js'
+ *
+ * render() {
+ *     return(
+ *         <googleSTT room={BLOCK_ID} />
+ *     )
+ * }
+ */
 class googleSTT extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            room: '',
+            room: this.props.room || Date.now(),
             recording: false,
             texts: []
         };
@@ -77,7 +88,6 @@ class googleSTT extends Component {
                     }
                 );
             }
-            // resultText.innerText = data.results[0] && data.results[0].alternatives[0].transcript;
         });
     };
 
@@ -118,6 +128,7 @@ class googleSTT extends Component {
 
     startRecording = () => {
         this.setState({ recording: true });
+        this.startSocket();
         this.initRecording();
     };
 
@@ -137,6 +148,8 @@ class googleSTT extends Component {
             input = null;
             processor = null;
         });
+
+        this.stopSocket();
     };
 
     //================= HELPERS =================
@@ -215,19 +228,7 @@ class googleSTT extends Component {
                     className={recording ? '' : 'disabled'}>
                     Stop recording
                 </button>
-                <input
-                    onChange={e => this.setState({ room: e.target.value })}
-                    value={this.state.room}
-                />
-                <button type="button" onClick={this.startSocket}>
-                    Start Socket
-                </button>
-                <button type="button" onClick={this.stopSocket}>
-                    Stop Socket
-                </button>
-
                 <div>
-                    {/* <p id="resultText"></p> */}
                     {map(texts, (text, i) => (
                         <div key={i}>{text}</div>
                     ))}
