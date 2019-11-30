@@ -1,3 +1,16 @@
+/**
+ * @description Google STT Node Proxy Server
+ *
+ * @before_run_server Google STT Node only run in >= node v10.10.0
+ *     > brew install nvm
+ *     > nvm install 10.10.0
+ *     > nvm use 10.10.0
+ *
+ * @run_server
+ *     > yarn install
+ *     > nodemon app.js
+ */
+
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
