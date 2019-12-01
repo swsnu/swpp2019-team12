@@ -101,11 +101,8 @@ def profile(request):
     # axios.get('/api/profile/')
     # ==========================================
     if request.method == 'GET':
-        try:
-            user = request.user
-            profile = request.user.profile
-        except(Profile.DoesNotExist) as e:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        user = request.user
+        profile = request.user.profile
 
         user_serializer = EncapsulatedUserSerializer(user)
         profile_serializer = ProfileSerializer(profile)
@@ -134,6 +131,8 @@ def profile(request):
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
             members = workspace.members.all()
+            print("members:")
+            print(members)
             data = []
 
             for member in members:
@@ -151,9 +150,9 @@ def profile(request):
 
             return Response(data, status=status.HTTP_200_OK)
         else:
-            try:
-                users = User.objects.filter(username__contains=username)
-            except (User.DoesNotExist) as e:
+
+            users = User.objects.filter(username__contains=username)
+            if(users.count() == 0):
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
             data = []

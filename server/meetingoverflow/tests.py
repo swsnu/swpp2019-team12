@@ -5,18 +5,26 @@ from .models import *
 
 # Profile, Tag, Workspace, Note, Agenda, Calendar, File, Image, Table, Todo, TextBlock
 
+
 class MOFTestCase(TestCase):
 
     def setUp(self):
         user1 = User.objects.create_user(username='t@t.com', password="test")
+        user1.profile.nickname = "test_nickname"
+        user1.save()
         workspace1 = Workspace.objects.create(name="test_workspace")
+        workspace1.admins.set([user1.profile])
+        workspace1.members.set([user1.profile])
+        workspace2 = Workspace.objects.create(name="test_workspace2")
+
         note1 = Note.objects.create(title="test_note", workspace=workspace1)
         agenda1 = Agenda.objects.create(content="test_content", note=note1)
         calendar1 = Calendar.objects.create(content="test_content", note=note1)
         file1 = File.objects.create(content="test_content", note=note1)
         image1 = Image.objects.create(content="test_content", note=note1)
         table1 = Table.objects.create(content="test_content", note=note1)
-        todo1 = Todo.objects.create(content="test_content", note=note1, workspace=workspace1)
+        todo1 = Todo.objects.create(
+            content="test_content", note=note1, workspace=workspace1)
         tag1 = Tag.objects.create(content="test_content")
         text1 = TextBlock.objects.create(content="test_content", note=note1)
 
@@ -35,9 +43,10 @@ class MOFTestCase(TestCase):
         self.assertEqual(str(Tag.objects.get(id=2)), "content: test_content")
 
         # Workspace Model Check
-        workspace = Workspace(name="test_workspace")
+        workspace = Workspace(name="test_workspace3")
         workspace.save()
-        self.assertEqual(str(Workspace.objects.get(id=2)), "name: test_workspace")
+        self.assertEqual(str(Workspace.objects.get(id=3)),
+                         "name: test_workspace3")
 
         # Note Model Check
         note = Note(title="test_title", workspace=workspace)
@@ -97,8 +106,8 @@ class MOFTestCase(TestCase):
             note=note
         )
         textblock.save()
-        self.assertEqual(str(TextBlock.objects.get(id=2)), "content: test_content")
-
+        self.assertEqual(str(TextBlock.objects.get(id=2)),
+                         "content: test_content")
 
     def test_user_auth(self):
         client = Client(enforce_csrf_checks=False)
@@ -107,33 +116,33 @@ class MOFTestCase(TestCase):
         ##########
         response = client.get('/api/signup/')
         self.assertEqual(response.status_code, 405)
-        
+
         # POST
         response = client.post('/api/signup/',
-                                json.dumps({
-                                    'wrong': 'test_name',
-                                    'wrong2': '1234',
-                                    'wrong3': 'test_nickname'
-                                }),
-                                content_type='application/json')
+                               json.dumps({
+                                   'wrong': 'test_name',
+                                   'wrong2': '1234',
+                                   'wrong3': 'test_nickname'
+                               }),
+                               content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
         response = client.post('/api/signup/',
-                                json.dumps({
-                                    'username': '',
-                                    'password': '',
-                                    'nickname': 'test_nickname'
-                                }),
-                                content_type='application/json')
+                               json.dumps({
+                                   'username': '',
+                                   'password': '',
+                                   'nickname': 'test_nickname'
+                               }),
+                               content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
         response = client.post('/api/signup/',
-                                json.dumps({
-                                    'username': 'test_name',
-                                    'password': '1234',
-                                    'nickname': 'test_nickname'
-                                }),
-                                content_type='application/json')
+                               json.dumps({
+                                   'username': 'test_name',
+                                   'password': '1234',
+                                   'nickname': 'test_nickname'
+                               }),
+                               content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
         # PATCH
@@ -157,42 +166,80 @@ class MOFTestCase(TestCase):
                                 }),
                                 content_type='application/json')
         self.assertEqual(response.status_code, 204)
-    
+
         ##########
         # Signin #
         ##########
-        
-        response = client.post('/api/signin/', 
-                                json.dumps({
-                                    '1': 'test_name',
-                                    '2': '1234'
-                                }),
-                                content_type='application/json')
+
+        response = client.post('/api/signin/',
+                               json.dumps({
+                                   '1': 'test_name',
+                                   '2': '1234'
+                               }),
+                               content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
-        response = client.post('/api/signin/', 
-                                json.dumps({
-                                    'username': 'not_exist',
-                                    'password': '1234'
-                                }),
-                                content_type='application/json')
+        response = client.post('/api/signin/',
+                               json.dumps({
+                                   'username': 'not_exist',
+                                   'password': '1234'
+                               }),
+                               content_type='application/json')
         self.assertEqual(response.status_code, 401)
 
-        login_response = client.post('/api/signin/', 
-                                json.dumps({
-                                    'username': 'test_name',
-                                    'password': '1234'
-                                }),
-                                content_type='application/json')
-        self.assertEqual(login_response.status_code, 204)
+        login_response = client.post('/api/signin/',
+                                     json.dumps({
+                                         'username': 'test_name',
+                                         'password': '1234'
+                                     }),
+                                     content_type='application/json')
+        self.assertEqual(login_response.status_code, 200)
 
         ###########
         # Signout #
-        ###########        
+        ###########
         csrftoken = login_response.cookies['csrftoken'].value
         response = client.get('/api/signout/', HTTP_X_CSRFTOKEN=csrftoken)
         self.assertEqual(response.status_code, 204)
 
+        response = client.get('/api/signout/', HTTP_X_CSRFTOKEN=csrftoken)
+        self.assertEqual(response.status_code, 401)
+
+    def test_profile(self):
+        client = Client(enforce_csrf_checks=False)
+        client.login(username='t@t.com', password="test")
+        response = client.get('/api/profile/')
+        self.assertEqual(response.status_code, 200)
+
+        # workspace 입력도 하고, 실제로 db에 workspace 있는 경우
+        response = client.post('/api/profile/', json.dumps({
+            'username': 'test_name',
+            'workspace_id': 1
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+
+        response = client.post('/api/profile/', json.dumps({
+            'username': 'test_name',
+            'workspace_id': 1000
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.post('/api/profile/', json.dumps({
+            'username': 't@t.com',
+            'workspace_id': 1
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+
+        # workspace 없는 경우
+        response = client.post('/api/profile/', json.dumps({
+            'username': 't@t.com'
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+
+        response = client.post('/api/profile/', json.dumps({
+            'username': 'unavailable_test_name'
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 404)
 
     def test_workspace_todo(self):
         client = Client(enforce_csrf_checks=False)
