@@ -310,7 +310,32 @@ class MOFTestCase(TestCase):
     def test_specific_workspace(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password='test')
+
         response = client.get('/api/workspace/1/')
+        self.assertEqual(response.status_code, 200)
+
+        response = client.get('/api/workspace/100/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.patch('/api/workspace/100/', json.dumps({
+            'name': 'test_workspace'
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.patch('/api/workspace/1/', json.dumps({
+            'members': [1, 2]
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 202)
+
+        response = client.patch('/api/workspace/1/', json.dumps({
+            'members': [3]
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+        response = client.delete('/api/workspace/100/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.delete('/api/workspace/1/')
         self.assertEqual(response.status_code, 200)
 
     def test_workspace_todo(self):
