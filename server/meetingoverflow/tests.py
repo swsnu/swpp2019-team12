@@ -418,3 +418,41 @@ class MOFTestCase(TestCase):
             'workspace': 1,
         }), content_type='application/json')
         self.assertEqual(response.status_code, 404)
+
+    def test_specific_note(self):
+        client = Client(enforce_csrf_checks=False)
+        client.login(username='t@t.com', password="test")
+
+        response = client.get('/api/note/1/')
+        self.assertEqual(response.status_code, 200)
+
+        response = client.get('/api/note/100/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.patch('/api/note/100/', json.dumps({
+            'title': 'patch_title'
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.patch('/api/note/1/', json.dumps({
+            'title': 'patch_title'
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 202)
+
+        response = client.patch('/api/note/1/', json.dumps({
+            'title': """title_very_very_long_longer_than_100_
+                        abcdefghijklmnopqrstuvwxyz
+                        abcdefghijklmnopqrstuvwxyz
+                        abcdefghijklmnopqrstuvwxyz
+                        abcdefghijklmnopqrstuvwxyz
+                        abcdefghijklmnopqrstuvwxyz
+                        abcdefghijklmnopqrstuvwxyz
+                        abcdefghijklmnopqrstuvwxyz"""
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+        response = client.delete('/api/note/100/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.delete('/api/note/1/')
+        self.assertEqual(response.status_code, 200)

@@ -398,9 +398,7 @@ def notes(request, w_id):
         except(Workspace.DoesNotExist) as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         queryset = Note.objects.filter(workspace=workspace)
-        print(queryset)
         if queryset.count() > 0:
-            print("hi")
             serializer = NoteSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
@@ -468,7 +466,7 @@ def specific_note(request, n_id):
     elif request.method == 'DELETE':
         try:
             current_note = Note.objects.get(id=n_id)
-        except(Workspace.DoesNotExist) as e:
+        except(Note.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         current_note.delete()
         return Response(status=status.HTTP_200_OK)
