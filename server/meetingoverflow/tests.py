@@ -28,6 +28,8 @@ class MOFTestCase(TestCase):
         table1 = Table.objects.create(content="test_content", note=note1)
         todo1 = Todo.objects.create(
             content="test_content", note=note1, workspace=workspace1)
+        todo1.assignees.set([user1.profile])
+        todo1.save()
         tag1 = Tag.objects.create(content="test_content")
         text1 = TextBlock.objects.create(content="test_content", note=note1)
 
@@ -341,5 +343,8 @@ class MOFTestCase(TestCase):
     def test_workspace_todo(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
-        response = client.get('/api/workspace/1/todos/')
+        response = client.get('/api/workspace/2/todos/')
         self.assertEqual(response.status_code, 404)
+
+        response = client.get('/api/workspace/1/todos/')
+        self.assertEqual(response.status_code, 200)
