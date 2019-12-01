@@ -71,7 +71,6 @@ def signin(request):
                 'username': user.username
             }
             auth.login(request, user)
-            print(response)
             return JsonResponse(response, status=200)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -131,8 +130,6 @@ def profile(request):
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
             members = workspace.members.all()
-            print("members:")
-            print(members)
             data = []
 
             for member in members:
@@ -177,11 +174,12 @@ def profile(request):
 # ===================================================
 '''
 # 추가된 api / Profile에 닉네임 저장
-@api_view(['GET'])
+@api_view(['GET', 'PATCH'])
 def specific_profile(request, u_id):
     if request.method == 'GET':
         try:
             profile = Profile.objects.get(id=u_id)
+            print(profile)
         except (Profile.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ProfileSerializer(profile)
@@ -194,7 +192,7 @@ def specific_profile(request, u_id):
     elif request.method == 'PATCH':
         # queryset = request.user.profile
         try:
-            queryset = Profile.objects.get(id=id)
+            queryset = Profile.objects.get(id=u_id)
         except(Profile.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ProfileSerializer(
