@@ -179,7 +179,6 @@ def specific_profile(request, u_id):
     if request.method == 'GET':
         try:
             profile = Profile.objects.get(id=u_id)
-            print(profile)
         except (Profile.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ProfileSerializer(profile)
@@ -241,7 +240,6 @@ def workspace(request):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST':
-        print(request.data)  # members id list
         try:
             name = request.data['name']
             admins = request.data['admins']  # admin id list
@@ -250,9 +248,7 @@ def workspace(request):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         admin_list = []
         for admin in admins:
-            print()
-            print(admin)
-            try:            
+            try:
                 admin_list.append(Profile.objects.get(user__id=admin))
             except(Profile.DoesNotExist) as e:
                 return Response(status=status.HTTP_404_NOT_FOUND)
@@ -382,6 +378,10 @@ def workspace_todo(request, w_id):
 @api_view(['GET'])
 def workspace_agenda(request, w_id):
     if request.method == 'GET':
+        try:
+            workspace = Workspace.objects.get(id=w_id)
+        except(Workspace.DoesNotExist) as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         queryset = Agenda.objects.filter(note__workspace=workspace)
         if queryset.count() > 0:
             serializer = AgendaSerializer(queryset, many=True)

@@ -15,6 +15,7 @@ class MOFTestCase(TestCase):
         user2 = User.objects.create_user(username='j@j.com', password="test")
         user2.profile.nickname = "test_nickname2"
         user2.save()
+
         workspace1 = Workspace.objects.create(name="test_workspace")
         workspace1.admins.set([user1.profile])
         workspace1.members.set([user1.profile])
@@ -347,4 +348,16 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
 
         response = client.get('/api/workspace/1/todos/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_workspace_agenda(self):
+        client = Client(enforce_csrf_checks=False)
+        client.login(username='t@t.com', password="test")
+        response = client.get('/api/workspace/2/agendas/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get('/api/workspace/100/agendas/')
+        self.assertEqual(response.status_code, 400)
+
+        response = client.get('/api/workspace/1/agendas/')
         self.assertEqual(response.status_code, 200)
