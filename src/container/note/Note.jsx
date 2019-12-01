@@ -67,7 +67,7 @@ class Note extends Component {
         axios
             .get(`/api/note/${n_id}/textblocks/`)
             .then(res => {
-                console.log('axios get textblocks', res);
+                //console.log('axios get textblocks', res);
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({

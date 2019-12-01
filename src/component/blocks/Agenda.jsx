@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 class Agenda extends Component {
     constructor(props) {
         super(props);

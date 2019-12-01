@@ -30,7 +30,15 @@ class Text extends Component {
         window.location.reload();
     };
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.documentId !== prevState.documentId) {
+            return { documentId: nextProps.documentId };
+        }
+        return null;
+    }
+
     render() {
+        // console.log('Text 에서 document id: ', this.state.documentId);
         // const block_name = 'Text';
         // const user = sessionStorage.getItem('LoggedInUser');
         // console.log('text에서 유저: ', user);
@@ -54,6 +62,7 @@ class Text extends Component {
                     </button>
                 </div>
                 <EditorWrapper
+                    blk_id={this.state.blk_id}
                     documentId={this.state.documentId}
                     handleChangeText={this.handleChangeText}
                 />

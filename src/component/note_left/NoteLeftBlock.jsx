@@ -42,23 +42,23 @@ class NoteLeftBlock extends Component {
         };
     }
 
-    onDragEnd = result => {
-        if (!result.destination) {
-            return;
-        }
-        const blocks = reorder(
-            this.state.blocks,
-            result.source.index,
-            result.destination.index
-        );
-        console.log(result.source.index + ' ' + result.destination.index);
+    // onDragEnd = result => {
+    //     if (!result.destination) {
+    //         return;
+    //     }
+    //     const blocks = reorder(
+    //         this.state.blocks,
+    //         result.source.index,
+    //         result.destination.index
+    //     );
+    //     console.log(result.source.index + ' ' + result.destination.index);
 
-        // blocks.map(blk => {
-        //     console.log('this is const: ' + blk.id);
-        // });
+    //     // blocks.map(blk => {
+    //     //     console.log('this is const: ' + blk.id);
+    //     // });
 
-        this.setState({ blocks: blocks });
-    };
+    //     this.setState({ blocks: blocks });
+    // };
 
     static getDerivedStateFromProps(nextProps, prevState) {
         console.log('get derived state from props');
@@ -106,6 +106,7 @@ class NoteLeftBlock extends Component {
                     };
                     return _result;
                 });
+            console.log('block arrayL', block_array);
             return { blocks: block_array };
         }
         return null;
