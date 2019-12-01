@@ -21,10 +21,17 @@ class MOFTestCase(TestCase):
         workspace1.members.set([user1.profile])
         workspace1.save()
         workspace2 = Workspace.objects.create(name="test_workspace2")
+        workspace3 = Workspace.objects.create(name="test_workspace3")
 
         note1 = Note.objects.create(title="test_note", workspace=workspace1)
         note1.participants.set([user1.profile])
         note1.save()
+        note2 = Note.objects.create(title="test_note2", workspace=workspace1)
+        note2.participants.set([user1.profile])
+        note2.save()
+        note3 = Note.objects.create(title="test_note3", workspace=workspace2)
+        note3.participants.set([user2.profile])
+        note3.save()
 
         agenda1 = Agenda.objects.create(content="test_content", note=note1)
 
@@ -67,7 +74,7 @@ class MOFTestCase(TestCase):
         # Note Model Check
         note = Note(title="test_title", workspace=workspace)
         note.save()
-        self.assertEqual(str(Note.objects.get(id=2)), "title: test_title")
+        self.assertEqual(str(Note.objects.get(id=4)), "title: test_title")
 
         # Agenda Model Check
         agenda = Agenda(
@@ -75,7 +82,7 @@ class MOFTestCase(TestCase):
             note=note,
         )
         agenda.save()
-        self.assertEqual(str(Agenda.objects.get(id=2)), "note_id: 2")
+        self.assertEqual(str(Agenda.objects.get(id=2)), "note_id: 4")
 
         # Calendar Model Check
         calendar = Calendar(
@@ -83,7 +90,7 @@ class MOFTestCase(TestCase):
             note=note
         )
         calendar.save()
-        self.assertEqual(str(Calendar.objects.get(id=2)), "note_id: 2")
+        self.assertEqual(str(Calendar.objects.get(id=2)), "note_id: 4")
 
         # File Model Check
         file = File(
@@ -99,7 +106,7 @@ class MOFTestCase(TestCase):
             note=note
         )
         image.save()
-        self.assertEqual(str(Image.objects.get(id=2)), "note_id: 2")
+        self.assertEqual(str(Image.objects.get(id=2)), "note_id: 4")
 
         # Table Model Check
         table = Table(
@@ -107,14 +114,14 @@ class MOFTestCase(TestCase):
             content="test_content"
         )
         table.save()
-        self.assertEqual(str(Table.objects.get(id=2)), "note_id: 2")
+        self.assertEqual(str(Table.objects.get(id=2)), "note_id: 4")
 
         # Todo Model Check
         todo = Todo(
             note=note
         )
         todo.save()
-        self.assertEqual(str(Todo.objects.get(id=2)), "note_id: 2")
+        self.assertEqual(str(Todo.objects.get(id=2)), "note_id: 4")
 
         # TextBlock Model Check
         textblock = TextBlock(
@@ -380,7 +387,7 @@ class MOFTestCase(TestCase):
         response = client.get('/api/workspace/5/notes/')
         self.assertEqual(response.status_code, 400)
 
-        response = client.get('/api/workspace/2/notes/')
+        response = client.get('/api/workspace/3/notes/')
         self.assertEqual(response.status_code, 404)
 
         response = client.get('/api/workspace/1/notes/')
@@ -456,3 +463,16 @@ class MOFTestCase(TestCase):
 
         response = client.delete('/api/note/1/')
         self.assertEqual(response.status_code, 200)
+
+    def test_sibling_notes(self):
+        client = Client(enforce_csrf_checks=False)
+        client.login(username='t@t.com', password="test")
+
+        response = client.get('/api/siblingnotes/1/')
+        self.assertEqual(response.status_code, 200)
+
+        response = client.get('/api/siblingnotes/100/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get('/api/siblingnotes/3/')
+        self.assertEqual(response.status_code, 404)
