@@ -307,6 +307,12 @@ class MOFTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
+    def test_specific_workspace(self):
+        client = Client(enforce_csrf_checks=False)
+        client.login(username='t@t.com', password='test')
+        response = client.get('/api/workspace/1/')
+        self.assertEqual(response.status_code, 200)
+
     def test_workspace_todo(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
