@@ -252,12 +252,13 @@ def workspace(request):
         for admin in admins:
             print()
             print(admin)
-            try:
+            try:            
                 admin_list.append(Profile.objects.get(user__id=admin))
             except(Profile.DoesNotExist) as e:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
         member_list = []
+        # 멤버가 하나도 없는 경우 에러
         for member in members:
             try:
                 member_list.append(Profile.objects.get(user__id=member))
@@ -265,7 +266,7 @@ def workspace(request):
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
         Workspace.objects.create(name=name)
-        workspace = Workspace.objects.get(name=name)
+        workspace = Workspace.objects.all().last()
         workspace.admins.set(admin_list)
         workspace.members.set(member_list)
         workspace.save()

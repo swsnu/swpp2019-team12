@@ -12,6 +12,9 @@ class MOFTestCase(TestCase):
         user1 = User.objects.create_user(username='t@t.com', password="test")
         user1.profile.nickname = "test_nickname"
         user1.save()
+        user2 = User.objects.create_user(username='j@j.com', password="test")
+        user2.profile.nickname = "test_nickname2"
+        user2.save()
         workspace1 = Workspace.objects.create(name="test_workspace")
         workspace1.admins.set([user1.profile])
         workspace1.members.set([user1.profile])
@@ -264,6 +267,45 @@ class MOFTestCase(TestCase):
             'nickname': "longer_than_20_maximum_wowwowwowwowwowwowwow"
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
+
+    def test_workspace(self):
+        client = Client(enforce_csrf_checks=False)
+        client.login(username='t@t.com', password="test")
+
+        response = client.get('/api/workspace/')
+        self.assertEqual(response.status_code, 200)
+
+        client.login(username='j@j.com', password="test")
+        response = client.get('/api/workspace/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.post('/api/workspace/', json.dumps({
+            'nae': 'test_workspace',
+            'admis': [2],
+            'membes': [1, 2]
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+        response = client.post('/api/workspace/', json.dumps({
+            'name': 'test_workspace',
+            'admins': [100],
+            'members': [1, 2]
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.post('/api/workspace/', json.dumps({
+            'name': 'test_workspace',
+            'admins': [2],
+            'members': [100]
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.post('/api/workspace/', json.dumps({
+            'name': 'test_workspace',
+            'admins': [2],
+            'members': [1, 2]
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
 
     def test_workspace_todo(self):
         client = Client(enforce_csrf_checks=False)
