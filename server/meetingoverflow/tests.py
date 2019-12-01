@@ -19,18 +19,28 @@ class MOFTestCase(TestCase):
         workspace1 = Workspace.objects.create(name="test_workspace")
         workspace1.admins.set([user1.profile])
         workspace1.members.set([user1.profile])
+        workspace1.save()
         workspace2 = Workspace.objects.create(name="test_workspace2")
 
         note1 = Note.objects.create(title="test_note", workspace=workspace1)
+        note1.participants.set([user1.profile])
+        note1.save()
+
         agenda1 = Agenda.objects.create(content="test_content", note=note1)
+
         calendar1 = Calendar.objects.create(content="test_content", note=note1)
+
         file1 = File.objects.create(content="test_content", note=note1)
+
         image1 = Image.objects.create(content="test_content", note=note1)
+
         table1 = Table.objects.create(content="test_content", note=note1)
+
         todo1 = Todo.objects.create(
             content="test_content", note=note1, workspace=workspace1)
         todo1.assignees.set([user1.profile])
         todo1.save()
+
         tag1 = Tag.objects.create(content="test_content")
         text1 = TextBlock.objects.create(content="test_content", note=note1)
 
@@ -361,3 +371,50 @@ class MOFTestCase(TestCase):
 
         response = client.get('/api/workspace/1/agendas/')
         self.assertEqual(response.status_code, 200)
+
+    def test_notes(self):
+        client = Client(enforce_csrf_checks=False)
+        client.login(username='t@t.com', password="test")
+
+        # GET
+        response = client.get('/api/workspace/5/notes/')
+        self.assertEqual(response.status_code, 400)
+
+        response = client.get('/api/workspace/2/notes/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get('/api/workspace/1/notes/')
+        self.assertEqual(response.status_code, 200)
+
+        # POST
+        datetime = str(timezone.now())
+        response = client.post('/api/workspace/1/notes/', json.dumps({
+            'title': 'test_title',
+            'participants': ["t@t.com"],
+            'createdAt':  datetime,
+            'lastModifiedAt':  datetime,
+            'location': 'Seoul',
+            'workspace': 1,
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+
+        # keyerror
+        response = client.post('/api/workspace/1/notes/', json.dumps({
+            'tile': 'test_title',
+            'pants': ["t@t.com"],
+            'createdAt':  datetime,
+            'lastModifiedAt':  datetime,
+            'location': 'Seoul',
+            'workspace': 1,
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+        response = client.post('/api/workspace/1/notes/', json.dumps({
+            'title': 'test_title',
+            'participants': ["non_existing_username"],
+            'createdAt':  datetime,
+            'lastModifiedAt':  datetime,
+            'location': 'Seoul',
+            'workspace': 1,
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 404)

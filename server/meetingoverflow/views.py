@@ -393,12 +393,18 @@ def workspace_agenda(request, w_id):
 @api_view(['GET', 'POST'])
 def notes(request, w_id):
     if request.method == 'GET':
-        queryset = Note.objects.filter(workspace__id=w_id)
-        serializer = NoteSerializer(queryset)
-        if serializer.is_valid():
+        try:
+            workspace = Workspace.objects.get(id=w_id)
+        except(Workspace.DoesNotExist) as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        queryset = Note.objects.filter(workspace=workspace)
+        print(queryset)
+        if queryset.count() > 0:
+            print("hi")
+            serializer = NoteSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST':
         try:
