@@ -194,28 +194,22 @@ class MOFTestCase(TestCase):
         # Signin #
         ##########
 
-        response = client.post('/api/signin/',
-                               json.dumps({
-                                   '1': 'test_name',
-                                   '2': '1234'
-                               }),
-                               content_type='application/json')
+        response = client.post('/api/signin/', json.dumps({
+            '1': 'test_name',
+            '2': '1234'
+        }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
-        response = client.post('/api/signin/',
-                               json.dumps({
-                                   'username': 'not_exist',
-                                   'password': '1234'
-                               }),
-                               content_type='application/json')
+        response = client.post('/api/signin/', json.dumps({
+            'username': 'not_exist',
+            'password': '1234'
+        }), content_type='application/json')
         self.assertEqual(response.status_code, 401)
 
-        login_response = client.post('/api/signin/',
-                                     json.dumps({
-                                         'username': 'test_name',
-                                         'password': '1234'
-                                     }),
-                                     content_type='application/json')
+        login_response = client.post('/api/signin/', json.dumps({
+            'username': 'test_name',
+            'password': '1234'
+        }), content_type='application/json')
         self.assertEqual(login_response.status_code, 200)
 
         ###########
@@ -476,3 +470,37 @@ class MOFTestCase(TestCase):
 
         response = client.get('/api/siblingnotes/3/')
         self.assertEqual(response.status_code, 404)
+
+    def test_textblock_child_of_note(self):
+        client = Client(enforce_csrf_checks=False)
+        client.login(username='t@t.com', password="test")
+
+        response = client.get('/api/note/100/textblocks/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get('/api/note/1/textblocks/')
+        self.assertEqual(response.status_code, 200)
+
+        response = client.post('/api/note/100/textblocks/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 0,
+            'layer_y': 0,
+            'document_id': 'asfecsm3242a'
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.post('/api/note/1/textblocks/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 0,
+            'layer_y': 0,
+            'document_id': 'asfecsm3242a'
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+
+        response = client.post('/api/note/1/textblocks/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 3.333,
+            'layer_y': 0,
+            'document_id': 'asfecsm3242a'
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 400)

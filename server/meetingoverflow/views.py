@@ -518,29 +518,26 @@ def textblock_child_of_note(request, n_id):
     elif request.method == 'POST':
 
         try:
-
             note = Note.objects.get(id=n_id)
         except(Note.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        try:
+        
 
-            data = {
-                'content': request.data['content'],
-                'layer_x': request.data['layer_x'],
-                'layer_y': request.data['layer_y'],
-                'document_id': request.data['document_id'],
-                'note': n_id,
-                'is_parent_note': True
-            }
-        except(Exception) as e:
-            print(e)
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        data = {
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'document_id': request.data['document_id'],
+            'note': n_id,
+            'is_parent_note': True
+        }
+        
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            print(serializer.errors)
+            # print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
