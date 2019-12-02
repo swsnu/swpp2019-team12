@@ -481,7 +481,7 @@ def sibling_notes(request, n_id):
             return Response(status=status.HTTP_404_NOT_FOUND)
         workspace = note.workspace
         sibling_notes = Note.objects.filter(workspace=workspace).filter(~Q(id = n_id))
-        print(sibling_notes)
+        #print(sibling_notes)
         if sibling_notes.count() > 0:
             serializer = NoteSerializer(sibling_notes, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -560,6 +560,7 @@ def textblock_child_of_agenda(request, a_id):
         agenda = Agenda.objects.get(id=a_id)
     except(Agenda.DoesNotExist) as e:
         return Response(status=status.HTTP_404_NOT_FOUND)
+
     if request.method == 'GET':
         queryset = TextBlock.objects.filter(
             is_parent_note=False,
@@ -588,7 +589,7 @@ def textblock_child_of_agenda(request, a_id):
             agenda.save()
             return Response(status=status.HTTP_201_CREATED)
         else:
-            print(serializer.errors)
+            # print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 

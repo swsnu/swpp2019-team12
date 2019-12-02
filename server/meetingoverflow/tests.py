@@ -34,22 +34,38 @@ class MOFTestCase(TestCase):
         note3.save()
 
         agenda1 = Agenda.objects.create(content="test_content", note=note1)
+        agenda2 = Agenda.objects.create(content="test_content2", note=note1)
 
         calendar1 = Calendar.objects.create(content="test_content", note=note1)
+        calendar2 = Calendar.objects.create(
+            content="test_content2", note=note1, parent_agenda=agenda1, is_parent_note=False)
 
         file1 = File.objects.create(content="test_content", note=note1)
+        file2 = File.objects.create(
+            content="test_content2", note=note1, parent_agenda=agenda1, is_parent_note=False)
 
         image1 = Image.objects.create(content="test_content", note=note1)
+        image2 = Image.objects.create(
+            content="test_content2", note=note1, parent_agenda=agenda1, is_parent_note=False)
 
         table1 = Table.objects.create(content="test_content", note=note1)
+        table2 = Table.objects.create(
+            content="test_content2", note=note1, parent_agenda=agenda1, is_parent_note=False)
 
         todo1 = Todo.objects.create(
             content="test_content", note=note1, workspace=workspace1)
         todo1.assignees.set([user1.profile])
         todo1.save()
 
+        todo2 = Todo.objects.create(
+            content="test_content2", note=note1, parent_agenda=agenda1, is_parent_note=False)
+        todo2.assignees.set([user1.profile])
+        todo2.save()
+
         tag1 = Tag.objects.create(content="test_content")
         text1 = TextBlock.objects.create(content="test_content", note=note1)
+        text2 = TextBlock.objects.create(
+            content="test_content2", note=note1, parent_agenda=agenda1, is_parent_note=False)
 
     def test_models(self):
         User.objects.create_user(username='test@test.com', password="test")
@@ -82,7 +98,7 @@ class MOFTestCase(TestCase):
             note=note,
         )
         agenda.save()
-        self.assertEqual(str(Agenda.objects.get(id=2)), "note_id: 4")
+        self.assertEqual(str(Agenda.objects.get(id=3)), "note_id: 4")
 
         # Calendar Model Check
         calendar = Calendar(
@@ -90,7 +106,7 @@ class MOFTestCase(TestCase):
             note=note
         )
         calendar.save()
-        self.assertEqual(str(Calendar.objects.get(id=2)), "note_id: 4")
+        self.assertEqual(str(Calendar.objects.get(id=3)), "note_id: 4")
 
         # File Model Check
         file = File(
@@ -99,14 +115,14 @@ class MOFTestCase(TestCase):
             url="abc"
         )
         file.save()
-        self.assertEqual(str(File.objects.get(id=2)), "url: abc")
+        self.assertEqual(str(File.objects.get(id=3)), "url: abc")
 
         # Image Model Check
         image = Image(
             note=note
         )
         image.save()
-        self.assertEqual(str(Image.objects.get(id=2)), "note_id: 4")
+        self.assertEqual(str(Image.objects.get(id=3)), "note_id: 4")
 
         # Table Model Check
         table = Table(
@@ -114,14 +130,14 @@ class MOFTestCase(TestCase):
             content="test_content"
         )
         table.save()
-        self.assertEqual(str(Table.objects.get(id=2)), "note_id: 4")
+        self.assertEqual(str(Table.objects.get(id=3)), "note_id: 4")
 
         # Todo Model Check
         todo = Todo(
             note=note
         )
         todo.save()
-        self.assertEqual(str(Todo.objects.get(id=2)), "note_id: 4")
+        self.assertEqual(str(Todo.objects.get(id=3)), "note_id: 4")
 
         # TextBlock Model Check
         textblock = TextBlock(
@@ -129,7 +145,7 @@ class MOFTestCase(TestCase):
             note=note
         )
         textblock.save()
-        self.assertEqual(str(TextBlock.objects.get(id=2)),
+        self.assertEqual(str(TextBlock.objects.get(id=3)),
                          "content: test_content")
 
     def test_user_auth(self):
@@ -504,3 +520,36 @@ class MOFTestCase(TestCase):
             'document_id': 'asfecsm3242a'
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
+
+    def test_textblock_child_of_agenda(self):
+        client = Client(enforce_csrf_checks=False)
+        client.login(username='t@t.com', password="test")
+
+        response = client.get('/api/agenda/100/textblocks/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get('/api/agenda/1/textblocks/')
+        self.assertEqual(response.status_code, 200)
+
+        response = client.get('/api/agenda/2/textblocks/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.post('/api/agenda/1/textblocks/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 3.333,
+            'layer_y': 0,
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+        response = client.post('/api/agenda/1/textblocks/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 0,
+            'layer_y': 0,
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+
+    def test_modify_textblock(self):
+        client = Client(enforce_csrf_checks=False)
+        client.login(username='t@t.com', password="test")
+
+        response = client.
