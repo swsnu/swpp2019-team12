@@ -674,7 +674,7 @@ def agenda_child_of_note(request, n_id):
             agenda.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            print(serializer.errors)
+            #print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -691,44 +691,44 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
     }
 ==================================================
 """
-@api_view(['GET', 'POST'])
-def agenda_child_of_agenda(request, a_id):
-    try:
-        # parent agenda에 해당함
-        agenda = Agenda.objects.get(id=a_id)
-    except(Agenda.DoesNotExist) as e:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+# @api_view(['GET', 'POST'])
+# def agenda_child_of_agenda(request, a_id):
+#     try:
+#         # parent agenda에 해당함
+#         agenda = Agenda.objects.get(id=a_id)
+#     except(Agenda.DoesNotExist) as e:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'GET':
-        queryset = Agenda.objects.filter(
-            is_parent_note=False,
-            # parent agenda가 중첩되어있더라도 결국 가장 최상위
-            # agenda는 note에 속해있으므로 이 방식으로 note id 획득 가능함
-            note__id=agenda.note.id,
-            parent_agenda__id=a_id
-        )
-        if queryset.count() > 0:
-            serializer = AgendaSerializer(queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+#     if request.method == 'GET':
+#         queryset = Agenda.objects.filter(
+#             is_parent_note=False,
+#             # parent agenda가 중첩되어있더라도 결국 가장 최상위
+#             # agenda는 note에 속해있으므로 이 방식으로 note id 획득 가능함
+#             note__id=agenda.note.id,
+#             parent_agenda__id=a_id
+#         )
+#         if queryset.count() > 0:
+#             serializer = AgendaSerializer(queryset, many=True)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         else:
+#             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    elif request.method == 'POST':
-        data = {
-            'content': request.data['content'],
-            'layer_x': request.data['layer_x'],
-            'layer_y': request.data['layer_y'],
-            'note': agenda.note.id,
-            'parent_agenda': a_id,
-            'is_parent_note': False
-        }
-        serializer = AgendaSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
-        else:
-            print(serializer.errors)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+#     elif request.method == 'POST':
+#         data = {
+#             'content': request.data['content'],
+#             'layer_x': request.data['layer_x'],
+#             'layer_y': request.data['layer_y'],
+#             'note': agenda.note.id,
+#             'parent_agenda': a_id,
+#             'is_parent_note': False
+#         }
+#         serializer = AgendaSerializer(data=data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(status=status.HTTP_201_CREATED)
+#         else:
+#             print(serializer.errors)
+#             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 """
@@ -772,6 +772,8 @@ def modify_agenda(request, id):
 url: /api/note/:id/todos/
 Note에 직접 속해있는 Todo를 모두 가져오거나 생성하는 API
 POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+Assignees는 pk로 날려야함! id로 
+변경하고자 한다면 추후 수정
     {
         "content": "Change the world",
         "layer_x": 0,
@@ -807,6 +809,7 @@ def todoblock_child_of_note(request, n_id):
             'note': n_id,
             'is_parent_note': True
         }
+
         serializer = TodoSerializer(data=data)
         if serializer.is_valid():
             serializer.save()

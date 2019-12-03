@@ -605,3 +605,64 @@ class MOFTestCase(TestCase):
             'layer_y': 0
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
+
+    def test_modify_agenda(self):
+        client = Client(enforce_csrf_checks=False)
+        client.login(username='t@t.com', password="test")
+
+        response = client.get('/api/agenda/100/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get('/api/agenda/1/')
+        self.assertEqual(response.status_code, 200)
+
+        response = client.patch('/api/agenda/1/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 3.33,
+            'layer_y': 0,
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+        response = client.patch('/api/agenda/1/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 0,
+            'layer_y': 0,
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 202)
+
+        response = client.delete('/api/agenda/1/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_todoblock_child_of_note(self):
+        client = Client(enforce_csrf_checks=False)
+        client.login(username='t@t.com', password="test")
+
+        response = client.get('/api/note/2/todos/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get('/api/note/1/todos/')
+        self.assertEqual(response.status_code, 200)
+
+        response = client.post('/api/note/100/todos/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 0,
+            'layer_y': 0,
+            'assignees': [1]
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.post('/api/note/1/todos/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 0,
+            'layer_y': 0,
+            'assignees': [1]
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+
+        response = client.post('/api/note/1/todos/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 3.333,
+            'layer_y': 0,
+            'assignees': [1]
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
