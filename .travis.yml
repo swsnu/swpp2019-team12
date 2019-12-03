@@ -47,12 +47,7 @@ matrix:
           before_install:
               - cd server
           install:
-              - pip3 install django
-              - pip3 install pylint
-              - pip3 install pylint-django
-              - pip3 install coverage
-              - pip3 install coveralls
-              - pip3 install djangorestframework
+              - pip install -r requirements.txt
           script:
               - pylint **/*.py --load-plugins=pylint_django
               - python manage.py makemigrations meetingoverflow
