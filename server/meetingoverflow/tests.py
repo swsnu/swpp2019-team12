@@ -574,3 +574,34 @@ class MOFTestCase(TestCase):
 
         response = client.delete('/api/textblock/1/')
         self.assertEqual(response.status_code, 200)
+
+    def test_agenda_child_of_note(self):
+        client = Client(enforce_csrf_checks=False)
+        client.login(username='t@t.com', password="test")
+
+        response = client.get('/api/note/2/agendas/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get('/api/note/1/agendas/')
+        self.assertEqual(response.status_code, 200)
+
+        response = client.post('/api/note/100/agendas/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 0,
+            'layer_y': 0
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.post('/api/note/1/agendas/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 0,
+            'layer_y': 0
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+
+        response = client.post('/api/note/1/agendas/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 3.333,
+            'layer_y': 0
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
