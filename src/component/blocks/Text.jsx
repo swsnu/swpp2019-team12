@@ -30,12 +30,14 @@ class Text extends Component {
         window.location.reload();
     };
 
-    render() {
-        // const block_name = 'Text';
-        // const user = sessionStorage.getItem('LoggedInUser');
-        // console.log('text에서 유저: ', user);
-        // console.log('text block content: ', this.state.content);
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.documentId !== prevState.documentId) {
+            return { documentId: nextProps.documentId };
+        }
+        return null;
+    }
 
+    render() {
         return (
             <div
                 className="full-size-block-container Text"
@@ -54,6 +56,7 @@ class Text extends Component {
                     </button>
                 </div>
                 <EditorWrapper
+                    blk_id={this.state.blk_id}
                     documentId={this.state.documentId}
                     handleChangeText={this.handleChangeText}
                 />

@@ -22,7 +22,7 @@ def signup(request):
             return HttpResponse(status=400)
         try:
             user = User.objects.get(username=username)
-        except(User.DoesNotExist) as e:
+        except(User.DoesNotExist):
             # 아이디가 생성 가능한 경우
             return Response(status=status.HTTP_200_OK)
         # 아이디가 이미 사용되고 있는 경우
@@ -71,7 +71,6 @@ def signin(request):
                 'username': user.username
             }
             auth.login(request, user)
-            print(response)
             return JsonResponse(response, status=200)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -101,11 +100,8 @@ def profile(request):
     # axios.get('/api/profile/')
     # ==========================================
     if request.method == 'GET':
-        try:
-            user = request.user
-            profile = request.user.profile
-        except(Profile.DoesNotExist) as e:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        user = request.user
+        profile = request.user.profile
 
         user_serializer = EncapsulatedUserSerializer(user)
         profile_serializer = ProfileSerializer(profile)
@@ -130,7 +126,7 @@ def profile(request):
         if workspace_id:
             try:
                 workspace = Workspace.objects.get(id=workspace_id)
-            except(Workspace.DoesNotExist) as e:
+            except(Workspace.DoesNotExist):
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
             members = workspace.members.all()
@@ -151,9 +147,9 @@ def profile(request):
 
             return Response(data, status=status.HTTP_200_OK)
         else:
-            try:
-                users = User.objects.filter(username__contains=username)
-            except (User.DoesNotExist) as e:
+
+            users = User.objects.filter(username__contains=username)
+            if(users.count() == 0):
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
             data = []
@@ -178,12 +174,12 @@ def profile(request):
 # ===================================================
 '''
 # 추가된 api / Profile에 닉네임 저장
-@api_view(['GET'])
+@api_view(['GET', 'PATCH'])
 def specific_profile(request, u_id):
     if request.method == 'GET':
         try:
             profile = Profile.objects.get(id=u_id)
-        except (Profile.DoesNotExist) as e:
+        except (Profile.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -195,8 +191,8 @@ def specific_profile(request, u_id):
     elif request.method == 'PATCH':
         # queryset = request.user.profile
         try:
-            queryset = Profile.objects.get(id=id)
-        except(Profile.DoesNotExist) as e:
+            queryset = Profile.objects.get(id=u_id)
+        except(Profile.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ProfileSerializer(
             queryset, data=request.data, partial=True)
@@ -244,7 +240,6 @@ def workspace(request):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST':
-        print(request.data)  # members id list
         try:
             name = request.data['name']
             admins = request.data['admins']  # admin id list
@@ -253,22 +248,21 @@ def workspace(request):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         admin_list = []
         for admin in admins:
-            print()
-            print(admin)
             try:
                 admin_list.append(Profile.objects.get(user__id=admin))
-            except(Profile.DoesNotExist) as e:
+            except(Profile.DoesNotExist):
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
         member_list = []
+        # 멤버가 하나도 없는 경우 에러
         for member in members:
             try:
                 member_list.append(Profile.objects.get(user__id=member))
-            except(Profile.DoesNotExist) as e:
+            except(Profile.DoesNotExist):
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
         Workspace.objects.create(name=name)
-        workspace = Workspace.objects.get(name=name)
+        workspace = Workspace.objects.all().last()
         workspace.admins.set(admin_list)
         workspace.members.set(member_list)
         workspace.save()
@@ -288,7 +282,7 @@ def workspace(request):
 # if request.method == 'GET':
 #     try: 
 #         workspace = Workspace.objects.get(id=id)
-#     except(Workspace.DoesNotExist) as e:
+#     except(Workspace.DoesNotExist):
 #         return Response(status=status.HTTP_404_NOT_FOUND)
 #     serializer = WorkspaceSerializer(workspace)
 #     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -307,7 +301,7 @@ def specific_workspace(request, id):
         try:
             workspace = Workspace.objects.get(id=id)
             workspaces = Workspace.objects.filter(members__in=[profile])
-        except(Workspace.DoesNotExist) as e:
+        except(Workspace.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         members = workspace.members.all()
@@ -341,7 +335,7 @@ def specific_workspace(request, id):
     elif request.method == 'PATCH':
         try:
             current_workspace = Workspace.objects.get(id=id)
-        except(Workspace.DoesNotExist) as e:
+        except(Workspace.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
         current_members = current_workspace.members.all()
         new_members = request.data['members']
@@ -360,7 +354,7 @@ def specific_workspace(request, id):
     elif request.method == 'DELETE':
         try:
             current_workspace = Workspace.objects.get(id=id)
-        except(Workspace.DoesNotExist) as e:
+        except(Workspace.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
         current_workspace.delete()
         return Response(status=status.HTTP_200_OK)
@@ -384,6 +378,10 @@ def workspace_todo(request, w_id):
 @api_view(['GET'])
 def workspace_agenda(request, w_id):
     if request.method == 'GET':
+        try:
+            workspace = Workspace.objects.get(id=w_id)
+        except(Workspace.DoesNotExist):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         queryset = Agenda.objects.filter(note__workspace=workspace)
         if queryset.count() > 0:
             serializer = AgendaSerializer(queryset, many=True)
@@ -395,12 +393,16 @@ def workspace_agenda(request, w_id):
 @api_view(['GET', 'POST'])
 def notes(request, w_id):
     if request.method == 'GET':
-        queryset = Note.objects.filter(workspace__id=w_id)
-        serializer = NoteSerializer(queryset)
-        if serializer.is_valid():
+        try:
+            workspace = Workspace.objects.get(id=w_id)
+        except(Workspace.DoesNotExist):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        queryset = Note.objects.filter(workspace=workspace)
+        if queryset.count() > 0:
+            serializer = NoteSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST':
         try:
@@ -443,7 +445,7 @@ def specific_note(request, n_id):
     if request.method == 'GET':
         try:
             current_note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist) as e:
+        except(Note.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = NoteSerializer(current_note)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -451,7 +453,7 @@ def specific_note(request, n_id):
     elif request.method == 'PATCH':
         try:
             current_note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist) as e:
+        except(Note.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = NoteSerializer(
             current_note, data=request.data, partial=True)
@@ -464,7 +466,7 @@ def specific_note(request, n_id):
     elif request.method == 'DELETE':
         try:
             current_note = Note.objects.get(id=n_id)
-        except(Workspace.DoesNotExist) as e:
+        except(Note.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
         current_note.delete()
         return Response(status=status.HTTP_200_OK)
@@ -475,15 +477,16 @@ def sibling_notes(request, n_id):
     if request.method == 'GET':
         try:
             note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist) as e:
+        except(Note.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
         workspace = note.workspace
-        sibling_notes = Note.objects.filter(workspace=workspace)
+        sibling_notes = Note.objects.filter(workspace=workspace).filter(~Q(id = n_id))
+        #print(sibling_notes)
         if sibling_notes.count() > 0:
             serializer = NoteSerializer(sibling_notes, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 """
@@ -515,29 +518,26 @@ def textblock_child_of_note(request, n_id):
     elif request.method == 'POST':
 
         try:
-
             note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist) as e:
+        except(Note.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
-        try:
+        
 
-            data = {
-                'content': request.data['content'],
-                'layer_x': request.data['layer_x'],
-                'layer_y': request.data['layer_y'],
-                'document_id': request.data['document_id'],
-                'note': n_id,
-                'is_parent_note': True
-            }
-        except(Exception) as e:
-            print(e)
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        data = {
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'document_id': request.data['document_id'],
+            'note': n_id,
+            'is_parent_note': True
+        }
+        
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            print(serializer.errors)
+            # print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -558,8 +558,9 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
 def textblock_child_of_agenda(request, a_id):
     try:
         agenda = Agenda.objects.get(id=a_id)
-    except(Agenda.DoesNotExist) as e:
+    except(Agenda.DoesNotExist):
         return Response(status=status.HTTP_404_NOT_FOUND)
+
     if request.method == 'GET':
         queryset = TextBlock.objects.filter(
             is_parent_note=False,
@@ -588,7 +589,7 @@ def textblock_child_of_agenda(request, a_id):
             agenda.save()
             return Response(status=status.HTTP_201_CREATED)
         else:
-            print(serializer.errors)
+            # print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -607,7 +608,7 @@ PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
 def modify_textblock(request, id):
     try:
         current_textblock = TextBlock.objects.get(id=id)
-    except(TextBlock.DoesNotExist) as e:
+    except(TextBlock.DoesNotExist):
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         serializer = TextBlockSerializer(current_textblock)
@@ -656,7 +657,7 @@ def agenda_child_of_note(request, n_id):
     elif request.method == 'POST':
         try:
             note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist) as e:
+        except(Note.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         data = {
@@ -673,7 +674,7 @@ def agenda_child_of_note(request, n_id):
             agenda.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            print(serializer.errors)
+            #print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -690,44 +691,44 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
     }
 ==================================================
 """
-@api_view(['GET', 'POST'])
-def agenda_child_of_agenda(request, a_id):
-    try:
-        # parent agenda에 해당함
-        agenda = Agenda.objects.get(id=a_id)
-    except(Agenda.DoesNotExist) as e:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+# @api_view(['GET', 'POST'])
+# def agenda_child_of_agenda(request, a_id):
+#     try:
+#         # parent agenda에 해당함
+#         agenda = Agenda.objects.get(id=a_id)
+#     except(Agenda.DoesNotExist):
+#         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'GET':
-        queryset = Agenda.objects.filter(
-            is_parent_note=False,
-            # parent agenda가 중첩되어있더라도 결국 가장 최상위
-            # agenda는 note에 속해있으므로 이 방식으로 note id 획득 가능함
-            note__id=agenda.note.id,
-            parent_agenda__id=a_id
-        )
-        if queryset.count() > 0:
-            serializer = AgendaSerializer(queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+#     if request.method == 'GET':
+#         queryset = Agenda.objects.filter(
+#             is_parent_note=False,
+#             # parent agenda가 중첩되어있더라도 결국 가장 최상위
+#             # agenda는 note에 속해있으므로 이 방식으로 note id 획득 가능함
+#             note__id=agenda.note.id,
+#             parent_agenda__id=a_id
+#         )
+#         if queryset.count() > 0:
+#             serializer = AgendaSerializer(queryset, many=True)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         else:
+#             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    elif request.method == 'POST':
-        data = {
-            'content': request.data['content'],
-            'layer_x': request.data['layer_x'],
-            'layer_y': request.data['layer_y'],
-            'note': agenda.note.id,
-            'parent_agenda': a_id,
-            'is_parent_note': False
-        }
-        serializer = AgendaSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
-        else:
-            print(serializer.errors)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+#     elif request.method == 'POST':
+#         data = {
+#             'content': request.data['content'],
+#             'layer_x': request.data['layer_x'],
+#             'layer_y': request.data['layer_y'],
+#             'note': agenda.note.id,
+#             'parent_agenda': a_id,
+#             'is_parent_note': False
+#         }
+#         serializer = AgendaSerializer(data=data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(status=status.HTTP_201_CREATED)
+#         else:
+#             print(serializer.errors)
+#             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 """
@@ -745,7 +746,7 @@ PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
 def modify_agenda(request, id):
     try:
         current_agenda = Agenda.objects.get(id=id)
-    except(Agenda.DoesNotExist) as e:
+    except(Agenda.DoesNotExist):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
@@ -771,6 +772,8 @@ def modify_agenda(request, id):
 url: /api/note/:id/todos/
 Note에 직접 속해있는 Todo를 모두 가져오거나 생성하는 API
 POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+Assignees는 pk로 날려야함! id로 
+변경하고자 한다면 추후 수정
     {
         "content": "Change the world",
         "layer_x": 0,
@@ -795,7 +798,7 @@ def todoblock_child_of_note(request, n_id):
     elif request.method == 'POST':
         try:
             note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist) as e:
+        except(Note.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         data = {
@@ -806,12 +809,13 @@ def todoblock_child_of_note(request, n_id):
             'note': n_id,
             'is_parent_note': True
         }
+
         serializer = TodoSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            print(serializer.errors)
+            #print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -832,7 +836,7 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
 def todoblock_child_of_agenda(request, a_id):
     try:
         agenda = Agenda.objects.get(id=a_id)
-    except(Agenda.DoesNotExist) as e:
+    except(Agenda.DoesNotExist):
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         queryset = Todo.objects.filter(
@@ -851,6 +855,7 @@ def todoblock_child_of_agenda(request, a_id):
             'content': request.data['content'],
             'layer_x': request.data['layer_x'],
             'layer_y': request.data['layer_y'],
+            'assignees': request.data['assignees'],
             'note': agenda.note.id,
             'parent_agenda': a_id,
             'is_parent_note': False
@@ -862,6 +867,7 @@ def todoblock_child_of_agenda(request, a_id):
             agenda.save()
             return Response(status=status.HTTP_201_CREATED)
         else:
+            #print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -880,7 +886,7 @@ PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
 def modify_todoblock(request, id):
     try:
         current_todo = Todo.objects.get(id=id)
-    except(Todo.DoesNotExist) as e:
+    except(Todo.DoesNotExist):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':

@@ -67,7 +67,7 @@ class Note extends Component {
         axios
             .get(`/api/note/${n_id}/textblocks/`)
             .then(res => {
-                console.log('axios get textblocks', res);
+                //console.log('axios get textblocks', res);
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
@@ -154,6 +154,8 @@ class Note extends Component {
     큰 화면에서 보고 수정할 수 있도록 하는 것. 따라서 NoteLeft에서는 즉시 수정은 불가.
         
     =================================================================== */
+
+    handleDeleteBlock = () => {};
 
     handleClickBlock = (block_name, block_id) => {};
 

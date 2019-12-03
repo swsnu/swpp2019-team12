@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'corsheaders',
-    'channels',
+    # 'corsheaders',
+    # 'channels',
 ]
 
 MIDDLEWARE = [
@@ -124,13 +124,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-ASGI_APPLICATION = "server.routing.application"  # websocket
+# ASGI_APPLICATION = "server.routing.application"  # websocket
 
-CHANNEL_LAYER = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "HOSTS": [('127.0.0.1', 6379)]
-        },
-    },
-}
+# CHANNEL_LAYER = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "HOSTS": [('127.0.0.1', 6379)]
+#         },
+#     },
+# }
