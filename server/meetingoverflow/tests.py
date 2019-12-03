@@ -552,4 +552,25 @@ class MOFTestCase(TestCase):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
 
-        response = client.
+        response = client.get('/api/textblock/100/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get('/api/textblock/1/')
+        self.assertEqual(response.status_code, 200)
+
+        response = client.patch('/api/textblock/1/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 3.33,
+            'layer_y': 0,
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+        response = client.patch('/api/textblock/1/', json.dumps({
+            'content': 'test_content',
+            'layer_x': 0,
+            'layer_y': 0,
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 202)
+
+        response = client.delete('/api/textblock/1/')
+        self.assertEqual(response.status_code, 200)
