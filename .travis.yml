@@ -54,6 +54,6 @@ matrix:
     - pip3 install coveralls
     script:
     - pylint **/*.py --load-plugins=pylint_django
-    - coverage run --source="./meetingoverflow/" manage.py test
+    - coverage run --source='.' manage.py test meetingoverflow
     after_success:
     - coveralls
