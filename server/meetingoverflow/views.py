@@ -815,7 +815,7 @@ def todoblock_child_of_note(request, n_id):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            print(serializer.errors)
+            #print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -855,6 +855,7 @@ def todoblock_child_of_agenda(request, a_id):
             'content': request.data['content'],
             'layer_x': request.data['layer_x'],
             'layer_y': request.data['layer_y'],
+            'assignees': request.data['assignees'],
             'note': agenda.note.id,
             'parent_agenda': a_id,
             'is_parent_note': False
@@ -866,6 +867,7 @@ def todoblock_child_of_agenda(request, a_id):
             agenda.save()
             return Response(status=status.HTTP_201_CREATED)
         else:
+            #print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
