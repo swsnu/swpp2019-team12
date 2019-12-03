@@ -17,11 +17,11 @@ class Agenda extends Component {
             .delete(`/api/agenda/${this.state.agenda_id}`)
             .then(res => {
                 console.log('res.data:' + res.data);
+                window.location.reload();
             })
             .catch(err => {
                 console.log('err: ' + err);
             });
-        window.location.reload();
     };
 
     handleClickToDetail = () => {

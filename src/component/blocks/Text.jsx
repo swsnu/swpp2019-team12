@@ -38,12 +38,6 @@ class Text extends Component {
     }
 
     render() {
-        // console.log('Text 에서 document id: ', this.state.documentId);
-        // const block_name = 'Text';
-        // const user = sessionStorage.getItem('LoggedInUser');
-        // console.log('text에서 유저: ', user);
-        // console.log('text block content: ', this.state.content);
-
         return (
             <div
                 className="full-size-block-container Text"

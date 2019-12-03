@@ -155,6 +155,8 @@ class Note extends Component {
         
     =================================================================== */
 
+    handleDeleteBlock = () => {};
+
     handleClickBlock = (block_name, block_id) => {};
 
     handleClickNoteLeft = e => {};
