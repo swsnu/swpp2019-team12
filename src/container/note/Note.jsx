@@ -7,20 +7,30 @@ import NoteLeft from './NoteLeft';
 import NoteRightFocused from './NoteRightFocused';
 import NoteRightUnfocused from './NoteRightUnfocused';
 
+const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+    return result;
+};
+
 class Note extends Component {
     constructor(props) {
         super(props);
+        this.agendaRef = React.createRef();
+        this.textRef = React.createRef();
         this.state = {
+            currentUserProfile: null,
             isBlockClicked: false,
             isNoteLeftClicked: true,
-            isNoteRightClicked: false,
+            // isNoteRightClicked: false,
             isTitleClicked: false,
             isDateClicked: false,
-            note_id: null,
+            noteId: null,
             title: '',
             created_at: '',
             last_modified_at: '',
-            ml_speech_text: '',
+            //ml_speech_text: '',
             participants_id: [],
             participants: [],
             moment: null,
@@ -31,7 +41,6 @@ class Note extends Component {
     }
 
     componentDidMount() {
-        console.log(this.refs);
         const n_id = this.props.match.params.n_id;
 
         //이거 동시에 나오게 처리하기, 저장된 순서 처리
@@ -41,7 +50,7 @@ class Note extends Component {
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
-                            block_type: 'agenda',
+                            block_type: 'Agenda',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
@@ -52,17 +61,20 @@ class Note extends Component {
             })
             .catch(err => console.log('No agendas'));
 
+        // 추후 여기에서 그냥 순서대로 넣는 것이 아닌, 기존의 위치대로 배열에 넣어야함
         axios
             .get(`/api/note/${n_id}/textblocks/`)
             .then(res => {
+                console.log('axios get textblocks', res);
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
-                            block_type: 'textblock',
+                            block_type: 'Text',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
-                            layer_y: blk['layer_y']
+                            layer_y: blk['layer_y'],
+                            documentId: blk['document_id']
                         })
                     });
                 });
@@ -141,57 +153,11 @@ class Note extends Component {
         
     =================================================================== */
 
-    handleClickBlock = (block_name, block_id) => {
-        this.setState({ block_focused_id: block_id });
-        if (block_name === 'agenda')
-            this.setState({ block_focused_name: 'agenda' });
-        else this.setState({ block_focused_name: block_name });
+    handleClickBlock = (block_name, block_id) => {};
 
-        if (this.state.isNoteLeftClicked && !this.state.isBlockClicked) {
-            this.setState({
-                isBlockClicked: true,
-                isNoteLeftClicked: false
-            });
-            // document.getElementsByClassName('Note-left')[0].className =
-            //     'Note-left-block-click';
-        } else {
-            this.setState({
-                isBlockClicked: false,
-                isNoteLeftClicked: true
-            });
-            // document.getElementsByClassName(
-            //     'Note-left-block-click'
-            // )[0].className = 'Note-left';
-        }
-    };
+    handleClickNoteLeft = e => {};
 
-    handleClickNoteLeft = e => {
-        // Click한 부분의 className을 받아와서 block과 관련 없는 것들에만 NoteLeftClick을 걸어놓는다.
-        if (!e.target.className.includes('size-block')) {
-            if (this.state.isBlockClicked) {
-                this.setState({
-                    isBlockClicked: false,
-                    isNoteLeftClicked: true,
-                    isNoteRightClicked: false
-                });
-                // document.getElementsByClassName(
-                //     'Note-left-block-click'
-                // )[0].className = 'Note-left';
-            } else {
-                this.setState({
-                    isNoteLeftClicked: true,
-                    isNoteRightClicked: false
-                });
-            }
-        }
-    };
-
-    handleClickNoteRight = () => {
-        this.setState({
-            isNoteLeftClicked: false,
-            isNoteRightClicked: true
-        });
-    };
+    handleClickNoteRight = () => {};
 
     handleChangeTitle = e => {
         this.setState({ title: e.target.value });
@@ -207,7 +173,8 @@ class Note extends Component {
         this.setState({ location: e.target.value });
     };
 
-    handleAddAgendaBlock = note_id => {
+    handleAddAgendaBlock = () => {
+        const note_id = this.props.match.params.n_id;
         // Block Create API call 할 곳.
         // const agenda_info = {
         //     content: 'Empty Content in Agenda',
@@ -231,38 +198,47 @@ class Note extends Component {
             n_id: note_id,
             content: '',
             layer_x: 0,
-            layer_y: 0
+            layer_y: 0,
+            block_type: 'Agenda'
         };
-
-        const socket = this.refs.socket;
-        socket.state.ws.send(JSON.stringify(agenda_info));
+        this.agendaRef.current.state.ws.send(JSON.stringify(agenda_info));
     };
 
-    handleAddTextBlock = note_id => {
+    handleAddTextBlock = () => {
+        const noteId = this.props.match.params.n_id;
+        const documentId = handleDocIdInUrl();
+        console.log('새 document Id: ', documentId);
         // Block Create API call 할 곳.
         const text_info = {
-            content: 'Empty Content in Text',
+            n_id: noteId,
+            content: '새로 생성된 텍스트 블록',
             layer_x: 0,
-            layer_y: 0
+            layer_y: 0,
+            document_id: documentId,
+            block_type: 'Text'
         };
-        axios.post(`/api/note/${note_id}/textblocks/`, text_info).then(res => {
-            this.setState({
-                blocks: this.state.blocks.concat({
-                    block_type: 'textblock',
-                    id: res['data']['id'],
-                    content: res['data']['content'],
-                    layer_x: res['data']['layer_x'],
-                    layer_y: res['data']['layer_y']
-                })
-            });
-        });
+        this.agendaRef.current.state.ws.send(JSON.stringify(text_info));
+        // axios.post(`/api/note/${noteId}/textblocks/`, text_info).then(res => {
+        //     this.setState({
+        //         blocks: this.state.blocks.concat({
+        //             block_type: 'Text',
+        //             id: res['data']['id'],
+        //             content: res['data']['content'],
+        //             layer_x: res['data']['layer_x'],
+        //             layer_y: res['data']['layer_y'],
+        //             documentId: res['data']['document_id']
+        //         })
+        //     });
+        // });
     };
 
-    handleAddTodoBlock = note_id => {
+    handleAddTodoBlock = () => {
+        const noteId = this.props.match.params.n_id;
+
         // Where need to call Todo Create API.
         // To find out whether there is at least one todo.
         axios
-            .get(`/api/note/${note_id}/todos/`)
+            .get(`/api/note/${noteId}/todos/`)
             // when there is some todos in Note.
             .then(() => {
                 this.state.blocks.map(blk => {
@@ -274,9 +250,8 @@ class Note extends Component {
                             assignees: [1]
                         };
                         axios
-                            .post(`/api/note/${note_id}/todos/`, todo_info)
+                            .post(`/api/note/${noteId}/todos/`, todo_info)
                             .then(res => {
-                                console.log(res);
                                 let new_todos = blk.todos.concat(res['data']);
                                 this.setState({
                                     ...this.state,
@@ -299,32 +274,32 @@ class Note extends Component {
             });
     };
 
-    handleAddImageBlock = note_id => {
+    handleAddImageBlock = noteId => {
         console.log(
-            `Need to Implement adding Image Block to specific note whose id is ${note_id}`
+            `Need to Implement adding Image Block to specific note whose id is ${noteId}`
         );
     };
 
-    handleAddCalendarBlock = note_id => {
+    handleAddCalendarBlock = noteId => {
         console.log(
-            `Need to Implement adding Calendar Block to specific note whose id is ${note_id}`
+            `Need to Implement adding Calendar Block to specific note whose id is ${noteId}`
         );
     };
 
-    handleAddPdfBlock = note_id => {
+    handleAddPdfBlock = noteId => {
         console.log(
-            `Need to Implement adding Pdf Block to specific note whose id is ${note_id}`
+            `Need to Implement adding Pdf Block to specific note whose id is ${noteId}`
         );
     };
 
-    handleAddTableBlock = note_id => {
+    handleAddTableBlock = noteId => {
         console.log(
-            `Need to Implement adding Table Block to specific note whose id is ${note_id}`
+            `Need to Implement adding Table Block to specific note whose id is ${noteId}`
         );
     };
 
-    handleStartAutoTyping = note_id => {
-        console.log(`Need to Implement auto-typing in the note ${note_id}`);
+    handleStartAutoTyping = noteId => {
+        console.log(`Need to Implement auto-typing in the note ${noteId}`);
     };
 
     handleAddParticipant = () => {
@@ -333,7 +308,35 @@ class Note extends Component {
         );
     };
 
-    handleData(data) {
+    handleSocketAgenda(data) {
+        let res = JSON.parse(data);
+        console.log(res);
+        if (res['block_type'] == 'Agenda') {
+            this.setState({
+                blocks: this.state.blocks.concat({
+                    block_type: res['block_type'],
+                    id: res['id'],
+                    content: res['content'],
+                    layer_x: res['layer_x'],
+                    layer_y: res['layer_y'],
+                    child_blocks: []
+                })
+            });
+        } else if (res['block_type'] == 'Text') {
+            this.setState({
+                blocks: this.state.blocks.concat({
+                    block_type: res['block_type'],
+                    id: res['id'],
+                    content: res['content'],
+                    layer_x: res['layer_x'],
+                    layer_y: res['layer_y'],
+                    document_id: res['document_id']
+                })
+            });
+        }
+    }
+
+    handleSocketText(data) {
         let res = JSON.parse(data);
         console.log(res);
         this.setState({
@@ -343,10 +346,20 @@ class Note extends Component {
                 content: res['content'],
                 layer_x: res['layer_x'],
                 layer_y: res['layer_y'],
-                child_blocks: []
+                document_id: res['document_id']
             })
         });
     }
+    onDragEnd = result => {
+        if (!result.destination) {
+            return;
+        }
+        const blocks = reorder(
+            this.state.blocks,
+            result.source.index,
+            result.destination.index
+        );
+    };
 
     render() {
         const { history } = this.props;
@@ -357,12 +370,12 @@ class Note extends Component {
                     note_title={this.state.title}
                     meeting_date={this.state.created_at}
                     participants={this.state.participants}
-                    note_id={this.state.note_id}
+                    noteId={this.state.noteId}
                     moment={this.state.moment}
                     location={this.state.location}
                     blocks={this.state.blocks}
                     handleClickBlock={this.handleClickBlock}
-                    handleClickNoteLeft={this.handleClickNoteLeft}
+                    // handleClickNoteLeft={this.handleClickNoteLeft}
                     handleChangeTitle={this.handleChangeTitle}
                     handleChangeDatetime={this.handleChangeDatetime}
                     handleChangeLocation={this.handleChangeLocation}
@@ -370,12 +383,18 @@ class Note extends Component {
                     handleAddTextBlock={this.handleAddTextBlock}
                     handleAddTodoBlock={this.handleAddTodoBlock}
                     handleAddParticipant={this.handleAddParticipant}
+                    onDragEnd={this.onDragEnd}
                 />
                 <Websocket
-                    url={`ws://localhost:8000/ws/${n_id}/agenda/`}
-                    ref="socket"
-                    onMessage={this.handleData.bind(this)}
+                    url={`ws://localhost:8000/ws/${n_id}/block/`}
+                    ref={this.agendaRef}
+                    onMessage={this.handleSocketAgenda.bind(this)}
                 />
+                {/* <Websocket
+                    url={`ws://localhost:8000/ws/${n_id}/text/`}
+                    ref={this.textRef}
+                    onMessage={this.handleSocketText.bind(this)}
+                /> */}
 
                 {this.state.isBlockClicked ? (
                     <NoteRightFocused
@@ -394,6 +413,33 @@ class Note extends Component {
             </div>
         );
     }
+}
+
+function handleDocIdInUrl() {
+    // let id = getDocIdFromUrl();
+
+    let id = randomString();
+    updateDocIdInUrl(id);
+
+    return id;
+}
+
+function updateDocIdInUrl(id) {
+    window.history.replaceState({}, document.title, generateUrlWithDocId(id));
+}
+
+function generateUrlWithDocId(id) {
+    return `${window.location.href.split('?')[0]}?docId=${id}`;
+}
+
+function getDocIdFromUrl() {
+    const docIdMatch = window.location.search.match(/docId=(.+)$/);
+
+    return docIdMatch ? decodeURIComponent(docIdMatch[1]) : null;
+}
+
+function randomString() {
+    return Math.floor(Math.random() * Math.pow(2, 52)).toString(32);
 }
 
 export default Note;

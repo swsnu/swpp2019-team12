@@ -22,12 +22,8 @@ const MeetingNoteOverview = props => {
                 {map(notes, (note, i) => (
                     <div
                         onClick={() => {
-                            if (props.is_NoteRight) {
-                                props.handleClick(note.id);
-                            } else {
-                                history.push(`/note/${note.id}/`);
-                                // window.location.reload();
-                            }
+                            history.push(`/note/${note.id}/`);
+                            // window.location.reload();
                         }}
                         key={i}
                         className="meetingNoteOverview-content__element">

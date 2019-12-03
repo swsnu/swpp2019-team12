@@ -5,9 +5,10 @@ import NoteLeftInfo from '../../component/note_left/NoteLeftInfo';
 class NoteLeft extends Component {
     constructor(props) {
         super(props);
+        this.state = {};
         // this.state = {
         //     note_title: this.props.note_title,
-        //     note_id: this.props.note_id,
+        //     noteId: this.props.noteId,
         //     meeting_date: this.props.meeting_date,
         //     participants: this.props.participants,
         // }
@@ -31,12 +32,13 @@ class NoteLeft extends Component {
                         handleChangeLocation={this.props.handleChangeLocation}
                     />
                     <NoteLeftBlock
-                        note_id={this.props.note_id}
+                        noteId={this.props.noteId}
                         blocks={this.props.blocks}
                         handleAddAgendaBlock={this.props.handleAddAgendaBlock}
                         handleAddTextBlock={this.props.handleAddTextBlock}
                         handleAddTodoBlock={this.props.handleAddTodoBlock}
                         handleClickBlock={this.props.handleClickBlock}
+                        onDragEnd={this.props.onDragEnd}
                         isLeft={true}
                     />
                 </div>
