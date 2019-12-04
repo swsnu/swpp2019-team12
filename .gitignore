@@ -116,3 +116,9 @@ var/
 
 **/__pycache__
 
+## Images ###
+*.jpg
+*.gif
+*.png
+*.svg
+*.ico
