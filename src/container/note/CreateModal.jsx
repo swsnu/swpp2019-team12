@@ -135,6 +135,15 @@ class CreateModal extends Component {
         };
     }
 
+    componentDidMount() {
+        const loggedInUserNickname = sessionStorage.getItem(
+            'LoggedInUserNickname'
+        );
+        if (!loggedInUserNickname) {
+            this.props.history.push('/signin');
+        }
+    }
+
     handleChangeTitle = e => {
         this.setState({ title: e.target.value });
     };

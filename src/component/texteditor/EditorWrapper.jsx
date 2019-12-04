@@ -60,14 +60,37 @@ export default class EditorWrapper extends Component {
         });
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.documentId !== prevState.configuration.documentId) {
+            //this.editorRef.destroy();
+            console.log('으아아악?');
+            const config = {
+                documentId: nextProps.documentId,
+                // 토큰 만료 주의
+                tokenUrl: prevState.configuration.tokenUrl,
+                uploadUrl: 'https://43733.cke-cs.com/easyimage/upload/',
+                webSocketUrl: '43733.cke-cs.com/ws'
+            };
+
+            return {
+                configuration: config
+            };
+        }
+        return null;
+    }
+
     render() {
         return (
-            this.state.updated && (
-                <Editor
-                    selectedUser={this.state.selectedUser}
-                    configuration={this.state.configuration}
-                />
-            )
+            <div>
+                <p>{this.state.configuration.documentId}</p>
+
+                {
+                    <Editor
+                        selectedUser={this.state.selectedUser}
+                        configuration={this.state.configuration}
+                    />
+                }
+            </div>
         );
     }
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 class Agenda extends Component {
     constructor(props) {
         super(props);
@@ -17,11 +17,11 @@ class Agenda extends Component {
             .delete(`/api/agenda/${this.state.agenda_id}`)
             .then(res => {
                 console.log('res.data:' + res.data);
+                window.location.reload();
             })
             .catch(err => {
                 console.log('err: ' + err);
             });
-        window.location.reload();
     };
 
     handleClickToDetail = () => {
@@ -35,7 +35,10 @@ class Agenda extends Component {
             <div
                 className="full-size-block-container PreviewAgenda"
                 onClick={() =>
-                    this.props.handleClickBlock(this.props.type, this.props.id)
+                    this.props.handleClickBlock(
+                        this.props.type,
+                        this.props.blk_id
+                    )
                 }>
                 <div className="full-size-block-title PreviewAgenda">
                     <div className="full-size-block-title__label PreviewAgenda">

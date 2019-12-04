@@ -6,19 +6,11 @@ class NoteLeft extends Component {
     constructor(props) {
         super(props);
         this.state = {};
-        // this.state = {
-        //     note_title: this.props.note_title,
-        //     noteId: this.props.noteId,
-        //     meeting_date: this.props.meeting_date,
-        //     participants: this.props.participants,
-        // }
     }
 
     render() {
         return (
             <div className="Note-left" onClick={this.props.handleClickNoteLeft}>
-                {/* <div className="Note-left-page__title">Note Left</div> */}
-                {/* <div className="Note-left-page__line" /> */}
                 <div className="Note-left-container">
                     <NoteLeftInfo
                         note_title={this.props.note_title}
@@ -39,7 +31,6 @@ class NoteLeft extends Component {
                         handleAddTodoBlock={this.props.handleAddTodoBlock}
                         handleClickBlock={this.props.handleClickBlock}
                         onDragEnd={this.props.onDragEnd}
-                        isLeft={true}
                     />
                 </div>
             </div>

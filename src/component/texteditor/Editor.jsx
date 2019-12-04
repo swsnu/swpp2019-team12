@@ -48,7 +48,8 @@ export default class Sample extends Component {
         // <CKEditor /> needs HTMLElements of `Sidebar` and `PresenceList` plugins provided through
         // the `config` property and you have to ensure that both are already rendered.
         isLayoutReady: false,
-        initialData: ''
+        initialData: '',
+        cloudServicesConfig: ''
     };
 
     sidebarElementRef = React.createRef();
@@ -59,11 +60,25 @@ export default class Sample extends Component {
         this.setState({ isLayoutReady: true });
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        console.log('nextProps: ', nextProps.configuration.documentId);
+        console.log('prevState: ', prevState.cloudServicesConfig.documentId);
+        if (
+            nextProps.configuration.documentId !==
+            prevState.cloudServicesConfig.documentId
+        ) {
+            return {
+                cloudServicesConfig: nextProps.configuration,
+                another: !prevState.another
+            };
+        }
+        return null;
+    }
+
     render() {
         return (
             <div className="App">
                 {/* {this.renderHeader()} */}
-
                 <main>
                     <div className="message">
                         <div className="centered"></div>
@@ -72,13 +87,12 @@ export default class Sample extends Component {
                     <div className="centered">
                         <div className="row-presence">
                             <div
-                                ref={this.presenceListElementRef}
+                                // ref={this.presenceListElementRef}
                                 className="presence"></div>
                         </div>
                         {this.renderEditor()}
                     </div>
                 </main>
-
                 {/* {this.renderFooter()} */}
             </div>
         );
@@ -92,18 +106,33 @@ export default class Sample extends Component {
         );
     }
 
+    handleClick() {
+        console.log('clicked');
+        this.setState({
+            isLayoutReady: !this.state.isLayoutReady
+        });
+    }
+
     renderEditor() {
         // You should contact CKSource to get the CloudServices configuration.
-        const cloudServicesConfig = this.props.configuration;
+        //const cloudServicesConfig = this.props.configuration;
+        if (this.editorRef) {
+            console.log('editor ref: ', this.editorRef);
+            console.log(this.editorRef.current);
+            //this.editorRef.current.editor.destroy();
+        }
 
         return (
             <div className="row row-editor">
+                <button onClick={() => this.handleClick()}>hey</button>
                 {/* Do not render the <CKEditor /> component before the layout is ready. */}
                 {this.state.isLayoutReady && (
                     <CKEditor
                         onInit={editor => {
-                            console.log('Editor is ready to use!', editor);
-
+                            console.log(
+                                'A Editor is ready to use!',
+                                editor.config._config.cloudServices
+                            );
                             // Switch between inline and sidebar annotations according to the window size.
                             this.boundRefreshDisplayMode = this.refreshDisplayMode.bind(
                                 this,
@@ -125,10 +154,13 @@ export default class Sample extends Component {
                             );
                             this.refreshDisplayMode(editor);
                         }}
-                        onChange={(event, editor) =>
-                            console.log({ event, editor })
-                        }
-                        onReady={this.onEditorReady}
+                        onChange={(event, editor) => {
+                            console.log({ event, editor });
+                        }}
+                        onReady={console.log(
+                            'onready: ',
+                            this.state.cloudServicesConfig.documentId
+                        )}
                         editor={BalloonEditor}
                         config={{
                             plugins: [
@@ -155,7 +187,7 @@ export default class Sample extends Component {
                                 MediaEmbed,
                                 Paragraph,
                                 PasteFromOffice,
-                                PresenceList,
+                                //PresenceList,
                                 RealTimeCollaborativeComments,
                                 RealTimeCollaborativeTrackChanges,
                                 RemoveFormat,
@@ -190,10 +222,14 @@ export default class Sample extends Component {
                                 'trackChanges'
                             ],
                             cloudServices: {
-                                tokenUrl: cloudServicesConfig.tokenUrl,
-                                uploadUrl: cloudServicesConfig.uploadUrl,
-                                webSocketUrl: cloudServicesConfig.webSocketUrl,
-                                documentId: cloudServicesConfig.documentId
+                                tokenUrl: this.state.cloudServicesConfig
+                                    .tokenUrl,
+                                uploadUrl: this.state.cloudServicesConfig
+                                    .uploadUrl,
+                                webSocketUrl: this.state.cloudServicesConfig
+                                    .webSocketUrl,
+                                documentId: this.state.cloudServicesConfig
+                                    .documentId
                             },
                             image: {
                                 toolbar: [

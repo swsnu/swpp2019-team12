@@ -9,6 +9,10 @@ import { bigIntLiteral } from '@babel/types';
 const TEXT = 'Text';
 const AGENDA = 'Agenda';
 const TODO_CONTAINER = 'TodoContainer';
+const IMAGE = 'Image';
+const TABLE = 'Table';
+const CALENDAR = 'Calendar';
+const PDF = 'PDF';
 
 const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
@@ -38,23 +42,23 @@ class NoteLeftBlock extends Component {
         };
     }
 
-    onDragEnd = result => {
-        if (!result.destination) {
-            return;
-        }
-        const blocks = reorder(
-            this.state.blocks,
-            result.source.index,
-            result.destination.index
-        );
-        console.log(result.source.index + ' ' + result.destination.index);
+    // onDragEnd = result => {
+    //     if (!result.destination) {
+    //         return;
+    //     }
+    //     const blocks = reorder(
+    //         this.state.blocks,
+    //         result.source.index,
+    //         result.destination.index
+    //     );
+    //     console.log(result.source.index + ' ' + result.destination.index);
 
-        blocks.map(blk => {
-            console.log('this is const: ' + blk.id);
-        });
+    //     // blocks.map(blk => {
+    //     //     console.log('this is const: ' + blk.id);
+    //     // });
 
-        this.setState({ blocks: blocks });
-    };
+    //     this.setState({ blocks: blocks });
+    // };
 
     static getDerivedStateFromProps(nextProps, prevState) {
         console.log('get derived state from props');
@@ -102,6 +106,7 @@ class NoteLeftBlock extends Component {
                     };
                     return _result;
                 });
+            console.log('block arrayL', block_array);
             return { blocks: block_array };
         }
         return null;

@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-
 import NoteLeft from './NoteLeft';
-import NoteRightFocused from './NoteRightFocused';
-import NoteRightUnfocused from './NoteRightUnfocused';
+import Signout from '../../component/signout/Signout';
 
 const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
@@ -38,6 +36,13 @@ class Note extends Component {
     }
 
     componentDidMount() {
+        const loggedInUserNickname = sessionStorage.getItem(
+            'LoggedInUserNickname'
+        );
+        if (!loggedInUserNickname) {
+            this.props.history.push('/signin');
+        }
+
         const n_id = this.props.match.params.n_id;
 
         //이거 동시에 나오게 처리하기, 저장된 순서 처리
@@ -62,7 +67,7 @@ class Note extends Component {
         axios
             .get(`/api/note/${n_id}/textblocks/`)
             .then(res => {
-                console.log('axios get textblocks', res);
+                //console.log('axios get textblocks', res);
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
@@ -149,6 +154,8 @@ class Note extends Component {
     큰 화면에서 보고 수정할 수 있도록 하는 것. 따라서 NoteLeft에서는 즉시 수정은 불가.
         
     =================================================================== */
+
+    handleDeleteBlock = () => {};
 
     handleClickBlock = (block_name, block_id) => {};
 
@@ -314,6 +321,7 @@ class Note extends Component {
         const { history } = this.props;
         return (
             <div className="Note">
+                <Signout history={history} />
                 <NoteLeft
                     note_title={this.state.title}
                     meeting_date={this.state.created_at}

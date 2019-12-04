@@ -21,11 +21,14 @@ import googleSTT from './container/stt/googleSTT';
 // Editor
 import EditorWrapper from './component/texteditor/EditorWrapper';
 
+import AgendaRealTime from './component/realtime/AgendaRealTime';
+
 function App() {
     return (
         <Router>
             <div className="App">
                 <Switch>
+                    <Route exact path="/websocket" component={AgendaRealTime} />
                     {/* For Developing Editor */}
                     <Route exact path="/editor" component={EditorWrapper} />
                     {/* Can access without login */}
