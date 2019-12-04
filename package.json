@@ -189,9 +189,7 @@
             "jest-watch-typeahead/testname"
         ]
     },
-    "devDependencies": {
-        "babel-eslint": "^10.0.3"
-    },
+    "devDependencies": {},
     "babel": {
         "presets": [
             "react-app"
