@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Agenda from '../blocks/Agenda';
 import Text from '../blocks/Text';
+import Image from '../blocks/Image';
 import TodoContainer from '../blocks/TodoContainer';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import axios from 'axios';
@@ -9,6 +10,7 @@ import { bigIntLiteral } from '@babel/types';
 const TEXT = 'Text';
 const AGENDA = 'Agenda';
 const TODO_CONTAINER = 'TodoContainer';
+const IMAGE = 'Image';
 
 const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
@@ -93,6 +95,16 @@ class NoteLeftBlock extends Component {
                                 handleClickBlock={nextProps.handleClickBlock}
                             />
                         );
+                    } else if (blk.block_type === IMAGE) {
+                        result = (
+                            <Image
+                                id={blk.id}
+                                type={blk.block_type}
+                                content={blk.content}
+                                image={blk.image}
+                                handleClickBlock={nextProps.handleClickBlock}
+                            />
+                        );
                     } else {
                         result = <div>Not Implemented yet.</div>;
                     }
@@ -142,8 +154,9 @@ class NoteLeftBlock extends Component {
                         id="add_image_block"
                         onClick={() =>
                             this.props.handleAddImageBlock(this.state.noteId)
-                        }
-                    />
+                        }>
+                        이미지
+                    </button>
                     <button
                         className="add-block-button"
                         id="add_calendar_block"

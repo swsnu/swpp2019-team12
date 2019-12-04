@@ -333,14 +333,14 @@ class File(models.Model):
 
 
 class Image(models.Model):
-    content = models.ImageField(null=True)
+    image = models.ImageField(null=True, upload_to='post_images')
+    content = models.CharField(max_length=100, null=True, blank=True)
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
     note = models.ForeignKey(Note, on_delete=models.CASCADE, null=True)
     parent_agenda = models.ForeignKey(
         Agenda, on_delete=models.SET_NULL, null=True, blank=True)
     is_parent_note = models.BooleanField(default=True)
-    image_caption = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f'note_id: {self.note_id}'
