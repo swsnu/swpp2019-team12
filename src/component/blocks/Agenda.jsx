@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import AgendaInside from '../agenda_in/AgendaInside';
 class Agenda extends Component {
     constructor(props) {
@@ -50,8 +49,6 @@ class Agenda extends Component {
 
     handleAddTextBlock = () => {
         const documentId = handleDocIdInUrl();
-
-        console.log('agenda 속 텍스트 document Id: ', documentId);
         const text_info = {
             content: '어젠다 속 새로운 텍스트 블록',
             layer_x: 0,
@@ -126,7 +123,6 @@ class Agenda extends Component {
     };
 
     render() {
-        console.log('blocks in agenda: ', this.state.blocks);
         return (
             <div
                 className="full-size-block-container Agenda"

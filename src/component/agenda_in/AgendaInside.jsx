@@ -68,8 +68,6 @@ export default class AgendaInside extends Component {
     render() {
         return (
             <div>
-                <div>inside component</div>
-
                 <div>
                     <DragDropContext onDragEnd={this.props.onDragEnd}>
                         <Droppable droppableId="droppable">
