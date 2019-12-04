@@ -215,8 +215,7 @@ class Note extends Component {
                     id: res['data']['id'],
                     content: res['data']['content'],
                     layer_x: res['data']['layer_x'],
-                    layer_y: res['data']['layer_y'],
-                    child_blocks: []
+                    layer_y: res['data']['layer_y']
                 })
             });
         });
@@ -335,11 +334,15 @@ class Note extends Component {
             result.destination.index
         );
         console.log(result.source.index + ' ' + result.destination.index);
+
+        // socket 으로 블록을 날리는 부분
+
         this.setState({ blocks: blocks });
     };
 
     render() {
         const { history } = this.props;
+        const noteId = this.props.match.params.n_id;
         return (
             <div className="Note">
                 <Signout history={history} />
@@ -348,7 +351,7 @@ class Note extends Component {
                     note_title={this.state.title}
                     meeting_date={this.state.created_at}
                     participants={this.state.participants}
-                    noteId={this.state.noteId}
+                    noteId={noteId}
                     moment={this.state.moment}
                     location={this.state.location}
                     blocks={this.state.blocks}

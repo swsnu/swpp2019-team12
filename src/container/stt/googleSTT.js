@@ -16,8 +16,6 @@ let globalStream = null;
 let finalWord = false;
 let streamStreaming = false;
 
-const socket = io.connect(END_POINT);
-
 // AudioStream Constraints
 const constraints = {
     audio: true,
@@ -63,6 +61,8 @@ class googleSTT extends Component {
 
     initSocket = () => {
         //================= SOCKET IO =================
+        const socket = io.connect(END_POINT);
+
         socket.on('connect', data => {
             console.log(data);
             console.log('Server Connected to Client');
