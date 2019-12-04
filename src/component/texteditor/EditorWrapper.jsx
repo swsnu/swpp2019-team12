@@ -29,7 +29,6 @@ export default class EditorWrapper extends Component {
     componentDidMount() {
         const nickname = sessionStorage.getItem('LoggedInUserNickname');
         const userId = sessionStorage.getItem('LoggedInUserId');
-        console.log('세션스토리지 nickname, id: ', nickname, userId);
         const data = {
             id: userId,
             name: nickname
@@ -60,25 +59,6 @@ export default class EditorWrapper extends Component {
         });
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.documentId !== prevState.configuration.documentId) {
-            //this.editorRef.destroy();
-            console.log('으아아악?');
-            const config = {
-                documentId: nextProps.documentId,
-                // 토큰 만료 주의
-                tokenUrl: prevState.configuration.tokenUrl,
-                uploadUrl: 'https://43733.cke-cs.com/easyimage/upload/',
-                webSocketUrl: '43733.cke-cs.com/ws'
-            };
-
-            return {
-                configuration: config
-            };
-        }
-        return null;
-    }
-
     render() {
         return (
             <div>
@@ -88,6 +68,7 @@ export default class EditorWrapper extends Component {
                     <Editor
                         selectedUser={this.state.selectedUser}
                         configuration={this.state.configuration}
+                        documentId={this.props.documentId}
                     />
                 }
             </div>
