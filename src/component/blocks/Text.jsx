@@ -19,23 +19,10 @@ class Text extends Component {
 
     handleClickDelete = e => {
         e.preventDefault();
-        axios
-            .delete(`/api/textblock/${this.state.blk_id}`)
-            .then(res => {
-                console.log('res.data:' + res.data);
-            })
-            .catch(err => {
-                console.log('err: ' + err);
-            });
-        window.location.reload();
+        console.log('delete agenda');
+        const axios_path = `/api/textblock/${this.state.blk_id}/`;
+        this.props.handleDeleteBlock(axios_path, 'Text', this.state.bli_id);
     };
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.documentId !== prevState.documentId) {
-            return { documentId: nextProps.documentId };
-        }
-        return null;
-    }
 
     render() {
         return (
@@ -56,8 +43,8 @@ class Text extends Component {
                     </button>
                 </div>
                 <EditorWrapper
-                    blk_id={this.state.blk_id}
-                    documentId={this.state.documentId}
+                    blk_id={this.props.blk_id}
+                    documentId={this.props.documentId}
                     handleChangeText={this.handleChangeText}
                 />
                 <div className="full-size-block-content">

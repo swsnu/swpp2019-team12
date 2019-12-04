@@ -14,13 +14,6 @@ const TABLE = 'Table';
 const CALENDAR = 'Calendar';
 const PDF = 'PDF';
 
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-    return result;
-};
-
 /* block color */
 const getItemStyle = (isDragging, draggableStyle) => ({
     // some basic styles to make the items look a bit nicer
@@ -42,26 +35,7 @@ class NoteLeftBlock extends Component {
         };
     }
 
-    // onDragEnd = result => {
-    //     if (!result.destination) {
-    //         return;
-    //     }
-    //     const blocks = reorder(
-    //         this.state.blocks,
-    //         result.source.index,
-    //         result.destination.index
-    //     );
-    //     console.log(result.source.index + ' ' + result.destination.index);
-
-    //     // blocks.map(blk => {
-    //     //     console.log('this is const: ' + blk.id);
-    //     // });
-
-    //     this.setState({ blocks: blocks });
-    // };
-
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log('get derived state from props');
         let block_array;
         if (nextProps.blocks !== prevState.blocks) {
             block_array =
@@ -72,22 +46,23 @@ class NoteLeftBlock extends Component {
                         result = (
                             <Text
                                 blk_id={blk.id}
-                                id={blk.id}
                                 documentId={blk.documentId}
                                 type={blk.block_type}
                                 content={blk.content}
                                 handleChangeText={nextProps.handleChangeText}
                                 handleClickBlock={nextProps.handleClickBlock}
+                                handleDeleteBlock={nextProps.handleDeleteBlock}
                             />
                         );
                     } else if (blk.block_type === AGENDA) {
                         result = (
                             <Agenda
-                                id={blk.id}
+                                blk_id={blk.id}
                                 type={blk.block_type}
                                 content={blk.content}
                                 agenda_discussion={blk.agenda_discussion}
                                 handleClickBlock={nextProps.handleClickBlock}
+                                handleDeleteBlock={nextProps.handleDeleteBlock}
                             />
                         );
                     } else if (blk.block_type === TODO_CONTAINER) {
@@ -101,12 +76,11 @@ class NoteLeftBlock extends Component {
                         result = <div>Not Implemented yet.</div>;
                     }
                     const _result = {
-                        id: `block-${index}`,
+                        id: `${blk.block_type}-${index}-${blk.id}`,
                         content: result
                     };
                     return _result;
                 });
-            console.log('block arrayL', block_array);
             return { blocks: block_array };
         }
         return null;

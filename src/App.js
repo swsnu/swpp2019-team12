@@ -16,6 +16,8 @@ import Note from './container/note/Note';
 // Not Found Component
 import NotFound from './component/NotFound';
 
+// Google STT
+import googleSTT from './container/stt/googleSTT';
 // Editor
 import EditorWrapper from './component/texteditor/EditorWrapper';
 
@@ -57,6 +59,7 @@ function App() {
                         path="/calendar-test"
                         component={CalendarBlock}
                     />
+                    <Route exact path="/googleSTT" component={googleSTT} />
                     <Route component={NotFound} />
                 </Switch>
             </div>

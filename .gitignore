@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+**/node_modules
 /.pnp
 .pnp.js
 
@@ -116,3 +117,4 @@ var/
 
 **/__pycache__
 
+**/private/
