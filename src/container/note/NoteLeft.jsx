@@ -29,6 +29,9 @@ class NoteLeft extends Component {
                         handleAddAgendaBlock={this.props.handleAddAgendaBlock}
                         handleAddTextBlock={this.props.handleAddTextBlock}
                         handleAddTodoBlock={this.props.handleAddTodoBlock}
+                        handleAddCalendarBlock={
+                            this.props.handleAddCalendarBlock
+                        }
                         handleClickBlock={this.props.handleClickBlock}
                         onDragEnd={this.props.onDragEnd}
                     />

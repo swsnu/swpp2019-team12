@@ -275,7 +275,28 @@ class Note extends Component {
         );
     };
 
-    handleAddCalendarBlock = noteId => {
+    handleAddCalendarBlock = () => {
+        const noteId = this.props.match.params.n_id;
+
+        // Block Create API call 할 곳.
+        const text_info = {
+            content: '새로 생성된 텍스트 블록',
+            layer_x: 0,
+            layer_y: 0,
+            document_id: documentId
+        };
+        axios.post(`/api/note/${noteId}/textblocks/`, text_info).then(res => {
+            this.setState({
+                blocks: this.state.blocks.concat({
+                    block_type: 'Text',
+                    id: res['data']['id'],
+                    content: res['data']['content'],
+                    layer_x: res['data']['layer_x'],
+                    layer_y: res['data']['layer_y'],
+                    documentId: res['data']['document_id']
+                })
+            });
+        });
         console.log(
             `Need to Implement adding Calendar Block to specific note whose id is ${noteId}`
         );
@@ -338,6 +359,7 @@ class Note extends Component {
                     handleAddAgendaBlock={this.handleAddAgendaBlock}
                     handleAddTextBlock={this.handleAddTextBlock}
                     handleAddTodoBlock={this.handleAddTodoBlock}
+                    handleAddCalendarBlock={this.handleAddCalendarBlock}
                     handleAddParticipant={this.handleAddParticipant}
                     onDragEnd={this.onDragEnd}
                 />

@@ -21,6 +21,8 @@ import EditorWrapper from './component/texteditor/EditorWrapper';
 
 import AgendaRealTime from './component/realtime/AgendaRealTime';
 
+import CalendarBlock from './component/blocks/Calendar';
+
 function App() {
     return (
         <Router>
@@ -49,6 +51,11 @@ function App() {
                         exact
                         path="/:workspace_name/:w_id/note/:n_id"
                         component={Note}
+                    />
+                    <Route
+                        exact
+                        path="/calendar-test"
+                        component={CalendarBlock}
                     />
                     <Route component={NotFound} />
                 </Switch>
