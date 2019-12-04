@@ -107,7 +107,7 @@ class Note extends Component {
                 });
             })
             .catch(err => {
-                console.log(err);
+                console.log('no todos in this note');
             });
 
         axios
@@ -155,7 +155,29 @@ class Note extends Component {
         
     =================================================================== */
 
-    handleDeleteBlock = () => {};
+    handleDeleteBlock = (axios_path, block_type, block_id) => {
+        console.log('axios path:', axios_path);
+        axios
+            .delete(axios_path)
+            .then(res => {
+                console.log('res.data: ', res.data);
+                this.setState({
+                    ...this.state,
+                    blocks: [
+                        ...this.state.blocks.filter(
+                            b =>
+                                !(
+                                    b.block_type == block_type &&
+                                    b.id == block_id
+                                )
+                        )
+                    ]
+                });
+            })
+            .catch(err => {
+                console.log('err: ', err);
+            });
+    };
 
     handleClickBlock = (block_name, block_id) => {};
 
@@ -317,12 +339,12 @@ class Note extends Component {
     };
 
     render() {
-        console.log('note blocks: ', this.state.blocks);
         const { history } = this.props;
         return (
             <div className="Note">
                 <Signout history={history} />
                 <NoteLeft
+                    handleDeleteBlock={this.handleDeleteBlock}
                     note_title={this.state.title}
                     meeting_date={this.state.created_at}
                     participants={this.state.participants}

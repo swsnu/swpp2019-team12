@@ -42,34 +42,27 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
-export default class Sample extends Component {
+export default class Editor extends Component {
     state = {
-        // You need this state to render the <CKEditor /> component after the layout is ready.
-        // <CKEditor /> needs HTMLElements of `Sidebar` and `PresenceList` plugins provided through
-        // the `config` property and you have to ensure that both are already rendered.
         isLayoutReady: false,
         initialData: '',
         cloudServicesConfig: ''
     };
 
-    sidebarElementRef = React.createRef();
-    presenceListElementRef = React.createRef();
+    // sidebarElementRef = React.createRef();
+    // presenceListElementRef = React.createRef();
 
     componentDidMount() {
-        // When the layout is ready you can switch the state and render the `<CKEditor />` component.
         this.setState({ isLayoutReady: true });
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log('nextProps: ', nextProps.configuration.documentId);
-        console.log('prevState: ', prevState.cloudServicesConfig.documentId);
         if (
             nextProps.configuration.documentId !==
             prevState.cloudServicesConfig.documentId
         ) {
             return {
-                cloudServicesConfig: nextProps.configuration,
-                another: !prevState.another
+                cloudServicesConfig: nextProps.configuration
             };
         }
         return null;
@@ -78,54 +71,26 @@ export default class Sample extends Component {
     render() {
         return (
             <div className="App">
-                {/* {this.renderHeader()} */}
                 <main>
-                    <div className="message">
+                    {/* <div className="message">
                         <div className="centered"></div>
-                    </div>
+                    </div> */}
 
                     <div className="centered">
-                        <div className="row-presence">
+                        {/* <div className="row-presence">
                             <div
-                                // ref={this.presenceListElementRef}
                                 className="presence"></div>
-                        </div>
+                        </div> */}
                         {this.renderEditor()}
                     </div>
                 </main>
-                {/* {this.renderFooter()} */}
             </div>
         );
     }
 
-    renderHeader() {
-        return (
-            <header>
-                <p>Header 렌더되는 부분</p>
-            </header>
-        );
-    }
-
-    handleClick() {
-        console.log('clicked');
-        this.setState({
-            isLayoutReady: !this.state.isLayoutReady
-        });
-    }
-
     renderEditor() {
-        // You should contact CKSource to get the CloudServices configuration.
-        //const cloudServicesConfig = this.props.configuration;
-        if (this.editorRef) {
-            console.log('editor ref: ', this.editorRef);
-            console.log(this.editorRef.current);
-            //this.editorRef.current.editor.destroy();
-        }
-
         return (
             <div className="row row-editor">
-                <button onClick={() => this.handleClick()}>hey</button>
-                {/* Do not render the <CKEditor /> component before the layout is ready. */}
                 {this.state.isLayoutReady && (
                     <CKEditor
                         onInit={editor => {
@@ -157,10 +122,7 @@ export default class Sample extends Component {
                         onChange={(event, editor) => {
                             console.log({ event, editor });
                         }}
-                        onReady={console.log(
-                            'onready: ',
-                            this.state.cloudServicesConfig.documentId
-                        )}
+                        // onReady={                        }
                         editor={BalloonEditor}
                         config={{
                             plugins: [
@@ -251,18 +213,18 @@ export default class Sample extends Component {
                             },
                             mediaEmbed: {
                                 toolbar: ['comment']
-                            },
-                            sidebar: {
-                                container: this.sidebarElementRef.current
-                            },
-                            presenceList: {
-                                container: this.presenceListElementRef.current
                             }
+                            // sidebar: {
+                            //     container: this.sidebarElementRef.current
+                            // },
+                            // presenceList: {
+                            //     container: this.presenceListElementRef.current
+                            // }
                         }}
                         // data={this.state.initialData}
                     />
                 )}
-                <div ref={this.sidebarElementRef} className="sidebar"></div>
+                {/* <div ref={this.sidebarElementRef} className="sidebar"></div> */}
             </div>
         );
     }
@@ -276,21 +238,21 @@ export default class Sample extends Component {
     }
 
     refreshDisplayMode(editor) {
-        const annotations = editor.plugins.get('Annotations');
-        const sidebarElement = this.sidebarElementRef.current;
-
-        if (window.innerWidth < 1070) {
-            sidebarElement.classList.remove('narrow');
-            sidebarElement.classList.add('hidden');
-            annotations.switchTo('inline');
-        } else if (window.innerWidth < 1300) {
-            sidebarElement.classList.remove('hidden');
-            sidebarElement.classList.add('narrow');
-            annotations.switchTo('narrowSidebar');
-        } else {
-            sidebarElement.classList.remove('hidden', 'narrow');
-            annotations.switchTo('wideSidebar');
-        }
+        // const annotations = editor.plugins.get('Annotations');
+        // // const sidebarElement = this.sidebarElementRef.current;
+        // // console.log(sidebarElement);
+        // if (window.innerWidth < 1070) {
+        //     sidebarElement.classList.remove('narrow');
+        //     sidebarElement.classList.add('hidden');
+        //     annotations.switchTo('inline');
+        // } else if (window.innerWidth < 1300) {
+        //     sidebarElement.classList.remove('hidden');
+        //     sidebarElement.classList.add('narrow');
+        //     annotations.switchTo('narrowSidebar');
+        // } else {
+        //     sidebarElement.classList.remove('hidden', 'narrow');
+        //     annotations.switchTo('wideSidebar');
+        // }
     }
 
     checkPendingActions(editor, domEvt) {
