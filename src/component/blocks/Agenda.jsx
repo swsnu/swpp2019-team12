@@ -78,16 +78,6 @@ class Agenda extends Component {
                         console.log('patch 후 blocks:', blocks);
                         this.setState({ blocks: blocks });
                     });
-                // this.setState({
-                //     blocks: this.state.blocks.concat({
-                //         block_type: 'Text',
-                //         id: res['data']['id'],
-                //         content: res['data']['content'],
-                //         layer_x: res['data']['layer_x'],
-                //         layer_y: res['data']['layer_y'],
-                //         documentId: res['data']['document_id']
-                //     })
-                // });
             })
             .catch(err => {
                 console.log('textblock insid agenda 생성 실패', err);
@@ -110,19 +100,19 @@ class Agenda extends Component {
         axios
             .delete(axios_path)
             .then(res => {
-                console.log('res.data: ', res.data);
-                this.setState({
-                    ...this.state,
-                    blocks: [
-                        ...this.state.blocks.filter(
-                            b =>
-                                !(
-                                    b.block_type == block_type &&
-                                    b.id == block_id
-                                )
-                        )
-                    ]
-                });
+                const blocks = [
+                    ...this.state.blocks.filter(
+                        b => !(b.block_type == block_type && b.id == block_id)
+                    )
+                ];
+                axios
+                    .patch(`/api/agenda/${this.state.agenda_id}/`, {
+                        children_blocks: JSON.stringify(blocks)
+                    })
+                    .then(res => {
+                        console.log('patch 후 blocks:', blocks);
+                        this.setState({ blocks: blocks });
+                    });
             })
             .catch(err => {
                 console.log('err: ', err);
