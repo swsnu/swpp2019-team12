@@ -5,7 +5,7 @@ class Agenda extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            agenda_id: this.props.id,
+            agenda_id: this.props.blk_id,
             agenda_title: this.props.agenda_title,
             agenda_discussion: this.props.agenda_discussion
         };
@@ -13,15 +13,13 @@ class Agenda extends Component {
 
     handleClickDelete = e => {
         e.preventDefault();
-        axios
-            .delete(`/api/agenda/${this.state.agenda_id}`)
-            .then(res => {
-                console.log('res.data:' + res.data);
-                window.location.reload();
-            })
-            .catch(err => {
-                console.log('err: ' + err);
-            });
+        console.log('delete agenda');
+        const axios_path = `/api/agenda/${this.state.agenda_id}/`;
+        this.props.handleDeleteBlock(
+            axios_path,
+            'Agenda',
+            this.state.agenda_id
+        );
     };
 
     handleClickToDetail = () => {
