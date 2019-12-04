@@ -14,10 +14,13 @@ class Agenda extends Component {
     }
 
     componentDidMount() {
+        console.log('component did mount');
         axios
             .get(`/api/agenda/${this.state.agenda_id}/`)
             .then(res => {
-                const blocks = JSON.parse(res['children_blocks']);
+                console.log('res of agenda: ', res);
+                const blocks = JSON.parse(res.data.children_blocks);
+                console.log('blocks: ', blocks);
                 this.setState({ blocks: blocks });
             })
             .catch(err => console.log('this agenda has no child block'));
@@ -35,8 +38,14 @@ class Agenda extends Component {
         console.log(result.source.index + ' ' + result.destination.index);
 
         // socket 으로 블록을 날리는 부분
-
-        this.setState({ blocks: blocks });
+        axios
+            .patch(`/api/agenda/${this.state.agenda_id}/`, {
+                children_blocks: JSON.stringify(blocks)
+            })
+            .then(res => {
+                console.log('patch 후 blocks:', blocks);
+                this.setState({ blocks: blocks });
+            });
     };
 
     handleAddTextBlock = () => {
@@ -53,16 +62,32 @@ class Agenda extends Component {
             .post(`/api/agenda/${this.state.agenda_id}/textblocks/`, text_info)
             .then(res => {
                 console.log('res doc id: ', res.data.document_id);
-                this.setState({
-                    blocks: this.state.blocks.concat({
-                        block_type: 'Text',
-                        id: res['data']['id'],
-                        content: res['data']['content'],
-                        layer_x: res['data']['layer_x'],
-                        layer_y: res['data']['layer_y'],
-                        documentId: res['data']['document_id']
-                    })
+                const blocks = this.state.blocks.concat({
+                    block_type: 'Text',
+                    id: res['data']['id'],
+                    content: res['data']['content'],
+                    layer_x: res['data']['layer_x'],
+                    layer_y: res['data']['layer_y'],
+                    documentId: res['data']['document_id']
                 });
+                axios
+                    .patch(`/api/agenda/${this.state.agenda_id}/`, {
+                        children_blocks: JSON.stringify(blocks)
+                    })
+                    .then(res => {
+                        console.log('patch 후 blocks:', blocks);
+                        this.setState({ blocks: blocks });
+                    });
+                // this.setState({
+                //     blocks: this.state.blocks.concat({
+                //         block_type: 'Text',
+                //         id: res['data']['id'],
+                //         content: res['data']['content'],
+                //         layer_x: res['data']['layer_x'],
+                //         layer_y: res['data']['layer_y'],
+                //         documentId: res['data']['document_id']
+                //     })
+                // });
             })
             .catch(err => {
                 console.log('textblock insid agenda 생성 실패', err);
@@ -80,6 +105,30 @@ class Agenda extends Component {
         );
     };
 
+    handleDeleteBlockInAgenda = (axios_path, block_type, block_id) => {
+        console.log('axios path:', axios_path);
+        axios
+            .delete(axios_path)
+            .then(res => {
+                console.log('res.data: ', res.data);
+                this.setState({
+                    ...this.state,
+                    blocks: [
+                        ...this.state.blocks.filter(
+                            b =>
+                                !(
+                                    b.block_type == block_type &&
+                                    b.id == block_id
+                                )
+                        )
+                    ]
+                });
+            })
+            .catch(err => {
+                console.log('err: ', err);
+            });
+    };
+
     handleClickToDetail = () => {
         console.log(
             'Need to implement changing to Detail mode from preview mode'
@@ -87,17 +136,18 @@ class Agenda extends Component {
     };
 
     render() {
+        console.log('blocks in agenda: ', this.state.blocks);
         return (
             <div
-                className="full-size-block-container PreviewAgenda"
+                className="full-size-block-container Agenda"
                 onClick={() =>
                     this.props.handleClickBlock(
                         this.props.type,
                         this.props.blk_id
                     )
                 }>
-                <div className="full-size-block-title PreviewAgenda">
-                    <div className="full-size-block-title__label PreviewAgenda">
+                <div className="full-size-block-title Agenda">
+                    <div className="full-size-block-title__label Agenda">
                         Agenda
                     </div>
                     <button onClick={this.handleAddTextBlock}>Add text</button>
@@ -107,14 +157,14 @@ class Agenda extends Component {
                         X
                     </button>
                 </div>
-                <div className="full-size-block-content PreviewAgenda">
-                    <div className="full-size-block-content__text PreviewAgenda">
+                <div className="full-size-block-content Agenda">
+                    <div className="full-size-block-content__text Agenda">
                         <pre>{this.props.content}</pre>
                         <AgendaInside
                             noteId={this.props.noteId}
                             handleClickBlock={this.props.handleClickBlock}
                             blocks={this.state.blocks}
-                            handleDeleteBlock={this.handleDeleteBlock}
+                            handleDeleteBlock={this.handleDeleteBlockInAgenda}
                             handleChangeTitle={this.handleChangeTitle}
                             onDragEnd={this.onDragEnd}
                             handleAddTextBlock={
