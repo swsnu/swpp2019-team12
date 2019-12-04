@@ -12,6 +12,8 @@ import MeetingNoteOverview from '../../component/workspace_main/MeetingNoteOverv
 import CreateNoteModal from '../note/CreateModal';
 import CreateWorkspaceModal from './CreateModal';
 
+import Signout from '../../component/signout/Signout';
+
 class Workspace extends Component {
     constructor(props) {
         super(props);
@@ -30,6 +32,13 @@ class Workspace extends Component {
     }
 
     componentDidMount() {
+        const loggedInUserNickname = sessionStorage.getItem(
+            'LoggedInUserNickname'
+        );
+        if (!loggedInUserNickname) {
+            this.props.history.push('/signin');
+        }
+
         const {
             history: {
                 location: { pathname }
@@ -98,6 +107,7 @@ class Workspace extends Component {
             <div className="workspace">
                 <div className="workspace-leftbar">
                     <div className="leftbar-container">
+                        <Signout history={history} />
                         <WorkspaceInfo
                             history={history}
                             workspace={workspace}

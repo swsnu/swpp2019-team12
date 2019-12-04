@@ -39,8 +39,7 @@ urlpatterns = [
     # AgendaBlock
     path('note/<int:n_id>/agendas/', views.agenda_child_of_note,
          name='agenda_child_of_note'),
-    path('agenda/<int:a_id>/agendas/', views.agenda_child_of_agenda,
-         name='agenda_child_of_agenda'),
+    #path('agenda/<int:a_id>/agendas/', views.agenda_child_of_agenda, name='agenda_child_of_agenda'),
     path('agenda/<int:id>/', views.modify_agenda, name='modify_agenda'),
     # TodoBlock
     path('note/<int:n_id>/todos/', views.todoblock_child_of_note,
@@ -54,6 +53,5 @@ urlpatterns = [
     path('agenda/<int:a_id>/images/', views.image_child_of_agenda,
          name='image_child_of_agenda'),
     path('image/<int:id>/', views.modify_image, name='modify_image')
-
 
 ]

@@ -42,68 +42,62 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
-export default class Sample extends Component {
+export default class Editor extends Component {
     state = {
-        // You need this state to render the <CKEditor /> component after the layout is ready.
-        // <CKEditor /> needs HTMLElements of `Sidebar` and `PresenceList` plugins provided through
-        // the `config` property and you have to ensure that both are already rendered.
         isLayoutReady: false,
-        initialData: ''
+        initialData: '',
+        cloudServicesConfig: ''
     };
 
-    sidebarElementRef = React.createRef();
-    presenceListElementRef = React.createRef();
+    // sidebarElementRef = React.createRef();
+    // presenceListElementRef = React.createRef();
 
     componentDidMount() {
-        // When the layout is ready you can switch the state and render the `<CKEditor />` component.
         this.setState({ isLayoutReady: true });
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (
+            nextProps.configuration.documentId !==
+            prevState.cloudServicesConfig.documentId
+        ) {
+            return {
+                cloudServicesConfig: nextProps.configuration
+            };
+        }
+        return null;
     }
 
     render() {
         return (
             <div className="App">
-                {/* {this.renderHeader()} */}
-
                 <main>
-                    <div className="message">
+                    {/* <div className="message">
                         <div className="centered"></div>
-                    </div>
+                    </div> */}
 
                     <div className="centered">
-                        <div className="row-presence">
+                        {/* <div className="row-presence">
                             <div
-                                ref={this.presenceListElementRef}
                                 className="presence"></div>
-                        </div>
+                        </div> */}
                         {this.renderEditor()}
                     </div>
                 </main>
-
-                {/* {this.renderFooter()} */}
             </div>
         );
     }
 
-    renderHeader() {
-        return (
-            <header>
-                <p>Header 렌더되는 부분</p>
-            </header>
-        );
-    }
-
     renderEditor() {
-        // You should contact CKSource to get the CloudServices configuration.
-        const cloudServicesConfig = this.props.configuration;
-
         return (
             <div className="row row-editor">
-                {/* Do not render the <CKEditor /> component before the layout is ready. */}
                 {this.state.isLayoutReady && (
                     <CKEditor
                         onInit={editor => {
-                            console.log('Editor is ready to use!', editor);
-
+                            console.log(
+                                'A Editor is ready to use!',
+                                editor.config._config.cloudServices
+                            );
                             // Switch between inline and sidebar annotations according to the window size.
                             this.boundRefreshDisplayMode = this.refreshDisplayMode.bind(
                                 this,
@@ -125,10 +119,10 @@ export default class Sample extends Component {
                             );
                             this.refreshDisplayMode(editor);
                         }}
-                        onChange={(event, editor) =>
-                            console.log({ event, editor })
-                        }
-                        onReady={this.onEditorReady}
+                        onChange={(event, editor) => {
+                            console.log({ event, editor });
+                        }}
+                        // onReady={                        }
                         editor={BalloonEditor}
                         config={{
                             plugins: [
@@ -155,7 +149,7 @@ export default class Sample extends Component {
                                 MediaEmbed,
                                 Paragraph,
                                 PasteFromOffice,
-                                PresenceList,
+                                //PresenceList,
                                 RealTimeCollaborativeComments,
                                 RealTimeCollaborativeTrackChanges,
                                 RemoveFormat,
@@ -190,10 +184,14 @@ export default class Sample extends Component {
                                 'trackChanges'
                             ],
                             cloudServices: {
-                                tokenUrl: cloudServicesConfig.tokenUrl,
-                                uploadUrl: cloudServicesConfig.uploadUrl,
-                                webSocketUrl: cloudServicesConfig.webSocketUrl,
-                                documentId: cloudServicesConfig.documentId
+                                tokenUrl: this.state.cloudServicesConfig
+                                    .tokenUrl,
+                                uploadUrl: this.state.cloudServicesConfig
+                                    .uploadUrl,
+                                webSocketUrl: this.state.cloudServicesConfig
+                                    .webSocketUrl,
+                                documentId: this.state.cloudServicesConfig
+                                    .documentId
                             },
                             image: {
                                 toolbar: [
@@ -215,18 +213,18 @@ export default class Sample extends Component {
                             },
                             mediaEmbed: {
                                 toolbar: ['comment']
-                            },
-                            sidebar: {
-                                container: this.sidebarElementRef.current
-                            },
-                            presenceList: {
-                                container: this.presenceListElementRef.current
                             }
+                            // sidebar: {
+                            //     container: this.sidebarElementRef.current
+                            // },
+                            // presenceList: {
+                            //     container: this.presenceListElementRef.current
+                            // }
                         }}
                         // data={this.state.initialData}
                     />
                 )}
-                <div ref={this.sidebarElementRef} className="sidebar"></div>
+                {/* <div ref={this.sidebarElementRef} className="sidebar"></div> */}
             </div>
         );
     }
@@ -240,21 +238,21 @@ export default class Sample extends Component {
     }
 
     refreshDisplayMode(editor) {
-        const annotations = editor.plugins.get('Annotations');
-        const sidebarElement = this.sidebarElementRef.current;
-
-        if (window.innerWidth < 1070) {
-            sidebarElement.classList.remove('narrow');
-            sidebarElement.classList.add('hidden');
-            annotations.switchTo('inline');
-        } else if (window.innerWidth < 1300) {
-            sidebarElement.classList.remove('hidden');
-            sidebarElement.classList.add('narrow');
-            annotations.switchTo('narrowSidebar');
-        } else {
-            sidebarElement.classList.remove('hidden', 'narrow');
-            annotations.switchTo('wideSidebar');
-        }
+        // const annotations = editor.plugins.get('Annotations');
+        // // const sidebarElement = this.sidebarElementRef.current;
+        // // console.log(sidebarElement);
+        // if (window.innerWidth < 1070) {
+        //     sidebarElement.classList.remove('narrow');
+        //     sidebarElement.classList.add('hidden');
+        //     annotations.switchTo('inline');
+        // } else if (window.innerWidth < 1300) {
+        //     sidebarElement.classList.remove('hidden');
+        //     sidebarElement.classList.add('narrow');
+        //     annotations.switchTo('narrowSidebar');
+        // } else {
+        //     sidebarElement.classList.remove('hidden', 'narrow');
+        //     annotations.switchTo('wideSidebar');
+        // }
     }
 
     checkPendingActions(editor, domEvt) {

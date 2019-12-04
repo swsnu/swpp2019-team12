@@ -130,3 +130,13 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+# ASGI_APPLICATION = "server.routing.application"  # websocket
+
+# CHANNEL_LAYER = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "HOSTS": [('127.0.0.1', 6379)]
+#         },
+#     },
+# }
