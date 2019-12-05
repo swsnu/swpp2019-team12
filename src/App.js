@@ -16,14 +16,19 @@ import Note from './container/note/Note';
 // Not Found Component
 import NotFound from './component/NotFound';
 
+// Google STT
+// import googleSTT from './container/stt/googleSTT';
 // Editor
 import EditorWrapper from './component/texteditor/EditorWrapper';
+
+import AgendaRealTime from './component/realtime/AgendaRealTime';
 
 function App() {
     return (
         <Router>
             <div className="App">
                 <Switch>
+                    <Route exact path="/websocket" component={AgendaRealTime} />
                     {/* For Developing Editor */}
                     <Route exact path="/editor" component={EditorWrapper} />
                     {/* Can access without login */}
@@ -47,6 +52,7 @@ function App() {
                         path="/:workspace_name/:w_id/note/:n_id"
                         component={Note}
                     />
+                    {/* <Route exact path="/googleSTT" component={googleSTT} /> */}
                     <Route component={NotFound} />
                 </Switch>
             </div>

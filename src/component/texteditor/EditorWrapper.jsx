@@ -29,7 +29,6 @@ export default class EditorWrapper extends Component {
     componentDidMount() {
         const nickname = sessionStorage.getItem('LoggedInUserNickname');
         const userId = sessionStorage.getItem('LoggedInUserId');
-        console.log('세션스토리지 nickname, id: ', nickname, userId);
         const data = {
             id: userId,
             name: nickname
@@ -62,12 +61,17 @@ export default class EditorWrapper extends Component {
 
     render() {
         return (
-            this.state.updated && (
-                <Editor
-                    selectedUser={this.state.selectedUser}
-                    configuration={this.state.configuration}
-                />
-            )
+            <div>
+                <p>{this.state.configuration.documentId}</p>
+
+                {
+                    <Editor
+                        selectedUser={this.state.selectedUser}
+                        configuration={this.state.configuration}
+                        documentId={this.props.documentId}
+                    />
+                }
+            </div>
         );
     }
 }

@@ -5,7 +5,7 @@ from .models import Agenda
 import json
 
 
-class AgendaConsumer(WebsocketConsumer):
+class BlockConsumer(WebsocketConsumer):
     def connect(self):
         self.room_group_name = "note_" + str(
             self.scope["url_route"]["kwargs"]["note_id"]
@@ -27,72 +27,82 @@ class AgendaConsumer(WebsocketConsumer):
     # Receive message from WebSocket
     def receive(self, text_data):
         block_data_json = json.loads(text_data)
-        block_type = block_data_json["block_type"]
+        # Block을 Add하는 것과 관련된 receive...
+        if "block_type" in block_data_json:
+            block_type = block_data_json["block_type"]
 
-        if block_type == "Agenda":
-            content = block_data_json["content"]
-            layer_x = block_data_json["layer_x"]
-            layer_y = block_data_json["layer_y"]
-            n_id = block_data_json["n_id"]
+            if block_type == "Agenda":
+                content = block_data_json["content"]
+                layer_x = block_data_json["layer_x"]
+                layer_y = block_data_json["layer_y"]
+                n_id = block_data_json["n_id"]
 
-            data = {
-                "content": content,
-                "layer_x": layer_x,
-                "layer_y": layer_y,
-                "note": n_id,
-                "is_parent_note": True,
-            }
-            serializer = AgendaSerializer(data=data)
-            if serializer.is_valid():
-                agenda = serializer.save()
-                agenda.has_agenda_block = True
-                agenda.save()
-
-            # Send message to room group
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name,
-                {
-                    "type": "add_agenda",
-                    "id": agenda.id,
+                data = {
                     "content": content,
                     "layer_x": layer_x,
                     "layer_y": layer_y,
                     "note": n_id,
-                },
-            )
-        elif block_type == "Text":
-            content = block_data_json["content"]
-            layer_x = block_data_json["layer_x"]
-            layer_y = block_data_json["layer_y"]
-            document_id = block_data_json["document_id"]
-            n_id = block_data_json["n_id"]
+                    "is_parent_note": True,
+                }
+                serializer = AgendaSerializer(data=data)
+                if serializer.is_valid():
+                    agenda = serializer.save()
+                    agenda.has_agenda_block = True
+                    agenda.save()
+                # valid 안하면 나가기
+                else:
+                    print("err")
 
-            data = {
-                "content": content,
-                "layer_x": layer_x,
-                "layer_y": layer_y,
-                "document_id": document_id,
-                "note": n_id,
-                "is_parent_note": True,
-            }
-            print(data)
+                # Send message to room group
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    {
+                        "type": "add_agenda",
+                        "id": agenda.id,
+                        "content": content,
+                        "layer_x": layer_x,
+                        "layer_y": layer_y,
+                        "note": n_id,
+                    },
+                )
+            elif block_type == "Text":
+                content = block_data_json["content"]
+                layer_x = block_data_json["layer_x"]
+                layer_y = block_data_json["layer_y"]
+                document_id = block_data_json["document_id"]
+                n_id = block_data_json["n_id"]
 
-            serializer = TextBlockSerializer(data=data)
-            if serializer.is_valid():
-                text = serializer.save()
-
-            # Send message to room group
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name,
-                {
-                    "type": "add_text",
-                    "id": text.id,
+                data = {
                     "content": content,
                     "layer_x": layer_x,
                     "layer_y": layer_y,
                     "document_id": document_id,
                     "note": n_id,
-                },
+                    "is_parent_note": True,
+                }
+                serializer = TextBlockSerializer(data=data)
+                if serializer.is_valid():
+                    text = serializer.save()
+
+                # Send message to room group
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    {
+                        "type": "add_text",
+                        "id": text.id,
+                        "content": content,
+                        "layer_x": layer_x,
+                        "layer_y": layer_y,
+                        "document_id": document_id,
+                        "note": n_id,
+                    },
+                )
+        # Block을 Drag해서 위치가 변화하는걸 받는 receive
+        else:
+            # Send message to room group
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {"type": "drag_n_drop", "children_blocks": block_data_json,},
             )
 
     # Receive message from room group
@@ -116,6 +126,7 @@ class AgendaConsumer(WebsocketConsumer):
                 }
             )
         )
+
     def add_text(self, event):
         try:
             content = event["content"]
@@ -141,9 +152,16 @@ class AgendaConsumer(WebsocketConsumer):
             )
         )
 
+    def drag_n_drop(self, event):
+        try:
+            children_blocks = event["children_blocks"]
+        except Exception as e:
+            print(e)
+        # Send message to WebSocket
+        self.send(text_data=json.dumps({"children_blocks": children_blocks,}))
 
 
-class TextConsumer(WebsocketConsumer):
+class ChildrenBlocksConsumer(WebsocketConsumer):
     def connect(self):
         self.room_group_name = "note_" + str(
             self.scope["url_route"]["kwargs"]["note_id"]
@@ -179,8 +197,6 @@ class TextConsumer(WebsocketConsumer):
             "note": n_id,
             "is_parent_note": True,
         }
-        print(data)
-
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
             text = serializer.save()
