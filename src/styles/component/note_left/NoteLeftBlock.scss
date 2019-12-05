@@ -76,7 +76,7 @@
         border-top-right-radius: 0px;
 
         background: $white;
-        overflow: hidden;
+        // overflow: hidden;
 
         &:hover {
             box-shadow: rem(2px) rem(2px) rem(4px) rem(2px) $lightgray;
@@ -100,6 +100,7 @@
                 cursor: pointer;
             }
             .full-size-block-content__text {
+                width: 100%;
                 font-size: rem(14px);
                 font-weight: 400;
                 color: $black;
@@ -114,12 +115,13 @@
         }
 
         .full-size-block-content {
-            max-height: rem(120px);
+            // max-height: rem(120px);
             padding: rem(10px);
             overflow: auto;
             display: flex;
             .full-size-block-content__text {
                 color: $black;
+                width: 100%;
             }
         }
     }

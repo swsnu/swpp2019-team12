@@ -181,7 +181,7 @@ class Note extends Component {
             });
     };
 
-    handleClickBlock = (block_name, block_id) => {};
+    handleClickBlock = e => {};
 
     handleClickNoteLeft = e => {};
 
@@ -238,8 +238,7 @@ class Note extends Component {
                     id: res['data']['id'],
                     content: res['data']['content'],
                     layer_x: res['data']['layer_x'],
-                    layer_y: res['data']['layer_y'],
-                    child_blocks: []
+                    layer_y: res['data']['layer_y']
                 })
             });
         });
@@ -282,15 +281,21 @@ class Note extends Component {
             layer_y: 0,
             assignees: []
         };
-        axios.post(`/api/note/${noteId}/todos/`, todo_info).then(() => {
+        axios.get(`/api/note/${noteId}/todos/`, todo_info).then(res => {
+            const todo_info = {
+                content: '할 일을 추가해보세요',
+                layer_x: 0,
+                layer_y: 0,
+                assignees: []
+            };
+            // No need to make todo container
+            if (res.length) {
+            }
+            // Need to make todo container
+            else {
+            }
             this.state.blocks.map(blk => {
                 if (blk.block_type === 'TodoContainer') {
-                    const todo_info = {
-                        content: '할 일을 추가해보세요!',
-                        layer_x: 0,
-                        layer_y: 0,
-                        assignees: [1]
-                    };
                     axios
                         .post(`/api/note/${noteId}/todos/`, todo_info)
                         .then(res => {
@@ -381,11 +386,15 @@ class Note extends Component {
             result.destination.index
         );
         console.log(result.source.index + ' ' + result.destination.index);
+
+        // socket 으로 블록을 날리는 부분
+
         this.setState({ blocks: blocks });
     };
 
     render() {
         const { history } = this.props;
+        const noteId = this.props.match.params.n_id;
         return (
             <div className="Note">
                 <Signout history={history} />
@@ -394,7 +403,7 @@ class Note extends Component {
                     note_title={this.state.title}
                     meeting_date={this.state.created_at}
                     participants={this.state.participants}
-                    noteId={this.state.noteId}
+                    noteId={noteId}
                     moment={this.state.moment}
                     location={this.state.location}
                     blocks={this.state.blocks}

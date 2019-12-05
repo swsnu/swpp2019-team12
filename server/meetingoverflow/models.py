@@ -80,6 +80,7 @@ class Agenda(models.Model):
     has_todo_block = models.BooleanField(default=False)
     has_file_block = models.BooleanField(default=False)
     has_agenda_block = models.BooleanField(default=False)
+    children_blocks = models.TextField(null=True, blank=True)
 
     """
     =============== Seeding ================

@@ -81,6 +81,7 @@ export default class Editor extends Component {
                             <div
                                 className="presence"></div>
                         </div> */}
+                        {/* {this.renderLoading()} */}
                         {this.renderEditor()}
                     </div>
                 </main>
@@ -118,6 +119,7 @@ export default class Editor extends Component {
                                 this.boundCheckPendingActions
                             );
                             this.refreshDisplayMode(editor);
+                            this.props.handleLoading();
                         }}
                         onChange={(event, editor) => {
                             console.log({ event, editor });
@@ -226,14 +228,6 @@ export default class Editor extends Component {
                 )}
                 {/* <div ref={this.sidebarElementRef} className="sidebar"></div> */}
             </div>
-        );
-    }
-
-    renderFooter() {
-        return (
-            <footer>
-                <div className="centered"></div>
-            </footer>
         );
     }
 
