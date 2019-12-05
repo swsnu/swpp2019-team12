@@ -18,7 +18,10 @@ class Agenda extends Component {
             .get(`/api/agenda/${this.state.agenda_id}/`)
             .then(res => {
                 console.log('res of agenda: ', res);
-                const blocks = JSON.parse(res.data.children_blocks);
+                let blocks = [];
+                if (res['data']['children_blocks'] !== null) {
+                    blocks = JSON.parse(res['data']['children_blocks']);
+                }
                 console.log('blocks: ', blocks);
                 this.setState({ blocks: blocks });
             })
