@@ -1,5 +1,6 @@
 #Todo {
     max-height: rem(450px);
+    outline: none;
 
     .full-size-block-subtitle {
         padding-right: rem(60px);
@@ -68,6 +69,10 @@
     }
     .todoCard-content-element__todo-text {
         width: 100%;
+
+        &.done {
+            justify-content: flex-start;
+        }
     }
     .todoCard-content-element__checkbox-icon {
         width: rem(14px);

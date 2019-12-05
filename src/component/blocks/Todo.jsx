@@ -41,13 +41,18 @@ class Todo extends Component {
     };
 
     handleFocus = () => {
-        this.inputRef.current.focus();
+        const { todo } = this.state;
+        if (!todo.is_done) this.inputRef.current.focus();
     };
 
     handleChangeStatus = () => {
-        console.log(
-            'Need to implement changing status of Todo (isDone or not)'
-        );
+        const { todo } = this.state;
+        axios
+            .patch(`/api/todo/${todo.id}`, { is_done: !todo.is_done })
+            .then(res => {
+                this.setState({ todo: { ...todo, is_done: !todo.is_done } });
+            })
+            .catch(err => console.log());
     };
 
     handleSelectAssignee = assignee => {
@@ -101,12 +106,12 @@ class Todo extends Component {
                         {todo.is_done ? (
                             <div
                                 className="full-size-block todoCard-content-element__checkbox-icon done"
-                                onClick={() => {}}
+                                onClick={this.handleChangeStatus}
                             />
                         ) : (
                             <div
                                 className="full-size-block todoCard-content-element__checkbox-icon"
-                                onClick={() => {}}
+                                onClick={this.handleChangeStatus}
                             />
                         )}
 
@@ -115,7 +120,13 @@ class Todo extends Component {
                                 <div>
                                     <span>{`#${todo.id}`}</span>
                                 </div>
-                                {`${todo.content}`}
+                                <input
+                                    className="todoCard-content-element__todo-text-content"
+                                    value={todo.content || ''}
+                                    ref={this.inputRef}
+                                    disabled
+                                    // onChange={this.handleChangeTodo}
+                                />
                             </div>
                         ) : (
                             <div className="full-size-block todoCard-content-element__todo-text">
