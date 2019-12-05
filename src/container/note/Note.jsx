@@ -23,6 +23,7 @@ class Note extends Component {
             isDateClicked: false,
             noteId: null,
             title: '',
+            location: '',
             created_at: '',
             last_modified_at: '',
             //ml_speech_text: '',
@@ -137,7 +138,8 @@ class Note extends Component {
                         });
                     });
                 });
-            });
+            })
+            .catch(err => console.log('note error'));
     }
 
     getNickName = u_id => {
@@ -186,17 +188,38 @@ class Note extends Component {
     handleClickNoteRight = () => {};
 
     handleChangeTitle = e => {
-        this.setState({ title: e.target.value });
-    };
-
-    handleChangeDatetime = moment => {
-        this.setState({
-            moment
+        const n_id = this.props.match.params.n_id;
+        this.setState({ title: e.target.value }, () => {
+            axios
+                .patch(`/api/note/${n_id}/`, { title: this.state.title })
+                .then()
+                .catch();
         });
     };
 
+    handleChangeDatetime = moment => {
+        const n_id = this.props.match.params.n_id;
+        this.setState({ moment }, () => {
+            axios
+                .patch(`/api/note/${n_id}/`, { created_at: this.state.moment })
+                .then()
+                .catch();
+        });
+        /*
+        this.setState({
+            moment
+        });
+        */
+    };
+
     handleChangeLocation = e => {
-        this.setState({ location: e.target.value });
+        const n_id = this.props.match.params.n_id;
+        this.setState({ location: e.target.value }, () => {
+            axios
+                .patch(`/api/note/${n_id}/`, { location: this.state.location })
+                .then()
+                .catch();
+        });
     };
 
     handleAddAgendaBlock = () => {
@@ -252,42 +275,51 @@ class Note extends Component {
 
         // Where need to call Todo Create API.
         // To find out whether there is at least one todo.
-        axios
-            .get(`/api/note/${noteId}/todos/`)
-            // when there is some todos in Note.
-            .then(() => {
-                this.state.blocks.map(blk => {
-                    if (blk.block_type === 'TodoContainer') {
-                        const todo_info = {
-                            content: '할 일을 추가해보세요!',
-                            layer_x: 0,
-                            layer_y: 0,
-                            assignees: [1]
-                        };
-                        axios
-                            .post(`/api/note/${noteId}/todos/`, todo_info)
-                            .then(res => {
-                                console.log(res);
-                                let new_todos = blk.todos.concat(res['data']);
-                                this.setState({
-                                    ...this.state,
-                                    blocks: [
-                                        ...this.state.blocks.filter(
-                                            b =>
-                                                b.block_type !== 'TodoContainer'
-                                        ),
-                                        {
-                                            block_type: 'TodoContainer',
-                                            todos: new_todos
-                                        }
-                                    ]
-                                });
+        const todo_info = {
+            content: '할 일을 채워주세요',
+            layer_x: 0,
+            layer_y: 0,
+            assignees: []
+        };
+        axios.get(`/api/note/${noteId}/todos/`, todo_info).then(res => {
+            const todo_info = {
+                content: '할 일을 추가해보세요',
+                layer_x: 0,
+                layer_y: 0,
+                assignees: []
+            };
+
+            // No need to make todo container
+            if (res.length) {
+            }
+            // Need to make todo container
+            else {
+            }
+            this.state.blocks.map(blk => {
+                if (blk.block_type === 'TodoContainer') {
+                    axios
+                        .post(`/api/note/${noteId}/todos/`, todo_info)
+                        .then(res => {
+                            console.log(res);
+                            let new_todos = blk.todos.concat(res['data']);
+                            this.setState({
+                                ...this.state,
+                                blocks: [
+                                    ...this.state.blocks.filter(
+                                        b => b.block_type !== 'TodoContainer'
+                                    ),
+                                    {
+                                        block_type: 'TodoContainer',
+                                        todos: new_todos
+                                    }
+                                ]
                             });
-                    } else {
-                        return { ...blk };
-                    }
-                });
+                        });
+                } else {
+                    return { ...blk };
+                }
             });
+        });
     };
 
     handleAddImageBlock = noteId => {
@@ -296,7 +328,28 @@ class Note extends Component {
         );
     };
 
-    handleAddCalendarBlock = noteId => {
+    handleAddCalendarBlock = () => {
+        const noteId = this.props.match.params.n_id;
+
+        // Block Create API call 할 곳.
+        const text_info = {
+            content: '새로 생성된 텍스트 블록',
+            layer_x: 0,
+            layer_y: 0,
+            document_id: documentId
+        };
+        axios.post(`/api/note/${noteId}/textblocks/`, text_info).then(res => {
+            this.setState({
+                blocks: this.state.blocks.concat({
+                    block_type: 'Text',
+                    id: res['data']['id'],
+                    content: res['data']['content'],
+                    layer_x: res['data']['layer_x'],
+                    layer_y: res['data']['layer_y'],
+                    documentId: res['data']['document_id']
+                })
+            });
+        });
         console.log(
             `Need to Implement adding Calendar Block to specific note whose id is ${noteId}`
         );
@@ -363,6 +416,7 @@ class Note extends Component {
                     handleAddAgendaBlock={this.handleAddAgendaBlock}
                     handleAddTextBlock={this.handleAddTextBlock}
                     handleAddTodoBlock={this.handleAddTodoBlock}
+                    handleAddCalendarBlock={this.handleAddCalendarBlock}
                     handleAddParticipant={this.handleAddParticipant}
                     onDragEnd={this.onDragEnd}
                 />

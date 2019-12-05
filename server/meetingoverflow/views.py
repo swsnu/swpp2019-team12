@@ -521,6 +521,8 @@ def textblock_child_of_note(request, n_id):
             note = Note.objects.get(id=n_id)
         except(Note.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+        print(request.data)
         
 
         data = {
@@ -529,7 +531,7 @@ def textblock_child_of_note(request, n_id):
             'layer_y': request.data['layer_y'],
             'document_id': request.data['document_id'],
             'note': n_id,
-            'is_parent_note': True
+            'is_parent_note': True,
         }
         print(data)
         
@@ -812,7 +814,8 @@ def todoblock_child_of_note(request, n_id):
             'layer_y': request.data['layer_y'],
             'assignees': request.data['assignees'],
             'note': n_id,
-            'is_parent_note': True
+            'is_parent_note': True,
+            'due_date': request.data['due_date']
         }
 
         serializer = TodoSerializer(data=data)
@@ -820,7 +823,7 @@ def todoblock_child_of_note(request, n_id):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            #print(serializer.errors)
+            # print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
