@@ -6,11 +6,19 @@ class Image extends Component {
         super(props);
         this.state = {
             blk_id: this.props.blk_id,
-            image: null,
+            // image: null,
+            image: this.props.image,
             content: this.props.content,
-            is_submitted: false,
-            file: null
+            is_submitted: false
         };
+    }
+
+    componentDidMount() {
+        this.setState({
+            is_submitted: this.props.is_submitted,
+            content: this.props.content,
+            image: this.props.image
+        });
     }
 
     handleChange = e => {
@@ -35,25 +43,27 @@ class Image extends Component {
 
     handleSubmit = e => {
         e.preventDefault();
-        const noteId = this.props.noteId;
-
         let form_data = new FormData();
+        // form_data.append('image', this.state.image, this.state.image.name);
         form_data.append('image', this.state.image, this.state.image.name);
         form_data.append('content', this.state.content);
-        this.setState({ is_submitted: true });
+
         axios
-            .post(`/api/note/${noteId}/images/`, form_data, {
-                headers: {
-                    'content-type': 'multipart/form-data'
-                }
+            .patch(`/api/image/${this.state.blk_id}/`, form_data, {
+                headers: { 'content-type': 'multipart/form-data' }
             })
             .then(res => {
+                console.log('i am here');
                 console.log(res.data);
+                this.setState({
+                    is_submitted: true
+                });
             })
             .catch(err => console.log(err));
     };
 
     render() {
+        console.log('submitted: ' + this.state.is_submitted);
         return (
             <div
                 className="full-size-block-container Image"
@@ -98,8 +108,9 @@ class Image extends Component {
                     ) : (
                         <div>
                             Image Caption: {this.state.content} <br />
-                            Image File Name: {this.state.image.name}
-                            <img src={this.state.file} />
+                            {/* Image File Name: {this.state.image} */}
+                            {/* <br />I am : {this.state.file} */}
+                            {/* <img src={this.state.file} /> */}
                         </div>
                     )}
                     <div className="full-size-block-content__text"></div>

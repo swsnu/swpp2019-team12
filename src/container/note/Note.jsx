@@ -121,9 +121,9 @@ class Note extends Component {
                             id: blk['id'],
                             image: blk['image'],
                             content: blk['content'],
+                            is_submitted: blk['is_submitted'],
                             layer_x: blk['layer_x'],
-                            layer_y: blk['layer_y'],
-                            documentId: blk['document_id']
+                            layer_y: blk['layer_y']
                         })
                     });
                 });
@@ -311,25 +311,22 @@ class Note extends Component {
 
     handleAddImageBlock = () => {
         const noteId = this.props.match.params.n_id;
-
-        const documentId = handleDocIdInUrl();
-        console.log('새 document Id: ', documentId);
         // Block Create API call 할 곳.
         const image_info = {
             content: '',
             layer_x: 0,
-            layer_y: 0,
-            document_id: documentId
+            layer_y: 0
         };
         axios.post(`/api/note/${noteId}/images/`, image_info).then(res => {
             this.setState({
                 blocks: this.state.blocks.concat({
                     block_type: 'Image',
+                    // image: null,
                     id: res['data']['id'],
                     content: res['data']['content'],
                     layer_x: res['data']['layer_x'],
                     layer_y: res['data']['layer_y'],
-                    documentId: res['data']['document_id']
+                    is_submitted: false
                 })
             });
         });

@@ -930,9 +930,11 @@ def image_child_of_note(request, n_id):
             note__id=n_id
         )
         if queryset.count() > 0:
+            print('more than 0')
             serializer = ImageSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
+            print('not more than 0')
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST':
@@ -948,7 +950,8 @@ def image_child_of_note(request, n_id):
                 'layer_x': request.data['layer_x'],
                 'layer_y': request.data['layer_y'],
                 'note': n_id,
-                'is_parent_note': True
+                'is_parent_note': True,
+                'is_submitted' : False
             }
         except(Exception) as e:
             print(e)
@@ -1040,10 +1043,13 @@ def modify_image(request, id):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
+        current_image.is_submitted = True
+        # current_image.save()
         serializer = ImageSerializer(
             current_image, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            print(serializer)
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
