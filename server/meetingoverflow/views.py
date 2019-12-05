@@ -529,7 +529,8 @@ def textblock_child_of_note(request, n_id):
             'layer_y': request.data['layer_y'],
             'document_id': request.data['document_id'],
             'note': n_id,
-            'is_parent_note': True
+            'is_parent_note': True,
+            'due_date': request.data['due_date']
         }
         
         serializer = TextBlockSerializer(data=data)

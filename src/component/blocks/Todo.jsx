@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Menu, Dropdown, Icon } from 'antd';
+import { Menu, Dropdown, Icon, DatePicker } from 'antd';
+import moment from 'moment';
 import { map, uniqBy, differenceBy } from 'lodash';
 import axios from 'axios';
 
@@ -56,7 +57,7 @@ class Todo extends Component {
     };
 
     handleSelectAssignee = assignee => {
-        const { todo } = this.props;
+        const { todo } = this.state;
         const assignees = uniqBy([...this.state.assignees, assignee], 'id');
 
         const assigneeInfo = {
@@ -80,6 +81,20 @@ class Todo extends Component {
         this.setState({ assignees: removedAssignee });
     };
 
+    handleChangeDueDate = (date, dateString) => {
+        const { todo } = this.state;
+        axios
+            .patch(`/api/todo/${todo.id}`, {
+                due_date: date.format('YYYY-MM-DD')
+            })
+            .then(res => {
+                this.setState({
+                    todo: { ...todo, due_date: date.format('YYYY-MM-DD') }
+                });
+            })
+            .catch(e => console.log(e));
+    };
+
     assigneesDropdown = () => {
         const { participants } = this.props;
         return (
@@ -97,6 +112,9 @@ class Todo extends Component {
 
     render() {
         const { assignees, todo } = this.state;
+        const dateFormat = 'YYYY-MM-DD';
+        const dueDate = todo.due_date ? moment(todo.due_date) : moment();
+
         return (
             <div
                 className="full-size-block todoCard-content-element"
@@ -141,6 +159,14 @@ class Todo extends Component {
                                 />
                             </div>
                         )}
+                    </div>
+                    <div className="full-size-block todoCard-content-element__todo-due-container">
+                        <DatePicker
+                            size="small"
+                            value={dueDate}
+                            format={dateFormat}
+                            onChange={this.handleChangeDueDate}
+                        />
                     </div>
 
                     <div className="full-size-block todoCard-content-element__todo-assignee-container">

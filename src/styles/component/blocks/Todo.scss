@@ -9,6 +9,9 @@
     .ant-dropdown-link {
         cursor: pointer;
     }
+    .ant-calendar-picker-input {
+        border: none;
+    }
 
     .ant-dropdown-link.ant-dropdown-trigger {
         display: flex;
@@ -53,10 +56,18 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        min-width: rem(90px);
+        width: 20%;
     }
+
+    .todoCard-content-element__todo-assignee-part {
+        width: 75%;
+    }
+
     .todoCard-content-element__todo-assignee {
         text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         &:hover {
             cursor: pointer;
             color: $primary;
@@ -64,7 +75,7 @@
     }
 
     .todoCard-content-element__todo-todo-part {
-        width: 80%;
+        width: 55%;
         align-items: center;
     }
     .todoCard-content-element__todo-text {
@@ -82,5 +93,9 @@
         &:hover {
             cursor: pointer;
         }
+    }
+
+    .todoCard-content-element__todo-due-container {
+        width: 15%;
     }
 }

@@ -277,7 +277,7 @@ class Note extends Component {
         // Where need to call Todo Create API.
         // To find out whether there is at least one todo.
         const todo_info = {
-            content: 'Fill Todos',
+            content: '할 일을 채워주세요',
             layer_x: 0,
             layer_y: 0,
             assignees: []
