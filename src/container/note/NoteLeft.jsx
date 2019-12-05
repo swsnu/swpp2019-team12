@@ -35,6 +35,7 @@ class NoteLeft extends Component {
                         handleAddTodoBlock={this.props.handleAddTodoBlock}
                         handleClickBlock={this.props.handleClickBlock}
                         onDragEnd={this.props.onDragEnd}
+                        socketRef={this.props.socketRef}
                     />
                 </div>
             </div>

@@ -8,7 +8,8 @@ class Text extends Component {
         this.state = {
             blk_id: this.props.blk_id,
             content: this.props.content,
-            documentId: this.props.documentId
+            documentId: this.props.documentId,
+            isParentAgenda: this.props.isParentAgenda
         };
     }
 
@@ -19,8 +20,8 @@ class Text extends Component {
 
     handleClickDelete = e => {
         e.preventDefault();
-        console.log('delete agenda');
-        const axios_path = `/api/textblock/${this.state.blk_id}/`;
+        console.log('delete textblock');
+        const axios_path = `/api/textblock/${this.props.blk_id}/`;
         this.props.handleDeleteBlock(axios_path, 'Text', this.state.blk_id);
     };
 

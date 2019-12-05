@@ -46,9 +46,9 @@ class Note extends Component {
             this.props.history.push('/signin');
         }
 
-        const n_id = this.props.match.params.n_id;
+        const noteId = this.props.match.params.n_id;
 
-        axios.get(`/api/note/${n_id}/childrenblocks/`).then(res => {
+        axios.get(`/api/note/${noteId}/childrenblocks/`).then(res => {
             let children_blocks = null;
 
             if (res.data['children_blocks'] === '') {
@@ -85,7 +85,7 @@ class Note extends Component {
 
         //이거 동시에 나오게 처리하기, 저장된 순서 처리 ==> Stringified_block 받아오는걸로 대체해보기
         // axios
-        //     .get(`/api/note/${n_id}/agendas/`)
+        //     .get(`/api/note/${noteId}/agendas/`)
         //     .then(res => {
         //         res['data'].forEach(blk => {
         //             this.setState({
@@ -103,7 +103,7 @@ class Note extends Component {
 
         // // 추후 여기에서 그냥 순서대로 넣는 것이 아닌, 기존의 위치대로 배열에 넣어야함
         // axios
-        //     .get(`/api/note/${n_id}/textblocks/`)
+        //     .get(`/api/note/${noteId}/textblocks/`)
         //     .then(res => {
         //         //console.log('axios get textblocks', res);
         //         res['data'].forEach(blk => {
@@ -122,7 +122,7 @@ class Note extends Component {
         //     .catch(err => console.log('No Texts'));
 
         // axios
-        //     .get(`/api/note/${n_id}/todos/`)
+        //     .get(`/api/note/${noteId}/todos/`)
         //     .then(res => {
         //         let todoContainer = {
         //             block_type: 'TodoContainer',
@@ -149,7 +149,7 @@ class Note extends Component {
         //     });
 
         axios
-            .get(`/api/note/${n_id}/`)
+            .get(`/api/note/${noteId}/`)
             .then(res => {
                 this.setState({
                     ...this.state,
@@ -257,7 +257,7 @@ class Note extends Component {
     };
 
     handleAddAgendaBlock = () => {
-        const note_id = this.props.match.params.n_id;
+        const noteId = this.props.match.params.n_id;
         // Block Create API call 할 곳.
         // const agenda_info = {
         //     content: 'Empty Content in Agenda',
@@ -278,7 +278,7 @@ class Note extends Component {
         //     });
         // });
         const agenda_info = {
-            n_id: note_id,
+            n_id: noteId,
             content: '',
             layer_x: 0,
             layer_y: 0,
@@ -511,7 +511,7 @@ class Note extends Component {
 
     render() {
         const { history } = this.props;
-        const n_id = this.props.match.params.n_id;
+        const noteId = this.props.match.params.n_id;
         return (
             <div className="Note">
                 <Signout history={history} />
@@ -520,7 +520,7 @@ class Note extends Component {
                     note_title={this.state.title}
                     meeting_date={this.state.created_at}
                     participants={this.state.participants}
-                    noteId={this.state.noteId}
+                    noteId={noteId}
                     moment={this.state.moment}
                     location={this.state.location}
                     blocks={this.state.blocks}
@@ -535,9 +535,10 @@ class Note extends Component {
                     handleAddParticipant={this.handleAddParticipant}
                     handleAddTextSocketSend={this.handleAddTextSocketSend}
                     onDragEnd={this.onDragEnd}
+                    socketRef={this.BlockRef}
                 />
                 <Websocket
-                    url={`ws://localhost:8000/ws/${n_id}/block/`}
+                    url={`ws://localhost:8000/ws/${noteId}/block/`}
                     ref={this.BlockRef}
                     onMessage={this.handleSocketBlock.bind(this)}
                 />

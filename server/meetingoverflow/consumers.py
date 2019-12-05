@@ -164,10 +164,10 @@ class BlockConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps({"children_blocks": children_blocks,}))
 
 
-class ChildrenBlocksConsumer(WebsocketConsumer):
+class AgendaConsumer(WebsocketConsumer):
     def connect(self):
-        self.room_group_name = "note_" + str(
-            self.scope["url_route"]["kwargs"]["note_id"]
+        self.room_group_name = "agenda_" + str(
+            self.scope["url_route"]["kwargs"]["agenda_id"]
         )
 
         # Join room group

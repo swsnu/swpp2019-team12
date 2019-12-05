@@ -527,10 +527,11 @@ def textblock_child_of_note(request, n_id):
             'content': request.data['content'],
             'layer_x': request.data['layer_x'],
             'layer_y': request.data['layer_y'],
-            'document_id': request.data['document_id'],
+            'document_id': request.data['documentId'],
             'note': n_id,
             'is_parent_note': True
         }
+        print(data)
         
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
@@ -543,7 +544,7 @@ def textblock_child_of_note(request, n_id):
 
 """
 ==================================================
-url: /api/agenda/:id/textblock/
+url: /api/agenda/:id/textblocks/
 Agenda에 속해있는 TextBlock을 모두 가져오거나 생성하는 API
 
 POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
@@ -556,9 +557,11 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
 """
 @api_view(['GET', 'POST'])
 def textblock_child_of_agenda(request, a_id):
+    print("here")
     try:
         agenda = Agenda.objects.get(id=a_id)
-    except(Agenda.DoesNotExist):
+    except (Agenda.DoesNotExist):
+        print("AGENDA NOT FOUND")
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
@@ -571,6 +574,7 @@ def textblock_child_of_agenda(request, a_id):
             serializer = TextBlockSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
+            print("TEXTBLOCKS NOT FOUND")
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST':
@@ -580,14 +584,16 @@ def textblock_child_of_agenda(request, a_id):
             'layer_y': request.data['layer_y'],
             'note': agenda.note.id,
             'parent_agenda': a_id,
-            'is_parent_note': False
+            'is_parent_note': False,
+            'document_id': request.data['documentId']
         }
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             agenda.has_text_block = True
             agenda.save()
-            return Response(status=status.HTTP_201_CREATED)
+            print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             # print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -642,6 +648,7 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
 """
 @api_view(['GET', 'POST'])
 def agenda_child_of_note(request, n_id):
+    print("a")
     # 해당 노트의 모든 agenda block 리스트 반환
     if request.method == 'GET':
         queryset = Agenda.objects.filter(
@@ -667,11 +674,10 @@ def agenda_child_of_note(request, n_id):
             'note': n_id,
             'is_parent_note': True
         }
+        print("hey")
         serializer = AgendaSerializer(data=data)
         if serializer.is_valid():
             agenda = serializer.save()
-            agenda.has_agenda_block = True
-            agenda.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             #print(serializer.errors)
@@ -751,6 +757,7 @@ def modify_agenda(request, id):
 
     if request.method == 'GET':
         serializer = AgendaSerializer(current_agenda)
+        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
@@ -834,6 +841,7 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
 """
 @api_view(['GET', 'POST'])
 def todoblock_child_of_agenda(request, a_id):
+    print("here")
     try:
         agenda = Agenda.objects.get(id=a_id)
     except(Agenda.DoesNotExist):

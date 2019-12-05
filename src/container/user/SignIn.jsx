@@ -59,6 +59,7 @@ class SignIn extends Component {
                     <input
                         id="password-input"
                         placeholder="password"
+                        type="password"
                         onChange={e =>
                             this.setState({ password: e.target.value })
                         }
