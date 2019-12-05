@@ -288,6 +288,7 @@ class Note extends Component {
                 layer_y: 0,
                 assignees: []
             };
+
             // No need to make todo container
             if (res.length) {
             }
