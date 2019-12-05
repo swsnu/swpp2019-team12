@@ -115,8 +115,10 @@ class NoteLeftBlock extends Component {
                         id="add_todo_block"
                         onClick={() =>
                             this.props.handleAddTodoBlock(this.state.noteId)
-                        }
-                    />
+                        }>
+                        Todo
+                    </button>
+
                     <button
                         className="add-block-button"
                         id="add_image_block"
