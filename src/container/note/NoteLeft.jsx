@@ -26,6 +26,7 @@ class NoteLeft extends Component {
                     <NoteLeftBlock
                         noteId={this.props.noteId}
                         blocks={this.props.blocks}
+                        participants={this.props.participants}
                         handleDeleteBlock={this.props.handleDeleteBlock}
                         handleAddAgendaBlock={this.props.handleAddAgendaBlock}
                         handleAddTextBlock={this.props.handleAddTextBlock}

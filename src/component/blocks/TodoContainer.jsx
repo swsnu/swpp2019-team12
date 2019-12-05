@@ -1,20 +1,31 @@
 import React, { Component } from 'react';
 import { map } from 'lodash';
+import Todo from './Todo';
 
 class TodoContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            todos: this.props.todos
+            todos: []
         };
     }
+    componentDidMount() {
+        this.setState({ todos: this.props.todos });
+    }
 
-    handleToggleTodo = todo_id => {};
-
+    handleDeleteTodo = deleted => {
+        console.log(deleted);
+        const { todos } = this.state;
+        const filtered = todos.filter(todo => todo.id !== deleted.id);
+        console.log(todos);
+        console.log(filtered);
+        this.setState({ todos: filtered });
+    };
     render() {
         return (
             <div
                 className="full-size-block-container TodoContainer"
+                id="Todo"
                 onClick={this.props.handleClickBlock}>
                 <div className="full-size-block-title">
                     <div className="full-size-block-title__text">Todos</div>
@@ -26,50 +37,13 @@ class TodoContainer extends Component {
                     </div>
                 </div>
                 <div className="full-size-block todoCard-content-container">
-                    {map(this.props.todos, (todo, i) => (
-                        <div
-                            key={i}
-                            className="full-size-block todoCard-content-element">
-                            <div className="full-size-block todoCard-content-element__todo between">
-                                <div className="full-size-block todoCard-content-element__todo-todo-part">
-                                    {todo.is_done ? (
-                                        <div
-                                            className="full-size-block todoCard-content-element__checkbox-icon done"
-                                            onClick={() =>
-                                                this.handleToggleTodo(todo.id)
-                                            }
-                                        />
-                                    ) : (
-                                        <div
-                                            className="full-size-block todoCard-content-element__checkbox-icon"
-                                            onClick={() =>
-                                                this.handleToggleTodo(todo.id)
-                                            }
-                                        />
-                                    )}
-
-                                    {todo.is_done ? (
-                                        <div className="full-size-block todoCard-content-element__todo-text done">
-                                            <span>{`#${todo.id}`}</span>
-                                            {`${todo.content}`}
-                                        </div>
-                                    ) : (
-                                        <div className="full-size-block todoCard-content-element__todo-text">
-                                            <span>{`#${todo.id}`}</span>
-                                            {`${todo.content}`}
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="full-size-block todoCard-content-element__todo-assignee-part">
-                                    <div className="full-size-block todoCard-content-element__todo-assignee">
-                                        {map(
-                                            todo.assignees_info,
-                                            (info, i) => info['nickname'] + ' '
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {map(this.state.todos, todo => (
+                        <Todo
+                            key={todo.id}
+                            todo={todo}
+                            participants={this.props.participants}
+                            handleDeleteTodo={this.handleDeleteTodo}
+                        />
                     ))}
                 </div>
             </div>

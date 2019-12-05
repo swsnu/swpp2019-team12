@@ -367,10 +367,11 @@ class Todo(models.Model):
     parent_agenda = models.ForeignKey(
         Agenda, on_delete=models.SET_NULL, null=True, blank=True)
     is_parent_note = models.BooleanField(default=True)
-    assignees = models.ManyToManyField(Profile)
+    assignees = models.ManyToManyField(Profile, null=True, blank=True)
     workspace = models.ForeignKey(
         Workspace, on_delete=models.CASCADE, null=True, blank=True)
     is_done = models.BooleanField(default=False)
+    # due = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f'note_id: {self.note.id}'

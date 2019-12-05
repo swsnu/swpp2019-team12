@@ -253,42 +253,44 @@ class Note extends Component {
 
         // Where need to call Todo Create API.
         // To find out whether there is at least one todo.
-        axios
-            .get(`/api/note/${noteId}/todos/`)
-            // when there is some todos in Note.
-            .then(() => {
-                this.state.blocks.map(blk => {
-                    if (blk.block_type === 'TodoContainer') {
-                        const todo_info = {
-                            content: '할 일을 추가해보세요!',
-                            layer_x: 0,
-                            layer_y: 0,
-                            assignees: [1]
-                        };
-                        axios
-                            .post(`/api/note/${noteId}/todos/`, todo_info)
-                            .then(res => {
-                                console.log(res);
-                                let new_todos = blk.todos.concat(res['data']);
-                                this.setState({
-                                    ...this.state,
-                                    blocks: [
-                                        ...this.state.blocks.filter(
-                                            b =>
-                                                b.block_type !== 'TodoContainer'
-                                        ),
-                                        {
-                                            block_type: 'TodoContainer',
-                                            todos: new_todos
-                                        }
-                                    ]
-                                });
+        const todo_info = {
+            content: 'Fill Todos',
+            layer_x: 0,
+            layer_y: 0,
+            assignees: []
+        };
+        axios.post(`/api/note/${noteId}/todos/`, todo_info).then(() => {
+            this.state.blocks.map(blk => {
+                if (blk.block_type === 'TodoContainer') {
+                    const todo_info = {
+                        content: '할 일을 추가해보세요!',
+                        layer_x: 0,
+                        layer_y: 0,
+                        assignees: [1]
+                    };
+                    axios
+                        .post(`/api/note/${noteId}/todos/`, todo_info)
+                        .then(res => {
+                            console.log(res);
+                            let new_todos = blk.todos.concat(res['data']);
+                            this.setState({
+                                ...this.state,
+                                blocks: [
+                                    ...this.state.blocks.filter(
+                                        b => b.block_type !== 'TodoContainer'
+                                    ),
+                                    {
+                                        block_type: 'TodoContainer',
+                                        todos: new_todos
+                                    }
+                                ]
                             });
-                    } else {
-                        return { ...blk };
-                    }
-                });
+                        });
+                } else {
+                    return { ...blk };
+                }
             });
+        });
     };
 
     handleAddImageBlock = noteId => {

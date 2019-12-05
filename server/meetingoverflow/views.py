@@ -815,7 +815,7 @@ def todoblock_child_of_note(request, n_id):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            #print(serializer.errors)
+            # print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 

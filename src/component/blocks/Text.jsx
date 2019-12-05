@@ -21,7 +21,7 @@ class Text extends Component {
         e.preventDefault();
         console.log('delete agenda');
         const axios_path = `/api/textblock/${this.state.blk_id}/`;
-        this.props.handleDeleteBlock(axios_path, 'Text', this.state.bli_id);
+        this.props.handleDeleteBlock(axios_path, 'Text', this.state.blk_id);
     };
 
     render() {

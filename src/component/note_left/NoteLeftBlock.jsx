@@ -69,6 +69,7 @@ class NoteLeftBlock extends Component {
                         result = (
                             <TodoContainer
                                 todos={blk.todos}
+                                participants={nextProps.participants}
                                 handleClickBlock={nextProps.handleClickBlock}
                             />
                         );
