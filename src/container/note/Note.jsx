@@ -179,7 +179,7 @@ class Note extends Component {
             });
     };
 
-    handleClickBlock = (block_name, block_id) => {};
+    handleClickBlock = e => {};
 
     handleClickNoteLeft = e => {};
 
