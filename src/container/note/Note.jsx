@@ -23,6 +23,7 @@ class Note extends Component {
             isDateClicked: false,
             noteId: null,
             title: '',
+            location: '',
             created_at: '',
             last_modified_at: '',
             //ml_speech_text: '',
@@ -137,7 +138,8 @@ class Note extends Component {
                         });
                     });
                 });
-            });
+            })
+            .catch(err => console.log('note error'));
     }
 
     getNickName = u_id => {
@@ -186,17 +188,38 @@ class Note extends Component {
     handleClickNoteRight = () => {};
 
     handleChangeTitle = e => {
-        this.setState({ title: e.target.value });
-    };
-
-    handleChangeDatetime = moment => {
-        this.setState({
-            moment
+        const n_id = this.props.match.params.n_id;
+        this.setState({ title: e.target.value }, () => {
+            axios
+                .patch(`/api/note/${n_id}/`, { title: this.state.title })
+                .then()
+                .catch();
         });
     };
 
+    handleChangeDatetime = moment => {
+        const n_id = this.props.match.params.n_id;
+        this.setState({ moment }, () => {
+            axios
+                .patch(`/api/note/${n_id}/`, { created_at: this.state.moment })
+                .then()
+                .catch();
+        });
+        /*
+        this.setState({
+            moment
+        });
+        */
+    };
+
     handleChangeLocation = e => {
-        this.setState({ location: e.target.value });
+        const n_id = this.props.match.params.n_id;
+        this.setState({ location: e.target.value }, () => {
+            axios
+                .patch(`/api/note/${n_id}/`, { location: this.state.location })
+                .then()
+                .catch();
+        });
     };
 
     handleAddAgendaBlock = () => {

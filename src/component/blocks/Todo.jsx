@@ -21,7 +21,8 @@ class Todo extends Component {
 
     handleChangeTodo = e => {
         const { todo } = this.state;
-        this.setState({ todo: { ...todo, content: e.target.value } }, () => {
+        const content = e.target.value.length ? e.target.value : ' ';
+        this.setState({ todo: { ...todo, content } }, () => {
             axios
                 .patch(`/api/todo/${todo.id}`, this.state.todo)
                 .then(res => {})
@@ -34,7 +35,6 @@ class Todo extends Component {
         axios
             .delete(`/api/todo/${todo.id}`)
             .then(res => {
-                console.log(res);
                 this.props.handleDeleteTodo(todo);
             })
             .catch(e => console.log(e));
@@ -124,7 +124,7 @@ class Todo extends Component {
                                 </div>
                                 <input
                                     className="todoCard-content-element__todo-text-content"
-                                    value={todo.content}
+                                    value={todo.content || ''}
                                     onChange={this.handleChangeTodo}
                                     ref={this.inputRef}
                                 />
@@ -157,7 +157,7 @@ class Todo extends Component {
                     </div>
 
                     <div
-                        classNmae="full-size-block todoCard-content-element__todo-delete"
+                        className="full-size-block todoCard-content-element__todo-delete"
                         onClick={this.handleDeleteTodo}>
                         <Icon type="minus-circle" theme="filled" />
                     </div>

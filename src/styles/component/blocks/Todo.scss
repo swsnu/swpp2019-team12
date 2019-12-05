@@ -73,4 +73,9 @@
         width: rem(14px);
         height: rem(14px);
     }
+    .todoCard-content-element__todo-delete {
+        &:hover {
+            cursor: pointer;
+        }
+    }
 }
