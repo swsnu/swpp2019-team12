@@ -41,7 +41,6 @@ class NoteLeftBlock extends Component {
             block_array =
                 nextProps.blocks &&
                 nextProps.blocks.map((blk, index) => {
-                    console.log('blk', blk);
                     let result;
                     if (blk.block_type === TEXT) {
                         result = (
@@ -53,6 +52,9 @@ class NoteLeftBlock extends Component {
                                 handleChangeText={nextProps.handleChangeText}
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
+                                handleAddTextSocketSend={
+                                    nextProps.handleAddTextSocketSend
+                                }
                             />
                         );
                     } else if (blk.block_type === AGENDA) {

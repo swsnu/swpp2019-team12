@@ -66,6 +66,9 @@ export default class EditorWrapper extends Component {
 
                 {
                     <Editor
+                        handleAddTextSocketSend={
+                            this.props.handleAddTextSocketSend
+                        }
                         selectedUser={this.state.selectedUser}
                         configuration={this.state.configuration}
                         documentId={this.props.documentId}

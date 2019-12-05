@@ -16,8 +16,7 @@ const reorder = (list, startIndex, endIndex) => {
 class Note extends Component {
     constructor(props) {
         super(props);
-        this.agendaRef = React.createRef();
-        this.textRef = React.createRef();
+        this.BlockRef = React.createRef();
         this.state = {
             currentUserProfile: null,
             isBlockClicked: false,
@@ -49,11 +48,17 @@ class Note extends Component {
 
         const n_id = this.props.match.params.n_id;
 
-        //이거 동시에 나오게 처리하기, 저장된 순서 처리
-        axios
-            .get(`/api/note/${n_id}/agendas/`)
-            .then(res => {
-                res['data'].forEach(blk => {
+        axios.get(`/api/note/${n_id}/childrenblocks/`).then(res => {
+            let children_blocks = null;
+
+            if (res.data['children_blocks'] === '') {
+                children_blocks = [];
+            } else {
+                children_blocks = JSON.parse(res.data['children_blocks']);
+            }
+            children_blocks.map(blk => {
+                let block_type = blk['block_type'];
+                if (block_type == 'Agenda') {
                     this.setState({
                         blocks: this.state.blocks.concat({
                             block_type: 'Agenda',
@@ -63,16 +68,7 @@ class Note extends Component {
                             layer_y: blk['layer_y']
                         })
                     });
-                });
-            })
-            .catch(err => console.log('No agendas'));
-
-        // 추후 여기에서 그냥 순서대로 넣는 것이 아닌, 기존의 위치대로 배열에 넣어야함
-        axios
-            .get(`/api/note/${n_id}/textblocks/`)
-            .then(res => {
-                //console.log('axios get textblocks', res);
-                res['data'].forEach(blk => {
+                } else if (block_type == 'Text') {
                     this.setState({
                         blocks: this.state.blocks.concat({
                             block_type: 'Text',
@@ -83,65 +79,103 @@ class Note extends Component {
                             documentId: blk['document_id']
                         })
                     });
-                });
-            })
-            .catch(err => console.log('No Texts'));
-
-        axios
-            .get(`/api/note/${n_id}/todos/`)
-            .then(res => {
-                let todoContainer = {
-                    block_type: 'TodoContainer',
-                    todos: res['data']
-                };
-                todoContainer.todos.forEach(todo => {
-                    todo.assignees_info = [];
-                    todo.assignees.forEach(assignee_id => {
-                        axios.get(`/api/profile/${assignee_id}`).then(res => {
-                            todo.assignees_info.push({
-                                id: res['data']['id'],
-                                nickname: res['data']['nickname']
-                            });
-                        });
-                    });
-                });
-
-                this.setState({
-                    blocks: this.state.blocks.concat(todoContainer)
-                });
-            })
-            .catch(err => {
-                console.log('no todos in this note');
+                }
             });
+        });
 
-        axios
-            .get(`/api/note/${n_id}/`)
-            .then(res => {
-                this.setState({
-                    ...this.state,
-                    note_id: res['data']['id'],
-                    title: res['data']['title'],
-                    location: res['data']['location'],
-                    created_at: res['data']['created_at'],
-                    last_modified_at: res['data']['last_modified_at'],
-                    ml_speech_text: res['data']['ml_speech_text'],
-                    participants_id: res['data']['participants'],
-                    moment: moment(res['data']['created_at'])
-                });
-                return res['data']['participants'];
-            })
-            .then(participants => {
-                participants.forEach(participant => {
-                    axios.get(`/api/profile/${participant}`).then(res => {
-                        this.setState({
-                            participants: this.state.participants.concat({
-                                id: res['data']['id'],
-                                nickname: res['data']['nickname']
-                            })
-                        });
-                    });
-                });
-            });
+        //이거 동시에 나오게 처리하기, 저장된 순서 처리 ==> Stringified_block 받아오는걸로 대체해보기
+        // axios
+        //     .get(`/api/note/${n_id}/agendas/`)
+        //     .then(res => {
+        //         res['data'].forEach(blk => {
+        //             this.setState({
+        //                 blocks: this.state.blocks.concat({
+        //                     block_type: 'Agenda',
+        //                     id: blk['id'],
+        //                     content: blk['content'],
+        //                     layer_x: blk['layer_x'],
+        //                     layer_y: blk['layer_y']
+        //                 })
+        //             });
+        //         });
+        //     })
+        //     .catch(err => console.log('No agendas'));
+
+        // // 추후 여기에서 그냥 순서대로 넣는 것이 아닌, 기존의 위치대로 배열에 넣어야함
+        // axios
+        //     .get(`/api/note/${n_id}/textblocks/`)
+        //     .then(res => {
+        //         //console.log('axios get textblocks', res);
+        //         res['data'].forEach(blk => {
+        //             this.setState({
+        //                 blocks: this.state.blocks.concat({
+        //                     block_type: 'Text',
+        //                     id: blk['id'],
+        //                     content: blk['content'],
+        //                     layer_x: blk['layer_x'],
+        //                     layer_y: blk['layer_y'],
+        //                     documentId: blk['document_id']
+        //                 })
+        //             });
+        //         });
+        //     })
+        //     .catch(err => console.log('No Texts'));
+
+        // axios
+        //     .get(`/api/note/${n_id}/todos/`)
+        //     .then(res => {
+        //         let todoContainer = {
+        //             block_type: 'TodoContainer',
+        //             todos: res['data']
+        //         };
+        //         todoContainer.todos.forEach(todo => {
+        //             todo.assignees_info = [];
+        //             todo.assignees.forEach(assignee_id => {
+        //                 axios.get(`/api/profile/${assignee_id}`).then(res => {
+        //                     todo.assignees_info.push({
+        //                         id: res['data']['id'],
+        //                         nickname: res['data']['nickname']
+        //                     });
+        //                 });
+        //             });
+        //         });
+
+        //         this.setState({
+        //             blocks: this.state.blocks.concat(todoContainer)
+        //         });
+        //     })
+        //     .catch(err => {
+        //         console.log('no todos in this note');
+        //     });
+
+        // axios
+        //     .get(`/api/note/${n_id}/`)
+        //     .then(res => {
+        //         this.setState({
+        //             ...this.state,
+        //             note_id: res['data']['id'],
+        //             title: res['data']['title'],
+        //             location: res['data']['location'],
+        //             created_at: res['data']['created_at'],
+        //             last_modified_at: res['data']['last_modified_at'],
+        //             ml_speech_text: res['data']['ml_speech_text'],
+        //             participants_id: res['data']['participants'],
+        //             moment: moment(res['data']['created_at'])
+        //         });
+        //         return res['data']['participants'];
+        //     })
+        //     .then(participants => {
+        //         participants.forEach(participant => {
+        //             axios.get(`/api/profile/${participant}`).then(res => {
+        //                 this.setState({
+        //                     participants: this.state.participants.concat({
+        //                         id: res['data']['id'],
+        //                         nickname: res['data']['nickname']
+        //                     })
+        //                 });
+        //             });
+        //         });
+        //     });
     }
 
     getNickName = u_id => {
@@ -160,23 +194,39 @@ class Note extends Component {
     =================================================================== */
 
     handleDeleteBlock = (axios_path, block_type, block_id) => {
+        const noteId = this.props.match.params.n_id;
         console.log('axios path:', axios_path);
+        console.log(block_type, block_id);
+        const newBlocks = this.state.blocks.filter(
+            b => !(b.block_type == block_type && b.id == block_id)
+        );
+        console.log(newBlocks);
+        const stringifiedBlocks = {
+            children_blocks: JSON.stringify(newBlocks)
+        };
         axios
             .delete(axios_path)
             .then(res => {
                 console.log('res.data: ', res.data);
-                this.setState({
-                    ...this.state,
-                    blocks: [
-                        ...this.state.blocks.filter(
-                            b =>
-                                !(
-                                    b.block_type == block_type &&
-                                    b.id == block_id
+                axios
+                    .patch(
+                        `/api/note/${noteId}/childrenblocks/`,
+                        stringifiedBlocks
+                    )
+                    .then(res => {
+                        this.setState({
+                            ...this.state,
+                            blocks: [
+                                ...this.state.blocks.filter(
+                                    b =>
+                                        !(
+                                            b.block_type == block_type &&
+                                            b.id == block_id
+                                        )
                                 )
-                        )
-                    ]
-                });
+                            ]
+                        });
+                    });
             })
             .catch(err => {
                 console.log('err: ', err);
@@ -231,7 +281,7 @@ class Note extends Component {
             layer_y: 0,
             block_type: 'Agenda'
         };
-        this.agendaRef.current.state.ws.send(JSON.stringify(agenda_info));
+        this.BlockRef.current.state.ws.send(JSON.stringify(agenda_info));
     };
 
     handleAddTextBlock = () => {
@@ -247,7 +297,9 @@ class Note extends Component {
             document_id: documentId,
             block_type: 'Text'
         };
-        this.agendaRef.current.state.ws.send(JSON.stringify(text_info));
+
+        this.BlockRef.current.state.ws.send(JSON.stringify(text_info));
+
         // axios.post(`/api/note/${noteId}/textblocks/`, text_info).then(res => {
         //     this.setState({
         //         blocks: this.state.blocks.concat({
@@ -261,6 +313,23 @@ class Note extends Component {
         //     });
         // });
     };
+
+    // // Editor에서 onInit 후 부르게 되는 콜백함수 (소켓 송신)
+    // handleAddTextSocketSend = documentId => {
+    //     const noteId = this.props.match.params.n_id;
+    //     const text_info = {
+    //         n_id: noteId,
+    //         content: '새로 생성된 텍스트 블록',
+    //         layer_x: 0,
+    //         layer_y: 0,
+    //         document_id: documentId,
+    //         block_type: 'Text'
+    //     };
+    //     this.BlockRef.current.state.ws.send(JSON.stringify(text_info));
+    //     // this.setState({
+    //     //     init: false
+    //     // });
+    // };
 
     handleAddTodoBlock = () => {
         const noteId = this.props.match.params.n_id;
@@ -338,32 +407,63 @@ class Note extends Component {
         );
     };
 
-    handleSocketAgenda(data) {
+    handleSocketAddBlock(data) {
+        const noteId = this.props.match.params.n_id;
+        let newBlocks = null;
         let res = JSON.parse(data);
         console.log(res);
-        if (res['block_type'] == 'Agenda') {
-            this.setState({
-                blocks: this.state.blocks.concat({
+
+        // Add Block
+        if (res.hasOwnProperty('block_type')) {
+            if (res['block_type'] == 'Agenda') {
+                newBlocks = this.state.blocks.concat({
                     block_type: res['block_type'],
                     id: res['id'],
                     content: res['content'],
                     layer_x: res['layer_x'],
                     layer_y: res['layer_y'],
                     child_blocks: []
-                })
-            });
-        } else if (res['block_type'] == 'Text') {
-            this.setState({
-                blocks: this.state.blocks.concat({
+                });
+            } else if (res['block_type'] == 'Text') {
+                console.log('document_id: ', res['document_id']);
+                newBlocks = this.state.blocks.concat({
                     block_type: res['block_type'],
                     id: res['id'],
                     content: res['content'],
                     layer_x: res['layer_x'],
                     layer_y: res['layer_y'],
-                    document_id: res['document_id']
-                })
-            });
+                    documentId: res['document_id']
+                });
+            }
+
+            const stringifiedBlocks = {
+                children_blocks: JSON.stringify(newBlocks)
+            };
+
+            this.setState({ blocks: newBlocks });
+
+            axios
+                .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
+                .then(res => console.log(res));
         }
+        // Drag & Drop
+        else {
+            console.log(res['children_blocks']);
+            this.setState({ blocks: res['children_blocks'] });
+        }
+
+        // axios.post(`/api/note/${noteId}/textblocks/`, text_info).then(res => {
+        //     this.setState({
+        //         blocks: this.state.blocks.concat({
+        //             block_type: 'Text',
+        //             id: res['data']['id'],
+        //             content: res['data']['content'],
+        //             layer_x: res['data']['layer_x'],
+        //             layer_y: res['data']['layer_y'],
+        //             documentId: res['data']['document_id']
+        //         })
+        //     });
+        // });
     }
 
     handleSocketText(data) {
@@ -381,14 +481,31 @@ class Note extends Component {
         });
     }
     onDragEnd = result => {
+        const noteId = this.props.match.params.n_id;
         if (!result.destination) {
             return;
         }
+
+        console.log('이전의 blocks: ', this.state.blocks);
+
         const blocks = reorder(
             this.state.blocks,
             result.source.index,
             result.destination.index
         );
+
+        const stringifiedBlocks = {
+            children_blocks: JSON.stringify(blocks)
+        };
+        console.log(stringifiedBlocks);
+        console.log('바뀐 blocks: ', blocks);
+
+        axios
+            .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
+            .then(res => {
+                this.BlockRef.current.state.ws.send(JSON.stringify(blocks));
+            })
+            .catch(err => console.log(err));
     };
 
     render() {
@@ -415,13 +532,14 @@ class Note extends Component {
                     handleAddTextBlock={this.handleAddTextBlock}
                     handleAddTodoBlock={this.handleAddTodoBlock}
                     handleAddParticipant={this.handleAddParticipant}
+                    handleAddTextSocketSend={this.handleAddTextSocketSend}
                     onDragEnd={this.onDragEnd}
                 />
-                {/* <Websocket
+                <Websocket
                     url={`ws://localhost:8000/ws/${n_id}/block/`}
-                    ref={this.agendaRef}
-                    onMessage={this.handleSocketAgenda.bind(this)}
-                /> */}
+                    ref={this.BlockRef}
+                    onMessage={this.handleSocketAddBlock.bind(this)}
+                />
                 {/* <Websocket
                     url={`ws://localhost:8000/ws/${n_id}/text/`}
                     ref={this.textRef}

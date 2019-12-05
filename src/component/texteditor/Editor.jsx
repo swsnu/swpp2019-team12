@@ -53,7 +53,10 @@ export default class Editor extends Component {
     // presenceListElementRef = React.createRef();
 
     componentDidMount() {
-        this.setState({ isLayoutReady: true });
+        this.setState({
+            isLayoutReady: true,
+            cloudServicesConfig: this.props.configuration
+        });
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -190,8 +193,7 @@ export default class Editor extends Component {
                                     .uploadUrl,
                                 webSocketUrl: this.state.cloudServicesConfig
                                     .webSocketUrl,
-                                documentId: this.state.cloudServicesConfig
-                                    .documentId
+                                documentId: this.props.documentId
                             },
                             image: {
                                 toolbar: [
