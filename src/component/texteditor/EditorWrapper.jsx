@@ -5,6 +5,7 @@ import axios from 'axios';
 import { css } from '@emotion/core';
 //import { BarLoader } from 'react-spinners';
 import BarLoader from 'react-spinners/BarLoader';
+import PacmanLoader from 'react-spinners/PacmanLoader';
 
 const override = css`
     display: block;
@@ -79,9 +80,10 @@ export default class EditorWrapper extends Component {
             <div>
                 {/* <p>{this.state.configuration.documentId}</p> */}
                 {this.state.loading && (
-                    <BarLoader
+                    <PacmanLoader
                         css={override}
-                        size={100}
+                        size={15}
+                        color={'#98c6fa'}
                         loading={this.state.loading}
                     />
                 )}
