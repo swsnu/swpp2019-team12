@@ -76,7 +76,7 @@ class Note extends Component {
                             content: blk['content'],
                             layer_x: blk['layer_x'],
                             layer_y: blk['layer_y'],
-                            documentId: blk['document_id']
+                            documentId: blk['documentId']
                         })
                     });
                 }
@@ -148,34 +148,34 @@ class Note extends Component {
         //         console.log('no todos in this note');
         //     });
 
-        // axios
-        //     .get(`/api/note/${n_id}/`)
-        //     .then(res => {
-        //         this.setState({
-        //             ...this.state,
-        //             note_id: res['data']['id'],
-        //             title: res['data']['title'],
-        //             location: res['data']['location'],
-        //             created_at: res['data']['created_at'],
-        //             last_modified_at: res['data']['last_modified_at'],
-        //             ml_speech_text: res['data']['ml_speech_text'],
-        //             participants_id: res['data']['participants'],
-        //             moment: moment(res['data']['created_at'])
-        //         });
-        //         return res['data']['participants'];
-        //     })
-        //     .then(participants => {
-        //         participants.forEach(participant => {
-        //             axios.get(`/api/profile/${participant}`).then(res => {
-        //                 this.setState({
-        //                     participants: this.state.participants.concat({
-        //                         id: res['data']['id'],
-        //                         nickname: res['data']['nickname']
-        //                     })
-        //                 });
-        //             });
-        //         });
-        //     });
+        axios
+            .get(`/api/note/${n_id}/`)
+            .then(res => {
+                this.setState({
+                    ...this.state,
+                    note_id: res['data']['id'],
+                    title: res['data']['title'],
+                    location: res['data']['location'],
+                    created_at: res['data']['created_at'],
+                    last_modified_at: res['data']['last_modified_at'],
+                    ml_speech_text: res['data']['ml_speech_text'],
+                    participants_id: res['data']['participants'],
+                    moment: moment(res['data']['created_at'])
+                });
+                return res['data']['participants'];
+            })
+            .then(participants => {
+                participants.forEach(participant => {
+                    axios.get(`/api/profile/${participant}`).then(res => {
+                        this.setState({
+                            participants: this.state.participants.concat({
+                                id: res['data']['id'],
+                                nickname: res['data']['nickname']
+                            })
+                        });
+                    });
+                });
+            });
     }
 
     getNickName = u_id => {
@@ -214,18 +214,21 @@ class Note extends Component {
                         stringifiedBlocks
                     )
                     .then(res => {
-                        this.setState({
-                            ...this.state,
-                            blocks: [
-                                ...this.state.blocks.filter(
-                                    b =>
-                                        !(
-                                            b.block_type == block_type &&
-                                            b.id == block_id
-                                        )
-                                )
-                            ]
-                        });
+                        this.BlockRef.current.state.ws.send(
+                            JSON.stringify(newBlocks)
+                        );
+                        // this.setState({
+                        //     ...this.state,
+                        //     blocks: [
+                        //         ...this.state.blocks.filter(
+                        //             b =>
+                        //                 !(
+                        //                     b.block_type == block_type &&
+                        //                     b.id == block_id
+                        //                 )
+                        //         )
+                        //     ]
+                        // });
                     });
             })
             .catch(err => {
@@ -294,7 +297,7 @@ class Note extends Component {
             content: '새로 생성된 텍스트 블록',
             layer_x: 0,
             layer_y: 0,
-            document_id: documentId,
+            documentId: documentId,
             block_type: 'Text'
         };
 
@@ -407,7 +410,7 @@ class Note extends Component {
         );
     };
 
-    handleSocketAddBlock(data) {
+    handleSocketBlock(data) {
         const noteId = this.props.match.params.n_id;
         let newBlocks = null;
         let res = JSON.parse(data);
@@ -425,14 +428,13 @@ class Note extends Component {
                     child_blocks: []
                 });
             } else if (res['block_type'] == 'Text') {
-                console.log('document_id: ', res['document_id']);
                 newBlocks = this.state.blocks.concat({
                     block_type: res['block_type'],
                     id: res['id'],
                     content: res['content'],
                     layer_x: res['layer_x'],
                     layer_y: res['layer_y'],
-                    documentId: res['document_id']
+                    documentId: res['documentId']
                 });
             }
 
@@ -448,7 +450,6 @@ class Note extends Component {
         }
         // Drag & Drop
         else {
-            console.log(res['children_blocks']);
             this.setState({ blocks: res['children_blocks'] });
         }
 
@@ -476,7 +477,7 @@ class Note extends Component {
                 content: res['content'],
                 layer_x: res['layer_x'],
                 layer_y: res['layer_y'],
-                document_id: res['document_id']
+                documentId: res['documentId']
             })
         });
     }
@@ -538,7 +539,7 @@ class Note extends Component {
                 <Websocket
                     url={`ws://localhost:8000/ws/${n_id}/block/`}
                     ref={this.BlockRef}
-                    onMessage={this.handleSocketAddBlock.bind(this)}
+                    onMessage={this.handleSocketBlock.bind(this)}
                 />
                 {/* <Websocket
                     url={`ws://localhost:8000/ws/${n_id}/text/`}

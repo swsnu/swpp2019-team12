@@ -58,7 +58,7 @@ class Note(models.Model):
     children_blocks = models.TextField(default="", null=True, blank=True)
 
     def __str__(self):
-        return f"title: {self.title}"
+        return f"note_id: {self.id}, title: {self.title}"
 
 
 class Agenda(models.Model):
@@ -300,7 +300,7 @@ class Agenda(models.Model):
     #                     todo.save()
 
     def __str__(self):
-        return f"note_id: {self.note.id}"
+        return f"note_id: {self.note.id}, block_id: {self.id}"
 
 
 class Calendar(models.Model):
