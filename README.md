@@ -20,3 +20,5 @@
 `python manage.py makemigrations meetingoverflow`
 
 `python manage.py migrate`
+
+`python manage.py runserver`
