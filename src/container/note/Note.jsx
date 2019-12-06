@@ -181,13 +181,13 @@ class Note extends Component {
     };
 
     handleDeleteTodo = deleted => {
-        const todoContainer = this.state.blocks.filter(
+        const todoContainer = this.state.blocks.find(
             blk => blk.block_type == 'TodoContainer'
         );
         if (!todoContainer) {
             console.log('Todo conatiner가 없습니다. ');
         }
-
+        console.log('Todo container: ', todoContainer);
         // 만약 컨테이너가 존재하지만, 단 한개의 Todo가 존재한다면, 그것을 지우고 컨테이너도 삭제
         if (todoContainer.todos.length <= 1) {
             this.setState({
@@ -199,15 +199,19 @@ class Note extends Component {
             // 컨테이너가 이미 존재하고 그 안에 2개 이상의 Todo 가 있다면, 지우고자 하는 Todo를 제거한 새로운 배열로 수정
             const newBlocks = this.state.blocks.map(blk => {
                 if (blk.block_type == 'TodoContainer') {
-                    return blk.filter(todo => todo.id !== deleted.id);
+                    const newTodos = blk.todos.filter(
+                        todo => todo.id !== deleted.id
+                    );
+                    blk.todos = newTodos;
+                    return blk;
+                } else {
+                    return blk;
                 }
             });
-            blocks.this.setState({
+            this.setState({
                 blocks: newBlocks
             });
         }
-        console.log('찍히나');
-        this.forceUpdate();
     };
 
     handleClickBlock = e => {};
@@ -492,6 +496,7 @@ class Note extends Component {
                     handleAddCalendarBlock={this.handleAddCalendarBlock}
                     handleAddParticipant={this.handleAddParticipant}
                     onDragEnd={this.onDragEnd}
+                    handleDeleteTodo={this.handleDeleteTodo}
                 />
             </div>
         );
