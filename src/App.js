@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.scss';
+import 'antd/dist/antd.css';
 
 // User Container
 import SignIn from './container/user/SignIn';
@@ -22,6 +23,8 @@ import googleSTT from './container/stt/googleSTT';
 import EditorWrapper from './component/texteditor/EditorWrapper';
 
 import AgendaRealTime from './component/realtime/AgendaRealTime';
+
+import CalendarBlock from './component/blocks/Calendar';
 
 function App() {
     return (
@@ -51,6 +54,11 @@ function App() {
                         exact
                         path="/:workspace_name/:w_id/note/:n_id"
                         component={Note}
+                    />
+                    <Route
+                        exact
+                        path="/calendar-test"
+                        component={CalendarBlock}
                     />
                     <Route exact path="/googleSTT" component={googleSTT} />
                     <Route component={NotFound} />

@@ -47,5 +47,4 @@ urlpatterns = [
     path('agenda/<int:a_id>/todos/', views.todoblock_child_of_agenda,
          name='todoblock_child_of_agenda'),
     path('todo/<int:id>/', views.modify_todoblock, name='modify_agenda')
-
 ]

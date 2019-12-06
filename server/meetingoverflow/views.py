@@ -481,7 +481,7 @@ def sibling_notes(request, n_id):
             return Response(status=status.HTTP_404_NOT_FOUND)
         workspace = note.workspace
         sibling_notes = Note.objects.filter(workspace=workspace).filter(~Q(id = n_id))
-        #print(sibling_notes)
+        
         if sibling_notes.count() > 0:
             serializer = NoteSerializer(sibling_notes, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -520,8 +520,7 @@ def textblock_child_of_note(request, n_id):
         try:
             note = Note.objects.get(id=n_id)
         except(Note.DoesNotExist):
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        
+            return Response(status=status.HTTP_404_NOT_FOUND)        
 
         data = {
             'content': request.data['content'],
@@ -529,9 +528,8 @@ def textblock_child_of_note(request, n_id):
             'layer_y': request.data['layer_y'],
             'document_id': request.data['document_id'],
             'note': n_id,
-            'is_parent_note': True
+            'is_parent_note': True,
         }
-        print(data)
         
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
@@ -557,7 +555,6 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
 """
 @api_view(['GET', 'POST'])
 def textblock_child_of_agenda(request, a_id):
-    print("here")
     try:
         agenda = Agenda.objects.get(id=a_id)
     except(Agenda.DoesNotExist):
@@ -585,7 +582,6 @@ def textblock_child_of_agenda(request, a_id):
             'is_parent_note': False,
             'document_id': request.data['document_id']
         }
-        print(data)
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -646,7 +642,6 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
 """
 @api_view(['GET', 'POST'])
 def agenda_child_of_note(request, n_id):
-    print("a")
     # 해당 노트의 모든 agenda block 리스트 반환
     if request.method == 'GET':
         queryset = Agenda.objects.filter(
@@ -672,7 +667,6 @@ def agenda_child_of_note(request, n_id):
             'note': n_id,
             'is_parent_note': True
         }
-        print("hey")
         serializer = AgendaSerializer(data=data)
         if serializer.is_valid():
             agenda = serializer.save()
@@ -680,60 +674,6 @@ def agenda_child_of_note(request, n_id):
         else:
             #print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
-
-"""
-==================================================
-url: /api/agenda/:id/agendas/
-Agenda에 속해있는 하위 agenda를 모두 가져오거나 생성하는 API
-
-POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
-    {
-        "content": "Hello World",
-        "layer_x": 0,
-        "layer_y": 1
-    }
-==================================================
-"""
-# @api_view(['GET', 'POST'])
-# def agenda_child_of_agenda(request, a_id):
-#     try:
-#         # parent agenda에 해당함
-#         agenda = Agenda.objects.get(id=a_id)
-#     except(Agenda.DoesNotExist):
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-
-#     if request.method == 'GET':
-#         queryset = Agenda.objects.filter(
-#             is_parent_note=False,
-#             # parent agenda가 중첩되어있더라도 결국 가장 최상위
-#             # agenda는 note에 속해있으므로 이 방식으로 note id 획득 가능함
-#             note__id=agenda.note.id,
-#             parent_agenda__id=a_id
-#         )
-#         if queryset.count() > 0:
-#             serializer = AgendaSerializer(queryset, many=True)
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         else:
-#             return Response(status=status.HTTP_404_NOT_FOUND)
-
-#     elif request.method == 'POST':
-#         data = {
-#             'content': request.data['content'],
-#             'layer_x': request.data['layer_x'],
-#             'layer_y': request.data['layer_y'],
-#             'note': agenda.note.id,
-#             'parent_agenda': a_id,
-#             'is_parent_note': False
-#         }
-#         serializer = AgendaSerializer(data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(status=status.HTTP_201_CREATED)
-#         else:
-#             print(serializer.errors)
-#             return Response(status=status.HTTP_400_BAD_REQUEST)
-
 
 """
 ================================================
@@ -755,7 +695,6 @@ def modify_agenda(request, id):
 
     if request.method == 'GET':
         serializer = AgendaSerializer(current_agenda)
-        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
@@ -805,29 +744,31 @@ def todoblock_child_of_note(request, n_id):
             note = Note.objects.get(id=n_id)
         except(Note.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
-
+        print(request.data)
         data = {
             'content': request.data['content'],
             'layer_x': request.data['layer_x'],
             'layer_y': request.data['layer_y'],
             'assignees': request.data['assignees'],
             'note': n_id,
-            'is_parent_note': True
+            'is_parent_note': True,
+            'due_date': request.data['due_date']
         }
+        print(data)
 
         serializer = TodoSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            #print(serializer.errors)
+            # print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 """
 ==================================================
 url: /api/agenda/:id/todos/
-Agenda에 속해있는 TextBlock을 모두 가져오거나 생성하는 API
+Agenda에 속해있는 Todo를 모두 가져오거나 생성하는 API
 
 POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
     {
@@ -839,7 +780,7 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
 """
 @api_view(['GET', 'POST'])
 def todoblock_child_of_agenda(request, a_id):
-    print("here")
+    print("todoblock inside agenda api")
     try:
         agenda = Agenda.objects.get(id=a_id)
     except(Agenda.DoesNotExist):
