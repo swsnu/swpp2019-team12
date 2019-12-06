@@ -206,6 +206,8 @@ class Note extends Component {
                 blocks: newBlocks
             });
         }
+        console.log('찍히나');
+        this.forceUpdate();
     };
 
     handleClickBlock = e => {};
