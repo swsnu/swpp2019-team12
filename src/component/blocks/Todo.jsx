@@ -16,7 +16,9 @@ class Todo extends Component {
     }
 
     componentDidMount() {
+        console.log('todo didmount');
         const { todo } = this.props;
+        console.log('todo: ', todo);
         this.setState({ assignees: todo.assignees_info, todo });
     }
 

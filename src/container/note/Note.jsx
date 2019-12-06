@@ -318,7 +318,9 @@ class Note extends Component {
             layer_x: 0,
             layer_y: 0,
             assignees: [],
-            due_date: '2020-02-07'
+            due_date: moment()
+                .add(1, 'days')
+                .format('YYYY-MM-DD')
         };
 
         let todoContainer = this.state.blocks.find(
@@ -326,7 +328,7 @@ class Note extends Component {
         );
         console.log('todo container: ', todoContainer);
         axios.post(`/api/note/${noteId}/todos/`, todo_info).then(res => {
-            console.log(res.data);
+            res.data.assignees_info = [];
             if (todoContainer) {
                 const newBlocks = this.state.blocks.map(blk => {
                     if (blk.block_type == 'TodoContainer') {
@@ -342,7 +344,6 @@ class Note extends Component {
                     blocks: newBlocks
                 });
             } else {
-                console.log('else');
                 todoContainer = {
                     todos: [res.data],
                     block_type: 'TodoContainer'
@@ -352,46 +353,6 @@ class Note extends Component {
                 });
             }
         });
-
-        // axios.get(`/api/note/${noteId}/todos/`, todo_info).then(res => {
-        //     const todo_info = {
-        //         content: '할 일을 추가해보세요',
-        //         layer_x: 0,
-        //         layer_y: 0,
-        //         assignees: []
-        //     };
-
-        //     // No need to make todo container
-        //     if (res.length) {
-        //     }
-        //     // Need to make todo container
-        //     else {
-        //     }
-        //     this.state.blocks.map(blk => {
-        //         if (blk.block_type === 'TodoContainer') {
-        //             axios
-        //                 .post(`/api/note/${noteId}/todos/`, todo_info)
-        //                 .then(res => {
-        //                     console.log(res);
-        //                     let new_todos = blk.todos.concat(res['data']);
-        //                     this.setState({
-        //                         ...this.state,
-        //                         blocks: [
-        //                             ...this.state.blocks.filter(
-        //                                 b => b.block_type !== 'TodoContainer'
-        //                             ),
-        //                             {
-        //                                 block_type: 'TodoContainer',
-        //                                 todos: new_todos
-        //                             }
-        //                         ]
-        //                     });
-        //                 });
-        //         } else {
-        //             return { ...blk };
-        //         }
-        //     });
-        // });
     };
 
     handleAddImageBlock = noteId => {
