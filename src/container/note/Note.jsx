@@ -192,7 +192,7 @@ class Note extends Component {
         if (todoContainer.todos.length <= 1) {
             this.setState({
                 blocks: this.state.blocks.filter(
-                    blk => blk.block_type !== 'TopoContainer'
+                    blk => blk.block_type !== 'TodoContainer'
                 )
             });
         } else {
