@@ -13,11 +13,12 @@ class TodoContainer extends Component {
         this.setState({ todos: this.props.todos });
     }
 
-    handleDeleteTodo = deleted => {
-        const { todos } = this.state;
-        const filtered = todos.filter(todo => todo.id !== deleted.id);
-        this.setState({ todos: filtered });
-    };
+    // handleDeleteTodo = deleted => {
+    //     const { todos } = this.state;
+    //     const filtered = todos.filter(todo => todo.id !== deleted.id);
+    //     this.setState({ todos: filtered });
+    // };
+
     render() {
         return (
             <div
@@ -39,7 +40,7 @@ class TodoContainer extends Component {
                             key={todo.id}
                             todo={todo}
                             participants={this.props.participants}
-                            handleDeleteTodo={this.handleDeleteTodo}
+                            handleDeleteTodo={this.props.handleDeleteTodo}
                         />
                     ))}
                 </div>

@@ -41,6 +41,7 @@ class NoteLeftBlock extends Component {
                 nextProps.blocks &&
                 nextProps.blocks.map((blk, index) => {
                     let result;
+                    console.log(blk);
                     if (blk.block_type === TEXT) {
                         result = (
                             <Text
@@ -71,6 +72,7 @@ class NoteLeftBlock extends Component {
                                 todos={blk.todos}
                                 participants={nextProps.participants}
                                 handleClickBlock={nextProps.handleClickBlock}
+                                handleDeleteTodo={nextProps.handleDeleteTodo}
                             />
                         );
                     } else {

@@ -744,7 +744,7 @@ def todoblock_child_of_note(request, n_id):
             note = Note.objects.get(id=n_id)
         except(Note.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
-
+        print(request.data)
         data = {
             'content': request.data['content'],
             'layer_x': request.data['layer_x'],
@@ -754,6 +754,7 @@ def todoblock_child_of_note(request, n_id):
             'is_parent_note': True,
             'due_date': request.data['due_date']
         }
+        print(data)
 
         serializer = TodoSerializer(data=data)
         if serializer.is_valid():

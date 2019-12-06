@@ -25,7 +25,7 @@ class Todo extends Component {
         const content = e.target.value.length ? e.target.value : ' ';
         this.setState({ todo: { ...todo, content } }, () => {
             axios
-                .patch(`/api/todo/${todo.id}`, this.state.todo)
+                .patch(`/api/todo/${todo.id}/`, this.state.todo)
                 .then(res => {})
                 .catch(e => console.log(e));
         });
@@ -34,7 +34,7 @@ class Todo extends Component {
     handleDeleteTodo = () => {
         const { todo } = this.state;
         axios
-            .delete(`/api/todo/${todo.id}`)
+            .delete(`/api/todo/${todo.id}/`)
             .then(res => {
                 this.props.handleDeleteTodo(todo);
             })
@@ -49,7 +49,7 @@ class Todo extends Component {
     handleChangeStatus = () => {
         const { todo } = this.state;
         axios
-            .patch(`/api/todo/${todo.id}`, { is_done: !todo.is_done })
+            .patch(`/api/todo/${todo.id}/`, { is_done: !todo.is_done })
             .then(res => {
                 this.setState({ todo: { ...todo, is_done: !todo.is_done } });
             })
@@ -64,7 +64,7 @@ class Todo extends Component {
             assignees: assignees.map(assignee => assignee.id)
         };
         axios
-            .patch(`/api/todo/${todo.id}`, assigneeInfo)
+            .patch(`/api/todo/${todo.id}/`, assigneeInfo)
             .then(res => {
                 this.setState({ assignees });
             })
@@ -84,7 +84,7 @@ class Todo extends Component {
     handleChangeDueDate = (date, dateString) => {
         const { todo } = this.state;
         axios
-            .patch(`/api/todo/${todo.id}`, {
+            .patch(`/api/todo/${todo.id}/`, {
                 due_date: date.format('YYYY-MM-DD')
             })
             .then(res => {
@@ -136,7 +136,7 @@ class Todo extends Component {
                         {todo.is_done ? (
                             <div className="full-size-block todoCard-content-element__todo-text done">
                                 <div>
-                                    <span>{`#${todo.id}`}</span>
+                                    <span>{`#${todo.id}/`}</span>
                                 </div>
                                 <input
                                     className="todoCard-content-element__todo-text-content"
@@ -149,7 +149,7 @@ class Todo extends Component {
                         ) : (
                             <div className="full-size-block todoCard-content-element__todo-text">
                                 <div>
-                                    <span>{`#${todo.id}`}</span>
+                                    <span>{`#${todo.id}/`}</span>
                                 </div>
                                 <input
                                     className="todoCard-content-element__todo-text-content"

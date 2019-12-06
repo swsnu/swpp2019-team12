@@ -154,7 +154,6 @@ class Note extends Component {
     handleNoteLeft는 Block들을 제외한 모든 부분이 클릭되었을 때 클릭이벤트 감지.
     우리가 원하는 기능이 특정 Block을 클릭하면 해당 Block이 우측 창에 Focus되면서
     큰 화면에서 보고 수정할 수 있도록 하는 것. 따라서 NoteLeft에서는 즉시 수정은 불가.
-        
     =================================================================== */
 
     handleDeleteBlock = (axios_path, block_type, block_id) => {
@@ -179,6 +178,34 @@ class Note extends Component {
             .catch(err => {
                 console.log('err: ', err);
             });
+    };
+
+    handleDeleteTodo = deleted => {
+        const todoContainer = this.state.blocks.filter(
+            blk => blk.block_type == 'TodoContainer'
+        );
+        if (!todoContainer) {
+            console.log('Todo conatiner가 없습니다. ');
+        }
+
+        // 만약 컨테이너가 존재하지만, 단 한개의 Todo가 존재한다면, 그것을 지우고 컨테이너도 삭제
+        if (todoContainer.todos.length <= 1) {
+            this.setState({
+                blocks: this.state.blocks.filter(
+                    blk => blk.block_type !== 'TopoContainer'
+                )
+            });
+        } else {
+            // 컨테이너가 이미 존재하고 그 안에 2개 이상의 Todo 가 있다면, 지우고자 하는 Todo를 제거한 새로운 배열로 수정
+            const newBlocks = this.state.blocks.map(blk => {
+                if (blk.block_type == 'TodoContainer') {
+                    return blk.filter(todo => todo.id !== deleted.id);
+                }
+            });
+            blocks.this.setState({
+                blocks: newBlocks
+            });
+        }
     };
 
     handleClickBlock = e => {};
@@ -270,6 +297,11 @@ class Note extends Component {
         });
     };
 
+    /**
+     * 1. 만약 투두가 전혀 없었다면, 투두 컨테이너가 생성되어야 하고, 첫 투두가 컨테이너에 들어가야함
+     * 2. 만약 투두컨테이너가 있고, 투두가 있었다면, 그 컨테이너에 add되어야함
+     * 3.
+     */
     handleAddTodoBlock = () => {
         const noteId = this.props.match.params.n_id;
 
@@ -279,47 +311,81 @@ class Note extends Component {
             content: '할 일을 채워주세요',
             layer_x: 0,
             layer_y: 0,
-            assignees: []
+            assignees: [],
+            due_date: '2020-02-07'
         };
-        axios.get(`/api/note/${noteId}/todos/`, todo_info).then(res => {
-            const todo_info = {
-                content: '할 일을 추가해보세요',
-                layer_x: 0,
-                layer_y: 0,
-                assignees: []
-            };
 
-            // No need to make todo container
-            if (res.length) {
+        let todoContainer = this.state.blocks.find(
+            blk => blk.block_type === 'TodoContainer'
+        );
+        console.log('todo container: ', todoContainer);
+        axios.post(`/api/note/${noteId}/todos/`, todo_info).then(res => {
+            console.log(res.data);
+            if (todoContainer) {
+                const newBlocks = this.state.blocks.map(blk => {
+                    if (blk.block_type == 'TodoContainer') {
+                        const newTodos = blk.todos.concat(res.data);
+                        blk.todos = newTodos;
+                        return blk;
+                    } else {
+                        return blk;
+                    }
+                });
+                console.log(newBlocks);
+                this.setState({
+                    blocks: newBlocks
+                });
+            } else {
+                console.log('else');
+                todoContainer = {
+                    todos: [res.data],
+                    block_type: 'TodoContainer'
+                };
+                this.setState({
+                    blocks: this.state.blocks.concat(todoContainer)
+                });
             }
-            // Need to make todo container
-            else {
-            }
-            this.state.blocks.map(blk => {
-                if (blk.block_type === 'TodoContainer') {
-                    axios
-                        .post(`/api/note/${noteId}/todos/`, todo_info)
-                        .then(res => {
-                            console.log(res);
-                            let new_todos = blk.todos.concat(res['data']);
-                            this.setState({
-                                ...this.state,
-                                blocks: [
-                                    ...this.state.blocks.filter(
-                                        b => b.block_type !== 'TodoContainer'
-                                    ),
-                                    {
-                                        block_type: 'TodoContainer',
-                                        todos: new_todos
-                                    }
-                                ]
-                            });
-                        });
-                } else {
-                    return { ...blk };
-                }
-            });
         });
+
+        // axios.get(`/api/note/${noteId}/todos/`, todo_info).then(res => {
+        //     const todo_info = {
+        //         content: '할 일을 추가해보세요',
+        //         layer_x: 0,
+        //         layer_y: 0,
+        //         assignees: []
+        //     };
+
+        //     // No need to make todo container
+        //     if (res.length) {
+        //     }
+        //     // Need to make todo container
+        //     else {
+        //     }
+        //     this.state.blocks.map(blk => {
+        //         if (blk.block_type === 'TodoContainer') {
+        //             axios
+        //                 .post(`/api/note/${noteId}/todos/`, todo_info)
+        //                 .then(res => {
+        //                     console.log(res);
+        //                     let new_todos = blk.todos.concat(res['data']);
+        //                     this.setState({
+        //                         ...this.state,
+        //                         blocks: [
+        //                             ...this.state.blocks.filter(
+        //                                 b => b.block_type !== 'TodoContainer'
+        //                             ),
+        //                             {
+        //                                 block_type: 'TodoContainer',
+        //                                 todos: new_todos
+        //                             }
+        //                         ]
+        //                     });
+        //                 });
+        //         } else {
+        //             return { ...blk };
+        //         }
+        //     });
+        // });
     };
 
     handleAddImageBlock = noteId => {
@@ -394,6 +460,11 @@ class Note extends Component {
     };
 
     render() {
+        // console.log(
+        //     'render todo container: ',
+        //     this.state.blocks.filter(blk => blk.block_type === 'TodoConatiner'),
+        //     this.state.blocks.find(blk => blk.block_type === 'TodoContainer')
+        // );
         const { history } = this.props;
         const noteId = this.props.match.params.n_id;
         return (
