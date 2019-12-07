@@ -20,9 +20,6 @@ import NotFound from './component/NotFound';
 // Google STT
 import googleSTT from './container/stt/googleSTT';
 // Editor
-import EditorWrapper from './component/texteditor/EditorWrapper';
-
-import AgendaRealTime from './component/realtime/AgendaRealTime';
 
 import CalendarBlock from './component/blocks/Calendar';
 
@@ -31,9 +28,6 @@ function App() {
         <Router>
             <div className="App">
                 <Switch>
-                    <Route exact path="/websocket" component={AgendaRealTime} />
-                    {/* For Developing Editor */}
-                    <Route exact path="/editor" component={EditorWrapper} />
                     {/* Can access without login */}
                     <Route exact path="/" component={SignIn} />
                     <Route exact path="/signin" component={SignIn} />
