@@ -6,7 +6,7 @@ function mockComponent(props, className) {
     return <div className={className}>{props.title}</div>;
 }
 
-jest.mock('./container/user/Signin', () =>
+jest.mock('./container/user/SignIn', () =>
     jest.fn(props => mockComponent(props, 'spySignIn'))
 );
 
