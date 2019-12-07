@@ -57,31 +57,44 @@ jest.mock('@ckeditor/ckeditor5-table/src/table', () => jest.fn());
 jest.mock('@ckeditor/ckeditor5-table/src/tabletoolbar', () => jest.fn());
 jest.mock('@ckeditor/ckeditor5-basic-styles/src/underline', () => jest.fn());
 
+const STUB_DOCUMENT_ID = 'StubDocumentId';
+const STUB_CONFIGURATION = {
+    tokenUrl: 'StubTokenUrl',
+    uploadUrl: 'StubUploadUrl',
+    webSocketUrl: 'StubWebSocketUrl',
+    documentId: 'StubDocumentId'
+};
+const STUB_SELECTED_USER = {
+    id: 1,
+    name: 'StubUser'
+};
+function stub_handleLoading() {}
+
 describe('<Editor />', () => {
+    let editor;
+
+    beforeEach(() => {
+        editor = (
+            <Editor
+                documentId={STUB_DOCUMENT_ID}
+                selectedUser={STUB_SELECTED_USER}
+                handleLoading={stub_handleLoading}
+                configuration={STUB_CONFIGURATION}
+            />
+        );
+    });
     afterEach(() => {
         jest.clearAllMocks();
     });
 
     it('should render without errors', () => {
-        const component = shallow(<Editor />);
+        const component = mount(editor);
         const wrapper = component.find('.Editor');
-        expect(wrapper.length), toBe(1);
+        expect(wrapper.length).toBe(1);
     });
+
+    // it('should set state properly after didmount', () => {
+    //     const component = mount(editor);
+
+    // })
 });
-
-// const mockHistory = createBrowserHistory();
-// describe('<NewArticle />', () => {
-//     let newArticle;
-
-//     beforeEach(() => {
-//         newArticle = (
-//             <Provider store={mockStore}>
-//                 <ConnectedRouter history={history}>
-//                     <Switch>
-//                         <Route path='/' exact
-//                             render={() => { return <NewArticle  history={mockHistory}/>}}/>
-//                     </Switch>
-//                 </ConnectedRouter>
-//             </Provider>
-//         )
-//     })
