@@ -13,16 +13,19 @@ import json
 from django.db.models import Q
 
 
+"""
+We should fill in here
+"""
 @api_view(['PATCH', 'POST'])
 def signup(request):
     if request.method == 'PATCH':
         try:
             username = request.data['username']
-        except(KeyError):
+        except:
             return HttpResponse(status=400)
         try:
             user = User.objects.get(username=username)
-        except(User.DoesNotExist):
+        except:
             # 아이디가 생성 가능한 경우
             return Response(status=status.HTTP_200_OK)
         # 아이디가 이미 사용되고 있는 경우
@@ -33,7 +36,7 @@ def signup(request):
             username = request.data['username']
             password = request.data['password']
             nickname = request.data['nickname']
-        except(KeyError):
+        except:
             return HttpResponse(status=400)
 
         serializer = UserSerializer(data=request.data)
@@ -54,13 +57,16 @@ def signup(request):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+"""
+We should fill in here
+"""
 @api_view(['POST'])
 def signin(request):
     if request.method == 'POST':
         try:
             username = request.data['username']
             password = request.data['password']
-        except(KeyError):
+        except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         user = auth.authenticate(username=username, password=password)
         if user is not None:
@@ -76,6 +82,9 @@ def signin(request):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
+"""
+We should fill in here
+"""
 @api_view(['GET'])
 def signout(request):
     if request.method == 'GET':
@@ -86,11 +95,11 @@ def signout(request):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
-'''
+"""
 # ===================================================
 # Profile 관련 GET POST PATCH
 # ===================================================
-'''
+"""
 # 추가된 api / Profile에 닉네임 저장
 @api_view(['GET', 'POST', 'PATCH'])
 def profile(request):
@@ -120,13 +129,13 @@ def profile(request):
         try:
             username = request.data['username']  # search string
             workspace_id = request.data['workspace_id']
-        except (KeyError):
+        except:
             username = request.data['username']  # search string
 
         if workspace_id:
             try:
                 workspace = Workspace.objects.get(id=workspace_id)
-            except(Workspace.DoesNotExist):
+            except:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
             members = workspace.members.all()
@@ -167,19 +176,19 @@ def profile(request):
             return Response(data, status=status.HTTP_200_OK)
 
 
-'''
+"""
 # ===================================================
 # user_id로 특정 user Profile GET
 # /api/profile/u_id
 # ===================================================
-'''
+"""
 # 추가된 api / Profile에 닉네임 저장
 @api_view(['GET', 'PATCH'])
 def specific_profile(request, u_id):
     if request.method == 'GET':
         try:
             profile = Profile.objects.get(id=u_id)
-        except (Profile.DoesNotExist):
+        except:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -192,7 +201,7 @@ def specific_profile(request, u_id):
         # queryset = request.user.profile
         try:
             queryset = Profile.objects.get(id=u_id)
-        except(Profile.DoesNotExist):
+        except:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ProfileSerializer(
             queryset, data=request.data, partial=True)
@@ -244,13 +253,13 @@ def workspace(request):
             name = request.data['name']
             admins = request.data['admins']  # admin id list
             members = request.data['members']
-        except(KeyError):
+        except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         admin_list = []
         for admin in admins:
             try:
                 admin_list.append(Profile.objects.get(user__id=admin))
-            except(Profile.DoesNotExist):
+            except:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
         member_list = []
@@ -258,7 +267,7 @@ def workspace(request):
         for member in members:
             try:
                 member_list.append(Profile.objects.get(user__id=member))
-            except(Profile.DoesNotExist):
+            except:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
         Workspace.objects.create(name=name)
@@ -301,7 +310,7 @@ def specific_workspace(request, id):
         try:
             workspace = Workspace.objects.get(id=id)
             workspaces = Workspace.objects.filter(members__in=[profile])
-        except(Workspace.DoesNotExist):
+        except:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         members = workspace.members.all()
@@ -335,7 +344,7 @@ def specific_workspace(request, id):
     elif request.method == 'PATCH':
         try:
             current_workspace = Workspace.objects.get(id=id)
-        except(Workspace.DoesNotExist):
+        except:
             return Response(status=status.HTTP_404_NOT_FOUND)
         current_members = current_workspace.members.all()
         new_members = request.data['members']
@@ -354,13 +363,16 @@ def specific_workspace(request, id):
     elif request.method == 'DELETE':
         try:
             current_workspace = Workspace.objects.get(id=id)
-        except(Workspace.DoesNotExist):
+        except:
             return Response(status=status.HTTP_404_NOT_FOUND)
         current_workspace.delete()
         return Response(status=status.HTTP_200_OK)
 
 
 # 어떤 유저의 워크스페이스 상의 assign된 모든 Todo 반환
+"""
+We should fill in here
+"""
 @api_view(['GET'])
 def workspace_todo(request, w_id):
     if request.method == 'GET':
@@ -375,12 +387,15 @@ def workspace_todo(request, w_id):
 
 
 # 어떤 유저의 워크스페이스 상의 모든 agenda 반환
+"""
+We should fill in here
+"""
 @api_view(['GET'])
 def workspace_agenda(request, w_id):
     if request.method == 'GET':
         try:
             workspace = Workspace.objects.get(id=w_id)
-        except(Workspace.DoesNotExist):
+        except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         queryset = Agenda.objects.filter(note__workspace=workspace)
         if queryset.count() > 0:
@@ -390,12 +405,15 @@ def workspace_agenda(request, w_id):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
+"""
+We should fill in here
+"""
 @api_view(['GET', 'POST'])
 def notes(request, w_id):
     if request.method == 'GET':
         try:
             workspace = Workspace.objects.get(id=w_id)
-        except(Workspace.DoesNotExist):
+        except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         queryset = Note.objects.filter(workspace=workspace)
         if queryset.count() > 0:
@@ -416,7 +434,7 @@ def notes(request, w_id):
             workspace = Workspace.objects.get(id=workspace_id)
             # tags = request.data['tags'] # tag string list
             # ml_speech_text = request.data['mlSpeechText']
-        except(KeyError):
+        except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         participants_list = []
@@ -424,7 +442,7 @@ def notes(request, w_id):
             try:
                 participants_list.append(
                     Profile.objects.get(user__username=participant))
-            except(Profile.DoesNotExist):
+            except:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
         Note.objects.create(title=title,
@@ -440,12 +458,15 @@ def notes(request, w_id):
         return Response(note_serializer.data, status=status.HTTP_201_CREATED)
 
 
+"""
+We should fill in here
+"""
 @api_view(['GET', 'PATCH', 'DELETE'])
 def specific_note(request, n_id):
     if request.method == 'GET':
         try:
             current_note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist):
+        except:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = NoteSerializer(current_note)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -453,7 +474,7 @@ def specific_note(request, n_id):
     elif request.method == 'PATCH':
         try:
             current_note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist):
+        except:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = NoteSerializer(
             current_note, data=request.data, partial=True)
@@ -466,22 +487,24 @@ def specific_note(request, n_id):
     elif request.method == 'DELETE':
         try:
             current_note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist):
+        except:
             return Response(status=status.HTTP_404_NOT_FOUND)
         current_note.delete()
         return Response(status=status.HTTP_200_OK)
 
 
+"""
+We should fill in here
+"""
 @api_view(['GET'])
 def sibling_notes(request, n_id):
     if request.method == 'GET':
         try:
             note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist):
+        except:
             return Response(status=status.HTTP_404_NOT_FOUND)
         workspace = note.workspace
-        sibling_notes = Note.objects.filter(workspace=workspace).filter(~Q(id = n_id))
-        
+        sibling_notes = Note.objects.filter(workspace=workspace).filter(~Q(id=n_id))
         if sibling_notes.count() > 0:
             serializer = NoteSerializer(sibling_notes, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -519,9 +542,8 @@ def textblock_child_of_note(request, n_id):
 
         try:
             note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist):
+        except:
             return Response(status=status.HTTP_404_NOT_FOUND)        
-
         data = {
             'content': request.data['content'],
             'layer_x': request.data['layer_x'],
@@ -530,7 +552,6 @@ def textblock_child_of_note(request, n_id):
             'note': n_id,
             'is_parent_note': True,
         }
-        
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -557,7 +578,7 @@ POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
 def textblock_child_of_agenda(request, a_id):
     try:
         agenda = Agenda.objects.get(id=a_id)
-    except(Agenda.DoesNotExist):
+    except:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
@@ -608,7 +629,7 @@ PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
 def modify_textblock(request, id):
     try:
         current_textblock = TextBlock.objects.get(id=id)
-    except(TextBlock.DoesNotExist):
+    except:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         serializer = TextBlockSerializer(current_textblock)
@@ -657,7 +678,7 @@ def agenda_child_of_note(request, n_id):
     elif request.method == 'POST':
         try:
             note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist):
+        except:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         data = {
@@ -690,7 +711,7 @@ PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
 def modify_agenda(request, id):
     try:
         current_agenda = Agenda.objects.get(id=id)
-    except(Agenda.DoesNotExist):
+    except:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
@@ -742,7 +763,7 @@ def todoblock_child_of_note(request, n_id):
     elif request.method == 'POST':
         try:
             note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist):
+        except:
             return Response(status=status.HTTP_404_NOT_FOUND)
         print(request.data)
         data = {
@@ -783,7 +804,7 @@ def todoblock_child_of_agenda(request, a_id):
     print("todoblock inside agenda api")
     try:
         agenda = Agenda.objects.get(id=a_id)
-    except(Agenda.DoesNotExist):
+    except:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         queryset = Todo.objects.filter(
@@ -833,7 +854,7 @@ PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
 def modify_todoblock(request, id):
     try:
         current_todo = Todo.objects.get(id=id)
-    except(Todo.DoesNotExist):
+    except:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':

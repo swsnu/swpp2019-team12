@@ -5,7 +5,9 @@ from .models import *
 
 # Profile, Tag, Workspace, Note, Agenda, Calendar, File, Image, Table, Todo, TextBlock
 
-
+"""
+We should fill in here
+"""
 class MOFTestCase(TestCase):
 
     def setUp(self):
@@ -67,6 +69,10 @@ class MOFTestCase(TestCase):
         text2 = TextBlock.objects.create(
             content="test_content2", note=note1, parent_agenda=agenda1, is_parent_note=False)
 
+
+    """
+    We should fill in here
+    """
     def test_models(self):
         User.objects.create_user(username='test@test.com', password="test")
 
@@ -148,6 +154,10 @@ class MOFTestCase(TestCase):
         self.assertEqual(str(TextBlock.objects.get(id=3)),
                          "content: test_content")
 
+
+    """
+    We should fill in here
+    """
     def test_user_auth(self):
         client = Client(enforce_csrf_checks=False)
         ##########
@@ -238,6 +248,10 @@ class MOFTestCase(TestCase):
         response = client.get('/api/signout/', HTTP_X_CSRFTOKEN=csrftoken)
         self.assertEqual(response.status_code, 401)
 
+
+    """
+    We should fill in here
+    """
     def test_profile(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
@@ -274,6 +288,10 @@ class MOFTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 404)
 
+
+    """
+    We should fill in here
+    """
     def test_specific_profile(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password='test')
@@ -298,6 +316,10 @@ class MOFTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
+
+    """
+    We should fill in here
+    """
     def test_workspace(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
@@ -337,6 +359,10 @@ class MOFTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
+
+    """
+    We should fill in here
+    """
     def test_specific_workspace(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password='test')
@@ -368,6 +394,10 @@ class MOFTestCase(TestCase):
         response = client.delete('/api/workspace/1/')
         self.assertEqual(response.status_code, 200)
 
+
+    """
+    We should fill in here
+    """
     def test_workspace_todo(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
@@ -377,6 +407,10 @@ class MOFTestCase(TestCase):
         response = client.get('/api/workspace/1/todos/')
         self.assertEqual(response.status_code, 200)
 
+
+    """
+    We should fill in here
+    """
     def test_workspace_agenda(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
@@ -389,6 +423,10 @@ class MOFTestCase(TestCase):
         response = client.get('/api/workspace/1/agendas/')
         self.assertEqual(response.status_code, 200)
 
+
+    """
+    We should fill in here
+    """
     def test_notes(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
@@ -436,6 +474,10 @@ class MOFTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 404)
 
+
+    """
+    We should fill in here
+    """
     def test_specific_note(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
@@ -474,6 +516,10 @@ class MOFTestCase(TestCase):
         response = client.delete('/api/note/1/')
         self.assertEqual(response.status_code, 200)
 
+
+    """
+    We should fill in here
+    """
     def test_sibling_notes(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
@@ -487,6 +533,10 @@ class MOFTestCase(TestCase):
         response = client.get('/api/siblingnotes/3/')
         self.assertEqual(response.status_code, 404)
 
+
+    """
+    We should fill in here
+    """
     def test_textblock_child_of_note(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
@@ -521,6 +571,10 @@ class MOFTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
+
+    """
+    We should fill in here
+    """
     def test_textblock_child_of_agenda(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
@@ -550,6 +604,10 @@ class MOFTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
+
+    """
+    We should fill in here
+    """
     def test_modify_textblock(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
@@ -577,6 +635,10 @@ class MOFTestCase(TestCase):
         response = client.delete('/api/textblock/1/')
         self.assertEqual(response.status_code, 200)
 
+
+    """
+    We should fill in here
+    """
     def test_agenda_child_of_note(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
@@ -608,6 +670,10 @@ class MOFTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
+
+    """
+    We should fill in here
+    """
     def test_modify_agenda(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
@@ -635,6 +701,10 @@ class MOFTestCase(TestCase):
         response = client.delete('/api/agenda/1/')
         self.assertEqual(response.status_code, 200)
 
+
+    """
+    We should fill in here
+    """
     def test_todoblock_child_of_note(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
@@ -672,6 +742,10 @@ class MOFTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
+
+    """
+    We should fill in here
+    """
     def test_todoblock_child_of_agenda(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
@@ -703,6 +777,10 @@ class MOFTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
+
+    """
+    We should fill in here
+    """
     def test_modify_todoblock(self):
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
