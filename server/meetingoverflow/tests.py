@@ -538,6 +538,7 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 3.333,
             'layer_y': 0,
+            'document_id': 'asfecsm3242a'
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
@@ -545,6 +546,7 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 0,
             'layer_y': 0,
+            'document_id': 'asfecsm3242a'
         }), content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
@@ -561,14 +563,14 @@ class MOFTestCase(TestCase):
         response = client.patch('/api/textblock/1/', json.dumps({
             'content': 'test_content',
             'layer_x': 3.33,
-            'layer_y': 0,
+            'layer_y': 0
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
         response = client.patch('/api/textblock/1/', json.dumps({
             'content': 'test_content',
             'layer_x': 0,
-            'layer_y': 0,
+            'layer_y': 0
         }), content_type='application/json')
         self.assertEqual(response.status_code, 202)
 
@@ -647,7 +649,8 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 0,
             'layer_y': 0,
-            'assignees': [1]
+            'assignees': [1],
+            'due_date': "2020-02-07"
         }), content_type='application/json')
         self.assertEqual(response.status_code, 404)
 
@@ -655,7 +658,8 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 0,
             'layer_y': 0,
-            'assignees': [1]
+            'assignees': [1],
+            'due_date': "2020-02-07"
         }), content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
@@ -663,7 +667,8 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 3.333,
             'layer_y': 0,
-            'assignees': [1]
+            'assignees': [1],
+            'due_date': "2020-02-07"
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
@@ -684,7 +689,8 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 3.333,
             'layer_y': 0,
-            'assignees': [1]
+            'assignees': [1],
+            'due_date': "2020-02-07"
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
@@ -692,7 +698,8 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 0,
             'layer_y': 0,
-            'assignees': [1]
+            'assignees': [1],
+            'due_date': "2020-02-07"
         }), content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
