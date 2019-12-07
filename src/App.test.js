@@ -39,7 +39,6 @@ describe('<App />', () => {
 
     it('should render without error', () => {
         // const component = mount(app);
-        console.log('what');
         //console.log(mount(<App />).debug());
         const component = shallow(<App />);
         let wrapper = component.find('.App');
