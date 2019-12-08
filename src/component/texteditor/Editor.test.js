@@ -56,7 +56,9 @@ jest.mock('@ckeditor/ckeditor5-basic-styles/src/strikethrough', () =>
 jest.mock('@ckeditor/ckeditor5-table/src/table', () => jest.fn());
 jest.mock('@ckeditor/ckeditor5-table/src/tabletoolbar', () => jest.fn());
 jest.mock('@ckeditor/ckeditor5-basic-styles/src/underline', () => jest.fn());
-
+jest.mock('@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter', () =>
+    jest.fn()
+);
 const STUB_DOCUMENT_ID = 'StubDocumentId';
 const STUB_CONFIGURATION = {
     tokenUrl: 'StubTokenUrl',
