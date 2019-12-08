@@ -1,20 +1,28 @@
+#import json
 import dateutil.parser
-from django.shortcuts import render
+#from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import *
-from .serializers import *
+import django.contrib
 from django.contrib import auth
 from django.contrib.auth.models import User
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
-import json
+#from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.db.models import Q
+from .models import (Profile, Tag, Workspace, Note, Agenda, timezone,
+                     Calendar, File, Image, Table, Todo, TextBlock)
+from .serializers import (UserSerializer, EncapsulatedUserSerializer, ProfileSerializer,
+                          NoteSerializer, WorkspaceSerializer, TableSerializer, TagSerializer,
+                          TodoSerializer, AgendaSerializer, TextBlockSerializer, CalendarSerializer,
+                          FileSerializer, ImageSerializer)
 
 
 @api_view(['PATCH', 'POST'])
 def signup(request):
+    """
+    Signup api
+    """
     if request.method == 'PATCH':
         try:
             username = request.data['username']
@@ -31,7 +39,7 @@ def signup(request):
     elif request.method == 'POST':
         try:
             username = request.data['username']
-            password = request.data['password']
+            # password = request.data['password']
             nickname = request.data['nickname']
         except KeyError:
             return HttpResponse(status=400)
@@ -40,12 +48,12 @@ def signup(request):
         if serializer.is_valid():
             serializer.save()
             user = User.objects.get(username=username)
-            profile = Profile.objects.get(user=user)
-            profile.nickname = nickname
-            profile.save()
+            current_profile = Profile.objects.get(user=user)
+            current_profile.nickname = nickname
+            current_profile.save()
             response = {
-                'id': profile.id,
-                'nickname': profile.nickname,
+                'id': current_profile.id,
+                'nickname': current_profile.nickname,
                 'username': user.username
             }
             auth.login(request, user)
@@ -55,6 +63,9 @@ def signup(request):
 
 @api_view(['POST'])
 def signin(request):
+    """
+    signin api
+    """
     if request.method == 'POST':
         try:
             username = request.data['username']
@@ -63,10 +74,10 @@ def signin(request):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         user = auth.authenticate(username=username, password=password)
         if user is not None:
-            profile = Profile.objects.get(user=user)
+            current_profile = Profile.objects.get(user=user)
             response = {
-                'id': profile.id,
-                'nickname': profile.nickname,
+                'id': current_profile.id,
+                'nickname': current_profile.nickname,
                 'username': user.username
             }
             auth.login(request, user)
@@ -76,6 +87,9 @@ def signin(request):
 
 @api_view(['GET'])
 def signout(request):
+    """
+    signout api
+    """
     if request.method == 'GET':
         if request.user.is_authenticated:
             auth.logout(request)
@@ -83,25 +97,24 @@ def signout(request):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
-'''
-# ===================================================
-# Profile 관련 GET POST PATCH
-# ===================================================
-'''
 # 추가된 api / Profile에 닉네임 저장
 @api_view(['GET', 'POST', 'PATCH'])
-def profile(request):
-
+def profile_api(request):
+    """
+    # ===================================================
+    # Profile 관련 GET POST PATCH
+    # ===================================================
+    """
     # ===========Front implementation===========
     # 현재 로그인한 유저의 User, Profile 정보 리턴
     # axios.get('/api/profile/')
     # ==========================================
     if request.method == 'GET':
         user = request.user
-        profile = request.user.profile
+        current_profile = request.user.profile
 
         user_serializer = EncapsulatedUserSerializer(user)
-        profile_serializer = ProfileSerializer(profile)
+        profile_serializer = ProfileSerializer(current_profile)
 
         data = {
             "user": user_serializer.data,
@@ -143,7 +156,7 @@ def profile(request):
             return Response(data, status=status.HTTP_200_OK)
         else:
             users = User.objects.filter(username__contains=username)
-            if(users.count() == 0):
+            if users.count() == 0:
                 return Response(status=status.HTTP_404_NOT_FOUND)
             data = []
             for user in users:
@@ -158,15 +171,15 @@ def profile(request):
             return Response(data, status=status.HTTP_200_OK)
 
 
-'''
-# ===================================================
-# user_id로 특정 user Profile GET
-# /api/profile/u_id
-# ===================================================
-'''
 # 추가된 api / Profile에 닉네임 저장
 @api_view(['GET', 'PATCH'])
 def specific_profile(request, u_id):
+    """
+    # ===================================================
+    # user_id로 특정 user Profile GET
+    # /api/profile/u_id
+    # ===================================================
+    """
     if request.method == 'GET':
         try:
             profile = Profile.objects.get(id=u_id)
@@ -199,18 +212,18 @@ def specific_profile(request, u_id):
 # 모든 workspace GET 의 경우 admin 정보만 같이 리턴
 # for FE/WorkspaceSelection
 # ===================================================
-"""
-====================================
-POST 예시:
-    {
-        "name":"workspace[2]", 
-        "admins":[1, 2], 
-        "members":[1, 2, 3]
-    }
-====================================
-"""
 @api_view(['GET', 'POST'])
-def workspace(request):
+def workspace_api(request):
+    """
+    ====================================
+    POST 예시:
+        {
+            "name":"workspace[2]",
+            "admins":[1, 2],
+            "members":[1, 2, 3]
+        }
+    ====================================
+    """
     if request.method == 'GET':
         profile = request.user.profile
         queryset = Workspace.objects.filter(members__in=[profile])
@@ -263,29 +276,29 @@ def workspace(request):
 # GET의 경우 관련된 모든 정보 리턴 for FE/Workspace
 # (workspace, member, admin, note, agenda, todo)
 # ===================================================
-"""
-# ======================== RESTful Code ==========================
-# if request.method == 'GET':
-#     try: 
-#         workspace = Workspace.objects.get(id=id)
-#     except(Workspace.DoesNotExist):
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-#     serializer = WorkspaceSerializer(workspace)
-#     return Response(serializer.data, status=status.HTTP_200_OK)
-#
-# => workspace와 관련된 정보만을 반환하는 RESTful 한 GET 코드
-#
-# Frontend 에서 필요한 각 정보별로 API를 따로 호출하는 것이 더 바람직!
-# 아래의 경우 여러 serializer를 거쳐야 하므로 한 api가 비대해지는 문제점 발생
-# ================================================================
-"""
 @api_view(['GET', 'PATCH', 'DELETE'])
-def specific_workspace(request, id):
+def specific_workspace(request, w_id):
+    """
+    # ======================== RESTful Code ==========================
+    # if request.method == 'GET':
+    #     try:
+    #         workspace = Workspace.objects.get(id=id)
+    #     except(Workspace.DoesNotExist):
+    #         return Response(status=status.HTTP_404_NOT_FOUND)
+    #     serializer = WorkspaceSerializer(workspace)
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
+    #
+    # => workspace와 관련된 정보만을 반환하는 RESTful 한 GET 코드
+    #
+    # Frontend 에서 필요한 각 정보별로 API를 따로 호출하는 것이 더 바람직!
+    # 아래의 경우 여러 serializer를 거쳐야 하므로 한 api가 비대해지는 문제점 발생
+    # ================================================================
+    """
     if request.method == 'GET':
         profile = request.user.profile
         #profile = Profile.objects.get(id=1)
         try:
-            workspace = Workspace.objects.get(id=id)
+            workspace = Workspace.objects.get(id=w_id)
             workspaces = Workspace.objects.filter(members__in=[profile])
         except Workspace.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -319,7 +332,7 @@ def specific_workspace(request, id):
 
     elif request.method == 'PATCH':
         try:
-            current_workspace = Workspace.objects.get(id=id)
+            current_workspace = Workspace.objects.get(id=w_id)
         except Workspace.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         current_members = current_workspace.members.all()
@@ -337,7 +350,7 @@ def specific_workspace(request, id):
 
     elif request.method == 'DELETE':
         try:
-            current_workspace = Workspace.objects.get(id=id)
+            current_workspace = Workspace.objects.get(id=w_id)
         except Workspace.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         current_workspace.delete()
@@ -347,6 +360,9 @@ def specific_workspace(request, id):
 # 어떤 유저의 워크스페이스 상의 assign된 모든 Todo 반환
 @api_view(['GET'])
 def workspace_todo(request, w_id):
+    """
+    Workspace todo api
+    """
     if request.method == 'GET':
         profile = request.user.profile
         queryset = Todo.objects.filter(
@@ -360,6 +376,9 @@ def workspace_todo(request, w_id):
 # 어떤 유저의 워크스페이스 상의 모든 agenda 반환
 @api_view(['GET'])
 def workspace_agenda(request, w_id):
+    """
+    Workspace agenda api
+    """
     if request.method == 'GET':
         try:
             workspace = Workspace.objects.get(id=w_id)
@@ -373,7 +392,10 @@ def workspace_agenda(request, w_id):
 
 
 @api_view(['GET', 'POST'])
-def notes(request, w_id):
+def notes_api(request, w_id):
+    """
+    Notes api
+    """
     if request.method == 'GET':
         try:
             workspace = Workspace.objects.get(id=w_id)
@@ -423,6 +445,9 @@ def notes(request, w_id):
 
 @api_view(['GET', 'PATCH', 'DELETE'])
 def specific_note(request, n_id):
+    """
+    specific note api
+    """
     if request.method == 'GET':
         try:
             current_note = Note.objects.get(id=n_id)
@@ -454,33 +479,37 @@ def specific_note(request, n_id):
 
 @api_view(['GET'])
 def sibling_notes(request, n_id):
+    """
+    sibling notes api
+    """
     if request.method == 'GET':
         try:
             note = Note.objects.get(id=n_id)
         except Note.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         workspace = note.workspace
-        sibling_notes = Note.objects.filter(workspace=workspace).filter(~Q(id=n_id))
-        if sibling_notes.count() > 0:
-            serializer = NoteSerializer(sibling_notes, many=True)
+        current_sibling_notes = Note.objects.filter(
+            workspace=workspace).filter(~Q(id=n_id))
+        if current_sibling_notes.count() > 0:
+            serializer = NoteSerializer(current_sibling_notes, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-"""
-===================================================
-url: /api/note/:id/textblocks/
-Note에 직접 속해있는 TextBlock을 모두 가져오거나 생성하는 API
-POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
-    {
-        "content": "Hello World",
-        "layer_x": 0,
-        "layer_y": 1
-    }
-===================================================
-"""
 @api_view(['GET', 'POST'])
 def textblock_child_of_note(request, n_id):
+    """
+    ===================================================
+    url: /api/note/:id/textblocks/
+    Note에 직접 속해있는 TextBlock을 모두 가져오거나 생성하는 API
+    POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+        {
+            "content": "Hello World",
+            "layer_x": 0,
+            "layer_y": 1
+        }
+    ===================================================
+    """
     # 해당 노트의 모든 TextBlock 리스트 반환
     if request.method == 'GET':
         queryset = TextBlock.objects.filter(
@@ -495,9 +524,9 @@ def textblock_child_of_note(request, n_id):
     elif request.method == 'POST':
 
         try:
-            note = Note.objects.get(id=n_id)
+            Note.objects.get(id=n_id)
         except Note.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)        
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         data = {
             'content': request.data['content'],
@@ -507,7 +536,7 @@ def textblock_child_of_note(request, n_id):
             'note': n_id,
             'is_parent_note': True,
         }
-        
+
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -515,21 +544,21 @@ def textblock_child_of_note(request, n_id):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-"""
-==================================================
-url: /api/agenda/:id/textblock/
-Agenda에 속해있는 TextBlock을 모두 가져오거나 생성하는 API
-
-POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
-    {
-        "content": "Hello World",
-        "layer_x": 0,
-        "layer_y": 1
-    }
-==================================================
-"""
 @api_view(['GET', 'POST'])
 def textblock_child_of_agenda(request, a_id):
+    """
+    ==================================================
+    url: /api/agenda/:id/textblock/
+    Agenda에 속해있는 TextBlock을 모두 가져오거나 생성하는 API
+
+    POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+        {
+            "content": "Hello World",
+            "layer_x": 0,
+            "layer_y": 1
+        }
+    ==================================================
+    """
     try:
         agenda = Agenda.objects.get(id=a_id)
     except Agenda.DoesNotExist:
@@ -565,21 +594,21 @@ def textblock_child_of_agenda(request, a_id):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-"""
-================================================
-url: /api/textblock/id/
-PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
-정보를 전달하면 됨. 예를 들어 content만 수정하고자 한다면 
-다음과 같은 Json을 날리면 됨. 
-    {
-        "content": "Modification",
-    }
-================================================
-"""
 @api_view(['GET', 'PATCH', 'DELETE'])
-def modify_textblock(request, id):
+def modify_textblock(request, t_id):
+    """
+    ================================================
+    url: /api/textblock/id/
+    PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
+    정보를 전달하면 됨. 예를 들어 content만 수정하고자 한다면
+    다음과 같은 Json을 날리면 됨.
+        {
+            "content": "Modification",
+        }
+    ================================================
+    """
     try:
-        current_textblock = TextBlock.objects.get(id=id)
+        current_textblock = TextBlock.objects.get(id=t_id)
     except TextBlock.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
@@ -599,20 +628,20 @@ def modify_textblock(request, id):
         return Response(status=status.HTTP_200_OK)
 
 
-"""
-===================================================
-url: /api/note/:id/agendas/
-Note에 직접 속해있는 Agenda들을 모두 가져오거나 생성하는 API
-POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
-    {
-        "content": "Hello World",
-        "layer_x": 0,
-        "layer_y": 1
-    }
-===================================================
-"""
 @api_view(['GET', 'POST'])
 def agenda_child_of_note(request, n_id):
+    """
+    ===================================================
+    url: /api/note/:id/agendas/
+    Note에 직접 속해있는 Agenda들을 모두 가져오거나 생성하는 API
+    POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+        {
+            "content": "Hello World",
+            "layer_x": 0,
+            "layer_y": 1
+        }
+    ===================================================
+    """
     # 해당 노트의 모든 agenda block 리스트 반환
     if request.method == 'GET':
         queryset = Agenda.objects.filter(
@@ -626,7 +655,7 @@ def agenda_child_of_note(request, n_id):
 
     elif request.method == 'POST':
         try:
-            note = Note.objects.get(id=n_id)
+            Note.objects.get(id=n_id)
         except Note.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -639,25 +668,26 @@ def agenda_child_of_note(request, n_id):
         }
         serializer = AgendaSerializer(data=data)
         if serializer.is_valid():
-            agenda = serializer.save()
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-"""
-================================================
-url: /api/agenda/:id/
-PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
-정보를 전달하면 됨. 예를 들어 is_done만 수정하고자 한다면 
-다음과 같은 Json을 날리면 됨. 
-    {
-        "is_done": "true",
-    }
-================================================
-"""
+
 @api_view(['GET', 'PATCH', 'DELETE'])
-def modify_agenda(request, id):
+def modify_agenda(request, a_id):
+    """
+    ================================================
+    url: /api/agenda/:id/
+    PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
+    정보를 전달하면 됨. 예를 들어 is_done만 수정하고자 한다면
+    다음과 같은 Json을 날리면 됨.
+        {
+            "is_done": "true",
+        }
+    ================================================
+    """
     try:
-        current_agenda = Agenda.objects.get(id=id)
+        current_agenda = Agenda.objects.get(id=a_id)
     except Agenda.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -678,22 +708,22 @@ def modify_agenda(request, id):
         return Response(status=status.HTTP_200_OK)
 
 
-"""
-===================================================
-url: /api/note/:id/todos/
-Note에 직접 속해있는 Todo를 모두 가져오거나 생성하는 API
-POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
-Assignees는 pk로 날려야함! id로 
-변경하고자 한다면 추후 수정
-    {
-        "content": "Change the world",
-        "layer_x": 0,
-        "layer_y": 1
-    }
-===================================================
-"""
 @api_view(['GET', 'POST'])
 def todoblock_child_of_note(request, n_id):
+    """
+    ===================================================
+    url: /api/note/:id/todos/
+    Note에 직접 속해있는 Todo를 모두 가져오거나 생성하는 API
+    POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+    Assignees는 pk로 날려야함! id로
+    변경하고자 한다면 추후 수정
+        {
+            "content": "Change the world",
+            "layer_x": 0,
+            "layer_y": 1
+        }
+    ===================================================
+    """
     # 해당 노트의 모든 todoblock 리스트 반환
     if request.method == 'GET':
         queryset = Todo.objects.filter(
@@ -707,7 +737,7 @@ def todoblock_child_of_note(request, n_id):
 
     elif request.method == 'POST':
         try:
-            note = Note.objects.get(id=n_id)
+            Note.objects.get(id=n_id)
         except Note.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         data = {
@@ -726,21 +756,21 @@ def todoblock_child_of_note(request, n_id):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-"""
-==================================================
-url: /api/agenda/:id/todos/
-Agenda에 속해있는 Todo를 모두 가져오거나 생성하는 API
-
-POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
-    {
-        "content": "Run the world",
-        "layer_x": 0,
-        "layer_y": 1
-    }
-==================================================
-"""
 @api_view(['GET', 'POST'])
 def todoblock_child_of_agenda(request, a_id):
+    """
+    ==================================================
+    url: /api/agenda/:id/todos/
+    Agenda에 속해있는 Todo를 모두 가져오거나 생성하는 API
+
+    POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+        {
+            "content": "Run the world",
+            "layer_x": 0,
+            "layer_y": 1
+        }
+    ==================================================
+    """
     print("todoblock inside agenda api")
     try:
         agenda = Agenda.objects.get(id=a_id)
@@ -776,21 +806,21 @@ def todoblock_child_of_agenda(request, a_id):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-"""
-================================================
-url: /api/todo/:id/
-PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
-정보를 전달하면 됨. 예를 들어 content만 수정하고자 한다면 
-다음과 같은 Json을 날리면 됨. 
-    {
-        "content": "Modification",
-    }
-================================================
-"""
 @api_view(['GET', 'PATCH', 'DELETE'])
-def modify_todoblock(request, id):
+def modify_todoblock(request, t_id):
+    """
+    ================================================
+    url: /api/todo/:id/
+    PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
+    정보를 전달하면 됨. 예를 들어 content만 수정하고자 한다면
+    다음과 같은 Json을 날리면 됨.
+        {
+            "content": "Modification",
+        }
+    ================================================
+    """
     try:
-        current_todo = Todo.objects.get(id=id)
+        current_todo = Todo.objects.get(id=t_id)
     except Todo.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
