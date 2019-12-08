@@ -5,10 +5,11 @@ from django.db.models.signals import post_save
 from django.utils import timezone
 
 
-"""
-We should fill in here
-"""
 class Profile(models.Model):
+    """
+    This is a model describing Profile.
+    It is created automatically when the user model is created
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # use username as default value?
     nickname = models.CharField(max_length=20, blank=True, null=True)
@@ -19,29 +20,35 @@ class Profile(models.Model):
         return f'id: {self.user.id}, nickname: {self.nickname}'
 
     @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
+    def create_user_profile(sender, instance, created):
+        """
+        Automatically creates Profile model when User model is created
+        """
         if created:
             Profile.objects.create(user=instance)
 
     @receiver(post_save, sender=User)
-    def save_user_profile(sender, instance, **kwargs):
+    def save_user_profile(sender, instance):
+        """
+        Automoatically saves Profile model
+        """
         instance.profile.save()
 
 
-"""
-We should fill in here
-"""
 class Tag(models.Model):
+    """
+    Tag model
+    """
     content = models.CharField(max_length=100, blank=False, null=False)
 
     def __str__(self):
         return f'content: {self.content}'
 
 
-"""
-We should fill in here
-"""
 class Workspace(models.Model):
+    """
+    Workspace model
+    """
     name = models.CharField(max_length=20, blank=True, null=True)
     # at least the creator of the workspace should exist as one of admins and also members
     admins = models.ManyToManyField(Profile, related_name='workspace_admins')
@@ -51,10 +58,10 @@ class Workspace(models.Model):
         return f'name: {self.name}'
 
 
-"""
-We should fill in here
-"""
 class Note(models.Model):
+    """
+    Note model
+    """
     title = models.CharField(max_length=100, blank=True, null=False)
     # =================================================================
     # temporarily set null=True for convenience of testing and seeding
@@ -73,10 +80,10 @@ class Note(models.Model):
         return f'title: {self.title}'
 
 
-"""
-We should fill in here
-"""
 class Agenda(models.Model):
+    """
+    Agenda model
+    """
     content = models.TextField(
         blank=True, default="안건과 관련된 회의 내용을 작성하는 부분입니다.")
     layer_x = models.IntegerField(default=0)
@@ -97,15 +104,14 @@ class Agenda(models.Model):
     has_agenda_block = models.BooleanField(default=False)
     children_blocks = models.TextField(null=True, blank=True)
 
-
     def __str__(self):
         return f'note_id: {self.note.id}'
 
 
-"""
-We should fill in here
-"""
 class Calendar(models.Model):
+    """
+    Calendar model
+    """
     # content 정의를 어떻게 해야하는지?
     content = models.TextField(null=True, blank=True)
     layer_x = models.IntegerField(default=0)
@@ -119,10 +125,10 @@ class Calendar(models.Model):
         return f'note_id: {self.note_id}'
 
 
-"""
-We should fill in here
-"""
 class File(models.Model):
+    """
+    File model
+    """
     content = models.FileField(null=True)
     # FileField 사용하면 굳이 url을 저장해야하나 고민
     url = models.URLField(blank=True, null=True)
@@ -137,10 +143,10 @@ class File(models.Model):
         return f'url: {self.url}'
 
 
-"""
-We should fill in here
-"""
 class Image(models.Model):
+    """
+    Image model
+    """
     content = models.ImageField(null=True)
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
@@ -154,10 +160,10 @@ class Image(models.Model):
         return f'note_id: {self.note_id}'
 
 
-"""
-We should fill in here
-"""
 class Table(models.Model):
+    """
+    Table model
+    """
     content = models.TextField(null=True, blank=True)
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
@@ -170,10 +176,10 @@ class Table(models.Model):
         return f'note_id: {self.note_id}'
 
 
-"""
-We should fill in here
-"""
 class Todo(models.Model):
+    """
+    Todo model
+    """
     content = models.TextField(null=False, blank=False)
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
@@ -192,10 +198,10 @@ class Todo(models.Model):
         return f'note_id: {self.note.id}'
 
 
-"""
-We should fill in here
-"""
 class TextBlock(models.Model):
+    """
+    TextBlock model
+    """
     content = models.TextField(null=False, blank=True)
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
