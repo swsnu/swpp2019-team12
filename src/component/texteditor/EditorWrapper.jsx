@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 // import ConfigurationDialog from './configuration-dialog';
 import Editor from './Editor';
-import axios from 'axios';
 import { css } from '@emotion/core';
 //import { BarLoader } from 'react-spinners';
 import BarLoader from 'react-spinners/BarLoader';
@@ -77,7 +76,7 @@ export default class EditorWrapper extends Component {
 
     render() {
         return (
-            <div>
+            <div className="EditorWrapper">
                 {/* <p>{this.state.configuration.documentId}</p> */}
                 {this.state.loading && (
                     <PacmanLoader
