@@ -20,7 +20,7 @@ class Profile(models.Model):
         return f'id: {self.user.id}, nickname: {self.nickname}'
 
     @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created):
+    def create_user_profile(sender, instance, created, **kwargs):
         """
         Automatically creates Profile model when User model is created
         """
@@ -28,7 +28,7 @@ class Profile(models.Model):
             Profile.objects.create(user=instance)
 
     @receiver(post_save, sender=User)
-    def save_user_profile(sender, instance):
+    def save_user_profile(sender, instance, **kwargs):
         """
         Automoatically saves Profile model
         """
