@@ -41,7 +41,7 @@ class NoteLeftBlock extends Component {
                 nextProps.blocks &&
                 nextProps.blocks.map((blk, index) => {
                     let result;
-                    console.log(blk);
+                    //console.log(blk);
                     if (blk.block_type === TEXT) {
                         result = (
                             <Text

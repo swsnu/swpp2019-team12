@@ -414,13 +414,15 @@ class Note extends Component {
 
     // { agendaId: 1, childrenBlocks: [] }
     handleAddAgendaChildrenBlocks = (agendaId, childrenBlocks) => {
-        console.log(childrenBlocks);
+        console.log('handleAddAgendaChildrenBlocks: ', childrenBlocks);
         const data = {
             id: agendaId,
             childrenBlocks: childrenBlocks
         };
         this.setState({
-            agenda_children_blocks: data
+            agenda_children_blocks: this.state.agenda_children_blocks.concat(
+                data
+            )
         });
     };
 

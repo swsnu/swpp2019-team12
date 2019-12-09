@@ -6,7 +6,8 @@ export default class NoteTree extends Component {
         super(props);
         this.state = {
             blocks: [],
-            treeData: []
+            treeData: [],
+            agendaChildrenBlocks: []
         };
     }
     componentDidMount() {
@@ -17,12 +18,15 @@ export default class NoteTree extends Component {
         });
     }
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.blocks !== prevState.blocks) {
+        if (
+            nextProps.blocks !== prevState.blocks ||
+            nextProps.agendaChildrenBlocks !== prevState.agendaChildrenBlocks
+        ) {
             const treeData = changeBlocksToTree(nextProps, nextProps.blocks);
-            console.log('props: ', nextProps);
             console.log(treeData);
             return { blocks: nextProps.blocks, treeData: treeData };
         }
+        return null;
     }
 
     render() {
@@ -38,23 +42,40 @@ const changeBlocksToTree = (props, blocks) => {
     console.log('changeBlocks: ', blocks);
     let treeData = [];
     blocks.forEach(blk => {
-        console.log('blk: ', blk);
         let data;
         if (blk.block_type == 'Agenda') {
             console.log(props);
             let childrenDatas = [];
-            if (props.agendaChildrenBlocks.childrenBlocks) {
-                childrenDatas = props.agendaChildrenBlocks.childrenBlocks.filter(
-                    data => {
-                        return data.id == blk.id;
-                    }
-                );
+            if (props.agendaChildrenBlocks) {
+                childrenDatas = props.agendaChildrenBlocks.find(data => {
+                    return data.id == blk.id;
+                });
             }
+            console.log('childrenDatas: ', childrenDatas);
+            let childrenNodes = [];
+            if (childrenDatas && childrenDatas.childrenBlocks) {
+                childrenDatas.childrenBlocks.forEach(cb => {
+                    console.log(cb);
+                    childrenNodes.push({
+                        key: cb.block_type + cb.id,
+                        label: cb.block_type + cb.id
+                    });
+                });
+            }
+            // let childrenNodes =
+            //     childrenDatas &&
+            //     childrenDatas.agendaChildrenBlocks.map(cd => {
+            //         console.log(cd);
+            //         return {
+            //             key: cd.block_type + cd.id,
+            //             label: cd.block_type + cd.id
+            //         };
+            //     });
 
             data = {
                 key: blk.block_type + blk.id,
                 label: blk.block_type + blk.id,
-                nodes: childrenDatas
+                nodes: childrenNodes
             };
         } else {
             data = {
