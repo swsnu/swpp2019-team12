@@ -27,6 +27,7 @@ class BlockConsumer(WebsocketConsumer):
     # Receive message from WebSocket
     def receive(self, text_data):
         block_data_json = json.loads(text_data)
+        print('======receive 부분=======')
         print(block_data_json)
         # 현재는 여기서 모든 action에 대해서 모두 처리하게 되어있는데 이건 시간이 된다면 따로 따로 구현하는게 좋을듯.
         # Block을 Add하는 것과 관련된 receive...

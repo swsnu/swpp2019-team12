@@ -15,7 +15,6 @@ class Agenda extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.socketRef);
         console.log('component did mount');
         axios
             .get(`/api/agenda/${this.state.agenda_id}/`)
