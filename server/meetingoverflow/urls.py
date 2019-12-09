@@ -37,7 +37,7 @@ urlpatterns = [
         views.textblock_child_of_agenda,
         name="textblock_child_of_agenda",
     ),
-    path("textblock/<int:id>/", views.modify_textblock, name="modify_textblock"),
+    path("textblock/<int:t_id>/", views.modify_textblock, name="modify_textblock"),
     # AgendaBlock
     path(
         "note/<int:n_id>/agendas/",
@@ -45,7 +45,7 @@ urlpatterns = [
         name="agenda_child_of_note",
     ),
     # path('agenda/<int:a_id>/agendas/', views.agenda_child_of_agenda, name='agenda_child_of_agenda'),
-    path("agenda/<int:id>/", views.modify_agenda, name="modify_agenda"),
+    path("agenda/<int:a_id>/", views.modify_agenda, name="modify_agenda"),
     # TodoBlock
     path(
         "note/<int:n_id>/todos/",
@@ -57,7 +57,7 @@ urlpatterns = [
         views.todoblock_child_of_agenda,
         name="todoblock_child_of_agenda",
     ),
-    path("todo/<int:id>/", views.modify_todoblock, name="modify_agenda"),
+    path("todo/<int:t_id>/", views.modify_todoblock, name="modify_agenda"),
     path(
         "note/<int:n_id>/childrenblocks/",
         views.children_blocks_of_note,
