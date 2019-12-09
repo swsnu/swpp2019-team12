@@ -18,7 +18,7 @@ import Note from './container/note/Note';
 import NotFound from './component/NotFound';
 
 // Google STT
-// import googleSTT from './container/stt/googleSTT';
+import googleSTT from './container/stt/googleSTT';
 // Editor
 
 import CalendarBlock from './component/blocks/Calendar';
