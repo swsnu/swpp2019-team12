@@ -23,6 +23,10 @@ class Agenda extends Component {
                     blocks = JSON.parse(res['data']['children_blocks']);
                 }
                 console.log('blocks: ', blocks);
+                this.props.handleAddAgendaChildrenBlocks(
+                    this.state.agenda_id,
+                    blocks
+                );
                 this.setState({ blocks: blocks });
             })
             .catch(err => console.log('this agenda has no child block'));
@@ -76,6 +80,10 @@ class Agenda extends Component {
                     })
                     .then(res => {
                         console.log('patch 후 blocks:', blocks);
+                        this.props.handleAddAgendaChildrenBlocks(
+                            this.state.agenda_id,
+                            blocks
+                        );
                         this.setState({ blocks: blocks });
                     });
             })

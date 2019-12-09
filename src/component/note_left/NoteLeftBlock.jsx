@@ -64,6 +64,9 @@ class NoteLeftBlock extends Component {
                                 agenda_discussion={blk.agenda_discussion}
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
+                                handleAddAgendaChildrenBlocks={
+                                    nextProps.handleAddAgendaChildrenBlocks
+                                }
                             />
                         );
                     } else if (blk.block_type === TODO_CONTAINER) {

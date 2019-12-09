@@ -3,6 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import NoteLeft from './NoteLeft';
 import Signout from '../../component/signout/Signout';
+import NoteTree from '../../component/note_left/NoteTree';
 
 const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
@@ -32,7 +33,8 @@ class Note extends Component {
             moment: null,
             blocks: [],
             block_focused_id: '',
-            block_focused_name: ''
+            block_focused_name: '',
+            agenda_children_blocks: []
         };
     }
 
@@ -410,6 +412,18 @@ class Note extends Component {
         );
     };
 
+    // { agendaId: 1, childrenBlocks: [] }
+    handleAddAgendaChildrenBlocks = (agendaId, childrenBlocks) => {
+        console.log(childrenBlocks);
+        const data = {
+            id: agendaId,
+            childrenBlocks: childrenBlocks
+        };
+        this.setState({
+            agenda_children_blocks: data
+        });
+    };
+
     onDragEnd = result => {
         if (!result.destination) {
             return;
@@ -436,7 +450,13 @@ class Note extends Component {
         const noteId = this.props.match.params.n_id;
         return (
             <div className="Note">
-                <Signout history={history} />
+                <div>
+                    <Signout history={history} />
+                    <NoteTree
+                        blocks={this.state.blocks}
+                        agendaChildrenBlocks={this.state.agenda_children_blocks}
+                    />
+                </div>
                 <NoteLeft
                     handleDeleteBlock={this.handleDeleteBlock}
                     note_title={this.state.title}
@@ -458,6 +478,9 @@ class Note extends Component {
                     handleAddParticipant={this.handleAddParticipant}
                     onDragEnd={this.onDragEnd}
                     handleDeleteTodo={this.handleDeleteTodo}
+                    handleAddAgendaChildrenBlocks={
+                        this.handleAddAgendaChildrenBlocks
+                    }
                 />
             </div>
         );

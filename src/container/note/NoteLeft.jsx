@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import NoteLeftBlock from '../../component/note_left/NoteLeftBlock';
 import NoteLeftInfo from '../../component/note_left/NoteLeftInfo';
+import NoteTree from '../../component/note_left/NoteTree';
 
 class NoteLeft extends Component {
     constructor(props) {
@@ -37,6 +38,9 @@ class NoteLeft extends Component {
                         handleDeleteTodo={this.props.handleDeleteTodo}
                         handleClickBlock={this.props.handleClickBlock}
                         onDragEnd={this.props.onDragEnd}
+                        handleAddAgendaChildrenBlocks={
+                            this.props.handleAddAgendaChildrenBlocks
+                        }
                     />
                 </div>
             </div>
