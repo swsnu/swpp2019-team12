@@ -538,12 +538,12 @@ class Note extends Component {
                     socketRef={this.BlockRef}
                 />
                 <Websocket
-                    url={`ws://localhost:8000/ws/${noteId}/block/`}
+                    url={`wss://www.meetingoverflow.space:8443/ws/${noteId}/block/`}
                     ref={this.BlockRef}
                     onMessage={this.handleSocketBlock.bind(this)}
                 />
                 {/* <Websocket
-                    url={`ws://localhost:8000/ws/${n_id}/text/`}
+                    url={`wss://localhost:8443/ws/${n_id}/text/`}
                     ref={this.textRef}
                     onMessage={this.handleSocketText.bind(this)}
                 /> */}

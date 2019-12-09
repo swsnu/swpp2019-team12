@@ -1,6 +1,6 @@
 {
     "name": "swpp2019-team12",
-    "proxy": "http://localhost:8000",
+    "proxy": "http://localhost:8001",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
