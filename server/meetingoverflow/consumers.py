@@ -72,14 +72,14 @@ class BlockConsumer(WebsocketConsumer):
                 content = block_data_json["content"]
                 layer_x = block_data_json["layer_x"]
                 layer_y = block_data_json["layer_y"]
-                documentId = block_data_json["documentId"]
+                document_id = block_data_json["document_id"]
                 n_id = block_data_json["n_id"]
 
                 data = {
                     "content": content,
                     "layer_x": layer_x,
                     "layer_y": layer_y,
-                    "documentId": documentId,
+                    "document_id": document_id,
                     "note": n_id,
                     "is_parent_note": True,
                 }
@@ -96,7 +96,7 @@ class BlockConsumer(WebsocketConsumer):
                         "content": content,
                         "layer_x": layer_x,
                         "layer_y": layer_y,
-                        "documentId": documentId,
+                        "document_id": document_id,
                         "note": n_id,
                     },
                 )
@@ -138,7 +138,7 @@ class BlockConsumer(WebsocketConsumer):
             layer_y = event["layer_y"]
             n_id = event["note"]
             id = event["id"]
-            documentId = event["documentId"]
+            document_id = event["document_id"]
         except Exception as e:
             print(e)
         # Send message to WebSocket
@@ -150,7 +150,7 @@ class BlockConsumer(WebsocketConsumer):
                     "content": content,
                     "layer_x": layer_x,
                     "layer_y": layer_y,
-                    "documentId": documentId,
+                    "document_id": document_id,
                     "note": n_id,
                 }
             )
@@ -190,14 +190,14 @@ class AgendaConsumer(WebsocketConsumer):
         content = block_data_json["content"]
         layer_x = block_data_json["layer_x"]
         layer_y = block_data_json["layer_y"]
-        documentId = block_data_json["documentId"]
+        document_id = block_data_json["document_id"]
         n_id = block_data_json["n_id"]
 
         data = {
             "content": content,
             "layer_x": layer_x,
             "layer_y": layer_y,
-            "documentId": documentId,
+            "document_id": document_id,
             "note": n_id,
             "is_parent_note": True,
         }
@@ -214,7 +214,7 @@ class AgendaConsumer(WebsocketConsumer):
                 "content": content,
                 "layer_x": layer_x,
                 "layer_y": layer_y,
-                "documentId": documentId,
+                "document_id": document_id,
                 "note": n_id,
             },
         )
@@ -227,7 +227,7 @@ class AgendaConsumer(WebsocketConsumer):
             layer_y = event["layer_y"]
             n_id = event["note"]
             id = event["id"]
-            documentId = event["documentId"]
+            document_id = event["document_id"]
         except Exception as e:
             print(e)
         # Send message to WebSocket
@@ -239,7 +239,7 @@ class AgendaConsumer(WebsocketConsumer):
                     "content": content,
                     "layer_x": layer_x,
                     "layer_y": layer_y,
-                    "documentId": documentId,
+                    "document_id": document_id,
                     "note": n_id,
                 }
             )

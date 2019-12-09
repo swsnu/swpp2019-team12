@@ -70,7 +70,7 @@ class Agenda extends Component {
             content: '어젠다 속 새로운 텍스트 블록',
             layer_x: 0,
             layer_y: 0,
-            documentId: documentId
+            document_id: documentId
         };
         axios
             .post(`/api/agenda/${this.state.agenda_id}/textblocks/`, text_info)
@@ -154,7 +154,7 @@ class Agenda extends Component {
                 content: res['content'],
                 layer_x: res['layer_x'],
                 layer_y: res['layer_y'],
-                documentId: res['documentId']
+                documentId: res['document_id']
             })
         });
     }

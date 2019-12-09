@@ -353,7 +353,7 @@ class Note extends Component {
             content: '새로 생성된 텍스트 블록',
             layer_x: 0,
             layer_y: 0,
-            documentId: documentId,
+            document_id: documentId,
             block_type: 'Text'
         };
 
@@ -504,7 +504,7 @@ class Note extends Component {
                     content: res['content'],
                     layer_x: res['layer_x'],
                     layer_y: res['layer_y'],
-                    documentId: res['documentId']
+                    documentId: res['document_id']
                 });
             }
 
@@ -547,7 +547,7 @@ class Note extends Component {
                 content: res['content'],
                 layer_x: res['layer_x'],
                 layer_y: res['layer_y'],
-                documentId: res['documentId']
+                documentId: res['document_id']
             })
         });
     }
