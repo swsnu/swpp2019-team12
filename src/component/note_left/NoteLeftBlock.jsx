@@ -41,6 +41,7 @@ class NoteLeftBlock extends Component {
                 nextProps.blocks &&
                 nextProps.blocks.map((blk, index) => {
                     let result;
+                    console.log(blk);
                     if (blk.block_type === TEXT) {
                         result = (
                             <Text
@@ -73,7 +74,9 @@ class NoteLeftBlock extends Component {
                         result = (
                             <TodoContainer
                                 todos={blk.todos}
+                                participants={nextProps.participants}
                                 handleClickBlock={nextProps.handleClickBlock}
+                                handleDeleteTodo={nextProps.handleDeleteTodo}
                             />
                         );
                     } else {
@@ -118,8 +121,10 @@ class NoteLeftBlock extends Component {
                         id="add_todo_block"
                         onClick={() =>
                             this.props.handleAddTodoBlock(this.state.noteId)
-                        }
-                    />
+                        }>
+                        Todo
+                    </button>
+
                     <button
                         className="add-block-button"
                         id="add_image_block"

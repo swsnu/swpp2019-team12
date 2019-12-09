@@ -1,14 +1,24 @@
-from django.test import TestCase, Client
+"""
+Testing MeetingOverFlow Project
+"""
 import json
+from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from .models import *
+from .models import (Profile, Tag, Workspace, Note, Agenda, timezone,
+                     Calendar, File, Image, Table, Todo, TextBlock)
 
 # Profile, Tag, Workspace, Note, Agenda, Calendar, File, Image, Table, Todo, TextBlock
 
 
 class MOFTestCase(TestCase):
+    """
+    Testing MeetingOverFlow Project
+    """
 
     def setUp(self):
+        """
+        Setup Before testing everything
+        """
         user1 = User.objects.create_user(username='t@t.com', password="test")
         user1.profile.nickname = "test_nickname"
         user1.save()
@@ -21,7 +31,7 @@ class MOFTestCase(TestCase):
         workspace1.members.set([user1.profile])
         workspace1.save()
         workspace2 = Workspace.objects.create(name="test_workspace2")
-        workspace3 = Workspace.objects.create(name="test_workspace3")
+        Workspace.objects.create(name="test_workspace3")
 
         note1 = Note.objects.create(title="test_note", workspace=workspace1)
         note1.participants.set([user1.profile])
@@ -34,22 +44,22 @@ class MOFTestCase(TestCase):
         note3.save()
 
         agenda1 = Agenda.objects.create(content="test_content", note=note1)
-        agenda2 = Agenda.objects.create(content="test_content2", note=note1)
+        Agenda.objects.create(content="test_content2", note=note1)
 
-        calendar1 = Calendar.objects.create(content="test_content", note=note1)
-        calendar2 = Calendar.objects.create(
+        Calendar.objects.create(content="test_content", note=note1)
+        Calendar.objects.create(
             content="test_content2", note=note1, parent_agenda=agenda1, is_parent_note=False)
 
-        file1 = File.objects.create(content="test_content", note=note1)
-        file2 = File.objects.create(
+        File.objects.create(content="test_content", note=note1)
+        File.objects.create(
             content="test_content2", note=note1, parent_agenda=agenda1, is_parent_note=False)
 
-        image1 = Image.objects.create(content="test_content", note=note1)
-        image2 = Image.objects.create(
+        Image.objects.create(content="test_content", note=note1)
+        Image.objects.create(
             content="test_content2", note=note1, parent_agenda=agenda1, is_parent_note=False)
 
-        table1 = Table.objects.create(content="test_content", note=note1)
-        table2 = Table.objects.create(
+        Table.objects.create(content="test_content", note=note1)
+        Table.objects.create(
             content="test_content2", note=note1, parent_agenda=agenda1, is_parent_note=False)
 
         todo1 = Todo.objects.create(
@@ -62,12 +72,15 @@ class MOFTestCase(TestCase):
         todo2.assignees.set([user1.profile])
         todo2.save()
 
-        tag1 = Tag.objects.create(content="test_content")
-        text1 = TextBlock.objects.create(content="test_content", note=note1)
-        text2 = TextBlock.objects.create(
+        Tag.objects.create(content="test_content")
+        TextBlock.objects.create(content="test_content", note=note1)
+        TextBlock.objects.create(
             content="test_content2", note=note1, parent_agenda=agenda1, is_parent_note=False)
 
     def test_models(self):
+        """
+        Testing models
+        """
         User.objects.create_user(username='test@test.com', password="test")
 
         # Profile Model Check
@@ -149,6 +162,9 @@ class MOFTestCase(TestCase):
                          "content: test_content")
 
     def test_user_auth(self):
+        """
+        Testing user auth
+        """
         client = Client(enforce_csrf_checks=False)
         ##########
         # Signup #
@@ -239,6 +255,9 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_profile(self):
+        """
+        Testing profile
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
         response = client.get('/api/profile/')
@@ -275,6 +294,9 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_specific_profile(self):
+        """
+        Testing specific profile
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password='test')
         response = client.get('/api/profile/1/')
@@ -299,6 +321,9 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_workspace(self):
+        """
+        Testing workspace
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
 
@@ -338,6 +363,9 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_specific_workspace(self):
+        """
+        Testing specific workspace
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password='test')
 
@@ -369,6 +397,9 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_workspace_todo(self):
+        """
+        Testing workspace todo
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
         response = client.get('/api/workspace/2/todos/')
@@ -378,6 +409,9 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_workspace_agenda(self):
+        """
+        Testing workspace agenda
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
         response = client.get('/api/workspace/2/agendas/')
@@ -390,6 +424,9 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_notes(self):
+        """
+        Testing notes
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
 
@@ -437,6 +474,9 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_specific_note(self):
+        """
+        Testing specific notes
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
 
@@ -475,6 +515,9 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_sibling_notes(self):
+        """
+        Testing sibling notes
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
 
@@ -488,6 +531,9 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_textblock_child_of_note(self):
+        """
+        Testing textblocks of note
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
 
@@ -522,6 +568,9 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_textblock_child_of_agenda(self):
+        """
+        Testing textblock of agenda
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
 
@@ -538,6 +587,7 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 3.333,
             'layer_y': 0,
+            'document_id': 'asfecsm3242a'
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
@@ -545,10 +595,14 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 0,
             'layer_y': 0,
+            'document_id': 'asfecsm3242a'
         }), content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
     def test_modify_textblock(self):
+        """
+        Testing modify textblock
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
 
@@ -561,14 +615,14 @@ class MOFTestCase(TestCase):
         response = client.patch('/api/textblock/1/', json.dumps({
             'content': 'test_content',
             'layer_x': 3.33,
-            'layer_y': 0,
+            'layer_y': 0
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
         response = client.patch('/api/textblock/1/', json.dumps({
             'content': 'test_content',
             'layer_x': 0,
-            'layer_y': 0,
+            'layer_y': 0
         }), content_type='application/json')
         self.assertEqual(response.status_code, 202)
 
@@ -576,6 +630,9 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_agenda_child_of_note(self):
+        """
+        Testing agenda of note
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
 
@@ -607,6 +664,9 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_modify_agenda(self):
+        """
+        Testing modify agenda
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
 
@@ -634,6 +694,9 @@ class MOFTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_todoblock_child_of_note(self):
+        """
+        Testing todoblock of note
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
 
@@ -647,7 +710,8 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 0,
             'layer_y': 0,
-            'assignees': [1]
+            'assignees': [1],
+            'due_date': "2020-02-07"
         }), content_type='application/json')
         self.assertEqual(response.status_code, 404)
 
@@ -655,7 +719,8 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 0,
             'layer_y': 0,
-            'assignees': [1]
+            'assignees': [1],
+            'due_date': "2020-02-07"
         }), content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
@@ -663,11 +728,15 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 3.333,
             'layer_y': 0,
-            'assignees': [1]
+            'assignees': [1],
+            'due_date': "2020-02-07"
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
     def test_todoblock_child_of_agenda(self):
+        """
+        Testing todoblock of agenda
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
 
@@ -684,7 +753,8 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 3.333,
             'layer_y': 0,
-            'assignees': [1]
+            'assignees': [1],
+            'due_date': "2020-02-07"
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
@@ -692,11 +762,15 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 0,
             'layer_y': 0,
-            'assignees': [1]
+            'assignees': [1],
+            'due_date': "2020-02-07"
         }), content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
     def test_modify_todoblock(self):
+        """
+        Testing modify todoblock
+        """
         client = Client(enforce_csrf_checks=False)
         client.login(username='t@t.com', password="test")
 

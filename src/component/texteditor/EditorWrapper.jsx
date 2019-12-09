@@ -2,7 +2,16 @@ import React, { Component } from 'react';
 // import ConfigurationDialog from './configuration-dialog';
 import Editor from './Editor';
 import axios from 'axios';
+import { css } from '@emotion/core';
+//import { BarLoader } from 'react-spinners';
+import BarLoader from 'react-spinners/BarLoader';
+import PacmanLoader from 'react-spinners/PacmanLoader';
 
+const override = css`
+    display: block;
+    margin: 0 auto;
+    border-color: red;
+`;
 export default class EditorWrapper extends Component {
     state = {
         selectedUser: {
@@ -17,7 +26,8 @@ export default class EditorWrapper extends Component {
             uploadUrl: 'https://43733.cke-cs.com/easyimage/upload/',
             webSocketUrl: '43733.cke-cs.com/ws'
         },
-        updated: false
+        updated: false,
+        loading: true
     };
 
     /* 
@@ -59,21 +69,30 @@ export default class EditorWrapper extends Component {
         });
     }
 
+    handleLoading = () => {
+        this.setState({
+            loading: false
+        });
+    };
+
     render() {
         return (
             <div>
-                <p>{this.state.configuration.documentId}</p>
-
-                {
-                    <Editor
-                        handleAddTextSocketSend={
-                            this.props.handleAddTextSocketSend
-                        }
-                        selectedUser={this.state.selectedUser}
-                        configuration={this.state.configuration}
-                        documentId={this.props.documentId}
+                {/* <p>{this.state.configuration.documentId}</p> */}
+                {this.state.loading && (
+                    <PacmanLoader
+                        css={override}
+                        size={15}
+                        color={'#98c6fa'}
+                        loading={this.state.loading}
                     />
-                }
+                )}
+                <Editor
+                    handleLoading={this.handleLoading}
+                    selectedUser={this.state.selectedUser}
+                    configuration={this.state.configuration}
+                    documentId={this.props.documentId}
+                />
             </div>
         );
     }

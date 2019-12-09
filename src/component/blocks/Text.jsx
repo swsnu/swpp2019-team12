@@ -18,6 +18,10 @@ class Text extends Component {
         console.log('Need to implement changing text');
     };
 
+    handleClickBlock = e => {
+        // e.stopPropagation();
+    };
+
     handleClickDelete = e => {
         e.preventDefault();
         console.log('delete textblock');
@@ -29,11 +33,12 @@ class Text extends Component {
         return (
             <div
                 className="full-size-block-container Text"
-                onClick={() =>
-                    this.props.handleClickBlock(
-                        this.props.type,
-                        this.props.blk_id
-                    )
+                onClick={
+                    () => this.handleClickBlock()
+                    // this.props.handleClickBlock(
+                    //     this.props.type,
+                    //     this.props.blk_id
+                    // )
                 }>
                 <div className="full-size-block-title">
                     <div className="full-size-block-title__label">Text</div>
