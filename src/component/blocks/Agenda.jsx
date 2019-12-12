@@ -154,7 +154,6 @@ class Agenda extends Component {
                 </div>
                 <div className="full-size-block-content Agenda">
                     <div className="full-size-block-content__text Agenda">
-                        <pre>{this.props.content}</pre>
                         <AgendaInside
                             noteId={this.props.noteId}
                             handleClickBlock={this.props.handleClickBlock}

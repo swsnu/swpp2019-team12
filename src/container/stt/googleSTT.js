@@ -82,7 +82,7 @@ class googleSTT extends Component {
                 console.log(transcript);
                 this.setState(
                     {
-                        texts: [...this.state.texts, transcript],
+                        texts: [transcript, ...this.state.texts],
                         currentText: ''
                     },
                     () => {
