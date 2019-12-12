@@ -13,11 +13,9 @@ class Agenda extends Component {
     }
 
     componentDidMount() {
-        console.log('component did mount');
         axios
             .get(`/api/agenda/${this.state.agenda_id}/`)
             .then(res => {
-                console.log('res of agenda: ', res);
                 let blocks = [];
                 if (res['data']['children_blocks'] !== null) {
                     blocks = JSON.parse(res['data']['children_blocks']);

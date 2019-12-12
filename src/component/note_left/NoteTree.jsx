@@ -11,7 +11,6 @@ export default class NoteTree extends Component {
         };
     }
     componentDidMount() {
-        console.log('didmount props', this.props);
         const blocks = this.props.blocks;
         this.setState({
             treeData: changeBlocksToTree(this.props, blocks)
@@ -23,7 +22,6 @@ export default class NoteTree extends Component {
             nextProps.agendaChildrenBlocks !== prevState.agendaChildrenBlocks
         ) {
             const treeData = changeBlocksToTree(nextProps, nextProps.blocks);
-            console.log(treeData);
             return { blocks: nextProps.blocks, treeData: treeData };
         }
         return null;
@@ -39,38 +37,26 @@ export default class NoteTree extends Component {
 }
 
 const changeBlocksToTree = (props, blocks) => {
-    console.log('changeBlocks: ', blocks);
     let treeData = [];
     blocks.forEach(blk => {
         let data;
         if (blk.block_type == 'Agenda') {
-            console.log(props);
             let childrenDatas = [];
             if (props.agendaChildrenBlocks) {
-                childrenDatas = props.agendaChildrenBlocks.find(data => {
-                    return data.id == blk.id;
+                childrenDatas = props.agendaChildrenBlocks.find(childBlk => {
+                    return childBlk.id == blk.id;
                 });
             }
-            console.log('childrenDatas: ', childrenDatas);
+            // console.log('childrenDatas: ', childrenDatas);
             let childrenNodes = [];
             if (childrenDatas && childrenDatas.childrenBlocks) {
-                childrenDatas.childrenBlocks.forEach(cb => {
-                    console.log(cb);
+                childrenDatas.childrenBlocks.forEach(childBlk => {
                     childrenNodes.push({
-                        key: cb.block_type + cb.id,
-                        label: cb.block_type + cb.id
+                        key: childBlk.block_type + childBlk.id,
+                        label: childBlk.block_type + childBlk.id
                     });
                 });
             }
-            // let childrenNodes =
-            //     childrenDatas &&
-            //     childrenDatas.agendaChildrenBlocks.map(cd => {
-            //         console.log(cd);
-            //         return {
-            //             key: cd.block_type + cd.id,
-            //             label: cd.block_type + cd.id
-            //         };
-            //     });
 
             data = {
                 key: blk.block_type + blk.id,
@@ -85,6 +71,5 @@ const changeBlocksToTree = (props, blocks) => {
         }
         treeData.push(data);
     });
-    console.log(treeData);
     return treeData;
 };

@@ -189,7 +189,6 @@ class Note extends Component {
         if (!todoContainer) {
             console.log('Todo conatiner가 없습니다. ');
         }
-        console.log('Todo container: ', todoContainer);
         // 만약 컨테이너가 존재하지만, 단 한개의 Todo가 존재한다면, 그것을 지우고 컨테이너도 삭제
         if (todoContainer.todos.length <= 1) {
             this.setState({
