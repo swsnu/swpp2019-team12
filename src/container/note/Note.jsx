@@ -452,7 +452,7 @@ class Note extends Component {
         const noteId = this.props.match.params.n_id;
         return (
             <div className="Note">
-                <div>
+                <div className="file-tree">
                     <Signout history={history} />
                     <NoteTree
                         blocks={this.state.blocks}

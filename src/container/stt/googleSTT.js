@@ -222,7 +222,7 @@ class googleSTT extends Component {
     render() {
         const { recording, texts } = this.state;
         return (
-            <div>
+            <div className="googleSTT-container">
                 <audio id="audio" ref={this.audio}></audio>
 
                 <button
