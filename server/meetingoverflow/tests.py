@@ -103,7 +103,7 @@ class MOFTestCase(TestCase):
         # Note Model Check
         note = Note(title="test_title", workspace=workspace)
         note.save()
-        self.assertEqual(str(Note.objects.get(id=4)), "title: test_title")
+        self.assertEqual(str(Note.objects.get(id=4)), "note_id: 4, title: test_title")
 
         # Agenda Model Check
         agenda = Agenda(
@@ -111,7 +111,7 @@ class MOFTestCase(TestCase):
             note=note,
         )
         agenda.save()
-        self.assertEqual(str(Agenda.objects.get(id=3)), "note_id: 4")
+        self.assertEqual(str(Agenda.objects.get(id=3)), "note_id: 4, block_id: 3")
 
         # Calendar Model Check
         calendar = Calendar(
