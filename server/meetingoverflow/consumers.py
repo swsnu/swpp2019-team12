@@ -1,12 +1,19 @@
+import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from .serializers import *
+from .serializers import AgendaSerializer, TextBlockSerializer
 from .models import Agenda
-import json
 
 
 class BlockConsumer(WebsocketConsumer):
+    """
+        Socket 열어둘 때, send에 맞는 처리하는 Consumer
+    """
+
     def connect(self):
+        """
+            Socket connection
+        """
         self.room_group_name = "note_" + str(
             self.scope["url_route"]["kwargs"]["note_id"]
         )
@@ -19,16 +26,20 @@ class BlockConsumer(WebsocketConsumer):
         self.accept()
 
     def disconnect(self, close_code):
-        # Leave room group
+        """
+            when socket disconnects
+        """
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name, self.channel_name
         )
 
-    # Receive message from WebSocket
     def receive(self, text_data):
+        """
+        # Receive message from WebSocket
+        """
         block_data_json = json.loads(text_data)
-        print('======receive 부분=======')
         print(block_data_json)
+
         # 현재는 여기서 모든 action에 대해서 모두 처리하게 되어있는데 이건 시간이 된다면 따로 따로 구현하는게 좋을듯.
         # Block을 Add하는 것과 관련된 receive...
         if "block_type" in block_data_json:
@@ -100,10 +111,12 @@ class BlockConsumer(WebsocketConsumer):
                         "note": n_id,
                     },
                 )
-        # 1) Block을 Drag해서 위치가 변화하는걸 받는 receive 
+        # 1) Block을 Drag해서 위치가 변화하는걸 받는 receive
         # 2) Block을 제거해서 변화하는 경우를 받는 receive
         else:
+            """
             # Send message to room group
+            """
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {"type": "change_children_blocks", "children_blocks": block_data_json,},
@@ -111,17 +124,20 @@ class BlockConsumer(WebsocketConsumer):
 
     # Receive message from room group
     def add_agenda(self, event):
+        """
+        # Send message to WebSocket
+        """
         content = event["content"]
         layer_x = event["layer_x"]
         layer_y = event["layer_y"]
         n_id = event["note"]
-        id = event["id"]
+        a_id = event["id"]
 
         # Send message to WebSocket
         self.send(
             text_data=json.dumps(
                 {
-                    "id": id,
+                    "id": a_id,
                     "block_type": "Agenda",
                     "content": content,
                     "layer_x": layer_x,
@@ -132,20 +148,19 @@ class BlockConsumer(WebsocketConsumer):
         )
 
     def add_text(self, event):
-        try:
-            content = event["content"]
-            layer_x = event["layer_x"]
-            layer_y = event["layer_y"]
-            n_id = event["note"]
-            id = event["id"]
-            document_id = event["document_id"]
-        except Exception as e:
-            print(e)
+        """
         # Send message to WebSocket
+        """
+        content = event["content"]
+        layer_x = event["layer_x"]
+        layer_y = event["layer_y"]
+        n_id = event["note"]
+        t_id = event["id"]
+        document_id = event["document_id"]
         self.send(
             text_data=json.dumps(
                 {
-                    "id": id,
+                    "id": t_id,
                     "block_type": "Text",
                     "content": content,
                     "layer_x": layer_x,
@@ -157,11 +172,10 @@ class BlockConsumer(WebsocketConsumer):
         )
 
     def change_children_blocks(self, event):
-        try:
-            children_blocks = event["children_blocks"]
-        except Exception as e:
-            print(e)
+        """
         # Send message to WebSocket
+        """
+        children_blocks = event["children_blocks"]
         self.send(text_data=json.dumps({"children_blocks": children_blocks,}))
 
 
@@ -244,4 +258,3 @@ class AgendaConsumer(WebsocketConsumer):
                 }
             )
         )
-
