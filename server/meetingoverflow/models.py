@@ -232,4 +232,4 @@ class TextBlock(models.Model):
     def __str__(self):
         # return f'note_id: {self.note.id}'
         return f"content: {self.content}"
-
+        

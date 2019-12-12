@@ -861,7 +861,7 @@ def children_blocks_of_note(request, n_id):
     if request.method == 'GET':
         try:
             note = Note.objects.get(id=n_id)
-        except:
+        except Note.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         response = {
             'children_blocks': note.children_blocks
@@ -871,12 +871,10 @@ def children_blocks_of_note(request, n_id):
     elif request.method == 'PATCH':
         try:
             note = Note.objects.get(id=n_id)
-        except(Note.DoesNotExist):
+        except Note.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        
         new_blocks = request.data['children_blocks']
         note.children_blocks = new_blocks
         note.save()
-        
         return Response(note.children_blocks, status=status.HTTP_202_ACCEPTED)
-
+        

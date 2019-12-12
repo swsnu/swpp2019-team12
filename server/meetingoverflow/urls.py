@@ -44,7 +44,6 @@ urlpatterns = [
         views.agenda_child_of_note,
         name="agenda_child_of_note",
     ),
-    # path('agenda/<int:a_id>/agendas/', views.agenda_child_of_agenda, name='agenda_child_of_agenda'),
     path("agenda/<int:a_id>/", views.modify_agenda, name="modify_agenda"),
     # TodoBlock
     path(

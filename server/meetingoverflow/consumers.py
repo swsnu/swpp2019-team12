@@ -180,6 +180,10 @@ class BlockConsumer(WebsocketConsumer):
 
 
 class AgendaConsumer(WebsocketConsumer):
+    """
+        For changing agenda child blocks
+    """
+
     def connect(self):
         self.room_group_name = "agenda_" + str(
             self.scope["url_route"]["kwargs"]["agenda_id"]
@@ -235,20 +239,20 @@ class AgendaConsumer(WebsocketConsumer):
 
     # Receive message from room group
     def add_text(self, event):
-        try:
-            content = event["content"]
-            layer_x = event["layer_x"]
-            layer_y = event["layer_y"]
-            n_id = event["note"]
-            id = event["id"]
-            document_id = event["document_id"]
-        except Exception as e:
-            print(e)
+        """
+            temporary
+        """
+        content = event["content"]
+        layer_x = event["layer_x"]
+        layer_y = event["layer_y"]
+        n_id = event["note"]
+        t_id = event["id"]
+        document_id = event["document_id"]
         # Send message to WebSocket
         self.send(
             text_data=json.dumps(
                 {
-                    "id": id,
+                    "id": t_id,
                     "block_type": "Text",
                     "content": content,
                     "layer_x": layer_x,
