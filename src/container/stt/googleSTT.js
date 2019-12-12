@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { map } from 'lodash';
 import axios from 'axios';
+import STTScript from './STTScript';
 
 const END_POINT = '127.0.0.1:9000/';
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -43,7 +44,8 @@ class googleSTT extends Component {
         this.state = {
             room: this.props.room || Date.now(),
             recording: false,
-            texts: []
+            texts: [],
+            currentText: ''
         };
 
         // Audio Element
@@ -79,7 +81,10 @@ class googleSTT extends Component {
             if (isFinal) {
                 console.log(transcript);
                 this.setState(
-                    { texts: [...this.state.texts, transcript] },
+                    {
+                        texts: [...this.state.texts, transcript],
+                        currentText: ''
+                    },
                     () => {
                         //TODO save to DB
                         /*
@@ -89,6 +94,10 @@ class googleSTT extends Component {
                         */
                     }
                 );
+            } else {
+                this.setState({
+                    currentText: transcript
+                });
             }
         });
     };
@@ -230,11 +239,15 @@ class googleSTT extends Component {
                     className={recording ? '' : 'disabled'}>
                     Stop recording
                 </button>
-                <div>
+                <STTScript
+                    scripts={this.state.texts}
+                    lastScript={this.state.currentText}
+                />
+                {/* <div>
                     {map(texts, (text, i) => (
                         <div key={i}>{text}</div>
                     ))}
-                </div>
+                </div> */}
             </div>
         );
     }

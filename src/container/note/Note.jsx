@@ -4,6 +4,7 @@ import moment from 'moment';
 import NoteLeft from './NoteLeft';
 import Signout from '../../component/signout/Signout';
 import NoteTree from '../../component/note_left/NoteTree';
+import GoogleSTT from '../../container/stt/googleSTT';
 
 const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
@@ -483,6 +484,7 @@ class Note extends Component {
                         this.handleAddAgendaChildrenBlocks
                     }
                 />
+                <GoogleSTT />
             </div>
         );
     }
