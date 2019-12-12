@@ -126,21 +126,24 @@ class SignUp extends Component {
     render() {
         return (
             <div className="SignUp">
+                <h1>Signup Page</h1>
                 <form className="form-container">
-                    <Label title="Email" />
+                    {/* <Label title="Email" /> */}
+                    <p> User Email * </p>
                     <input
                         id="user_email"
-                        placeholder="email"
+                        // placeholder="email"
                         onChange={e => this.setState({ email: e.target.value })}
                         onBlur={this.checkEmail}
                         value={this.state.email}
                     />
                     <p id="id-validation">{this.state.emailVaildText}</p>
-                    <Label title="Password" />
+                    {/* <Label title="Password" /> */}
+                    <p> Password *</p>
                     <input
                         id="user_password"
                         type="password"
-                        placeholder="password"
+                        // placeholder="password"
                         onChange={e =>
                             this.setState({ password: e.target.value })
                         }
@@ -148,11 +151,12 @@ class SignUp extends Component {
                         value={this.state.password}
                     />
                     <p>{this.state.pwVaildText}</p>
-                    <Label title="Password-Confirmation" />
+                    {/* <Label title="Password-Confirmation" /> */}
+                    <p> Password-Confirmation * </p>
                     <input
                         id="user_password_confirmation"
                         type="password"
-                        placeholder="password_confirmation"
+                        // placeholder="password_confirmation"
                         onChange={e =>
                             this.setState({
                                 password_confirmation: e.target.value
@@ -164,16 +168,18 @@ class SignUp extends Component {
                     <p id="pw-confirm-validation">
                         {this.state.pwConfirmationVaildText}
                     </p>
-                    <Label title="Nickname" />
+                    {/* <Label title="Nickname" /> */}
+                    <p> Nickname * </p>
                     <input
                         id="user_nickname"
-                        placeholder="nickname"
+                        // placeholder="nickname"
                         onChange={e =>
                             this.setState({ nickname: e.target.value })
                         }
                         value={this.state.nickname}
                     />
                     <br />
+
                     <div className="button-container">
                         <button
                             id="sign_up_button"
@@ -185,14 +191,18 @@ class SignUp extends Component {
                                 !this.state.password_confirmation ||
                                 !this.state.nickname
                             }>
-                            Signup
+                            Sign Up
                         </button>
-                        <button
-                            className="primary"
-                            id="navigate_sign_in_button"
-                            onClick={this.handleNavigateSignIn}>
-                            Signin
-                        </button>
+
+                        <div className="signin_ref">
+                            <p> Already a Member? </p>
+                            <a
+                                // className="primary"
+                                id="navigate_sign_in_button"
+                                onClick={this.handleNavigateSignIn}>
+                                Sign In Here
+                            </a>
+                        </div>
                     </div>
                 </form>
             </div>

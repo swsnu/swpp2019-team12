@@ -9,7 +9,6 @@ class SignIn extends Component {
         this.state = {
             email: '',
             password: '',
-
             submitText: '',
             submitted: false
         };
@@ -49,6 +48,7 @@ class SignIn extends Component {
             <div className="SignIn">
                 <h1>Signin Page</h1>
                 <form>
+                    <p>User Email *</p>
                     <input
                         id="email-input"
                         placeholder="email"
@@ -56,6 +56,7 @@ class SignIn extends Component {
                         value={this.state.email}
                     />
                     <br />
+                    <p>Password *</p>
                     <input
                         id="password-input"
                         placeholder="password"
@@ -67,19 +68,23 @@ class SignIn extends Component {
                     <br />
                     <br />
                     <p>{this.state.submitText}</p>
+
                     <div className="button-container">
                         <button
                             className="primary"
                             id="sign_in_button"
                             onClick={this.handleSignIn}>
-                            Signin
+                            Sign In
                         </button>
-                        <button
-                            className="primary"
-                            id="navigate_sign_up_button"
-                            onClick={this.handleNavigateSignUp}>
-                            Signup
-                        </button>
+                        <div className="signup_invitation">
+                            <p> Want to Sign Up? </p>
+                            <a
+                                // className="primary"
+                                id="navigate_sign_up_button"
+                                onClick={this.handleNavigateSignUp}>
+                                Sign Up Here
+                            </a>
+                        </div>
                     </div>
                 </form>
             </div>
