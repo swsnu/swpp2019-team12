@@ -78,7 +78,7 @@ class Note(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     ml_speech_text = models.TextField(null=True, blank=True)
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, null=True)
-    children_blocks = models.TextField(default="", null=True, blank=True)
+    children_blocks = models.TextField(default="", blank=True)
 
     def __str__(self):
         return f"note_id: {self.id}, title: {self.title}"
@@ -211,7 +211,7 @@ class Todo(models.Model):
     # due = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f"note_id: {self.note.id}"
+        return f"note_id: {self.note.id}, todo_id: {self.id}"
 
 
 class TextBlock(models.Model):
@@ -232,4 +232,4 @@ class TextBlock(models.Model):
     def __str__(self):
         # return f'note_id: {self.note.id}'
         return f"content: {self.content}"
-        
+

@@ -833,8 +833,10 @@ def modify_todoblock(request, t_id):
             current_todo, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            print("제대로")
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
+            print("오류")
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
@@ -857,7 +859,6 @@ def children_blocks_of_note(request, n_id):
         }
     ===================================================
     """
-    # 해당 노트의 모든 TextBlock 리스트 반환
     if request.method == 'GET':
         try:
             note = Note.objects.get(id=n_id)
@@ -877,4 +878,3 @@ def children_blocks_of_note(request, n_id):
         note.children_blocks = new_blocks
         note.save()
         return Response(note.children_blocks, status=status.HTTP_202_ACCEPTED)
-        

@@ -150,7 +150,7 @@ class MOFTestCase(TestCase):
             note=note
         )
         todo.save()
-        self.assertEqual(str(Todo.objects.get(id=3)), "note_id: 4")
+        self.assertEqual(str(Todo.objects.get(id=3)), "note_id: 4, todo_id: 3")
 
         # TextBlock Model Check
         textblock = TextBlock(

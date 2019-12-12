@@ -1,7 +1,7 @@
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from .serializers import AgendaSerializer, TextBlockSerializer
+from .serializers import AgendaSerializer, TextBlockSerializer, TodoSerializer
 from .models import Agenda
 
 
@@ -38,7 +38,6 @@ class BlockConsumer(WebsocketConsumer):
         # Receive message from WebSocket
         """
         block_data_json = json.loads(text_data)
-        print(block_data_json)
 
         # 현재는 여기서 모든 action에 대해서 모두 처리하게 되어있는데 이건 시간이 된다면 따로 따로 구현하는게 좋을듯.
         # Block을 Add하는 것과 관련된 receive...
@@ -111,12 +110,54 @@ class BlockConsumer(WebsocketConsumer):
                         "note": n_id,
                     },
                 )
+            elif block_type == "TodoContainer":
+                content = block_data_json["content"]
+                layer_x = block_data_json["layer_x"]
+                layer_y = block_data_json["layer_y"]
+                assignees = block_data_json["assignees"]
+                n_id = block_data_json["n_id"]
+                due_date = block_data_json["due_date"]
+                # 현재는 agenda가 parent인경우 없음
+                # parent_agenda = block_data_json["document_id"]
+
+                data = {
+                    "content": content,
+                    "layer_x": layer_x,
+                    "layer_y": layer_y,
+                    "assignnes": assignees,
+                    "note": n_id,
+                    "due_date": due_date,
+                    "is_parent_note": True,
+                }
+
+                serializer = TodoSerializer(data=data)
+                if serializer.is_valid():
+                    todo = serializer.save()
+
+                # Send message to room group
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    {
+                        "type": "add_todo_note",
+                        "id": todo.id,
+                        "content": content,
+                        "layer_x": layer_x,
+                        "layer_y": layer_y,
+                        "assignees": assignees,
+                        "note": n_id,
+                        "due_date": due_date,
+                    },
+                )
+                print("TODOS")
+
         # 1) Block을 Drag해서 위치가 변화하는걸 받는 receive
         # 2) Block을 제거해서 변화하는 경우를 받는 receive
         else:
             """
             # Send message to room group
             """
+            print("ㄲㄲㄲㄲㄲㄲㄲㄲㄲㄲㄲㄲㄲㄲㄲ")
+            print(block_data_json)
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {"type": "change_children_blocks", "children_blocks": block_data_json,},
@@ -167,6 +208,37 @@ class BlockConsumer(WebsocketConsumer):
                     "layer_y": layer_y,
                     "document_id": document_id,
                     "note": n_id,
+                }
+            )
+        )
+
+    def add_todo_note(self, event):
+        """
+        # Add TodoBlock whose parent is note.
+        """
+        content = event["content"]
+        layer_x = event["layer_x"]
+        layer_y = event["layer_y"]
+        assignees = event["assignees"]
+        due_date = event["due_date"]
+        n_id = event["note"]
+        t_id = event["id"]
+
+        self.send(
+            text_data=json.dumps(
+                {
+                    "id": t_id,
+                    "block_type": "TodoContainer",
+                    "content": content,
+                    "layer_x": layer_x,
+                    "layer_y": layer_y,
+                    "assignees": assignees,
+                    "due_date": due_date,
+                    "note": n_id,
+                    "is_parent_note": True,
+                    "is_done": False,
+                    "parent_agenda": None,
+                    "worspace": None,
                 }
             )
         )
