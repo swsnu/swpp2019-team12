@@ -51,12 +51,15 @@ class Note extends Component {
 
         axios.get(`/api/note/${noteId}/childrenblocks/`).then(res => {
             let children_blocks = null;
+            console.log(res);
 
             if (res.data['children_blocks'] === '') {
                 children_blocks = [];
             } else {
                 children_blocks = JSON.parse(res.data['children_blocks']);
             }
+
+            console.log(children_blocks);
             children_blocks.map(blk => {
                 let block_type = blk['block_type'];
                 if (block_type == 'Agenda') {
@@ -79,6 +82,31 @@ class Note extends Component {
                             layer_y: blk['layer_y'],
                             documentId: blk['documentId']
                         })
+                    });
+                } else if (block_type == 'TodoContainer') {
+                    let todoContainer = {
+                        block_type: 'TodoContainer',
+                        todos: blk['todos']
+                    };
+                    todoContainer.todos.forEach(todo => {
+                        todo.assignees_info = [];
+                        if (todo.assignees) {
+                            todo.assignees.forEach(assignee_id => {
+                                axios
+                                    .get(`/api/profile/${assignee_id}`)
+                                    .then(res => {
+                                        todo.assignees_info.push({
+                                            id: res['data']['id'],
+                                            nickname: res['data']['nickname']
+                                        });
+                                    });
+                            });
+                        }
+                        console.log('todo에 info', todo.assignees_info);
+                    });
+
+                    this.setState({
+                        blocks: this.state.blocks.concat(todoContainer)
                     });
                 }
             });
@@ -238,6 +266,7 @@ class Note extends Component {
     };
 
     handleDeleteTodo = deleted => {
+        const noteId = this.props.match.params.n_id;
         const todoContainer = this.state.blocks.find(
             blk => blk.block_type == 'TodoContainer'
         );
@@ -265,9 +294,16 @@ class Note extends Component {
                     return blk;
                 }
             });
-            this.setState({
-                blocks: newBlocks
-            });
+            const stringifiedBlocks = {
+                children_blocks: JSON.stringify(newBlocks)
+            };
+            axios
+                .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
+                .then(res =>
+                    this.BlockRef.current.state.ws.send(
+                        JSON.stringify(newBlocks)
+                    )
+                );
         }
     };
 
@@ -384,45 +420,50 @@ class Note extends Component {
         // Where need to call Todo Create API.
         // To find out whether there is at least one todo.
         const todo_info = {
+            n_id: noteId,
             content: '할 일을 채워주세요',
             layer_x: 0,
             layer_y: 0,
             assignees: [],
             due_date: moment()
                 .add(1, 'days')
-                .format('YYYY-MM-DD')
+                .format('YYYY-MM-DD'),
+            block_type: 'TodoContainer'
         };
 
-        let todoContainer = this.state.blocks.find(
-            blk => blk.block_type === 'TodoContainer'
-        );
-        console.log('todo container: ', todoContainer);
-        axios.post(`/api/note/${noteId}/todos/`, todo_info).then(res => {
-            res.data.assignees_info = [];
-            if (todoContainer) {
-                const newBlocks = this.state.blocks.map(blk => {
-                    if (blk.block_type == 'TodoContainer') {
-                        const newTodos = blk.todos.concat(res.data);
-                        blk.todos = newTodos;
-                        return blk;
-                    } else {
-                        return blk;
-                    }
-                });
-                console.log(newBlocks);
-                this.setState({
-                    blocks: newBlocks
-                });
-            } else {
-                todoContainer = {
-                    todos: [res.data],
-                    block_type: 'TodoContainer'
-                };
-                this.setState({
-                    blocks: this.state.blocks.concat(todoContainer)
-                });
-            }
-        });
+        this.BlockRef.current.state.ws.send(JSON.stringify(todo_info));
+
+        // let todoContainer = this.state.blocks.find(
+        //     blk => blk.block_type === 'TodoContainer'
+        // );
+        // console.log('todo container: ', todoContainer);
+        // axios.post(`/api/note/${noteId}/todos/`, todo_info).then(res => {
+        //     console.log(res);
+        //     res.data.assignees_info = [];
+        //     if (todoContainer) {
+        //         const newBlocks = this.state.blocks.map(blk => {
+        //             if (blk.block_type == 'TodoContainer') {
+        //                 const newTodos = blk.todos.concat(res.data);
+        //                 blk.todos = newTodos;
+        //                 return blk;
+        //             } else {
+        //                 return blk;
+        //             }
+        //         });
+        //         console.log(newBlocks);
+        //         this.setState({
+        //             blocks: newBlocks
+        //         });
+        //     } else {
+        //         todoContainer = {
+        //             todos: [res.data],
+        //             block_type: 'TodoContainer'
+        //         };
+        //         this.setState({
+        //             blocks: this.state.blocks.concat(todoContainer)
+        //         });
+        //     }
+        // });
     };
 
     handleAddImageBlock = noteId => {
@@ -506,6 +547,30 @@ class Note extends Component {
                     layer_y: res['layer_y'],
                     documentId: res['document_id']
                 });
+            } else if (res['block_type'] == 'TodoContainer') {
+                newBlocks = this.state.blocks;
+                let todoContainer = this.state.blocks.find(
+                    blk => blk.block_type === 'TodoContainer'
+                );
+                console.log('todo container: ', todoContainer);
+                res.assignees_info = [];
+                if (todoContainer) {
+                    newBlocks = this.state.blocks.map(blk => {
+                        if (blk.block_type == 'TodoContainer') {
+                            const newTodos = blk.todos.concat(res);
+                            blk.todos = newTodos;
+                            return blk;
+                        } else {
+                            return blk;
+                        }
+                    });
+                } else {
+                    todoContainer = {
+                        todos: [res],
+                        block_type: 'TodoContainer'
+                    };
+                    newBlocks = this.state.blocks.concat(todoContainer);
+                }
             }
 
             const stringifiedBlocks = {
@@ -520,6 +585,8 @@ class Note extends Component {
         }
         // Drag & Drop
         else {
+            console.log('여기일틴데');
+            console.log('여기일텐데???', res);
             this.setState({ blocks: res['children_blocks'] });
         }
 
@@ -537,27 +604,11 @@ class Note extends Component {
         // });
     }
 
-    handleSocketText(data) {
-        let res = JSON.parse(data);
-        console.log(res);
-        this.setState({
-            blocks: this.state.blocks.concat({
-                block_type: res['block_type'],
-                id: res['id'],
-                content: res['content'],
-                layer_x: res['layer_x'],
-                layer_y: res['layer_y'],
-                documentId: res['document_id']
-            })
-        });
-    }
     onDragEnd = result => {
         const noteId = this.props.match.params.n_id;
         if (!result.destination) {
             return;
         }
-
-        console.log('이전의 blocks: ', this.state.blocks);
 
         const blocks = reorder(
             this.state.blocks,
@@ -568,8 +619,6 @@ class Note extends Component {
         const stringifiedBlocks = {
             children_blocks: JSON.stringify(blocks)
         };
-        console.log(stringifiedBlocks);
-        console.log('바뀐 blocks: ', blocks);
 
         axios
             .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
@@ -616,9 +665,9 @@ class Note extends Component {
                 />
                 <Websocket
                     // 로컬 테스트용.
-                    //url={`ws://localhost:8001/ws/${noteId}/block/`}
+                    url={`ws://localhost:8001/ws/${noteId}/block/`}
                     // 개발서버용.
-                    url={`wss://www.meetingoverflow.space:8443/ws/${noteId}/block/`}
+                    // url={`wss://www.meetingoverflow.space:8443/ws/${noteId}/block/`}
                     ref={this.BlockRef}
                     onMessage={this.handleSocketBlock.bind(this)}
                 />

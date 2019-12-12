@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Menu, Dropdown, Icon, DatePicker } from 'antd';
 import moment from 'moment';
-import { map, uniqBy, differenceBy } from 'lodash';
+import { map, uniqBy, differenceBy, find, pull, remove } from 'lodash';
 import axios from 'axios';
 
 class Todo extends Component {
@@ -19,6 +19,7 @@ class Todo extends Component {
         console.log('todo didmount');
         const { todo } = this.props;
         console.log('todo: ', todo);
+        console.log('Socket', this.props.socketRef);
         this.setState({ assignees: todo.assignees_info, todo });
     }
 
@@ -59,7 +60,10 @@ class Todo extends Component {
     };
 
     handleSelectAssignee = assignee => {
+        const noteId = this.props.noteId;
+        const socketRef = this.props.socketRef;
         const { todo } = this.state;
+        console.log('ASSIGNEES', this.state.assignees);
         const assignees = uniqBy([...this.state.assignees, assignee], 'id');
 
         const assigneeInfo = {
@@ -68,7 +72,69 @@ class Todo extends Component {
         axios
             .patch(`/api/todo/${todo.id}/`, assigneeInfo)
             .then(res => {
-                this.setState({ assignees });
+                axios.get(`/api/note/${noteId}/childrenblocks/`).then(res => {
+                    let childrenBlocks = JSON.parse(
+                        res['data']['children_blocks']
+                    );
+                    console.log('childrenblks:', childrenBlocks);
+                    let todoContainer = find(childrenBlocks, {
+                        block_type: 'TodoContainer'
+                    });
+                    let originalTodos = todoContainer.todos;
+                    let original_todo = find(originalTodos, {
+                        id: todo.id
+                    });
+                    console.log('todoContaner', todoContainer);
+                    console.log('originalTodos', originalTodos);
+                    console.log('original_todo', original_todo);
+
+                    original_todo.assignees.push(assignee.id);
+                    original_todo.assignees_info.push({
+                        id: assignee.id,
+                        nickname: assignee.nickname
+                    });
+                    let todoIdx = -1;
+                    for (let i = 0; i < originalTodos.length; i++) {
+                        if (originalTodos[i].id == todo.id) {
+                            todoIdx = i;
+                            break;
+                        }
+                    }
+                    console.log('original_todo 변화', original_todo);
+                    originalTodos.splice(todoIdx, 1, original_todo);
+                    console.log('originalTodos 변화', originalTodos);
+                    console.log('todoIdx', todoIdx);
+
+                    todoContainer.todos = originalTodos;
+
+                    let todoContainerIdx = -1;
+                    for (let i = 0; i < childrenBlocks.length; i++) {
+                        if (
+                            childrenBlocks[i]['block_type'] === 'TodoContainer'
+                        ) {
+                            todoContainerIdx = i;
+                            break;
+                        }
+                    }
+
+                    console.log(todoContainerIdx);
+                    childrenBlocks.splice(todoContainerIdx, 1, todoContainer);
+                    console.log('변화 후 ', childrenBlocks);
+
+                    const newBlocks = JSON.stringify(childrenBlocks);
+                    const stringifiedBlocks = {
+                        children_blocks: newBlocks
+                    };
+                    axios
+                        .patch(
+                            `/api/note/${noteId}/childrenblocks/`,
+                            stringifiedBlocks
+                        )
+                        .then(res => {
+                            socketRef.current.state.ws.send(newBlocks);
+                        })
+                        .catch(err => console.log(err));
+                });
             })
             .catch(e => console.log(e));
     };
