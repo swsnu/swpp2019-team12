@@ -6,8 +6,7 @@ class Image extends Component {
         super(props);
         this.state = {
             blk_id: this.props.blk_id,
-            // image: null,
-            image: this.props.image,
+            image: null,
             content: this.props.content,
             is_submitted: false
         };
@@ -36,7 +35,6 @@ class Image extends Component {
 
     handleClickDelete = e => {
         e.preventDefault();
-        console.log('delete image');
         const axios_path = `/api/image/${this.state.blk_id}/`;
         this.props.handleDeleteBlock(axios_path, 'Image', this.state.blk_id);
     };
@@ -44,7 +42,6 @@ class Image extends Component {
     handleSubmit = e => {
         e.preventDefault();
         let form_data = new FormData();
-        // form_data.append('image', this.state.image, this.state.image.name);
         form_data.append('image', this.state.image, this.state.image.name);
         form_data.append('content', this.state.content);
 
@@ -53,8 +50,7 @@ class Image extends Component {
                 headers: { 'content-type': 'multipart/form-data' }
             })
             .then(res => {
-                console.log('i am here');
-                console.log(res.data);
+                console.log('res.data: ', res.data);
                 this.setState({
                     is_submitted: true
                 });
@@ -63,7 +59,7 @@ class Image extends Component {
     };
 
     render() {
-        console.log('submitted: ' + this.state.is_submitted);
+        console.log('render: ' + this.state.image);
         return (
             <div
                 className="full-size-block-container Image"
@@ -82,7 +78,7 @@ class Image extends Component {
                     </button>
                 </div>
 
-                <div className="full-size-block-content">
+                <div className="full-size-block-content Image">
                     {this.state.is_submitted == false ? (
                         <form onSubmit={this.handleSubmit}>
                             <p>
@@ -100,7 +96,7 @@ class Image extends Component {
                                     id="image"
                                     accept="image/png, image/jpeg"
                                     onChange={this.handleChangeImage}
-                                    required
+                                    // required
                                 />
                             </p>
                             <input type="submit" value="submit" />
@@ -108,9 +104,16 @@ class Image extends Component {
                     ) : (
                         <div>
                             Image Caption: {this.state.content} <br />
-                            {/* Image File Name: {this.state.image} */}
-                            {/* <br />I am : {this.state.file} */}
-                            {/* <img src={this.state.file} /> */}
+                            Image File Name:{' '}
+                            {typeof this.state.image === 'string'
+                                ? decodeURI(this.state.image)
+                                : decodeURI(this.state.image.name)}
+                            {typeof this.state.image === 'string' ? (
+                                <img src={this.state.image} />
+                            ) : (
+                                // <img src="{% static {this.state.image} %}" />
+                                <img src="blob:{{MEDIA_URL}}{{this.state.file}}" />
+                            )}
                         </div>
                     )}
                     <div className="full-size-block-content__text"></div>

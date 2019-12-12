@@ -94,6 +94,14 @@
                 color: $secondary;
             }
 
+            form {
+                width: 100%;
+            }
+
+            img {
+                width: 30%;
+            }
+
             .delete-button {
                 all: unset;
                 float: right;
@@ -117,7 +125,14 @@
             max-height: rem(120px);
             padding: rem(10px);
             overflow: auto;
-            display: flex;
+            .full-size-block-content__text {
+                color: $black;
+            }
+        }
+        .full-size-block-content.Image {
+            max-height: rem(149px);
+            padding: rem(10px);
+            overflow: auto;
             .full-size-block-content__text {
                 color: $black;
             }

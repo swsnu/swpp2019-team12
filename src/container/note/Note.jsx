@@ -313,6 +313,7 @@ class Note extends Component {
         const noteId = this.props.match.params.n_id;
         // Block Create API call 할 곳.
         const image_info = {
+            image: null,
             content: '',
             layer_x: 0,
             layer_y: 0

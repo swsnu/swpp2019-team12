@@ -81,7 +81,7 @@ class NoteLeftBlock extends Component {
                             />
                         );
                     } else if (blk.block_type === IMAGE) {
-                        console.log('img blk: ', blk);
+                        // console.log('img blk: ', blk);
                         result = (
                             <Image
                                 noteId={nextProps.noteId}

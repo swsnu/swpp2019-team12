@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.utils import timezone
+from django.core.files.storage import FileSystemStorage
 
 
 class Profile(models.Model):
@@ -333,7 +334,8 @@ class File(models.Model):
 
 
 class Image(models.Model):
-    image = models.ImageField(null=True, upload_to='post_images', blank=True)
+    image = models.ImageField(null=True, blank=True,
+                              default='/screenshot.png')
     content = models.CharField(max_length=100, null=True, blank=True)
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
