@@ -38,7 +38,7 @@ class BlockConsumer(WebsocketConsumer):
         # Receive message from WebSocket
         """
         block_data_json = json.loads(text_data)
-
+        print(block_data_json)
         # 현재는 여기서 모든 action에 대해서 모두 처리하게 되어있는데 이건 시간이 된다면 따로 따로 구현하는게 좋을듯.
         # Block을 Add하는 것과 관련된 receive...
         if "block_type" in block_data_json:
@@ -148,7 +148,22 @@ class BlockConsumer(WebsocketConsumer):
                         "due_date": due_date,
                     },
                 )
-
+        elif block_data_json["operation_type"] == "change_title":
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "change_title",
+                    "updated_title": block_data_json["updated_title"],
+                },
+            )
+        elif block_data_json["operation_type"] == "change_location":
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "change_location",
+                    "updated_location": block_data_json["updated_location"],
+                },
+            )
         # 1) Block을 Drag해서 위치가 변화하는걸 받는 receive
         # 2) Block을 제거해서 변화하는 경우를 받는 receive
         else:
@@ -238,6 +253,31 @@ class BlockConsumer(WebsocketConsumer):
                     "is_done": False,
                     "parent_agenda": None,
                     "worspace": None,
+                }
+            )
+        )
+
+    def change_title(self, event):
+        """
+            change title of Note
+        """
+        updated_title = event["updated_title"]
+        self.send(
+            text_data=json.dumps(
+                {"operation_type": "change_title", "updated_title": updated_title}
+            )
+        )
+
+    def change_location(self, event):
+        """
+            change title of Note
+        """
+        updated_location = event["updated_location"]
+        self.send(
+            text_data=json.dumps(
+                {
+                    "operation_type": "change_location",
+                    "updated_location": updated_location,
                 }
             )
         )

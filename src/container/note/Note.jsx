@@ -34,7 +34,9 @@ class Note extends Component {
             moment: null,
             blocks: [],
             block_focused_id: '',
-            block_focused_name: ''
+            block_focused_name: '',
+            typing: false,
+            typingTimeout: 0
         };
     }
 
@@ -228,11 +230,34 @@ class Note extends Component {
 
     handleChangeTitle = e => {
         const n_id = this.props.match.params.n_id;
-        this.setState({ title: e.target.value }, () => {
-            axios
-                .patch(`/api/note/${n_id}/`, { title: this.state.title })
-                .then()
-                .catch();
+        const title = e.target.value.length ? e.target.value : ' ';
+        // this.setState({ title: e.target.value }, () => {
+        //     axios
+        //         .patch(`/api/note/${n_id}/`, { title: this.state.title })
+        //         .then()
+        //         .catch();
+        // });
+        if (this.state.typingTimeout) {
+            clearTimeout(this.state.typingTimeout);
+        }
+
+        this.setState({
+            title: title,
+            typing: false,
+            typingTimeout: setTimeout(() => {
+                axios
+                    .patch(`/api/note/${n_id}/`, { title: title })
+                    .then(res_1 => {
+                        const newTitle = {
+                            operation_type: 'change_title',
+                            updated_title: title
+                        };
+                        this.BlockRef.current.state.ws.send(
+                            JSON.stringify(newTitle)
+                        );
+                    })
+                    .catch(e => console.log(e));
+            }, 1818)
         });
     };
 
@@ -248,11 +273,34 @@ class Note extends Component {
 
     handleChangeLocation = e => {
         const n_id = this.props.match.params.n_id;
-        this.setState({ location: e.target.value }, () => {
-            axios
-                .patch(`/api/note/${n_id}/`, { location: this.state.location })
-                .then()
-                .catch();
+        const location = e.target.value.length ? e.target.value : ' ';
+        // this.setState({ location: e.target.value }, () => {
+        //     axios
+        //         .patch(`/api/note/${n_id}/`, { location: this.state.location })
+        //         .then()
+        //         .catch();
+        // });
+        if (this.state.typingTimeout) {
+            clearTimeout(this.state.typingTimeout);
+        }
+
+        this.setState({
+            location: location,
+            typing: false,
+            typingTimeout: setTimeout(() => {
+                axios
+                    .patch(`/api/note/${n_id}/`, { location: location })
+                    .then(res_1 => {
+                        const newLocation = {
+                            operation_type: 'change_location',
+                            updated_location: location
+                        };
+                        this.BlockRef.current.state.ws.send(
+                            JSON.stringify(newLocation)
+                        );
+                    })
+                    .catch(e => console.log(e));
+            }, 1818)
         });
     };
 
@@ -369,7 +417,7 @@ class Note extends Component {
         const noteId = this.props.match.params.n_id;
         let newBlocks = null;
         let res = JSON.parse(data);
-
+        console.log(res);
         // Add Block
         if (res.hasOwnProperty('block_type')) {
             if (res['block_type'] == 'Agenda') {
@@ -424,6 +472,10 @@ class Note extends Component {
             axios
                 .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
                 .then(res => console.log(res));
+        } else if (res['operation_type'] === 'change_title') {
+            this.setState({ title: res['updated_title'] });
+        } else if (res['operation_type'] === 'change_location') {
+            this.setState({ location: res['updated_location'] });
         }
         // Drag & Drop
         // Delete
