@@ -35,16 +35,6 @@ class Profile(models.Model):
         instance.profile.save()
 
 
-class Tag(models.Model):
-    """
-    Tag model
-    """
-    content = models.CharField(max_length=100, blank=False, null=False)
-
-    def __str__(self):
-        return f'content: {self.content}'
-
-
 class Workspace(models.Model):
     """
     Workspace model
@@ -56,6 +46,18 @@ class Workspace(models.Model):
 
     def __str__(self):
         return f'name: {self.name}'
+
+
+class Tag(models.Model):
+    """
+    Tag model
+    """
+    content = models.CharField(max_length=100, blank=False, null=False)
+    workspace = models.ForeignKey(
+        Workspace, on_delete=models.CASCADE, null=False)
+
+    def __str__(self):
+        return f'content: {self.content}'
 
 
 class Note(models.Model):

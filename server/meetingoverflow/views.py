@@ -840,3 +840,61 @@ def modify_todoblock(request, t_id):
     elif request.method == 'DELETE':
         current_todo.delete()
         return Response(status=status.HTTP_200_OK)
+
+
+@api_view(['GET', 'POST'])
+def api_tag(request, w_id):
+    """
+    /api/workspace/w_id/tag/
+    """
+    try:
+        current_workspace = Workspace.objects.get(id=w_id)
+    except Workspace.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        tags = Tag.objects.filter(workspace=current_workspace)
+        serializer = TagSerializer(tags, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == 'POST':
+        data = {
+            "content": request.data["content"],
+            "workspace": request.data["workspaceId"]
+        }
+        serializer = TagSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PATCH', 'DELETE'])
+def single_tag(request, t_id):
+    """
+    /api/tag/t_id/
+    """
+    try:
+        current_tag = Tag.objects.get(id=t_id)
+    except Tag.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        notes = Note.objects.filter(tag__in=[current_tag])
+        agendas = Agenda.objcects.filter(tag__in=[current_tag])
+        pass
+    
+
+
+# current_members = current_workspace.members.all()
+#         new_members = request.data['members']
+#         data = new_members
+#         for current_member in current_members:
+#             if current_member.id not in new_members:
+#                 data.append(current_member.id)
+#         serializer = WorkspaceSerializer(
+#             current_workspace, data={'members': data}, partial=True)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+#         return Response(status=status.HTTP_400_BAD_REQUEST)
