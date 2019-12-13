@@ -1,9 +1,23 @@
 .userinfo-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    .userinfo-subContainer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
     .userinfo-nickname {
         font-weight: 700;
+    }
+
+    .leftbar-logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: rem(20px);
+
+        .leftbar-logo {
+            width: rem(162px);
+            height: auto;
+        }
     }
 }
