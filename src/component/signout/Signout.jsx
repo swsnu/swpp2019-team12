@@ -1,23 +1,26 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-export default class Signout extends Component {
-    handleClick() {
+const Signout = props => {
+    const handleClick = e => {
+        e.preventDefault();
         axios
             .get('/api/signout/')
             .then(res => {
                 sessionStorage.removeItem('LoggedInUserNickname');
                 sessionStorage.removeItem('LoggedInUserId');
+                props.history.push('/signin');
             })
-            .catch(err => console.log('로그인 안된 상태'))
-            .finally(res => this.props.history.push('/signin'));
-    }
+            .catch(err => console.log('로그인 안된 상태'));
+    };
 
-    render() {
-        return (
-            <div>
-                <button onClick={() => this.handleClick()}>로그아웃</button>
-            </div>
-        );
-    }
-}
+    return (
+        <div className="Signout">
+            <button id="logout-button" onClick={handleClick}>
+                로그아웃
+            </button>
+        </div>
+    );
+};
+
+export default Signout;

@@ -1,12 +1,12 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import SignOut from './SignOut';
+import Signout from './Signout';
 import axios from 'axios';
 
-describe('<SignOut />', () => {
+describe('<Signout />', () => {
     it('should render without error', () => {
-        const component = shallow(<SignOut />);
-        let wrapper = component.find('.SignOut');
+        const component = shallow(<Signout />);
+        let wrapper = component.find('.Signout');
         expect(wrapper.length).toBe(1);
     });
 
@@ -22,7 +22,7 @@ describe('<SignOut />', () => {
 
         const mockHistory = { push: jest.fn() };
         const mockEvent = { preventDefault: jest.fn() };
-        const component = shallow(<SignOut history={mockHistory} />);
+        const component = shallow(<Signout history={mockHistory} />);
         let wrapper = component.find('#logout-button');
         await wrapper.simulate('click', mockEvent);
         expect(mockEvent.preventDefault).toHaveBeenCalledTimes(1);
