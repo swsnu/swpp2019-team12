@@ -910,4 +910,3 @@ def children_blocks_of_agenda(request, a_id):
         agenda.children_blocks = new_blocks
         agenda.save()
         return Response(agenda.children_blocks, status=status.HTTP_202_ACCEPTED)
-

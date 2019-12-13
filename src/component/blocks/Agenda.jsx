@@ -43,25 +43,50 @@ class Agenda extends Component {
     }
 
     onDragEnd = result => {
+        // if (!result.destination) {
+        //     return;
+        // }
+        // const blocks = reorder(
+        //     this.state.blocks,
+        //     result.source.index,
+        //     result.destination.index
+        // );
+        // console.log(result.source.index + ' ' + result.destination.index);
+
+        // // socket 으로 블록을 날리는 부분
+        // axios
+        //     .patch(`/api/agenda/${this.state.agenda_id}/`, {
+        //         children_blocks: JSON.stringify(blocks)
+        //     })
+        //     .then(res => {
+        //         console.log('patch 후 blocks:', blocks);
+        //         this.setState({ blocks: blocks });
+        //     });
+
+        // const noteId = this.props.match.params.n_id;
         if (!result.destination) {
             return;
         }
+
         const blocks = reorder(
             this.state.blocks,
             result.source.index,
             result.destination.index
         );
-        console.log(result.source.index + ' ' + result.destination.index);
 
-        // socket 으로 블록을 날리는 부분
+        const stringifiedBlocks = {
+            children_blocks: JSON.stringify(blocks)
+        };
+
         axios
-            .patch(`/api/agenda/${this.state.agenda_id}/`, {
-                children_blocks: JSON.stringify(blocks)
-            })
+            .patch(
+                `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
+                stringifiedBlocks
+            )
             .then(res => {
-                console.log('patch 후 blocks:', blocks);
-                this.setState({ blocks: blocks });
-            });
+                this.AgendaRef.current.state.ws.send(JSON.stringify(blocks));
+            })
+            .catch(err => console.log(err));
     };
 
     handleAddTextBlock = () => {
