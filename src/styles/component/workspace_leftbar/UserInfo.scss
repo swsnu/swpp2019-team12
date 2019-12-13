@@ -1,0 +1,9 @@
+.userinfo-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .userinfo-nickname {
+        font-weight: 700;
+    }
+}

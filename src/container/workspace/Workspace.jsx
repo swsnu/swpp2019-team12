@@ -11,8 +11,7 @@ import MeetingNoteOverview from '../../component/workspace_main/MeetingNoteOverv
 
 import CreateNoteModal from '../note/CreateModal';
 import CreateWorkspaceModal from './CreateModal';
-
-import Signout from '../../component/signout/Signout';
+import UserInfo from '../../component/workspace_leftbar/Userinfo';
 
 class Workspace extends Component {
     constructor(props) {
@@ -107,7 +106,7 @@ class Workspace extends Component {
             <div className="workspace">
                 <div className="workspace-leftbar">
                     <div className="leftbar-container">
-                        <Signout history={history} />
+                        <UserInfo history={history} />
                         <WorkspaceInfo
                             history={history}
                             workspace={workspace}
