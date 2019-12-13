@@ -11,11 +11,9 @@ class Profile(models.Model):
     It is created automatically when the user model is created
     """
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
     # use username as default value?
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     nickname = models.CharField(max_length=20, blank=True, null=True)
-    # created_at = models.DateTimeField(default=timezone.now)
-    # last_login_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"id: {self.user.id}, nickname: {self.nickname}"
@@ -97,8 +95,6 @@ class Agenda(models.Model):
         "self", on_delete=models.SET_NULL, null=True, blank=True
     )
     is_parent_note = models.BooleanField(default=True)
-    # has_children = models.BooleanField(default=False)
-    # containing_block_types = models.TextField(blank=True, null=False) # ex) calendar_image_todo
     is_done = models.BooleanField(default=False)
     has_text_block = models.BooleanField(default=False)
     has_image_block = models.BooleanField(default=False)
@@ -208,7 +204,6 @@ class Todo(models.Model):
     )
     is_done = models.BooleanField(default=False)
     due_date = models.DateField(default=timezone.now().strftime("%Y-%m-%d"))
-    # due = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"note_id: {self.note.id}, todo_id: {self.id}"
@@ -230,5 +225,4 @@ class TextBlock(models.Model):
     is_parent_note = models.BooleanField(default=True)
 
     def __str__(self):
-        # return f'note_id: {self.note.id}'
         return f"content: {self.content}"

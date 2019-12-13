@@ -771,7 +771,6 @@ def todoblock_child_of_agenda(request, a_id):
         }
     ==================================================
     """
-    print("todoblock inside agenda api")
     try:
         agenda = Agenda.objects.get(id=a_id)
     except Agenda.DoesNotExist:
