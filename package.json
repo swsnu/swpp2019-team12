@@ -176,6 +176,9 @@
             "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$",
             "^.+\\.module\\.(css|sass|scss)$"
         ],
+        "modulePathIgnorePatterns": [
+            "<rootDir>/src/container/stt/googleSTT.js"
+        ],
         "modulePaths": [],
         "moduleNameMapper": {
             "^react-native$": "react-native-web",

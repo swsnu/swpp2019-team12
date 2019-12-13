@@ -4,7 +4,6 @@ import { ReactComponent as LogoutIcon } from '../../assets/icons/logout_icon.svg
 
 const Signout = props => {
     const handleClick = e => {
-        e.preventDefault();
         axios
             .get('/api/signout/')
             .then(res => {
@@ -12,7 +11,7 @@ const Signout = props => {
                 sessionStorage.removeItem('LoggedInUserId');
                 props.history.push('/signin');
             })
-            .catch(err => console.log('로그인 안된 상태'));
+            .catch(err => {});
     };
 
     return (

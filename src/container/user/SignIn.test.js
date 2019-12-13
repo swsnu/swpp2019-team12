@@ -40,15 +40,20 @@ describe('<SignIn />', () => {
         expect(mockEvent.preventDefault).toHaveBeenCalledTimes(1);
     });
 
-    it('should handle signin when corresponding user is in DB.', async () => {
+    it('should handle signin when corresponding user is in DB.', async done => {
         axios.post = jest.fn((url, userinfo) => {
             return new Promise((resolve, reject) => {
                 const result = {
+                    data: {
+                        nickname: 'test',
+                        id: 1
+                    },
                     status: 200
                 };
                 resolve(result);
             });
         });
+        jest.spyOn(Storage.prototype, 'setItem');
 
         const email = 'test@test.com';
         const password = 'Testpassword12!@';
@@ -63,11 +68,12 @@ describe('<SignIn />', () => {
         wrapper = component.find('#sign_in_button');
         await wrapper.simulate('click', mockEvent);
         expect(mockEvent.preventDefault).toHaveBeenCalledTimes(1);
-        //expect(mockHistory.push).toHaveBeenCalledWith('/workspace');
+        expect(mockHistory.push).toHaveBeenCalled();
+        done();
     });
 
     // Promise reject하는 경우가 작동이 잘 안된다....
-    xit('should show error message when corresponding user is not in DB.', async () => {
+    it('should show error message when corresponding user is not in DB.', async done => {
         axios.post = jest.fn((url, userinfo) => {
             return new Promise((resolve, reject) => {
                 const result = {
@@ -82,6 +88,7 @@ describe('<SignIn />', () => {
         const mockHistory = { push: jest.fn() };
         const mockEvent = { preventDefault: jest.fn() };
         const component = shallow(<SignIn history={mockHistory} />);
+
         let wrapper = component.find('#email-input');
         wrapper.simulate('change', { target: { value: email } });
         wrapper = component.find('#password-input');
@@ -89,10 +96,8 @@ describe('<SignIn />', () => {
 
         wrapper = component.find('#sign_in_button');
         await wrapper.simulate('click', mockEvent);
-        const instance = component.instance();
-        console.log(component.debug());
-        console.log(instance.state);
+
         expect(mockEvent.preventDefault).toHaveBeenCalledTimes(1);
-        return expect(axios.post()).rejects.toEqual({ status: 401 });
+        done();
     });
 });

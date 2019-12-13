@@ -20,12 +20,33 @@ describe('<Signout />', () => {
             });
         });
 
+        sessionStorage.removeItem = jest.fn();
+
         const mockHistory = { push: jest.fn() };
-        const mockEvent = { preventDefault: jest.fn() };
+
         const component = shallow(<Signout history={mockHistory} />);
-        let wrapper = component.find('#logout-button');
-        await wrapper.simulate('click', mockEvent);
-        expect(mockEvent.preventDefault).toHaveBeenCalledTimes(1);
-        //expect(mockHistory.push).toHaveBeenCalledWith('/signin');
+        let wrapper = component.find('.signout-container');
+
+        await wrapper.simulate('click');
+
+        expect(mockHistory.push).toHaveBeenCalled();
+        // expect(sessionStorage.removeItem).toHaveBeenCalled();
+    });
+    it('should handle signout, when logged in.', async () => {
+        axios.get = jest.fn(url => {
+            return new Promise((resolve, reject) => {
+                const result = {
+                    status: 400
+                };
+                reject(result);
+            });
+        });
+
+        const component = shallow(<Signout />);
+        let wrapper = component.find('.signout-container');
+
+        await wrapper.simulate('click');
+
+        // expect(console.log).toHaveBeenCalled();
     });
 });

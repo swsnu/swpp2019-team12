@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import WorkspaceInfo from '../../component/workspace_leftbar/WorkspaceInfo';
 import MemberInfo from '../../component/workspace_leftbar/MemberInfo';
-import SettingInfo from '../../component/workspace_leftbar/SettingInfo';
+// import SettingInfo from '../../component/workspace_leftbar/SettingInfo';
 import CreateNote from '../../component/workspace_leftbar/CreateNote';
 
 import AgendaOverview from '../../component/workspace_main/AgendaOverview';
@@ -116,7 +116,7 @@ class Workspace extends Component {
                             }
                         />
                         <MemberInfo members={members} workspace={workspace} />
-                        <SettingInfo />
+                        {/* <SettingInfo /> */}
                         <CreateNote
                             handleShowCreateNoteModal={
                                 this.handleShowCreateNoteModal
