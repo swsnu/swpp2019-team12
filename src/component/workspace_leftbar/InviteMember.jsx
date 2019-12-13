@@ -19,7 +19,8 @@ const InviteModalMember = props => {
                     placeholder="user_email@email.com"
                     className="invite-member__input"
                     value={email}
-                    onChange={e => handleChangeEmail(e)}></input>
+                    onChange={e => handleChangeEmail(e)}
+                />
                 {searchedMember.length > 0 && (
                     <div className="invite-member__member--searched">
                         {map(searchedMember, (member, i) => (
@@ -62,17 +63,6 @@ class InviteMember extends Component {
         };
     }
 
-    componentDidMount() {
-        axios
-            .get('/api/profile/')
-            .then(res => {
-                const {
-                    data: { user }
-                } = res;
-            })
-            .catch(err => console.error(err));
-    }
-
     handleSearchMember = () => {
         const { emailMember } = this.state;
         if (emailMember) {
@@ -109,11 +99,8 @@ class InviteMember extends Component {
         this.setState({ emailMember: e.target.value }, this.handleSearchMember);
     };
 
-    /******************* TODO ***********************/
     handleInviteMembers = () => {
         const { addedMemberId } = this.state;
-        const { history } = this.props;
-        console.log(this.props.workspace);
 
         axios
             .patch(`/api/workspace/${this.props.workspace.id}/`, {
@@ -123,7 +110,6 @@ class InviteMember extends Component {
                 window.location.reload();
             });
     };
-    /*************************************************/
 
     render() {
         const { emailMember, searchedMember, addedMember } = this.state;
@@ -139,6 +125,7 @@ class InviteMember extends Component {
                     handleSelectMember={this.handleSelectMember}
                     handleDeleteMember={this.handleDeleteMember}
                 />
+
                 <button
                     className="invite-confirm-button"
                     onClick={this.handleInviteMembers}>
