@@ -91,13 +91,20 @@ io.on('connection', client => {
         console.log('========= LOG =========');
         console.log('start google cloud stream');
         console.log('========= END =========');
+        io.to(room).emit('somebodyStarted', true);
         startRecognitionStream(client);
     });
+
+    // client.on('somebodyStarted', data => {
+    //     console.log('somebody started: ', data);
+    //     io.to(room).emit('somebodyStarted', data);
+    // });
 
     client.on('endGoogleCloudStream', data => {
         console.log('========= LOG =========');
         console.log('end google cloud stream');
         console.log('========= END =========');
+        io.to(room).emit('somebodyStarted', false);
         stopRecognitionStream(client);
     });
 
@@ -108,10 +115,6 @@ io.on('connection', client => {
         if (recognizeStream !== null && recognizeStream.destroyed) {
             startRecognitionStream(client);
         }
-    });
-
-    client.on('somebodyStarted', data => {
-        io.to(room).emit('somebodyStarted', data);
     });
 
     const startRecognitionStream = client => {

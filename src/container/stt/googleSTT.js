@@ -103,6 +103,7 @@ class googleSTT extends Component {
         });
 
         socket.on('somebodyStarted', data => {
+            console.log('somebody started socket 받음');
             this.setState({ somebodyRecording: data });
         });
 
@@ -111,12 +112,12 @@ class googleSTT extends Component {
 
     startSocket = () => {
         // TODO convert room id to block id
-        socket.emit('somebodyStarted', true);
+        //socket.emit('somebodyStarted', 'true');
     };
 
     stopSocket = () => {
         //socket.emit('leave', { room: this.state.room });
-        socket.emit('somebodyStarted', false);
+        //socket.emit('somebodyStarted', 'false');
     };
 
     //================= RECORDING =================
@@ -230,7 +231,8 @@ class googleSTT extends Component {
     };
 
     render() {
-        const { recording, texts } = this.state;
+        const { recording, texts, somebodyRecording } = this.state;
+        console.log(this.state.somebodyRecording);
         return (
             <div className="googleSTT-container">
                 <audio id="audio" ref={this.audio}></audio>
@@ -238,15 +240,19 @@ class googleSTT extends Component {
                 <button
                     type="button"
                     onClick={this.startRecording}
-                    disabled={recording}
-                    className={recording ? 'disabled' : ''}>
+                    disabled={recording || somebodyRecording}
+                    className={
+                        recording || somebodyRecording ? 'disabled' : ''
+                    }>
                     Start recording
                 </button>
                 <button
                     type="button"
                     onClick={this.stopRecording}
-                    disabled={!recording}
-                    className={recording ? '' : 'disabled'}>
+                    disabled={!somebodyRecording || !recording}
+                    className={
+                        recording && somebodyRecording ? '' : 'disabled'
+                    }>
                     Stop recording
                 </button>
                 <STTScript
