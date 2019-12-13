@@ -24,7 +24,9 @@
         .leftbar-container {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
+            padding-bottom: rem(15px);
+            height: 100%;
         }
     }
 
