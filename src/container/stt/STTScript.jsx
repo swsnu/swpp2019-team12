@@ -24,7 +24,7 @@ export default class STTScript extends Component {
     }
 
     renderScripts = () => {
-        return this.state.scripts.reverse().map((script, i) => (
+        return this.state.scripts.map((script, i) => (
             <div key={i} className="stt-script-element">
                 <SingleScript script={script} />
             </div>
@@ -33,7 +33,7 @@ export default class STTScript extends Component {
 
     renderLastScript = () => {
         return (
-            <div className="stt-script-element">
+            <div className="stt-script-last-element">
                 <SingleScript script={this.state.lastScript} />
             </div>
         );
