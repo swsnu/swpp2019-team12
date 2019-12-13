@@ -110,6 +110,10 @@ io.on('connection', client => {
         }
     });
 
+    client.on('somebodyStarted', data => {
+        io.to(room).emit('somebodyStarted', data);
+    });
+
     const startRecognitionStream = client => {
         recognizeStream = speechClient
             .streamingRecognize(request)

@@ -45,7 +45,8 @@ class googleSTT extends Component {
             room: this.props.room || Date.now(),
             recording: false,
             texts: [],
-            currentText: ''
+            currentText: '',
+            somebodyRecording: false
         };
 
         // Audio Element
@@ -100,20 +101,28 @@ class googleSTT extends Component {
                 });
             }
         });
+
+        socket.on('somebodyStarted', data => {
+            this.setState({ somebodyRecording: data });
+        });
+
+        socket.emit('join', { room: this.state.room });
     };
 
     startSocket = () => {
         // TODO convert room id to block id
-        socket.emit('join', { room: this.state.room });
+        socket.emit('somebodyStarted', true);
     };
 
     stopSocket = () => {
-        socket.emit('leave', { room: this.state.room });
+        //socket.emit('leave', { room: this.state.room });
+        socket.emit('somebodyStarted', false);
     };
 
     //================= RECORDING =================
     initRecording = () => {
         socket.emit('startGoogleCloudStream', ''); //init socket Google Speech Connection
+
         streamStreaming = true;
         processor = context.createScriptProcessor(bufferSize, 1, 1);
         processor.connect(context.destination);
@@ -133,14 +142,15 @@ class googleSTT extends Component {
                 socket.emit('binaryData', left16);
             };
         };
-
         navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess);
     };
 
     startRecording = () => {
         this.setState({ recording: true });
         this.startSocket();
-        this.initRecording();
+        if (!this.props.somebodyRecording) {
+            this.initRecording();
+        }
     };
 
     stopRecording = () => {

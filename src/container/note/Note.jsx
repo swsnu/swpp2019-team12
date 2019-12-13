@@ -39,7 +39,9 @@ class Note extends Component {
             block_focused_name: '',
             agenda_children_blocks: [],
             typing: false,
-            typingTimeout: 0
+            typingTimeout: 0,
+            somebodyRecording: false,
+            iStartedRecording: false
         };
     }
 
@@ -441,8 +443,8 @@ class Note extends Component {
     };
 
     /**
-     * 
-     * 나중에 안 돌아가면 살려요 
+     *
+     * 나중에 안 돌아가면 살려요
      */
     /*
     // { agendaId: 1, childrenBlocks: [] }
@@ -607,7 +609,10 @@ class Note extends Component {
                     ref={this.BlockRef}
                     onMessage={this.handleSocketBlock.bind(this)}
                 />
-                <GoogleSTT />
+                <GoogleSTT
+                    room={noteId}
+                    somebodyRecording={this.state.somebodyRecording}
+                />
             </div>
         );
     }

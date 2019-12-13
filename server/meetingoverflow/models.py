@@ -54,7 +54,7 @@ class Tag(models.Model):
     """
     content = models.CharField(max_length=100, blank=False, null=False)
     workspace = models.ForeignKey(
-        Workspace, on_delete=models.CASCADE, null=False)
+        Workspace, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f'content: {self.content}'
