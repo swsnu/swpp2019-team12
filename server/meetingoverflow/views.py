@@ -833,10 +833,8 @@ def modify_todoblock(request, t_id):
             current_todo, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            print("제대로")
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
-            print("오류")
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':

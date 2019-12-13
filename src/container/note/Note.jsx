@@ -6,6 +6,8 @@ import Websocket from 'react-websocket';
 import NoteLeft from './NoteLeft';
 import Signout from '../../component/signout/Signout';
 
+import { isEqual } from 'lodash';
+
 const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
@@ -91,6 +93,7 @@ class Note extends Component {
                     todoContainer.todos.forEach(todo => {
                         todo.assignees_info = [];
                         if (todo.assignees) {
+                            console.log(todo.assignees);
                             todo.assignees.forEach(assignee_id => {
                                 axios
                                     .get(`/api/profile/${assignee_id}`)
@@ -629,6 +632,7 @@ class Note extends Component {
     };
 
     render() {
+        console.log(this.state.blocks);
         // console.log(
         //     'render todo container: ',
         //     this.state.blocks.filter(blk => blk.block_type === 'TodoConatiner'),
