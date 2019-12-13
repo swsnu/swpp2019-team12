@@ -73,7 +73,7 @@ describe('<SignIn />', () => {
     });
 
     // Promise reject하는 경우가 작동이 잘 안된다....
-    it('should show error message when corresponding user is not in DB.', async done => {
+    it('should show error message when corresponding user is not in DB.', done => {
         axios.post = jest.fn((url, userinfo) => {
             return new Promise((resolve, reject) => {
                 const result = {
@@ -95,9 +95,17 @@ describe('<SignIn />', () => {
         wrapper.simulate('change', { target: { value: password } });
 
         wrapper = component.find('#sign_in_button');
-        await wrapper.simulate('click', mockEvent);
-
+        wrapper.simulate('click', mockEvent);
         expect(mockEvent.preventDefault).toHaveBeenCalledTimes(1);
-        done();
+
+        axios
+            .post('')
+            .then()
+            .catch(res => {
+                expect(component.state().submitText).toEqual(
+                    '가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.'
+                );
+                done();
+            });
     });
 });
