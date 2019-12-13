@@ -61,62 +61,71 @@ class Todo extends Component {
         if (!todo.is_done) this.inputRef.current.focus();
     };
 
-    handleChangeStatus = () => {
+    modifyTodoInfo = (res, todo, data, func) => {
         const noteId = this.props.noteId;
         const socketRef = this.props.socketRef;
+        let childrenBlocks = JSON.parse(res['data']['children_blocks']);
+        let todoContainer = find(childrenBlocks, {
+            block_type: 'TodoContainer'
+        });
+        let originalTodos = todoContainer.todos;
+        let original_todo = find(originalTodos, {
+            id: todo.id
+        });
+        // return original_todo;
+
+        original_todo = func(original_todo, data);
+
+        let todoIdx = -1;
+        for (let i = 0; i < originalTodos.length; i++) {
+            if (originalTodos[i].id == todo.id) {
+                todoIdx = i;
+                break;
+            }
+        }
+
+        originalTodos.splice(todoIdx, 1, original_todo);
+        todoContainer.todos = originalTodos;
+
+        let todoContainerIdx = -1;
+        for (let i = 0; i < childrenBlocks.length; i++) {
+            if (childrenBlocks[i]['block_type'] === 'TodoContainer') {
+                todoContainerIdx = i;
+                break;
+            }
+        }
+
+        childrenBlocks.splice(todoContainerIdx, 1, todoContainer);
+
+        const newBlocks = JSON.stringify(childrenBlocks);
+        const stringifiedBlocks = {
+            children_blocks: newBlocks
+        };
+        axios
+            .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
+            .then(res => {
+                socketRef.current.state.ws.send(newBlocks);
+            })
+            .catch(err => console.log(err));
+    };
+
+    handleChangeStatus = () => {
+        const noteId = this.props.noteId;
         const { todo } = this.state;
         axios
             .patch(`/api/todo/${todo.id}/`, { is_done: !todo.is_done })
-            .then(res => {
-                axios.get(`/api/note/${noteId}/childrenblocks/`).then(res => {
-                    let childrenBlocks = JSON.parse(
-                        res['data']['children_blocks']
-                    );
-                    let todoContainer = find(childrenBlocks, {
-                        block_type: 'TodoContainer'
-                    });
-                    let originalTodos = todoContainer.todos;
-                    let original_todo = find(originalTodos, {
-                        id: todo.id
-                    });
-                    original_todo.is_done = !original_todo.is_done;
-
-                    let todoIdx = -1;
-                    for (let i = 0; i < originalTodos.length; i++) {
-                        if (originalTodos[i].id == todo.id) {
-                            todoIdx = i;
-                            break;
-                        }
-                    }
-                    originalTodos.splice(todoIdx, 1, original_todo);
-                    todoContainer.todos = originalTodos;
-
-                    let todoContainerIdx = -1;
-                    for (let i = 0; i < childrenBlocks.length; i++) {
-                        if (
-                            childrenBlocks[i]['block_type'] === 'TodoContainer'
-                        ) {
-                            todoContainerIdx = i;
-                            break;
-                        }
-                    }
-
-                    childrenBlocks.splice(todoContainerIdx, 1, todoContainer);
-
-                    const newBlocks = JSON.stringify(childrenBlocks);
-                    // console.log(newBlocks);
-                    const stringifiedBlocks = {
-                        children_blocks: newBlocks
+            .then(res_2 => {
+                axios.get(`/api/note/${noteId}/childrenblocks/`).then(res_2 => {
+                    let todoHandleFunc = (original_todo, is_done) => {
+                        original_todo.is_done = !is_done;
+                        return original_todo;
                     };
-                    axios
-                        .patch(
-                            `/api/note/${noteId}/childrenblocks/`,
-                            stringifiedBlocks
-                        )
-                        .then(res => {
-                            socketRef.current.state.ws.send(newBlocks);
-                        })
-                        .catch(err => console.log(err));
+                    this.modifyTodoInfo(
+                        res_2,
+                        todo,
+                        todo.is_done,
+                        todoHandleFunc
+                    );
                 });
             })
             .catch(err => console.log());
@@ -124,7 +133,6 @@ class Todo extends Component {
 
     handleSelectAssignee = assignee => {
         const noteId = this.props.noteId;
-        const socketRef = this.props.socketRef;
         const { todo } = this.state;
         const assignees = uniqBy([...this.state.assignees, assignee], 'id');
         const assigneeInfo = {
@@ -133,76 +141,32 @@ class Todo extends Component {
 
         axios
             .patch(`/api/todo/${todo.id}/`, assigneeInfo)
-            .then(res => {
-                axios.get(`/api/note/${noteId}/childrenblocks/`).then(res => {
-                    let childrenBlocks = JSON.parse(
-                        res['data']['children_blocks']
-                    );
-                    let todoContainer = find(childrenBlocks, {
-                        block_type: 'TodoContainer'
-                    });
-                    let originalTodos = todoContainer.todos;
-                    let original_todo = find(originalTodos, {
-                        id: todo.id
-                    });
-
-                    let doAdd = true;
-                    for (
-                        let i = 0;
-                        i < original_todo.assignees_info.length;
-                        i++
-                    ) {
-                        let info = original_todo.assignees_info[i];
-                        if (info.id === assignee.id) {
-                            doAdd = false;
-                            break;
-                        }
-                    }
-
-                    if (doAdd) {
-                        original_todo.assignees.push(assignee.id);
-
-                        original_todo.assignees_info.push({
-                            id: assignee.id,
-                            nickname: assignee.nickname
-                        });
-                    }
-
-                    let todoIdx = -1;
-                    for (let i = 0; i < originalTodos.length; i++) {
-                        if (originalTodos[i].id == todo.id) {
-                            todoIdx = i;
-                            break;
-                        }
-                    }
-                    originalTodos.splice(todoIdx, 1, original_todo);
-                    todoContainer.todos = originalTodos;
-
-                    let todoContainerIdx = -1;
-                    for (let i = 0; i < childrenBlocks.length; i++) {
-                        if (
-                            childrenBlocks[i]['block_type'] === 'TodoContainer'
+            .then(res_1 => {
+                axios.get(`/api/note/${noteId}/childrenblocks/`).then(res_2 => {
+                    let todoHandleFunc = (original_todo, assignee) => {
+                        let doAdd = true;
+                        console.log('FUNC', original_todo);
+                        for (
+                            let i = 0;
+                            i < original_todo.assignees_info.length;
+                            i++
                         ) {
-                            todoContainerIdx = i;
-                            break;
+                            let info = original_todo.assignees_info[i];
+                            if (info.id === assignee.id) {
+                                doAdd = false;
+                                break;
+                            }
                         }
-                    }
-
-                    childrenBlocks.splice(todoContainerIdx, 1, todoContainer);
-
-                    const newBlocks = JSON.stringify(childrenBlocks);
-                    const stringifiedBlocks = {
-                        children_blocks: newBlocks
+                        if (doAdd) {
+                            original_todo.assignees.push(assignee.id);
+                            original_todo.assignees_info.push({
+                                id: assignee.id,
+                                nickname: assignee.nickname
+                            });
+                        }
+                        return original_todo;
                     };
-                    axios
-                        .patch(
-                            `/api/note/${noteId}/childrenblocks/`,
-                            stringifiedBlocks
-                        )
-                        .then(res => {
-                            socketRef.current.state.ws.send(newBlocks);
-                        })
-                        .catch(err => console.log(err));
+                    this.modifyTodoInfo(res_2, todo, assignee, todoHandleFunc);
                 });
             })
             .catch(e => console.log(e));
@@ -220,68 +184,24 @@ class Todo extends Component {
 
     handleChangeDueDate = (date, dateString) => {
         const noteId = this.props.noteId;
-        const socketRef = this.props.socketRef;
         const { todo } = this.state;
         axios
             .patch(`/api/todo/${todo.id}/`, {
                 due_date: date.format('YYYY-MM-DD')
             })
             .then(res_1 => {
-                axios.get(`/api/note/${noteId}/childrenblocks/`).then(res => {
-                    let childrenBlocks = JSON.parse(
-                        res['data']['children_blocks']
-                    );
-                    console.log(childrenBlocks);
-                    let todoContainer = find(childrenBlocks, {
-                        block_type: 'TodoContainer'
-                    });
-                    let originalTodos = todoContainer.todos;
-                    let original_todo = find(originalTodos, {
-                        id: todo.id
-                    });
-
-                    original_todo.due_date = res_1['data']['due_date'];
-
-                    let todoIdx = -1;
-                    for (let i = 0; i < originalTodos.length; i++) {
-                        if (originalTodos[i].id == todo.id) {
-                            todoIdx = i;
-                            break;
-                        }
-                    }
-                    originalTodos.splice(todoIdx, 1, original_todo);
-                    todoContainer.todos = originalTodos;
-
-                    let todoContainerIdx = -1;
-                    for (let i = 0; i < childrenBlocks.length; i++) {
-                        if (
-                            childrenBlocks[i]['block_type'] === 'TodoContainer'
-                        ) {
-                            todoContainerIdx = i;
-                            break;
-                        }
-                    }
-
-                    childrenBlocks.splice(todoContainerIdx, 1, todoContainer);
-
-                    const newBlocks = JSON.stringify(childrenBlocks);
-                    // console.log(newBlocks);
-                    const stringifiedBlocks = {
-                        children_blocks: newBlocks
+                axios.get(`/api/note/${noteId}/childrenblocks/`).then(res_2 => {
+                    let todoHandleFunc = (original_todo, due_date) => {
+                        original_todo.due_date = due_date;
+                        return original_todo;
                     };
-                    axios
-                        .patch(
-                            `/api/note/${noteId}/childrenblocks/`,
-                            stringifiedBlocks
-                        )
-                        .then(res => {
-                            socketRef.current.state.ws.send(newBlocks);
-                        })
-                        .catch(err => console.log(err));
+                    this.modifyTodoInfo(
+                        res_2,
+                        todo,
+                        res_1['data']['due_date'],
+                        todoHandleFunc
+                    );
                 });
-                // this.setState({
-                //     todo: { ...todo, due_date: date.format('YYYY-MM-DD') }
-                // });
             })
             .catch(e => console.log(e));
     };
