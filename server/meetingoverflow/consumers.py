@@ -38,17 +38,17 @@ class BlockConsumer(WebsocketConsumer):
         # Receive message from WebSocket
         """
         block_data_json = json.loads(text_data)
-        print(block_data_json)
+        operation_type = block_data_json["operation_type"]
         # 현재는 여기서 모든 action에 대해서 모두 처리하게 되어있는데 이건 시간이 된다면 따로 따로 구현하는게 좋을듯.
         # Block을 Add하는 것과 관련된 receive...
-        if "block_type" in block_data_json:
-            block_type = block_data_json["block_type"]
+        if operation_type == "add_block":
+            block_type = block_data_json["block"]["block_type"]
 
             if block_type == "Agenda":
-                content = block_data_json["content"]
-                layer_x = block_data_json["layer_x"]
-                layer_y = block_data_json["layer_y"]
-                n_id = block_data_json["n_id"]
+                content = block_data_json["block"]["content"]
+                layer_x = block_data_json["block"]["layer_x"]
+                layer_y = block_data_json["block"]["layer_y"]
+                n_id = block_data_json["block"]["n_id"]
 
                 data = {
                     "content": content,
@@ -79,11 +79,11 @@ class BlockConsumer(WebsocketConsumer):
                     },
                 )
             elif block_type == "Text":
-                content = block_data_json["content"]
-                layer_x = block_data_json["layer_x"]
-                layer_y = block_data_json["layer_y"]
-                document_id = block_data_json["document_id"]
-                n_id = block_data_json["n_id"]
+                content = block_data_json["block"]["content"]
+                layer_x = block_data_json["block"]["layer_x"]
+                layer_y = block_data_json["block"]["layer_y"]
+                document_id = block_data_json["block"]["document_id"]
+                n_id = block_data_json["block"]["n_id"]
 
                 data = {
                     "content": content,
@@ -111,12 +111,12 @@ class BlockConsumer(WebsocketConsumer):
                     },
                 )
             elif block_type == "TodoContainer":
-                content = block_data_json["content"]
-                layer_x = block_data_json["layer_x"]
-                layer_y = block_data_json["layer_y"]
-                assignees = block_data_json["assignees"]
-                n_id = block_data_json["n_id"]
-                due_date = block_data_json["due_date"]
+                content = block_data_json["block"]["content"]
+                layer_x = block_data_json["block"]["layer_x"]
+                layer_y = block_data_json["block"]["layer_y"]
+                assignees = block_data_json["block"]["assignees"]
+                n_id = block_data_json["block"]["n_id"]
+                due_date = block_data_json["block"]["due_date"]
                 # 현재는 agenda가 parent인경우 없음
                 # parent_agenda = block_data_json["document_id"]
 
@@ -170,10 +170,12 @@ class BlockConsumer(WebsocketConsumer):
             """
             # Send message to room group
             """
-            print(block_data_json)
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
-                {"type": "change_children_blocks", "children_blocks": block_data_json,},
+                {
+                    "type": "change_children_blocks",
+                    "children_blocks": block_data_json["children_blocks"],
+                },
             )
 
     # Receive message from room group
@@ -287,7 +289,6 @@ class BlockConsumer(WebsocketConsumer):
         # Send message to WebSocket
         """
         children_blocks = event["children_blocks"]
-        print(children_blocks)
         self.send(text_data=json.dumps({"children_blocks": children_blocks,}))
 
 
@@ -317,12 +318,13 @@ class AgendaConsumer(WebsocketConsumer):
     # Receive message from WebSocket
     def receive(self, text_data):
         block_data_json = json.loads(text_data)
-        if "block_type" in block_data_json:
-            content = block_data_json["content"]
-            layer_x = block_data_json["layer_x"]
-            layer_y = block_data_json["layer_y"]
-            document_id = block_data_json["document_id"]
-            t_id = block_data_json["id"]
+        operation_type = block_data_json["operation_type"]
+        if operation_type == "add_block":
+            content = block_data_json["block"]["content"]
+            layer_x = block_data_json["block"]["layer_x"]
+            layer_y = block_data_json["block"]["layer_y"]
+            document_id = block_data_json["block"]["document_id"]
+            t_id = block_data_json["block"]["id"]
 
             # Send message to room group
             async_to_sync(self.channel_layer.group_send)(
@@ -343,7 +345,10 @@ class AgendaConsumer(WebsocketConsumer):
 
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
-                {"type": "change_children_blocks", "children_blocks": block_data_json,},
+                {
+                    "type": "change_children_blocks",
+                    "children_blocks": block_data_json["children_blocks"],
+                },
             )
 
     # Receive message from room group

@@ -45,13 +45,18 @@ class Agenda extends Component {
             children_blocks: JSON.stringify(blocks)
         };
 
+        const JSON_data = {
+            operation_type: 'drag_inside_of_agenda',
+            children_blocks: blocks
+        };
+
         axios
             .patch(
                 `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
                 stringifiedBlocks
             )
             .then(res => {
-                this.AgendaRef.current.state.ws.send(JSON.stringify(blocks));
+                this.AgendaRef.current.state.ws.send(JSON.stringify(JSON_data));
             })
             .catch(err => console.log(err));
     };
@@ -79,13 +84,17 @@ class Agenda extends Component {
                     document_id: res['data']['document_id']
                 };
                 const newBlocks = this.state.blocks.concat(block);
+                const JSON_data = {
+                    operation_type: 'add_block',
+                    block: block
+                };
                 axios
                     .patch(`/api/agenda/${this.state.agenda_id}/`, {
                         children_blocks: JSON.stringify(newBlocks)
                     })
                     .then(res => {
                         this.AgendaRef.current.state.ws.send(
-                            JSON.stringify(block)
+                            JSON.stringify(JSON_data)
                         );
                     });
             })
@@ -139,6 +148,11 @@ class Agenda extends Component {
                     children_blocks: JSON.stringify(newBlocks)
                 };
 
+                const JSON_data = {
+                    operation_type: 'delete_block',
+                    children_blocks: newBlocks
+                };
+
                 axios
                     .patch(
                         `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
@@ -147,7 +161,7 @@ class Agenda extends Component {
                     .then(res => {
                         console.log(res);
                         this.AgendaRef.current.state.ws.send(
-                            JSON.stringify(newBlocks)
+                            JSON.stringify(JSON_data)
                         );
                     });
             })

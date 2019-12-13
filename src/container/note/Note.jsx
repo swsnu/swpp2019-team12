@@ -164,6 +164,11 @@ class Note extends Component {
         const stringifiedBlocks = {
             children_blocks: JSON.stringify(newBlocks)
         };
+
+        const JSON_data = {
+            operation_type: 'delete_block',
+            children_blocks: newBlocks
+        };
         axios
             .delete(axios_path)
             .then(res => {
@@ -175,7 +180,7 @@ class Note extends Component {
                     .then(res => {
                         console.log(res);
                         this.BlockRef.current.state.ws.send(
-                            JSON.stringify(newBlocks)
+                            JSON.stringify(JSON_data)
                         );
                     });
             })
@@ -215,10 +220,15 @@ class Note extends Component {
         const stringifiedBlocks = {
             children_blocks: JSON.stringify(newBlocks)
         };
+
+        const JSON_data = {
+            operation_type: 'delete_todo',
+            children_blocks: newBlocks
+        };
         axios
             .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
             .then(res =>
-                this.BlockRef.current.state.ws.send(JSON.stringify(newBlocks))
+                this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data))
             );
     };
 
@@ -313,7 +323,11 @@ class Note extends Component {
             layer_y: 0,
             block_type: 'Agenda'
         };
-        this.BlockRef.current.state.ws.send(JSON.stringify(agenda_info));
+        const JSON_data = {
+            operation_type: 'add_block',
+            block: agenda_info
+        };
+        this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data));
     };
 
     handleAddTextBlock = () => {
@@ -330,7 +344,12 @@ class Note extends Component {
             block_type: 'Text'
         };
 
-        this.BlockRef.current.state.ws.send(JSON.stringify(text_info));
+        const JSON_data = {
+            operation_type: 'add_block',
+            block: text_info
+        };
+
+        this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data));
     };
 
     /**
@@ -355,7 +374,12 @@ class Note extends Component {
             block_type: 'TodoContainer'
         };
 
-        this.BlockRef.current.state.ws.send(JSON.stringify(todo_info));
+        const JSON_data = {
+            operation_type: 'add_block',
+            block: todo_info
+        };
+
+        this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data));
     };
 
     handleAddImageBlock = noteId => {
@@ -480,6 +504,7 @@ class Note extends Component {
         // Drag & Drop
         // Delete
         else {
+            console.log(res['children_blocks']);
             this.setState({ blocks: res['children_blocks'] });
         }
     }
@@ -500,10 +525,15 @@ class Note extends Component {
             children_blocks: JSON.stringify(blocks)
         };
 
+        const JSON_data = {
+            operation_type: 'drag',
+            children_blocks: blocks
+        };
+
         axios
             .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
             .then(res => {
-                this.BlockRef.current.state.ws.send(JSON.stringify(blocks));
+                this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data));
             })
             .catch(err => console.log(err));
     };

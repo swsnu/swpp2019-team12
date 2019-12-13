@@ -79,13 +79,18 @@ class Todo extends Component {
         childrenBlocks.splice(todoContainerIdx, 1, todoContainer);
 
         const newBlocks = JSON.stringify(childrenBlocks);
+        const JSON_data = {
+            operation_type: 'modify_inside_of_todo',
+            children_blocks: childrenBlocks
+        };
+
         const stringifiedBlocks = {
             children_blocks: newBlocks
         };
         axios
             .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
             .then(res => {
-                socketRef.current.state.ws.send(newBlocks);
+                socketRef.current.state.ws.send(JSON.stringify(JSON_data));
             })
             .catch(err => console.log(err));
     };
