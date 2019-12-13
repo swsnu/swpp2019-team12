@@ -179,10 +179,13 @@ def specific_profile(request, u_id):
     if request.method == 'GET':
         try:
             profile = Profile.objects.get(id=u_id)
+
         except (Profile.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
+
         serializer = ProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
     # ===========Front implementation===========
     # Signup 성공시 Response로 반환되는 새 유저의 id 로
@@ -297,7 +300,7 @@ def workspace(request):
 def specific_workspace(request, id):
     if request.method == 'GET':
         profile = request.user.profile
-        #profile = Profile.objects.get(id=1)
+        # profile = Profile.objects.get(id=1)
         try:
             workspace = Workspace.objects.get(id=id)
             workspaces = Workspace.objects.filter(members__in=[profile])
@@ -481,7 +484,7 @@ def sibling_notes(request, n_id):
             return Response(status=status.HTTP_404_NOT_FOUND)
         workspace = note.workspace
         sibling_notes = Note.objects.filter(workspace=workspace).filter(~Q(id = n_id))
-        #print(sibling_notes)
+        # print(sibling_notes)
         if sibling_notes.count() > 0:
             serializer = NoteSerializer(sibling_notes, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -674,7 +677,7 @@ def agenda_child_of_note(request, n_id):
             agenda.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            #print(serializer.errors)
+            # print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -815,7 +818,7 @@ def todoblock_child_of_note(request, n_id):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            #print(serializer.errors)
+            # print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -867,7 +870,7 @@ def todoblock_child_of_agenda(request, a_id):
             agenda.save()
             return Response(status=status.HTTP_201_CREATED)
         else:
-            #print(serializer.errors)
+            # print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
