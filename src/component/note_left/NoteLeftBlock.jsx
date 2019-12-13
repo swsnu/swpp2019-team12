@@ -41,7 +41,6 @@ class NoteLeftBlock extends Component {
                 nextProps.blocks &&
                 nextProps.blocks.map((blk, index) => {
                     let result;
-                    console.log(blk);
                     if (blk.block_type === TEXT) {
                         result = (
                             <Text
@@ -52,6 +51,9 @@ class NoteLeftBlock extends Component {
                                 handleChangeText={nextProps.handleChangeText}
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
+                                handleAddTextSocketSend={
+                                    nextProps.handleAddTextSocketSend
+                                }
                             />
                         );
                     } else if (blk.block_type === AGENDA) {
@@ -64,15 +66,18 @@ class NoteLeftBlock extends Component {
                                 agenda_discussion={blk.agenda_discussion}
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
+                                socketRef={nextProps.socketRef}
                             />
                         );
                     } else if (blk.block_type === TODO_CONTAINER) {
                         result = (
                             <TodoContainer
                                 todos={blk.todos}
+                                noteId={nextProps.noteId}
                                 participants={nextProps.participants}
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteTodo={nextProps.handleDeleteTodo}
+                                socketRef={nextProps.socketRef}
                             />
                         );
                     } else {

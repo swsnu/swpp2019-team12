@@ -46,8 +46,10 @@ class TodoContainer extends Component {
                         <Todo
                             key={todo.id}
                             todo={todo}
+                            noteId={this.props.noteId}
                             participants={this.props.participants}
                             handleDeleteTodo={this.props.handleDeleteTodo}
+                            socketRef={this.props.socketRef}
                         />
                     ))}
                 </div>
