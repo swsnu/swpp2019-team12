@@ -29,6 +29,9 @@ class NoteLeft extends Component {
                         blocks={this.props.blocks}
                         participants={this.props.participants}
                         handleDeleteBlock={this.props.handleDeleteBlock}
+                        handleAddTextSocketSend={
+                            this.props.handleAddTextSocketSend
+                        }
                         handleAddAgendaBlock={this.props.handleAddAgendaBlock}
                         handleAddTextBlock={this.props.handleAddTextBlock}
                         handleAddTodoBlock={this.props.handleAddTodoBlock}
@@ -41,6 +44,7 @@ class NoteLeft extends Component {
                         handleAddAgendaChildrenBlocks={
                             this.props.handleAddAgendaChildrenBlocks
                         }
+                        socketRef={this.props.socketRef}
                     />
                 </div>
             </div>

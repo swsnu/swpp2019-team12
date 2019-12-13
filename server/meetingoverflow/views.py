@@ -536,7 +536,6 @@ def textblock_child_of_note(request, n_id):
             'note': n_id,
             'is_parent_note': True,
         }
-
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -590,6 +589,7 @@ def textblock_child_of_agenda(request, a_id):
             serializer.save()
             agenda.has_text_block = True
             agenda.save()
+            # print(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -771,7 +771,6 @@ def todoblock_child_of_agenda(request, a_id):
         }
     ==================================================
     """
-    print("todoblock inside agenda api")
     try:
         agenda = Agenda.objects.get(id=a_id)
     except Agenda.DoesNotExist:
@@ -878,12 +877,11 @@ def single_tag(request, t_id):
         current_tag = Tag.objects.get(id=t_id)
     except Tag.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    
+
     if request.method == 'GET':
         notes = Note.objects.filter(tag__in=[current_tag])
         agendas = Agenda.objcects.filter(tag__in=[current_tag])
         pass
-    
 
 
 # current_members = current_workspace.members.all()
@@ -898,3 +896,72 @@ def single_tag(request, t_id):
 #             serializer.save()
 #             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 #         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PATCH'])
+def children_blocks_of_note(request, n_id):
+    """
+    ===================================================
+    url: /api/note/:id/childrenblocks/
+    Note에 직접 속해있는 TextBlock을 모두 가져오거나 생성하는 API
+    POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+        {
+            "content": "Hello World",
+            "layer_x": 0,
+            "layer_y": 1
+        }
+    ===================================================
+    """
+    if request.method == 'GET':
+        try:
+            note = Note.objects.get(id=n_id)
+        except Note.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        response = {
+            'children_blocks': note.children_blocks
+        }
+        return JsonResponse(response, status=status.HTTP_200_OK)
+
+    elif request.method == 'PATCH':
+        try:
+            note = Note.objects.get(id=n_id)
+        except Note.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        new_blocks = request.data['children_blocks']
+        note.children_blocks = new_blocks
+        note.save()
+        return Response(note.children_blocks, status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(['GET', 'PATCH'])
+def children_blocks_of_agenda(request, a_id):
+    """
+    ===================================================
+    url: /api/note/:id/childrenblocks/
+    Agenda에 직접 속해있는 TextBlock을 모두 가져오거나 생성하는 API
+    POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+        {
+            "content": "Hello World",
+            "layer_x": 0,
+            "layer_y": 1
+        }
+    ===================================================
+    """
+    if request.method == 'GET':
+        try:
+            agenda = Agenda.objects.get(id=a_id)
+        except Agenda.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        response = {
+            'children_blocks': agenda.children_blocks
+        }
+        return JsonResponse(response, status=status.HTTP_200_OK)
+
+    elif request.method == 'PATCH':
+        try:
+            agenda = Agenda.objects.get(id=a_id)
+        except Agenda.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        new_blocks = request.data['children_blocks']
+        agenda.children_blocks = new_blocks
+        agenda.save()
+        return Response(agenda.children_blocks, status=status.HTTP_202_ACCEPTED)

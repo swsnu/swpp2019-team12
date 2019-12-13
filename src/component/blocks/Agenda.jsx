@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Websocket from 'react-websocket';
 import AgendaInside from '../agenda_in/AgendaInside';
 class Agenda extends Component {
     constructor(props) {
         super(props);
+        this.AgendaRef = React.createRef();
         this.state = {
             agenda_id: this.props.blk_id,
             agenda_title: this.props.agenda_title,
@@ -34,22 +36,31 @@ class Agenda extends Component {
         if (!result.destination) {
             return;
         }
+
         const blocks = reorder(
             this.state.blocks,
             result.source.index,
             result.destination.index
         );
-        console.log(result.source.index + ' ' + result.destination.index);
 
-        // socket 으로 블록을 날리는 부분
+        const stringifiedBlocks = {
+            children_blocks: JSON.stringify(blocks)
+        };
+
+        const JSON_data = {
+            operation_type: 'drag_inside_of_agenda',
+            children_blocks: blocks
+        };
+
         axios
-            .patch(`/api/agenda/${this.state.agenda_id}/`, {
-                children_blocks: JSON.stringify(blocks)
-            })
+            .patch(
+                `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
+                stringifiedBlocks
+            )
             .then(res => {
-                console.log('patch 후 blocks:', blocks);
-                this.setState({ blocks: blocks });
-            });
+                this.AgendaRef.current.state.ws.send(JSON.stringify(JSON_data));
+            })
+            .catch(err => console.log(err));
     };
 
     handleAddTextBlock = () => {
@@ -63,32 +74,55 @@ class Agenda extends Component {
         axios
             .post(`/api/agenda/${this.state.agenda_id}/textblocks/`, text_info)
             .then(res => {
+                console.log(res);
                 console.log('res doc id: ', res.data.document_id);
-                const blocks = this.state.blocks.concat({
+                console.log(this.state.blocks);
+                const block = {
                     block_type: 'Text',
                     id: res['data']['id'],
                     content: res['data']['content'],
                     layer_x: res['data']['layer_x'],
                     layer_y: res['data']['layer_y'],
-                    documentId: res['data']['document_id']
-                });
+                    document_id: res['data']['document_id']
+                };
+                const newBlocks = this.state.blocks.concat(block);
+                const JSON_data = {
+                    operation_type: 'add_block',
+                    block: block
+                };
                 axios
                     .patch(`/api/agenda/${this.state.agenda_id}/`, {
-                        children_blocks: JSON.stringify(blocks)
+                        children_blocks: JSON.stringify(newBlocks)
                     })
                     .then(res => {
-                        console.log('patch 후 blocks:', blocks);
-                        this.props.handleAddAgendaChildrenBlocks(
-                            this.state.agenda_id,
-                            blocks
+                        this.AgendaRef.current.state.ws.send(
+                            JSON.stringify(JSON_data)
                         );
-                        this.setState({ blocks: blocks });
                     });
             })
             .catch(err => {
                 console.log('textblock insid agenda 생성 실패', err);
             });
     };
+
+    handleSocketAgenda(data) {
+        let res = JSON.parse(data);
+        console.log(res);
+        if (res.hasOwnProperty('block_type')) {
+            this.setState({
+                blocks: this.state.blocks.concat({
+                    block_type: res['block_type'],
+                    id: res['id'],
+                    content: res['content'],
+                    layer_x: res['layer_x'],
+                    layer_y: res['layer_y'],
+                    documentId: res['document_id']
+                })
+            });
+        } else {
+            this.setState({ blocks: res['children_blocks'] });
+        }
+    }
 
     handleClickDelete = e => {
         e.preventDefault();
@@ -106,18 +140,31 @@ class Agenda extends Component {
         axios
             .delete(axios_path)
             .then(res => {
-                const blocks = [
+                const newBlocks = [
                     ...this.state.blocks.filter(
                         b => !(b.block_type == block_type && b.id == block_id)
                     )
                 ];
+
+                const stringifiedBlocks = {
+                    children_blocks: JSON.stringify(newBlocks)
+                };
+
+                const JSON_data = {
+                    operation_type: 'delete_block',
+                    children_blocks: newBlocks
+                };
+
                 axios
-                    .patch(`/api/agenda/${this.state.agenda_id}/`, {
-                        children_blocks: JSON.stringify(blocks)
-                    })
+                    .patch(
+                        `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
+                        stringifiedBlocks
+                    )
                     .then(res => {
-                        console.log('patch 후 blocks:', blocks);
-                        this.setState({ blocks: blocks });
+                        console.log(res);
+                        this.AgendaRef.current.state.ws.send(
+                            JSON.stringify(JSON_data)
+                        );
                     });
             })
             .catch(err => {
@@ -166,14 +213,17 @@ class Agenda extends Component {
                             }></AgendaInside>
                     </div>
                 </div>
+                <Websocket
+                    url={`ws://localhost:8001/ws/${this.state.agenda_id}/agenda/block/`}
+                    ref={this.AgendaRef}
+                    onMessage={this.handleSocketAgenda.bind(this)}
+                />
             </div>
         );
     }
 }
 
 function handleDocIdInUrl() {
-    // let id = getDocIdFromUrl();
-
     let id = randomString();
     updateDocIdInUrl(id);
 
