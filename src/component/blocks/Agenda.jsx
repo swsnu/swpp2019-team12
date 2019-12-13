@@ -27,43 +27,10 @@ class Agenda extends Component {
                 console.log('blocks: ', blocks);
                 this.setState({ blocks: blocks });
             })
-            // 이 catch는 agenda가 NOT_FOUND일 때, 걸리는 거라서 no child block은 아닌 것 같습니다.
             .catch(err => console.log('this agenda has no child block'));
-
-        // // api/agenda/:agenda_id/textblock/ 으로 GET을 날려야 맞는 것 같습니다.
-        // axios
-        //     .get(`/api/agenda/${this.state.agenda_id}/textblocks/`)
-        //     .then(res => {
-        //         console.log('res of agenda: ', res['data']);
-        //         this.setState({ blocks: res['data'] });
-        //     })
-        //     // 지금 이 catch구문은 agenda가 아예 존재하지 않는 경우를 말하는거고
-        //     // children block이 없어도 위에 then으로 빠지는 상황입니다.
-        //     .catch(err => console.log('this agenda has no child block'));
     }
 
     onDragEnd = result => {
-        // if (!result.destination) {
-        //     return;
-        // }
-        // const blocks = reorder(
-        //     this.state.blocks,
-        //     result.source.index,
-        //     result.destination.index
-        // );
-        // console.log(result.source.index + ' ' + result.destination.index);
-
-        // // socket 으로 블록을 날리는 부분
-        // axios
-        //     .patch(`/api/agenda/${this.state.agenda_id}/`, {
-        //         children_blocks: JSON.stringify(blocks)
-        //     })
-        //     .then(res => {
-        //         console.log('patch 후 blocks:', blocks);
-        //         this.setState({ blocks: blocks });
-        //     });
-
-        // const noteId = this.props.match.params.n_id;
         if (!result.destination) {
             return;
         }
@@ -242,8 +209,6 @@ class Agenda extends Component {
 }
 
 function handleDocIdInUrl() {
-    // let id = getDocIdFromUrl();
-
     let id = randomString();
     updateDocIdInUrl(id);
 

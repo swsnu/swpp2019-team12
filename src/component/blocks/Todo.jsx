@@ -55,10 +55,8 @@ class Todo extends Component {
         let original_todo = find(originalTodos, {
             id: todo.id
         });
-        // return original_todo;
 
         original_todo = func(original_todo, data);
-
         let todoIdx = -1;
         for (let i = 0; i < originalTodos.length; i++) {
             if (originalTodos[i].id == todo.id) {
@@ -87,7 +85,6 @@ class Todo extends Component {
         axios
             .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
             .then(res => {
-                console.log('바뀐 child', res);
                 socketRef.current.state.ws.send(newBlocks);
             })
             .catch(err => console.log(err));
@@ -121,11 +118,9 @@ class Todo extends Component {
             content: content,
             typing: false,
             typingTimeout: setTimeout(() => {
-                console.log('여기다 넣을까?');
                 axios
                     .patch(`/api/todo/${todo.id}/`, { content: content })
                     .then(res_1 => {
-                        console.log('바뀐 todo?', res_1);
                         axios
                             .get(`/api/note/${noteId}/childrenblocks/`)
                             .then(res_2 => {
@@ -136,7 +131,6 @@ class Todo extends Component {
                                     original_todo.content = content;
                                     return original_todo;
                                 };
-                                console.log(this);
                                 this.modifyTodoInfo(
                                     res_2,
                                     todo,
@@ -148,50 +142,6 @@ class Todo extends Component {
                     .catch(e => console.log(e));
             }, 1818)
         });
-        // this.setState({ content: content });
-
-        // this.setState({ todo: updatedTodo }, () => {
-        //     console.log('여기는 안들어오니?');
-        //     axios
-        //         .patch(`/api/todo/${todo.id}/`, this.state.todo)
-        //         .then(res_1 => {
-        //             axios
-        //                 .get(`/api/note/${noteId}/childrenblocks/`)
-        //                 .then(res_2 => {
-        //                     let todoHandleFunc = (original_todo, content) => {
-        //                         original_todo.content = content;
-        //                         return original_todo;
-        //                     };
-        //                     this.modifyTodoInfo(
-        //                         res_2,
-        //                         todo,
-        //                         res_1['data']['content'],
-        //                         todoHandleFunc
-        //                     );
-        //                 });
-        //         })
-        //         .catch(e => console.log(e));
-        // });
-        // this.setState({ todo: { ...todo, content } }, () => {
-        // });
-        // axios
-        //     .patch(`/api/todo/${todo.id}/`, { content: content })
-        //     .then(res_1 => {
-        //         console.log(res_1['data']['content']);
-        //         axios.get(`/api/note/${noteId}/childrenblocks/`).then(res_2 => {
-        //             let todoHandleFunc = (original_todo, content) => {
-        //                 original_todo.content = content;
-        //                 return original_todo;
-        //             };
-        //             this.modifyTodoInfo(
-        //                 res_2,
-        //                 todo,
-        //                 res_1['data']['content'],
-        //                 todoHandleFunc
-        //             );
-        //         });
-        //     })
-        //     .catch(e => console.log(e));
     };
 
     handleChangeStatus = () => {
@@ -307,7 +257,6 @@ class Todo extends Component {
     };
 
     render() {
-        console.log(this.state);
         const { assignees, todo } = this.state;
         const dateFormat = 'YYYY-MM-DD';
         const dueDate = todo.due_date ? moment(todo.due_date) : moment();
