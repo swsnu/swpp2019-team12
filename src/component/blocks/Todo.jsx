@@ -9,7 +9,10 @@ class Todo extends Component {
         super(props);
         this.state = {
             assignees: [],
-            todo: {}
+            todo: {},
+            typing: false,
+            typingTimeout: 0,
+            content: ''
         };
 
         this.inputRef = React.createRef();
@@ -25,15 +28,20 @@ class Todo extends Component {
         ) {
             return {
                 todo: nextProps.todo,
-                assignees: nextProps.todo.assignees_info
+                assignees: nextProps.todo.assignees_info,
+                content: nextProps.todo.content
             };
         }
-        return null;
+        return prevState;
     }
 
     componentDidMount() {
         const { todo } = this.props;
-        this.setState({ assignees: todo.assignees_info, todo });
+        this.setState({
+            assignees: todo.assignees_info,
+            todo,
+            content: todo.content
+        });
     }
 
     modifyTodoInfo = (res, todo, data, func) => {
@@ -79,6 +87,7 @@ class Todo extends Component {
         axios
             .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
             .then(res => {
+                console.log('바뀐 child', res);
                 socketRef.current.state.ws.send(newBlocks);
             })
             .catch(err => console.log(err));
@@ -103,24 +112,86 @@ class Todo extends Component {
         const noteId = this.props.noteId;
         const { todo } = this.state;
         const content = e.target.value.length ? e.target.value : ' ';
-        axios
-            .patch(`/api/todo/${todo.id}/`, { content: content })
-            .then(res_1 => {
-                console.log(res_1['data']['content']);
-                axios.get(`/api/note/${noteId}/childrenblocks/`).then(res_2 => {
-                    let todoHandleFunc = (original_todo, content) => {
-                        original_todo.content = content;
-                        return original_todo;
-                    };
-                    this.modifyTodoInfo(
-                        res_2,
-                        todo,
-                        res_1['data']['content'],
-                        todoHandleFunc
-                    );
-                });
-            })
-            .catch(e => console.log(e));
+
+        if (this.state.typingTimeout) {
+            clearTimeout(this.state.typingTimeout);
+        }
+
+        this.setState({
+            content: content,
+            typing: false,
+            typingTimeout: setTimeout(() => {
+                console.log('여기다 넣을까?');
+                axios
+                    .patch(`/api/todo/${todo.id}/`, { content: content })
+                    .then(res_1 => {
+                        console.log('바뀐 todo?', res_1);
+                        axios
+                            .get(`/api/note/${noteId}/childrenblocks/`)
+                            .then(res_2 => {
+                                let todoHandleFunc = (
+                                    original_todo,
+                                    content
+                                ) => {
+                                    original_todo.content = content;
+                                    return original_todo;
+                                };
+                                console.log(this);
+                                this.modifyTodoInfo(
+                                    res_2,
+                                    todo,
+                                    res_1['data']['content'],
+                                    todoHandleFunc
+                                );
+                            });
+                    })
+                    .catch(e => console.log(e));
+            }, 1818)
+        });
+        // this.setState({ content: content });
+
+        // this.setState({ todo: updatedTodo }, () => {
+        //     console.log('여기는 안들어오니?');
+        //     axios
+        //         .patch(`/api/todo/${todo.id}/`, this.state.todo)
+        //         .then(res_1 => {
+        //             axios
+        //                 .get(`/api/note/${noteId}/childrenblocks/`)
+        //                 .then(res_2 => {
+        //                     let todoHandleFunc = (original_todo, content) => {
+        //                         original_todo.content = content;
+        //                         return original_todo;
+        //                     };
+        //                     this.modifyTodoInfo(
+        //                         res_2,
+        //                         todo,
+        //                         res_1['data']['content'],
+        //                         todoHandleFunc
+        //                     );
+        //                 });
+        //         })
+        //         .catch(e => console.log(e));
+        // });
+        // this.setState({ todo: { ...todo, content } }, () => {
+        // });
+        // axios
+        //     .patch(`/api/todo/${todo.id}/`, { content: content })
+        //     .then(res_1 => {
+        //         console.log(res_1['data']['content']);
+        //         axios.get(`/api/note/${noteId}/childrenblocks/`).then(res_2 => {
+        //             let todoHandleFunc = (original_todo, content) => {
+        //                 original_todo.content = content;
+        //                 return original_todo;
+        //             };
+        //             this.modifyTodoInfo(
+        //                 res_2,
+        //                 todo,
+        //                 res_1['data']['content'],
+        //                 todoHandleFunc
+        //             );
+        //         });
+        //     })
+        //     .catch(e => console.log(e));
     };
 
     handleChangeStatus = () => {
@@ -236,6 +307,7 @@ class Todo extends Component {
     };
 
     render() {
+        console.log(this.state);
         const { assignees, todo } = this.state;
         const dateFormat = 'YYYY-MM-DD';
         const dueDate = todo.due_date ? moment(todo.due_date) : moment();
@@ -265,7 +337,7 @@ class Todo extends Component {
                                 </div>
                                 <input
                                     className="todoCard-content-element__todo-text-content"
-                                    value={todo.content || ''}
+                                    value={this.state.content || ''}
                                     ref={this.inputRef}
                                     disabled
                                     // onChange={this.handleChangeTodo}
@@ -278,7 +350,7 @@ class Todo extends Component {
                                 </div>
                                 <input
                                     className="todoCard-content-element__todo-text-content"
-                                    value={todo.content || ''}
+                                    value={this.state.content || ''}
                                     onChange={this.handleChangeTodo}
                                     ref={this.inputRef}
                                 />
