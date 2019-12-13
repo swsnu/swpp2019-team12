@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import axios from 'axios';
+import { ReactComponent as LogoutIcon } from '../../assets/icons/logout_icon.svg';
 
 const Signout = props => {
     const handleClick = e => {
@@ -16,9 +17,12 @@ const Signout = props => {
 
     return (
         <div className="Signout">
-            <button id="logout-button" onClick={handleClick}>
-                로그아웃
-            </button>
+            <div className="signout-container" onClick={handleClick}>
+                <LogoutIcon className="logout-icon" />
+                <div id="logout-button" className="logout-button">
+                    LOGOUT
+                </div>
+            </div>
         </div>
     );
 };
