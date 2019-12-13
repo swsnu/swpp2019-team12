@@ -53,15 +53,12 @@ class Note extends Component {
 
         axios.get(`/api/note/${noteId}/childrenblocks/`).then(res => {
             let children_blocks = null;
-            console.log(res);
-
             if (res.data['children_blocks'] === '') {
                 children_blocks = [];
             } else {
                 children_blocks = JSON.parse(res.data['children_blocks']);
             }
 
-            console.log(children_blocks);
             children_blocks.map(blk => {
                 let block_type = blk['block_type'];
                 if (block_type == 'Agenda') {
@@ -93,7 +90,6 @@ class Note extends Component {
                     todoContainer.todos.forEach(todo => {
                         todo.assignees_info = [];
                         if (todo.assignees) {
-                            console.log(todo.assignees);
                             todo.assignees.forEach(assignee_id => {
                                 axios
                                     .get(`/api/profile/${assignee_id}`)
@@ -105,7 +101,6 @@ class Note extends Component {
                                     });
                             });
                         }
-                        console.log('todo에 info', todo.assignees_info);
                     });
 
                     this.setState({
@@ -232,35 +227,22 @@ class Note extends Component {
         const newBlocks = this.state.blocks.filter(
             b => !(b.block_type == block_type && b.id == block_id)
         );
-        console.log(newBlocks);
         const stringifiedBlocks = {
             children_blocks: JSON.stringify(newBlocks)
         };
         axios
             .delete(axios_path)
             .then(res => {
-                console.log('res.data: ', res.data);
                 axios
                     .patch(
                         `/api/note/${noteId}/childrenblocks/`,
                         stringifiedBlocks
                     )
                     .then(res => {
+                        console.log(res);
                         this.BlockRef.current.state.ws.send(
                             JSON.stringify(newBlocks)
                         );
-                        // this.setState({
-                        //     ...this.state,
-                        //     blocks: [
-                        //         ...this.state.blocks.filter(
-                        //             b =>
-                        //                 !(
-                        //                     b.block_type == block_type &&
-                        //                     b.id == block_id
-                        //                 )
-                        //         )
-                        //     ]
-                        // });
                     });
             })
             .catch(err => {
@@ -276,17 +258,15 @@ class Note extends Component {
         if (!todoContainer) {
             console.log('Todo conatiner가 없습니다. ');
         }
-        console.log('Todo container: ', todoContainer);
+        let newBlocks = null;
         // 만약 컨테이너가 존재하지만, 단 한개의 Todo가 존재한다면, 그것을 지우고 컨테이너도 삭제
         if (todoContainer.todos.length <= 1) {
-            this.setState({
-                blocks: this.state.blocks.filter(
-                    blk => blk.block_type !== 'TodoContainer'
-                )
-            });
+            newBlocks = this.state.blocks.filter(
+                blk => blk.block_type !== 'TodoContainer'
+            );
         } else {
             // 컨테이너가 이미 존재하고 그 안에 2개 이상의 Todo 가 있다면, 지우고자 하는 Todo를 제거한 새로운 배열로 수정
-            const newBlocks = this.state.blocks.map(blk => {
+            newBlocks = this.state.blocks.map(blk => {
                 if (blk.block_type == 'TodoContainer') {
                     const newTodos = blk.todos.filter(
                         todo => todo.id !== deleted.id
@@ -297,17 +277,15 @@ class Note extends Component {
                     return blk;
                 }
             });
-            const stringifiedBlocks = {
-                children_blocks: JSON.stringify(newBlocks)
-            };
-            axios
-                .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
-                .then(res =>
-                    this.BlockRef.current.state.ws.send(
-                        JSON.stringify(newBlocks)
-                    )
-                );
         }
+        const stringifiedBlocks = {
+            children_blocks: JSON.stringify(newBlocks)
+        };
+        axios
+            .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
+            .then(res =>
+                this.BlockRef.current.state.ws.send(JSON.stringify(newBlocks))
+            );
     };
 
     handleClickBlock = e => {};
@@ -528,7 +506,6 @@ class Note extends Component {
         const noteId = this.props.match.params.n_id;
         let newBlocks = null;
         let res = JSON.parse(data);
-        console.log(res);
 
         // Add Block
         if (res.hasOwnProperty('block_type')) {
@@ -555,7 +532,6 @@ class Note extends Component {
                 let todoContainer = this.state.blocks.find(
                     blk => blk.block_type === 'TodoContainer'
                 );
-                console.log('todo container: ', todoContainer);
                 res.assignees_info = [];
                 if (todoContainer) {
                     newBlocks = this.state.blocks.map(blk => {
@@ -588,8 +564,6 @@ class Note extends Component {
         }
         // Drag & Drop
         else {
-            console.log('여기일틴데');
-            console.log('여기일텐데???', res);
             this.setState({ blocks: res['children_blocks'] });
         }
 
@@ -632,7 +606,6 @@ class Note extends Component {
     };
 
     render() {
-        console.log(this.state.blocks);
         // console.log(
         //     'render todo container: ',
         //     this.state.blocks.filter(blk => blk.block_type === 'TodoConatiner'),

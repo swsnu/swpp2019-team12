@@ -61,6 +61,11 @@ urlpatterns = [
         "note/<int:n_id>/childrenblocks/",
         views.children_blocks_of_note,
         name="children_blocks_of_note",
+    ),
+    path(
+        "agenda/<int:a_id>/childrenblocks/",
+        views.children_blocks_of_agenda,
+        name="children_blocks_of_agenda",
     )
     # Websocket
 ]

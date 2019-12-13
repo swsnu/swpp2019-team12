@@ -78,30 +78,48 @@ class Agenda extends Component {
                 console.log(res);
                 console.log('res doc id: ', res.data.document_id);
                 console.log(this.state.blocks);
-                const blocks = this.state.blocks.concat({
+                const block = {
                     block_type: 'Text',
                     id: res['data']['id'],
                     content: res['data']['content'],
                     layer_x: res['data']['layer_x'],
                     layer_y: res['data']['layer_y'],
-                    documentId: res['data']['document_id']
-                });
+                    document_id: res['data']['document_id']
+                };
+                const newBlocks = this.state.blocks.concat(block);
                 axios
                     .patch(`/api/agenda/${this.state.agenda_id}/`, {
-                        children_blocks: JSON.stringify(blocks)
+                        children_blocks: JSON.stringify(newBlocks)
                     })
                     .then(res => {
                         this.AgendaRef.current.state.ws.send(
-                            JSON.stringify(blocks)
+                            JSON.stringify(block)
                         );
-                        console.log('patch 후 blocks:', blocks);
-                        this.setState({ blocks: blocks });
                     });
             })
             .catch(err => {
                 console.log('textblock insid agenda 생성 실패', err);
             });
     };
+
+    handleSocketAgenda(data) {
+        let res = JSON.parse(data);
+        console.log(res);
+        if (res.hasOwnProperty('block_type')) {
+            this.setState({
+                blocks: this.state.blocks.concat({
+                    block_type: res['block_type'],
+                    id: res['id'],
+                    content: res['content'],
+                    layer_x: res['layer_x'],
+                    layer_y: res['layer_y'],
+                    documentId: res['document_id']
+                })
+            });
+        } else {
+            this.setState({ blocks: res['children_blocks'] });
+        }
+    }
 
     handleClickDelete = e => {
         e.preventDefault();
@@ -119,18 +137,26 @@ class Agenda extends Component {
         axios
             .delete(axios_path)
             .then(res => {
-                const blocks = [
+                const newBlocks = [
                     ...this.state.blocks.filter(
                         b => !(b.block_type == block_type && b.id == block_id)
                     )
                 ];
+
+                const stringifiedBlocks = {
+                    children_blocks: JSON.stringify(newBlocks)
+                };
+
                 axios
-                    .patch(`/api/agenda/${this.state.agenda_id}/`, {
-                        children_blocks: JSON.stringify(blocks)
-                    })
+                    .patch(
+                        `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
+                        stringifiedBlocks
+                    )
                     .then(res => {
-                        console.log('patch 후 blocks:', blocks);
-                        this.setState({ blocks: blocks });
+                        console.log(res);
+                        this.AgendaRef.current.state.ws.send(
+                            JSON.stringify(newBlocks)
+                        );
                     });
             })
             .catch(err => {
@@ -143,21 +169,6 @@ class Agenda extends Component {
             'Need to implement changing to Detail mode from preview mode'
         );
     };
-
-    handleSocketAgenda(data) {
-        let res = JSON.parse(data);
-        console.log(res);
-        this.setState({
-            blocks: this.state.blocks.concat({
-                block_type: res['block_type'],
-                id: res['id'],
-                content: res['content'],
-                layer_x: res['layer_x'],
-                layer_y: res['layer_y'],
-                documentId: res['document_id']
-            })
-        });
-    }
 
     render() {
         return (
@@ -195,11 +206,11 @@ class Agenda extends Component {
                             }></AgendaInside>
                     </div>
                 </div>
-                {/* <Websocket
-                    url={`ws://localhost:8000/ws/${this.state.agenda_id}/agenda/block/`}
+                <Websocket
+                    url={`ws://localhost:8001/ws/${this.state.agenda_id}/agenda/block/`}
                     ref={this.AgendaRef}
                     onMessage={this.handleSocketAgenda.bind(this)}
-                /> */}
+                />
             </div>
         );
     }

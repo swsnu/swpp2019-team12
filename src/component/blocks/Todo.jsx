@@ -20,6 +20,7 @@ class Todo extends Component {
             nextProps.todo.assignees_info !== prevState.todo.assignees_info ||
             nextProps.todo.is_done !== prevState.todo.is_done ||
             nextProps.todo.due_date !== prevState.todo.due_date ||
+            nextProps.todo.content !== prevState.todo.content ||
             nextProps.todo !== prevState.todo
         ) {
             return {
@@ -34,32 +35,6 @@ class Todo extends Component {
         const { todo } = this.props;
         this.setState({ assignees: todo.assignees_info, todo });
     }
-
-    handleChangeTodo = e => {
-        const { todo } = this.state;
-        const content = e.target.value.length ? e.target.value : ' ';
-        this.setState({ todo: { ...todo, content } }, () => {
-            axios
-                .patch(`/api/todo/${todo.id}/`, this.state.todo)
-                .then(res => {})
-                .catch(e => console.log(e));
-        });
-    };
-
-    handleDeleteTodo = () => {
-        const { todo } = this.state;
-        axios
-            .delete(`/api/todo/${todo.id}/`)
-            .then(res => {
-                this.props.handleDeleteTodo(todo);
-            })
-            .catch(e => console.log(e));
-    };
-
-    handleFocus = () => {
-        const { todo } = this.state;
-        if (!todo.is_done) this.inputRef.current.focus();
-    };
 
     modifyTodoInfo = (res, todo, data, func) => {
         const noteId = this.props.noteId;
@@ -107,6 +82,45 @@ class Todo extends Component {
                 socketRef.current.state.ws.send(newBlocks);
             })
             .catch(err => console.log(err));
+    };
+
+    handleDeleteTodo = () => {
+        const { todo } = this.state;
+        axios
+            .delete(`/api/todo/${todo.id}/`)
+            .then(res => {
+                this.props.handleDeleteTodo(todo);
+            })
+            .catch(e => console.log(e));
+    };
+
+    handleFocus = () => {
+        const { todo } = this.state;
+        if (!todo.is_done) this.inputRef.current.focus();
+    };
+
+    handleChangeTodo = e => {
+        const noteId = this.props.noteId;
+        const { todo } = this.state;
+        const content = e.target.value.length ? e.target.value : ' ';
+        axios
+            .patch(`/api/todo/${todo.id}/`, { content: content })
+            .then(res_1 => {
+                console.log(res_1['data']['content']);
+                axios.get(`/api/note/${noteId}/childrenblocks/`).then(res_2 => {
+                    let todoHandleFunc = (original_todo, content) => {
+                        original_todo.content = content;
+                        return original_todo;
+                    };
+                    this.modifyTodoInfo(
+                        res_2,
+                        todo,
+                        res_1['data']['content'],
+                        todoHandleFunc
+                    );
+                });
+            })
+            .catch(e => console.log(e));
     };
 
     handleChangeStatus = () => {
@@ -222,7 +236,6 @@ class Todo extends Component {
     };
 
     render() {
-        console.log(this.state.todo);
         const { assignees, todo } = this.state;
         const dateFormat = 'YYYY-MM-DD';
         const dueDate = todo.due_date ? moment(todo.due_date) : moment();

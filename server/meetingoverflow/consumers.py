@@ -148,7 +148,6 @@ class BlockConsumer(WebsocketConsumer):
                         "due_date": due_date,
                     },
                 )
-                print("TODOS")
 
         # 1) Block을 Drag해서 위치가 변화하는걸 받는 receive
         # 2) Block을 제거해서 변화하는 경우를 받는 receive
@@ -156,7 +155,6 @@ class BlockConsumer(WebsocketConsumer):
             """
             # Send message to room group
             """
-            print("ㄲㄲㄲㄲㄲㄲㄲㄲㄲㄲㄲㄲㄲㄲㄲ")
             print(block_data_json)
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
@@ -198,6 +196,7 @@ class BlockConsumer(WebsocketConsumer):
         n_id = event["note"]
         t_id = event["id"]
         document_id = event["document_id"]
+
         self.send(
             text_data=json.dumps(
                 {
@@ -248,6 +247,7 @@ class BlockConsumer(WebsocketConsumer):
         # Send message to WebSocket
         """
         children_blocks = event["children_blocks"]
+        print(children_blocks)
         self.send(text_data=json.dumps({"children_blocks": children_blocks,}))
 
 
@@ -277,37 +277,34 @@ class AgendaConsumer(WebsocketConsumer):
     # Receive message from WebSocket
     def receive(self, text_data):
         block_data_json = json.loads(text_data)
-        content = block_data_json["content"]
-        layer_x = block_data_json["layer_x"]
-        layer_y = block_data_json["layer_y"]
-        document_id = block_data_json["document_id"]
-        n_id = block_data_json["n_id"]
+        if "block_type" in block_data_json:
+            content = block_data_json["content"]
+            layer_x = block_data_json["layer_x"]
+            layer_y = block_data_json["layer_y"]
+            document_id = block_data_json["document_id"]
+            t_id = block_data_json["id"]
 
-        data = {
-            "content": content,
-            "layer_x": layer_x,
-            "layer_y": layer_y,
-            "document_id": document_id,
-            "note": n_id,
-            "is_parent_note": True,
-        }
-        serializer = TextBlockSerializer(data=data)
-        if serializer.is_valid():
-            text = serializer.save()
+            # Send message to room group
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "add_text",
+                    "id": t_id,
+                    "content": content,
+                    "layer_x": layer_x,
+                    "layer_y": layer_y,
+                    "document_id": document_id,
+                },
+            )
+        else:
+            """
+            # Send message to room group
+            """
 
-        # Send message to room group
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
-            {
-                "type": "add_text",
-                "id": text.id,
-                "content": content,
-                "layer_x": layer_x,
-                "layer_y": layer_y,
-                "document_id": document_id,
-                "note": n_id,
-            },
-        )
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {"type": "change_children_blocks", "children_blocks": block_data_json,},
+            )
 
     # Receive message from room group
     def add_text(self, event):
@@ -317,7 +314,6 @@ class AgendaConsumer(WebsocketConsumer):
         content = event["content"]
         layer_x = event["layer_x"]
         layer_y = event["layer_y"]
-        n_id = event["note"]
         t_id = event["id"]
         document_id = event["document_id"]
         # Send message to WebSocket
@@ -330,7 +326,13 @@ class AgendaConsumer(WebsocketConsumer):
                     "layer_x": layer_x,
                     "layer_y": layer_y,
                     "document_id": document_id,
-                    "note": n_id,
                 }
             )
         )
+
+    def change_children_blocks(self, event):
+        """
+        # Send message to WebSocket
+        """
+        children_blocks = event["children_blocks"]
+        self.send(text_data=json.dumps({"children_blocks": children_blocks,}))
