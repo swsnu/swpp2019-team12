@@ -473,9 +473,12 @@ def specific_note(request, n_id):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = NoteSerializer(
             current_note, data=request.data, partial=True)
+        print(request.data)
+        #print(serializer.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        print(serializer.errors)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':

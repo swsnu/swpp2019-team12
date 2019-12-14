@@ -23,10 +23,10 @@ class Agenda extends Component {
                     blocks = JSON.parse(res['data']['children_blocks']);
                 }
                 console.log('blocks: ', blocks);
-                this.props.handleAddAgendaChildrenBlocks(
-                    this.state.agenda_id,
-                    blocks
-                );
+                // this.props.handleAddAgendaChildrenBlocks(
+                //     this.state.agenda_id,
+                //     blocks
+                // );
                 this.setState({ blocks: blocks });
             })
             .catch(err => console.log('this agenda has no child block'));
@@ -64,12 +64,12 @@ class Agenda extends Component {
     };
 
     handleAddTextBlock = () => {
-        const documentId = handleDocIdInUrl();
+        const document_id = handleDocIdInUrl();
         const text_info = {
             content: '어젠다 속 새로운 텍스트 블록',
             layer_x: 0,
             layer_y: 0,
-            document_id: documentId
+            document_id: document_id
         };
         axios
             .post(`/api/agenda/${this.state.agenda_id}/textblocks/`, text_info)
@@ -117,7 +117,7 @@ class Agenda extends Component {
                         content: res['content'],
                         layer_x: res['layer_x'],
                         layer_y: res['layer_y'],
-                        documentId: res['document_id']
+                        document_id: res['document_id']
                     })
                 });
         } else {

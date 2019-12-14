@@ -61,8 +61,8 @@ export default class Editor extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (
-            nextProps.configuration.documentId !==
-            prevState.cloudServicesConfig.documentId
+            nextProps.configuration.document_id !==
+            prevState.cloudServicesConfig.document_id
         ) {
             return {
                 cloudServicesConfig: nextProps.configuration
@@ -195,7 +195,7 @@ export default class Editor extends Component {
                                     .uploadUrl,
                                 webSocketUrl: this.state.cloudServicesConfig
                                     .webSocketUrl,
-                                documentId: this.props.documentId
+                                documentId: this.props.document_id
                             },
                             image: {
                                 toolbar: [

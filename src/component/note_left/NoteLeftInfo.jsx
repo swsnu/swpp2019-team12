@@ -49,12 +49,7 @@ class NoteLeftInfo extends Component {
             this.state.noteTags.map((tag, i) => <Tag key={i} tag={tag} />)
         );
     };
-    // {key: "2", keyPath: Array(1), item: MenuItem, domEvent: Class}
-    // key: "2"
-    // keyPath: ["2"]
-    // item: MenuItem {props: {…}, context: {…}, refs: {…}, updater: {…}, onKeyDown: ƒ, …}
-    // domEvent: Class {dispatchConfig: null, _targetInst: null, _dispatchListeners: null, _dispatchInstances: null, …}
-    // __proto__: Object
+
     handleMenuClick = e => {
         console.log(e);
         this.props.handleAddTag(e.key);

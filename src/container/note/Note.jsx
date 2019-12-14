@@ -88,7 +88,7 @@ class Note extends Component {
                             content: blk['content'],
                             layer_x: blk['layer_x'],
                             layer_y: blk['layer_y'],
-                            documentId: blk['documentId']
+                            document_id: blk['document_id']
                         })
                     });
                 } else if (block_type == 'TodoContainer') {
@@ -363,15 +363,15 @@ class Note extends Component {
 
     handleAddTextBlock = () => {
         const noteId = this.props.match.params.n_id;
-        const documentId = handleDocIdInUrl();
-        console.log('새 document Id: ', documentId);
+        const document_id = handleDocIdInUrl();
+        console.log('새 document Id: ', document_id);
         // Block Create API call 할 곳.
         const text_info = {
             n_id: noteId,
             content: '새로 생성된 텍스트 블록',
             layer_x: 0,
             layer_y: 0,
-            document_id: documentId,
+            document_id: document_id,
             block_type: 'Text'
         };
 
@@ -445,7 +445,7 @@ class Note extends Component {
             content: '새로 생성된 텍스트 블록',
             layer_x: 0,
             layer_y: 0,
-            document_id: documentId
+            document_id: document_id
         };
         axios.post(`/api/note/${noteId}/textblocks/`, text_info).then(res => {
             this.setState({
@@ -455,7 +455,7 @@ class Note extends Component {
                     content: res['data']['content'],
                     layer_x: res['data']['layer_x'],
                     layer_y: res['data']['layer_y'],
-                    documentId: res['data']['document_id']
+                    document_id: res['data']['document_id']
                 })
             });
         });
@@ -487,16 +487,27 @@ class Note extends Component {
     };
 
     handleAddTag = tagId => {
+        const noteId = this.props.match.params.n_id;
         const newTag = this.state.workspaceTags.find(tag => tag.id == tagId);
+        console.log('newTag: ', newTag);
+        console.log(this.state.noteTags);
         let duplicate = false;
         this.state.noteTags.forEach(tag => {
             if (tagId == tag.id) {
                 duplicate = true;
             }
         });
+
         if (!duplicate) {
-            this.setState({
-                noteTags: this.state.noteTags.concat(newTag)
+            const tags = this.state.noteTags.concat(newTag);
+            const newNote = {
+                tags: tags.map(tag => tag.id)
+            };
+            axios.patch(`/api/note/${noteId}/`, newNote).then(res => {
+                console.log(res);
+                this.setState({
+                    noteTags: tags
+                });
             });
         }
         //        const noteTags = this.state.
@@ -525,7 +536,7 @@ class Note extends Component {
                     content: res['content'],
                     layer_x: res['layer_x'],
                     layer_y: res['layer_y'],
-                    documentId: res['document_id']
+                    document_id: res['document_id']
                 });
             } else if (res['block_type'] == 'TodoContainer') {
                 newBlocks = this.state.blocks;
