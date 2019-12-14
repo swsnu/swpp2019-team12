@@ -48,9 +48,11 @@
         }
         .Overview-section-agenda {
             width: rem(300px);
+            width: calc(28%);
         }
         .Overview-section-todo {
-            width: rem(300px);
+            width: rem(400px);
+            width: calc(34% - 2.14rem);
         }
 
         .Overview-section-note__label,
@@ -62,8 +64,34 @@
         }
     }
 
+    .Overview-cards__empty {
+        display: flex;
+        height: 80%;
+
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .Overview-cards__empty-header {
+            font-size: rem(20px);
+            font-weight: 700;
+
+            color: $lightgray;
+            margin-bottom: rem(10px);
+            text-align: center;
+        }
+        .Overview-cards__empty-content {
+            font-size: rem(16px);
+            font-weight: 400;
+
+            color: $lightgray;
+            text-align: center;
+        }
+    }
+
     .Overview-cards {
         display: flex;
+        justify-content: space-between;
         height: 80%;
 
         .Overview-note-cards {
@@ -71,6 +99,65 @@
             padding-right: rem(10px);
             overflow: auto;
             width: 28%;
+        }
+        .Overview-agenda-cards {
+            padding-top: rem(10px);
+            padding-right: rem(10px);
+            overflow: auto;
+            width: 28%;
+
+            &.--empty {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+                .Overview-cards__empty-header {
+                    font-size: rem(16px);
+                    font-weight: 700;
+                    text-align: center;
+
+                    color: $lightgray;
+                    margin-bottom: rem(10px);
+                }
+                .Overview-cards__empty-content {
+                    font-size: rem(14px);
+                    font-weight: 400;
+                    text-align: center;
+
+                    color: $lightgray;
+                }
+            }
+        }
+
+        .Overview-todo-cards {
+            padding-top: rem(10px);
+            padding-right: rem(10px);
+            overflow: auto;
+            width: 34%;
+
+            &.--empty {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+
+                .Overview-cards__empty-header {
+                    font-size: rem(16px);
+                    font-weight: 700;
+                    text-align: center;
+
+                    color: $lightgray;
+                    margin-bottom: rem(10px);
+                }
+                .Overview-cards__empty-content {
+                    font-size: rem(14px);
+                    font-weight: 400;
+                    text-align: center;
+
+                    color: $lightgray;
+                }
+            }
         }
     }
 }

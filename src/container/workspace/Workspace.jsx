@@ -126,6 +126,7 @@ class Workspace extends Component {
 
                 <div className="workspace-main">
                     <Overview notes={notes} agendas={agendas} todos={todos} />
+                    {/* <Overview notes={[]} agendas={[]} todos={[]} /> */}
                 </div>
 
                 {showCreateNoteModal && (
