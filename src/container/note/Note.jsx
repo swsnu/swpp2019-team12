@@ -141,17 +141,19 @@ class Note extends Component {
             .get(`/api/note/${noteId}/`)
             .then(res => {
                 console.log(res);
+                const noteData = res['data']['note'];
+                const tagData = res['data']['tags'];
                 this.setState({
                     ...this.state,
-                    note_id: res['data']['id'],
-                    title: res['data']['title'],
-                    location: res['data']['location'],
-                    created_at: res['data']['created_at'],
-                    last_modified_at: res['data']['last_modified_at'],
-                    ml_speech_text: res['data']['ml_speech_text'],
-                    participants_id: res['data']['participants'],
-                    moment: moment(res['data']['created_at']),
-                    tags: res['data']['tags']
+                    note_id: noteData['id'],
+                    title: noteData['title'],
+                    location: noteData['location'],
+                    created_at: noteData['created_at'],
+                    last_modified_at: noteData['last_modified_at'],
+                    ml_speech_text: noteData['ml_speech_text'],
+                    participants_id: noteData['participants'],
+                    moment: moment(noteData['created_at']),
+                    tags: tagData
                 });
                 return res['data']['participants'];
             })

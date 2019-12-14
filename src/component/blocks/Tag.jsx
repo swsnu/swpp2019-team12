@@ -7,22 +7,25 @@ export default class Tag extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tagId: this.props.tagId,
-            title: '',
-            color: ''
+            tagId: this.props.tag.id,
+            title: this.props.tag.content,
+            color: this.props.tag.color
         };
     }
 
-    componentDidMount() {
-        axios.get(`/api/tag/${this.props.tagId}/`).then(res => {
-            this.setState({
-                title: res.data['tag_title'],
-                color: res.data['tag_color']
-            });
-        });
-    }
+    // static getDerivedStateFromProps(nextProps, prevState) {
+    //     if (nextProps.id != prevState.tagId) {
+    //         return {
+    //             tagId: nextProps.id,
+    //             title: nextProps.content,
+    //             color: nextProps.color
+    //         };
+    //     }
+    //     return null;
+    // }
 
     render() {
-        return <AntTag color="magenta">{this.state.title}</AntTag>;
+        console.log(this.props);
+        return <AntTag color={this.state.color}>{this.state.title}</AntTag>;
     }
 }

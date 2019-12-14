@@ -10,7 +10,7 @@ const SingleScript = props => {
                     const pTag = e.target;
                     pTag.select();
                     document.execCommand('copy');
-                    alert('Copied the text: ' + pTag.value);
+                    message.info('Copied the text: ' + pTag.value);
                 }}></input>
         </div>
     );

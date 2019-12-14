@@ -42,11 +42,13 @@ class NoteLeftInfo extends Component {
     renderTags = () => {
         return (
             this.state.tags &&
-            this.state.tags.map((tag, i) => <Tag key={i} tagId={tag} />)
+            this.state.tags.map((tag, i) => <Tag key={i} tag={tag} />)
         );
     };
 
-    handleMenuClick = () => {};
+    handleMenuClick = e => {
+        console.log(e);
+    };
 
     render() {
         // Click하는 순간 바로 Cursor가 활성화 되게끔 만들어야 한다.
@@ -92,10 +94,12 @@ class NoteLeftInfo extends Component {
         // }
         console.log('leftinfo tags: ', this.state.tags);
         const menu = (
-            <Menu onClick={this.handleMenuClick}>
-                <Menu.Item key="1">1st item</Menu.Item>
-                <Menu.Item key="2">2nd item</Menu.Item>
-                <Menu.Item key="3">3rd item</Menu.Item>
+            <Menu>
+                {this.state.tags.map((tag, i) => (
+                    <Menu.Item key={tag.id} onClick={this.handleMenuClick}>
+                        {tag.content}
+                    </Menu.Item>
+                ))}
             </Menu>
         );
         return (

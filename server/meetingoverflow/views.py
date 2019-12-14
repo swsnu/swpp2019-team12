@@ -418,7 +418,7 @@ def notes_api(request, w_id):
             workspace_id = request.data['workspace']  # workspace id
             workspace = Workspace.objects.get(id=workspace_id)
             # tags = request.data['tags'] # tag string list
-            # ml_speech_text = request.data['mlSpeechText']
+
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -453,8 +453,14 @@ def specific_note(request, n_id):
             current_note = Note.objects.get(id=n_id)
         except Note.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = NoteSerializer(current_note)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        note_serializer = NoteSerializer(current_note)
+        tags = Tag.objects.filter(note__in=[current_note])
+        tag_serializer = TagSerializer(tags, many=True)
+        data = {
+            "tags": tag_serializer.data,
+            "note": note_serializer.data
+        }
+        return Response(data, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
         try:
