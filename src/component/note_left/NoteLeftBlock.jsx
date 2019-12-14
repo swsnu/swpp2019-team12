@@ -53,7 +53,7 @@ class NoteLeftBlock extends Component {
                         result = (
                             <Text
                                 blk_id={blk.id}
-                                documentId={blk.documentId}
+                                document_id={blk.document_id}
                                 type={blk.block_type}
                                 content={blk.content}
                                 handleChangeText={nextProps.handleChangeText}
@@ -67,6 +67,8 @@ class NoteLeftBlock extends Component {
                     } else if (blk.block_type === AGENDA) {
                         result = (
                             <Agenda
+                                workspaceTags={nextProps.workspaceTags}
+                                workspaceId={nextProps.workspaceId}
                                 noteId={nextProps.noteId}
                                 blk_id={blk.id}
                                 type={blk.block_type}
@@ -89,7 +91,7 @@ class NoteLeftBlock extends Component {
                             />
                         );
                     } else if (blk.block_type === IMAGE) {
-                        // console.log('img blk: ', blk);
+                        console.log('img blk: ', blk);
                         result = (
                             <Image
                                 noteId={nextProps.noteId}
@@ -98,8 +100,10 @@ class NoteLeftBlock extends Component {
                                 content={blk.content}
                                 image={blk.image}
                                 is_submitted={blk.is_submitted}
+                                is_parent_note={true}
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
+                                socketRef={nextProps.socketRef}
                             />
                         );
                     } else {

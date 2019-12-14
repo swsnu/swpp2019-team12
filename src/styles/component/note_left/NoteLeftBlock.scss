@@ -65,6 +65,12 @@
         padding: 0 rem(50px) 0 rem(50px);
     }
 
+    .Agenda-tags {
+        display: flex;
+        align-items: row;
+        margin: 5px 5px 5px 5px;
+    }
+
     .full-size-block-container {
         width: 100%;
         min-height: rem(100px);

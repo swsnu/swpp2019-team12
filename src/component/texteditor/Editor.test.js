@@ -56,13 +56,15 @@ jest.mock('@ckeditor/ckeditor5-basic-styles/src/strikethrough', () =>
 jest.mock('@ckeditor/ckeditor5-table/src/table', () => jest.fn());
 jest.mock('@ckeditor/ckeditor5-table/src/tabletoolbar', () => jest.fn());
 jest.mock('@ckeditor/ckeditor5-basic-styles/src/underline', () => jest.fn());
-
+jest.mock('@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter', () =>
+    jest.fn()
+);
 const STUB_DOCUMENT_ID = 'StubDocumentId';
 const STUB_CONFIGURATION = {
     tokenUrl: 'StubTokenUrl',
     uploadUrl: 'StubUploadUrl',
     webSocketUrl: 'StubWebSocketUrl',
-    documentId: 'StubDocumentId'
+    document_id: 'StubDocumentId'
 };
 const STUB_SELECTED_USER = {
     id: 1,
@@ -76,7 +78,7 @@ describe('<Editor />', () => {
     beforeEach(() => {
         editor = (
             <Editor
-                documentId={STUB_DOCUMENT_ID}
+                document_id={STUB_DOCUMENT_ID}
                 selectedUser={STUB_SELECTED_USER}
                 handleLoading={stub_handleLoading}
                 configuration={STUB_CONFIGURATION}

@@ -89,8 +89,6 @@ class Calendar extends Component {
                 } else return item;
             })
         });
-
-        console.log('Moved', itemId, dragTime, newGroupOrder);
     };
 
     handleItemResize = (itemId, time, edge) => {
@@ -106,8 +104,6 @@ class Calendar extends Component {
                 } else return item;
             })
         });
-
-        console.log('Resized', itemId, time, edge);
     };
 
     itemRenderer = ({ item, itemContext, getItemProps, getResizeProps }) => {
@@ -133,7 +129,6 @@ class Calendar extends Component {
                         borderRadius: 4
                     },
                     onMouseDown: () => {
-                        console.log(itemContext);
                         this.setState({
                             selected: true
                         });

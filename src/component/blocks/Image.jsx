@@ -13,6 +13,17 @@ class Image extends Component {
         };
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.is_submitted !== prevState.is_submitted) {
+            return {
+                is_submitted: nextProps.is_submitted,
+                image: nextProps.image,
+                content: nextProps.content
+            };
+        }
+        return prevState;
+    }
+
     componentDidMount() {
         this.setState({
             is_submitted: this.props.is_submitted,
@@ -23,7 +34,7 @@ class Image extends Component {
 
     handleChange = e => {
         this.setState({
-            [e.target.id]: e.target.value
+            content: e.target.value
         });
     };
 
@@ -47,6 +58,7 @@ class Image extends Component {
 
     handleSubmit = e => {
         e.preventDefault();
+        const noteId = this.props.noteId;
         let form_data = new FormData();
         form_data.append('image', this.state.image, this.state.image.name);
         form_data.append('content', this.state.content);
@@ -55,17 +67,86 @@ class Image extends Component {
             .patch(`/api/image/${this.state.blk_id}/`, form_data, {
                 headers: { 'content-type': 'multipart/form-data' }
             })
-            .then(res => {
-                console.log('res.data: ', res.data);
-                this.setState({
-                    is_submitted: true
-                });
+            .then(res_1 => {
+                if (this.props.is_parent_note) {
+                    axios
+                        .get(`/api/note/${noteId}/childrenblocks/`)
+                        .then(res_2 => {
+                            this.patchImage(res_2, res_1['data']);
+                        });
+                } else {
+                    axios
+                        .get(
+                            `/api/agenda/${this.props.parent_agenda}/childrenblocks/`
+                        )
+                        .then(res_2 => {
+                            this.patchImage(res_2, res_1['data']);
+                        });
+                }
+                // const JSON_data = {
+                //     operation_type: 'patch_image',
+                //     updated_image: res['data']
+                // };
+                // console.log(JSON_data);
+                // console.log('res.data: ', res.data);
+
+                // this.patchImage()
             })
             .catch(err => console.log(err));
     };
 
+    patchImage = (res, data) => {
+        const agendaId = this.props.parent_agenda;
+        const noteId = this.props.noteId;
+        const socketRef = this.props.socketRef;
+        let childrenBlocks = JSON.parse(res['data']['children_blocks']);
+
+        let imageIdx = -1;
+        for (let i = 0; i < childrenBlocks.length; i++) {
+            let block = childrenBlocks[i];
+            if (block['block_type'] == 'Image' && block['id'] == data['id']) {
+                imageIdx = i;
+                break;
+            }
+        }
+
+        let imageBlock = childrenBlocks[imageIdx];
+        imageBlock.content = data['content'];
+        imageBlock.image = data['image'];
+        imageBlock.is_submitted = data['is_submitted'];
+
+        childrenBlocks.splice(imageIdx, 1, imageBlock);
+
+        const newBlocks = JSON.stringify(childrenBlocks);
+        const JSON_data = {
+            operation_type: 'patch_image',
+            children_blocks: childrenBlocks
+        };
+
+        const stringifiedBlocks = {
+            children_blocks: newBlocks
+        };
+        if (this.props.is_parent_note) {
+            axios
+                .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
+                .then(res => {
+                    socketRef.current.state.ws.send(JSON.stringify(JSON_data));
+                })
+                .catch(err => console.log(err));
+        } else {
+            axios
+                .patch(
+                    `/api/agenda/${agendaId}/childrenblocks/`,
+                    stringifiedBlocks
+                )
+                .then(res => {
+                    socketRef.current.state.ws.send(JSON.stringify(JSON_data));
+                })
+                .catch(err => console.log(err));
+        }
+    };
+
     render() {
-        console.log('render: ' + this.state.image);
         return (
             <div
                 className="full-size-block-container Image"

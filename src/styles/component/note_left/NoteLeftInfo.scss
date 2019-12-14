@@ -55,5 +55,27 @@
 
     .NoteLeftInfo-data-participant__container {
         display: flex;
+        flex-direction: row;
+
+        .SingleTag {
+            margin: 5px;
+            padding: 2px 0 2px 0;
+            box-shadow: 0 0 20px grey;
+        }
+
+        .tag-title {
+            padding: 2px 10px 2px 10px;
+        }
+    }
+
+    .NoteLeftInfo-tags {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        width: 100%;
+
+        .add-tag-button {
+            align-self: flex-end;
+        }
     }
 }
