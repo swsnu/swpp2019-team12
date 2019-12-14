@@ -8,7 +8,8 @@ class Text extends Component {
         this.state = {
             blk_id: this.props.blk_id,
             content: this.props.content,
-            documentId: this.props.documentId
+            documentId: this.props.documentId,
+            isParentAgenda: this.props.isParentAgenda
         };
     }
 
@@ -17,10 +18,14 @@ class Text extends Component {
         console.log('Need to implement changing text');
     };
 
+    handleClickBlock = e => {
+        // e.stopPropagation();
+    };
+
     handleClickDelete = e => {
         e.preventDefault();
-        console.log('delete agenda');
-        const axios_path = `/api/textblock/${this.state.blk_id}/`;
+        console.log('delete textblock');
+        const axios_path = `/api/textblock/${this.props.blk_id}/`;
         this.props.handleDeleteBlock(axios_path, 'Text', this.state.blk_id);
     };
 
@@ -28,11 +33,12 @@ class Text extends Component {
         return (
             <div
                 className="full-size-block-container Text"
-                onClick={() =>
-                    this.props.handleClickBlock(
-                        this.props.type,
-                        this.props.blk_id
-                    )
+                onClick={
+                    () => this.handleClickBlock()
+                    // this.props.handleClickBlock(
+                    //     this.props.type,
+                    //     this.props.blk_id
+                    // )
                 }>
                 <div className="full-size-block-title">
                     <div className="full-size-block-title__label">Text</div>
@@ -43,6 +49,7 @@ class Text extends Component {
                     </button>
                 </div>
                 <EditorWrapper
+                    handleAddTextSocketSend={this.props.handleAddTextSocketSend}
                     blk_id={this.props.blk_id}
                     documentId={this.props.documentId}
                     handleChangeText={this.handleChangeText}

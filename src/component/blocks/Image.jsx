@@ -8,7 +8,8 @@ class Image extends Component {
             blk_id: this.props.blk_id,
             image: null,
             content: this.props.content,
-            is_submitted: false
+            is_submitted: false,
+            file: null
         };
     }
 
@@ -37,6 +38,11 @@ class Image extends Component {
         e.preventDefault();
         const axios_path = `/api/image/${this.state.blk_id}/`;
         this.props.handleDeleteBlock(axios_path, 'Image', this.state.blk_id);
+    };
+
+    handleSubmitValidation = () => {
+        const { image } = this.state;
+        return image !== null;
     };
 
     handleSubmit = e => {
@@ -99,7 +105,15 @@ class Image extends Component {
                                     // required
                                 />
                             </p>
-                            <input type="submit" value="submit" />
+                            {this.handleSubmitValidation() ? (
+                                <input type="submit" value="submit" />
+                            ) : (
+                                <input
+                                    className="disabled"
+                                    type="submit"
+                                    value="submit"
+                                />
+                            )}
                         </form>
                     ) : (
                         <div>
@@ -111,8 +125,9 @@ class Image extends Component {
                             {typeof this.state.image === 'string' ? (
                                 <img src={this.state.image} />
                             ) : (
-                                // <img src="{% static {this.state.image} %}" />
-                                <img src="blob:{{MEDIA_URL}}{{this.state.file}}" />
+                                // <img src="blob:{{MEDIA_URL}}{{this.state.file}}" />
+                                /* 개발단계에서 DEBUG=TRUE일 때, 이미지 업로드 되자마자 보여지게 하는 코드 */
+                                <img src={this.state.file} />
                             )}
                         </div>
                     )}

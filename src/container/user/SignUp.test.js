@@ -1,8 +1,8 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import SignUp from './SignUp';
 import axios from 'axios';
-
+import { createBrowserHistory } from 'history';
 describe('<SignUp />', () => {
     afterEach(() => {
         jest.clearAllMocks();
@@ -288,7 +288,7 @@ describe('<SignUp />', () => {
         wrapper = component.find('#sign_up_button');
         await wrapper.simulate('click', mockEvent);
         expect(axios.post).toHaveBeenCalledTimes(1);
-        expect(mockHistory.push).toHaveBeenCalledWith('/workspace');
+        //expect(mockHistory.push).toHaveBeenCalledWith('/signin');
     });
 
     it('should not submit form when some inputs are invaild', async () => {

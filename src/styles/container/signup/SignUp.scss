@@ -1,14 +1,17 @@
+@font-face {
+    font-family: 'Oxygen-Regular', sans-serif;
+    src: local('Oxygen-Regular'),
+        url('../signin/Oxygen-Regular.ttf') format('truetype');
+}
+
 .signup-box {
+    font-family: 'Oxygen-Regular';
     width: 66vw;
     display: inline-block;
-    padding-top: 3vh;
-    margin: 0 auto;
-    // margin-top: 20px;
-    // margin-bottom: 50px;
-    padding-bottom: 3vh;
-    height: 99vh;
-
+    margin: 3vh auto;
+    height: 90vh;
     display: flex;
+    box-shadow: 0 0 20px darkgray;
 
     .logo {
         width: 50%;
@@ -28,10 +31,10 @@
             display: flex;
             flex-direction: row;
             font-size: 4vh;
-            font-family: 'Oxygen', sans-serif;
+            font-family: 'Oxygen-Regular';
 
             .logo_text_bold {
-                font-weight: bold;
+                font-weight: 750;
             }
         }
     }
@@ -40,10 +43,7 @@
         width: 50%;
 
         align-items: center;
-        padding-top: 3vh;
-        // margin: 0 auto;
-        // margin-top: 50px;
-        // margin-bottom: 50px;
+        padding-top: 6vh;
         padding-bottom: 3vh;
 
         display: flex;
