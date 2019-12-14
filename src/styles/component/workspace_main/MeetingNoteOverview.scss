@@ -1,0 +1,36 @@
+.meetingNoteOverview-container {
+    width: 100%;
+}
+.meetingNoteOverview-content {
+    display: flex;
+    overflow: auto;
+
+    .meetingNoteOverview-content__element:last-child {
+        margin-right: 0;
+    }
+    .meetingNoteOverview-content__element {
+        margin-right: rem(20px);
+        position: relative;
+
+        &:hover {
+            cursor: pointer;
+            path {
+                fill: $primary;
+            }
+            .meetingNoteOverview-content__date {
+                color: $white;
+            }
+        }
+
+        .meetingNoteOverview-content__img {
+            filter: drop-shadow(rem(2px) rem(2px) rem(2px) $lightgray);
+        }
+        .meetingNoteOverview-content__date {
+            position: absolute;
+            bottom: rem(5px);
+            right: rem(5px);
+
+            color: $secondary;
+        }
+    }
+}

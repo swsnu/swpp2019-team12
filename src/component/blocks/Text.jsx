@@ -8,13 +8,12 @@ class Text extends Component {
         this.state = {
             blk_id: this.props.blk_id,
             content: this.props.content,
-            documentId: this.props.documentId,
+            document_id: this.props.document_id,
             isParentAgenda: this.props.isParentAgenda
         };
     }
 
     handleChangeText = changedText => {
-        console.log(changedText);
         console.log('Need to implement changing text');
     };
 
@@ -24,7 +23,6 @@ class Text extends Component {
 
     handleClickDelete = e => {
         e.preventDefault();
-        console.log('delete textblock');
         const axios_path = `/api/textblock/${this.props.blk_id}/`;
         this.props.handleDeleteBlock(axios_path, 'Text', this.state.blk_id);
     };
@@ -51,7 +49,7 @@ class Text extends Component {
                 <EditorWrapper
                     handleAddTextSocketSend={this.props.handleAddTextSocketSend}
                     blk_id={this.props.blk_id}
-                    documentId={this.props.documentId}
+                    document_id={this.props.document_id}
                     handleChangeText={this.handleChangeText}
                 />
                 <div className="full-size-block-content">

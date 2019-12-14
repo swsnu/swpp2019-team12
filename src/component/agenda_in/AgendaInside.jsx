@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Text from '../blocks/Text';
+import Image from '../blocks/Image';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const TEXT = 'Text';
@@ -45,11 +46,28 @@ export default class AgendaInside extends Component {
                         result = (
                             <Text
                                 blk_id={blk.id}
-                                documentId={blk.documentId}
+                                document_id={blk.document_id}
                                 type={blk.block_type}
                                 content={blk.content}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
                                 handleClickBlock={nextProps.handleClickBlock}
+                            />
+                        );
+                    } else if (blk.block_type == IMAGE) {
+                        console.log(blk);
+                        result = (
+                            <Image
+                                noteId={nextProps.noteId}
+                                blk_id={blk.id}
+                                type={blk.block_type}
+                                content={blk.content}
+                                image={blk.image}
+                                is_submitted={blk.is_submitted}
+                                parent_agenda={blk.parent_agenda}
+                                is_parent_note={false}
+                                handleClickBlock={nextProps.handleClickBlock}
+                                handleDeleteBlock={nextProps.handleDeleteBlock}
+                                socketRef={nextProps.socketRef}
                             />
                         );
                     } else {

@@ -185,6 +185,7 @@ def specific_profile(request, u_id):
             profile = Profile.objects.get(id=u_id)
         except Profile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
         serializer = ProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -296,7 +297,7 @@ def specific_workspace(request, w_id):
     """
     if request.method == 'GET':
         profile = request.user.profile
-        #profile = Profile.objects.get(id=1)
+        # profile = Profile.objects.get(id=1)
         try:
             workspace = Workspace.objects.get(id=w_id)
             workspaces = Workspace.objects.filter(members__in=[profile])
@@ -417,7 +418,7 @@ def notes_api(request, w_id):
             workspace_id = request.data['workspace']  # workspace id
             workspace = Workspace.objects.get(id=workspace_id)
             # tags = request.data['tags'] # tag string list
-            # ml_speech_text = request.data['mlSpeechText']
+
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -452,8 +453,18 @@ def specific_note(request, n_id):
             current_note = Note.objects.get(id=n_id)
         except Note.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = NoteSerializer(current_note)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        note_serializer = NoteSerializer(current_note)
+        tags = Tag.objects.filter(note__in=[current_note])
+        tag_serializer = TagSerializer(tags, many=True)
+        workspace = current_note.workspace
+        workspace_tags = Tag.objects.filter(workspace=workspace)
+        workspace_tags_serializer = TagSerializer(workspace_tags, many=True)
+        data = {
+            "tags": tag_serializer.data,
+            "note": note_serializer.data,
+            "workspace_tags": workspace_tags_serializer.data
+        }
+        return Response(data, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
         try:
@@ -462,9 +473,12 @@ def specific_note(request, n_id):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = NoteSerializer(
             current_note, data=request.data, partial=True)
+        print(request.data)
+        # print(serializer.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        print(serializer.errors)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
@@ -691,8 +705,15 @@ def modify_agenda(request, a_id):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = AgendaSerializer(current_agenda)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        agenda_serializer = AgendaSerializer(current_agenda)
+        tags = Tag.objects.filter(agenda__in=[current_agenda])
+        print(tags)
+        tag_serializer = TagSerializer(tags, many=True)
+        data = {
+            "tags": tag_serializer.data,
+            "agenda": agenda_serializer.data
+        }
+        return Response(data, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
         serializer = AgendaSerializer(
@@ -700,6 +721,7 @@ def modify_agenda(request, a_id):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        print(serializer.errors)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
@@ -841,6 +863,71 @@ def modify_todoblock(request, t_id):
 
 
 @api_view(['GET', 'POST'])
+def api_tag(request, w_id):
+    """
+    /api/workspace/w_id/tag/
+    """
+    try:
+        current_workspace = Workspace.objects.get(id=w_id)
+    except Workspace.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        tags = Tag.objects.filter(workspace=current_workspace)
+        serializer = TagSerializer(tags, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == 'POST':
+        data = {
+            "content": request.data["content"],
+            "workspace": request.data["workspaceId"]
+        }
+        serializer = TagSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PATCH', 'DELETE'])
+def single_tag(request, t_id):
+    """
+    /api/tag/t_id/
+    특정 태그를 가지고 있는 노트와 어젠다 호출
+    """
+    try:
+        current_tag = Tag.objects.get(id=t_id)
+    except Tag.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        notes = Note.objects.filter(tags__in=[current_tag])
+        agendas = Agenda.objects.filter(tags__in=[current_tag])
+        print(notes)
+        print(agendas)
+        note_serialzier = NoteSerializer(notes, many=True)
+        agenda_serializer = AgendaSerializer(agendas, many=True)
+        data = {
+            "notes": note_serialzier.data,
+            "agendas": agenda_serializer.data,
+            "tag_title": current_tag.content,
+            "tag_color": current_tag.color
+        }
+        return Response(data, status=status.HTTP_202_ACCEPTED)
+
+    elif request.method == 'PATCH':
+        serializer = TagSerializer(
+            current_tag, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        current_tag.delete()
+
+
 def image_child_of_note(request, n_id):
     """
     ===================================================
@@ -874,7 +961,7 @@ def image_child_of_note(request, n_id):
         print('child of note POST')
         try:
             Note.objects.get(id=n_id)
-        except(Note.DoesNotExist) as e:
+        except Note.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         try:
             data = {
@@ -887,7 +974,6 @@ def image_child_of_note(request, n_id):
                 'is_submitted': False
             }
         except KeyError:
-            print(e)
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ImageSerializer(data=data)
         if serializer.is_valid():
@@ -947,7 +1033,7 @@ def image_child_of_agenda(request, a_id):
             serializer.save()
             agenda.has_image_block = True
             agenda.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)

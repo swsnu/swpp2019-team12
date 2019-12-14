@@ -1,16 +1,30 @@
 import React, { Component } from 'react';
 import { map, uniqBy, differenceBy } from 'lodash';
 import axios from 'axios';
+import * as _ from 'lodash';
 
 const InviteModalMember = props => {
     const {
         email,
         searchedMember,
         addedMember,
+        members,
         handleChangeEmail,
         handleSelectMember,
         handleDeleteMember
     } = props;
+
+    const newlySearchedMember = [];
+    searchedMember.map(member => {
+        var flag = true;
+        members.map(alreadyMember => {
+            if (member['profile'].id == alreadyMember.id) {
+                flag = false;
+            }
+        });
+        if (flag) newlySearchedMember.push(member);
+    });
+
     return (
         <div className="invite-member">
             <div className="invite-member__input-container">
@@ -19,11 +33,10 @@ const InviteModalMember = props => {
                     placeholder="user_email@email.com"
                     className="invite-member__input"
                     value={email}
-                    onChange={e => handleChangeEmail(e)}
-                />
-                {searchedMember.length > 0 && (
+                    onChange={e => handleChangeEmail(e)}></input>
+                {newlySearchedMember.length > 0 && (
                     <div className="invite-member__member--searched">
-                        {map(searchedMember, (member, i) => (
+                        {map(newlySearchedMember, (member, i) => (
                             <div
                                 key={i}
                                 className="invite-member__member--searched-email"
@@ -101,7 +114,7 @@ class InviteMember extends Component {
 
     handleInviteMembers = () => {
         const { addedMemberId } = this.state;
-
+        const { history } = this.props;
         axios
             .patch(`/api/workspace/${this.props.workspace.id}/`, {
                 members: addedMemberId
@@ -114,6 +127,7 @@ class InviteMember extends Component {
     render() {
         const { emailMember, searchedMember, addedMember } = this.state;
         const { handleCancel } = this.props;
+        const { members } = this.props;
 
         return (
             <div className="memberInfo__inviteMemberButton">
@@ -124,6 +138,7 @@ class InviteMember extends Component {
                     handleChangeEmail={this.handleChangeEmailMember}
                     handleSelectMember={this.handleSelectMember}
                     handleDeleteMember={this.handleDeleteMember}
+                    members={members}
                 />
 
                 <button

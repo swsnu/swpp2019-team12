@@ -7,4 +7,9 @@
     display: flex;
     overflow: auto;
     background: $whitegray;
+
+    .file-tree {
+        width: 20%;
+        margin-right: 30px;
+    }
 }
