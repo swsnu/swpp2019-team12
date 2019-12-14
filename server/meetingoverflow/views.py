@@ -1026,7 +1026,7 @@ def image_child_of_agenda(request, a_id):
             serializer.save()
             agenda.has_image_block = True
             agenda.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)

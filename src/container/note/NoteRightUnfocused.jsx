@@ -46,7 +46,6 @@ export default class NoteRightUnfocused extends Component {
         axios
             .get(`/api/note/${n_id}/agendas/`)
             .then(res => {
-                console.log(res);
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
@@ -64,7 +63,6 @@ export default class NoteRightUnfocused extends Component {
         axios
             .get(`/api/note/${n_id}/textblocks/`)
             .then(res => {
-                console.log(res);
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
