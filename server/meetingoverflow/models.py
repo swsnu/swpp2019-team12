@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.utils import timezone
+from django.core.files.storage import FileSystemStorage
 
 
 class Profile(models.Model):
@@ -75,7 +76,8 @@ class Note(models.Model):
     last_modified_at = models.DateTimeField(default=timezone.now)
     tags = models.ManyToManyField(Tag, blank=True)
     ml_speech_text = models.TextField(null=True, blank=True)
-    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, null=True)
+    workspace = models.ForeignKey(
+        Workspace, on_delete=models.CASCADE, null=True)
     children_blocks = models.TextField(default="", blank=True)
 
     def __str__(self):
@@ -87,7 +89,8 @@ class Agenda(models.Model):
     Agenda model
     """
 
-    content = models.TextField(blank=True, default="안건과 관련된 회의 내용을 작성하는 부분입니다.")
+    content = models.TextField(
+        blank=True, default="안건과 관련된 회의 내용을 작성하는 부분입니다.")
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
     note = models.ForeignKey(Note, on_delete=models.CASCADE, null=True)
@@ -150,18 +153,19 @@ class File(models.Model):
 
 class Image(models.Model):
     """
-    Image model
+    Image Model
     """
-
-    content = models.ImageField(null=True)
+    image = models.ImageField(null=True, blank=True,
+                              default='/screenshot.png')
+    content = models.CharField(max_length=100, null=True, blank=True)
     layer_x = models.IntegerField(default=0)
     layer_y = models.IntegerField(default=0)
+    is_submitted = models.BooleanField(default=False)
     note = models.ForeignKey(Note, on_delete=models.CASCADE, null=True)
     parent_agenda = models.ForeignKey(
         Agenda, on_delete=models.SET_NULL, null=True, blank=True
     )
     is_parent_note = models.BooleanField(default=True)
-    image_caption = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f"note_id: {self.note_id}"

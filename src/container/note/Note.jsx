@@ -110,6 +110,26 @@ class Note extends Component {
         });
 
         axios
+            .get(`/api/note/${noteId}/images/`)
+            .then(res => {
+                console.log('axios get images', res);
+                res['data'].forEach(blk => {
+                    this.setState({
+                        blocks: this.state.blocks.concat({
+                            block_type: 'Image',
+                            id: blk['id'],
+                            image: blk['image'],
+                            content: blk['content'],
+                            is_submitted: blk['is_submitted'],
+                            layer_x: blk['layer_x'],
+                            layer_y: blk['layer_y']
+                        })
+                    });
+                });
+            })
+            .catch(err => console.log('No Images'));
+
+        axios
             .get(`/api/note/${noteId}/`)
             .then(res => {
                 this.setState({
@@ -382,10 +402,28 @@ class Note extends Component {
         this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data));
     };
 
-    handleAddImageBlock = noteId => {
-        console.log(
-            `Need to Implement adding Image Block to specific note whose id is ${noteId}`
-        );
+    handleAddImageBlock = () => {
+        const noteId = this.props.match.params.n_id;
+        // Block Create API call 할 곳.
+        const image_info = {
+            image: null,
+            content: '',
+            layer_x: 0,
+            layer_y: 0
+        };
+        axios.post(`/api/note/${noteId}/images/`, image_info).then(res => {
+            this.setState({
+                blocks: this.state.blocks.concat({
+                    block_type: 'Image',
+                    // image: null,
+                    id: res['data']['id'],
+                    content: res['data']['content'],
+                    layer_x: res['data']['layer_x'],
+                    layer_y: res['data']['layer_y'],
+                    is_submitted: false
+                })
+            });
+        });
     };
 
     handleAddCalendarBlock = () => {
@@ -561,6 +599,7 @@ class Note extends Component {
                     handleAddAgendaBlock={this.handleAddAgendaBlock}
                     handleAddTextBlock={this.handleAddTextBlock}
                     handleAddTodoBlock={this.handleAddTodoBlock}
+                    handleAddImageBlock={this.handleAddImageBlock}
                     handleAddCalendarBlock={this.handleAddCalendarBlock}
                     handleAddParticipant={this.handleAddParticipant}
                     handleAddTextSocketSend={this.handleAddTextSocketSend}

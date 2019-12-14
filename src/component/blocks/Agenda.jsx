@@ -124,7 +124,6 @@ class Agenda extends Component {
 
     handleClickDelete = e => {
         e.preventDefault();
-        console.log('delete agenda');
         const axios_path = `/api/agenda/${this.state.agenda_id}/`;
         this.props.handleDeleteBlock(
             axios_path,
