@@ -164,6 +164,7 @@ class BlockConsumer(WebsocketConsumer):
                     "updated_location": block_data_json["updated_location"],
                 },
             )
+        
         # 1) Block을 Drag해서 위치가 변화하는걸 받는 receive
         # 2) Block을 제거해서 변화하는 경우를 받는 receive
         else:
@@ -284,6 +285,7 @@ class BlockConsumer(WebsocketConsumer):
             )
         )
 
+
     def change_children_blocks(self, event):
         """
         # Send message to WebSocket
@@ -338,6 +340,15 @@ class AgendaConsumer(WebsocketConsumer):
                     "document_id": document_id,
                 },
             )
+
+        elif operation_type == "change_agenda":
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "change_agenda",
+                    "content": block_data_json["updated_agenda"],
+                },
+            )
         else:
             """
             # Send message to room group
@@ -350,6 +361,7 @@ class AgendaConsumer(WebsocketConsumer):
                     "children_blocks": block_data_json["children_blocks"],
                 },
             )
+
 
     # Receive message from room group
     def add_text(self, event):
@@ -381,3 +393,19 @@ class AgendaConsumer(WebsocketConsumer):
         """
         children_blocks = event["children_blocks"]
         self.send(text_data=json.dumps({"children_blocks": children_blocks,}))
+
+
+    def change_agenda(self, event):
+        """
+            change title of agenda
+        """
+        updated_agenda= event["content"]
+        self.send(
+            text_data=json.dumps(
+                {
+                    "operation_type": "change_agenda",
+                    "updated_agenda": updated_agenda,
+                }
+            )
+        )
+
