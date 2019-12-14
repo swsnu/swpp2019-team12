@@ -105,9 +105,41 @@ class Note extends Component {
                     this.setState({
                         blocks: this.state.blocks.concat(todoContainer)
                     });
+                } else if (block_type == 'Image') {
+                    this.setState({
+                        blocks: this.state.blocks.concat({
+                            block_type: 'Image',
+                            id: blk['id'],
+                            image: blk['image'],
+                            content: blk['content'],
+                            is_submitted: blk['is_submitted'],
+                            layer_x: blk['layer_x'],
+                            layer_y: blk['layer_y']
+                        })
+                    });
                 }
             });
         });
+
+        // axios
+        //     .get(`/api/note/${noteId}/images/`)
+        //     .then(res => {
+        //         console.log('axios get images', res);
+        //         res['data'].forEach(blk => {
+        //             this.setState({
+        //                 blocks: this.state.blocks.concat({
+        //                     block_type: 'Image',
+        //                     id: blk['id'],
+        //                     image: blk['image'],
+        //                     content: blk['content'],
+        //                     is_submitted: blk['is_submitted'],
+        //                     layer_x: blk['layer_x'],
+        //                     layer_y: blk['layer_y']
+        //                 })
+        //             });
+        //         });
+        //     })
+        //     .catch(err => console.log('No Images'));
 
         axios
             .get(`/api/note/${noteId}/`)
@@ -374,10 +406,38 @@ class Note extends Component {
         this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data));
     };
 
-    handleAddImageBlock = noteId => {
-        console.log(
-            `Need to Implement adding Image Block to specific note whose id is ${noteId}`
-        );
+    handleAddImageBlock = () => {
+        const noteId = this.props.match.params.n_id;
+        // Block Create API call 할 곳.
+        const image_info = {
+            n_id: noteId,
+            image: null,
+            content: '',
+            layer_x: 0,
+            layer_y: 0,
+            block_type: 'Image'
+        };
+
+        const JSON_data = {
+            operation_type: 'add_block',
+            block: image_info
+        };
+
+        this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data));
+
+        // axios.post(`/api/note/${noteId}/images/`, image_info).then(res => {
+        //     this.setState({
+        //         blocks: this.state.blocks.concat({
+        //             block_type: 'Image',
+        //             // image: null,
+        //             id: res['data']['id'],
+        //             content: res['data']['content'],
+        //             layer_x: res['data']['layer_x'],
+        //             layer_y: res['data']['layer_y'],
+        //             is_submitted: false
+        //         })
+        //     });
+        // });
     };
 
     handleAddCalendarBlock = () => {
@@ -476,6 +536,16 @@ class Note extends Component {
                     };
                     newBlocks = this.state.blocks.concat(todoContainer);
                 }
+            } else if (res['block_type'] == 'Image') {
+                newBlocks = this.state.blocks.concat({
+                    block_type: res['block_type'],
+                    id: res['id'],
+                    image: res['image'],
+                    content: res['content'],
+                    layer_x: res['layer_x'],
+                    layer_y: res['layer_y'],
+                    is_submitted: res['is_submitted']
+                });
             }
 
             const stringifiedBlocks = {
@@ -493,10 +563,13 @@ class Note extends Component {
             this.setState({ location: res['updated_location'] });
         } else if (res['operation_type'] === 'change_datetime') {
             this.setState({ moment: moment(res['updated_datetime']) });
+        } else if (res['operation_type'] === 'patch_image') {
+            this.setState({});
         }
         // Drag & Drop
         // Delete
         else {
+            console.log('여기로 들어오겠지?');
             this.setState({ blocks: res['children_blocks'] });
         }
     }
@@ -553,6 +626,7 @@ class Note extends Component {
                     handleAddAgendaBlock={this.handleAddAgendaBlock}
                     handleAddTextBlock={this.handleAddTextBlock}
                     handleAddTodoBlock={this.handleAddTodoBlock}
+                    handleAddImageBlock={this.handleAddImageBlock}
                     handleAddCalendarBlock={this.handleAddCalendarBlock}
                     handleAddParticipant={this.handleAddParticipant}
                     handleAddTextSocketSend={this.handleAddTextSocketSend}

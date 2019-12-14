@@ -147,7 +147,12 @@ class CreateModal extends Component {
                 const {
                     data: { user }
                 } = res;
-                this.setState({ addedAdmin: [user], addedAdminId: [user.id] });
+                this.setState({
+                    addedMember: [user],
+                    addedMemberId: [user.id],
+                    addedAdmin: [user],
+                    addedAdminId: [user.id]
+                });
             })
             .catch(err => console.error(err));
     }

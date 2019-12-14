@@ -1,7 +1,12 @@
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from .serializers import AgendaSerializer, TextBlockSerializer, TodoSerializer
+from .serializers import (
+    AgendaSerializer,
+    TextBlockSerializer,
+    TodoSerializer,
+    ImageSerializer,
+)
 from .models import Agenda
 
 
@@ -38,6 +43,7 @@ class BlockConsumer(WebsocketConsumer):
         # Receive message from WebSocket
         """
         block_data_json = json.loads(text_data)
+        print(block_data_json)
         operation_type = block_data_json["operation_type"]
         # 현재는 여기서 모든 action에 대해서 모두 처리하게 되어있는데 이건 시간이 된다면 따로 따로 구현하는게 좋을듯.
         # Block을 Add하는 것과 관련된 receive...
@@ -148,6 +154,38 @@ class BlockConsumer(WebsocketConsumer):
                         "due_date": due_date,
                     },
                 )
+            elif block_type == "Image":
+                content = block_data_json["block"]["content"]
+                layer_x = block_data_json["block"]["layer_x"]
+                layer_y = block_data_json["block"]["layer_y"]
+                n_id = block_data_json["block"]["n_id"]
+                image = block_data_json["block"]["image"]
+                data = {
+                    "content": content,
+                    "layer_x": layer_x,
+                    "layer_y": layer_y,
+                    "note": n_id,
+                    "image": image,
+                    "is_parent_note": True,
+                    "is_submitted": False,
+                }
+
+                serializer = ImageSerializer(data=data)
+                if serializer.is_valid():
+                    image = serializer.save()
+
+                # Send message to room group
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    {
+                        "type": "add_image_note",
+                        "id": image.id,
+                        "content": content,
+                        "layer_x": layer_x,
+                        "layer_y": layer_y,
+                        "note": n_id,
+                    },
+                )
         elif block_data_json["operation_type"] == "change_title":
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
@@ -173,13 +211,24 @@ class BlockConsumer(WebsocketConsumer):
                     "updated_datetime": block_data_json["updated_datetime"],
                 },
             )
-
         # 1) Block을 Drag해서 위치가 변화하는걸 받는 receive
         # 2) Block을 제거해서 변화하는 경우를 받는 receive
+        # 3) Image block에 실제 image patch하는 경우.
+
+        # 위의 경우에 해당하는 애들도 다 else로 처리하지 말고 리스트 만들어서 바꾸자.
+        # elif block_data_json["operation_type"] == "patch_image":
+        #     async_to_sync(self.channel_layer.group_send)(
+        #         self.room_group_name,
+        #         {
+        #             "type": "patch_image",
+        #             "children_blocks": block_data_json["children_blocks"],
+        #         },
+        #     )
         else:
             """
             # Send message to room group
             """
+            print("들어옵니까?")
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
@@ -269,6 +318,32 @@ class BlockConsumer(WebsocketConsumer):
             )
         )
 
+    def add_image_note(self, event):
+        """
+        # Add ImageBlock whose parent is note.
+        """
+        content = event["content"]
+        layer_x = event["layer_x"]
+        layer_y = event["layer_y"]
+        n_id = event["note"]
+        i_id = event["id"]
+
+        self.send(
+            text_data=json.dumps(
+                {
+                    "id": i_id,
+                    "block_type": "Image",
+                    "content": content,
+                    "layer_x": layer_x,
+                    "layer_y": layer_y,
+                    "note": n_id,
+                    "is_parent_note": True,
+                    "parent_agenda": None,
+                    "is_submitted": False,
+                }
+            )
+        )
+
     def change_title(self, event):
         """
             change title of Note
@@ -279,6 +354,7 @@ class BlockConsumer(WebsocketConsumer):
                 {"operation_type": "change_title", "updated_title": updated_title}
             )
         )
+
 
     def change_location(self, event):
         """
