@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Label, SubLabel } from '../../component/signup/Label';
+import Logo from '../../assets/icons/logo.png';
+
 class SignUp extends Component {
     constructor(props) {
         super(props);
@@ -125,86 +127,97 @@ class SignUp extends Component {
     */
     render() {
         return (
-            <div className="SignUp">
-                <h1>Signup Page</h1>
-                <form className="form-container">
-                    {/* <Label title="Email" /> */}
-                    <p> User Email * </p>
-                    <input
-                        id="user_email"
-                        // placeholder="email"
-                        onChange={e => this.setState({ email: e.target.value })}
-                        onBlur={this.checkEmail}
-                        value={this.state.email}
-                    />
-                    <p id="id-validation">{this.state.emailVaildText}</p>
-                    {/* <Label title="Password" /> */}
-                    <p> Password *</p>
-                    <input
-                        id="user_password"
-                        type="password"
-                        // placeholder="password"
-                        onChange={e =>
-                            this.setState({ password: e.target.value })
-                        }
-                        onBlur={this.checkPassword}
-                        value={this.state.password}
-                    />
-                    <p>{this.state.pwVaildText}</p>
-                    {/* <Label title="Password-Confirmation" /> */}
-                    <p> Password-Confirmation * </p>
-                    <input
-                        id="user_password_confirmation"
-                        type="password"
-                        // placeholder="password_confirmation"
-                        onChange={e =>
-                            this.setState({
-                                password_confirmation: e.target.value
-                            })
-                        }
-                        onBlur={this.checkPasswordConfirmation}
-                        value={this.state.password_confirmation}
-                    />
-                    <p id="pw-confirm-validation">
-                        {this.state.pwConfirmationVaildText}
-                    </p>
-                    {/* <Label title="Nickname" /> */}
-                    <p> Nickname * </p>
-                    <input
-                        id="user_nickname"
-                        // placeholder="nickname"
-                        onChange={e =>
-                            this.setState({ nickname: e.target.value })
-                        }
-                        value={this.state.nickname}
-                    />
-                    <br />
-
-                    <div className="button-container">
-                        <button
-                            id="sign_up_button"
-                            className="primary"
-                            onClick={this.handleSignUp}
-                            disabled={
-                                !this.state.email ||
-                                !this.state.password ||
-                                !this.state.password_confirmation ||
-                                !this.state.nickname
-                            }>
-                            Sign Up
-                        </button>
-
-                        <div className="signin_ref">
-                            <p> Already a Member? </p>
-                            <a
-                                // className="primary"
-                                id="navigate_sign_in_button"
-                                onClick={this.handleNavigateSignIn}>
-                                Sign In Here
-                            </a>
-                        </div>
+            <div className="signup-box">
+                <div className="logo">
+                    <img src={Logo} />
+                    <div className="logo_text">
+                        <p>meeting</p>
+                        <p className="logo_text_bold">overflow</p>
                     </div>
-                </form>
+                </div>
+                <div className="SignUp">
+                    <h1>Create Account</h1>
+                    <form className="form-container">
+                        {/* <Label title="Email" /> */}
+                        <p> User Email * </p>
+                        <input
+                            id="user_email"
+                            // placeholder="email"
+                            onChange={e =>
+                                this.setState({ email: e.target.value })
+                            }
+                            onBlur={this.checkEmail}
+                            value={this.state.email}
+                        />
+                        <p id="validation">{this.state.emailVaildText}</p>
+                        {/* <Label title="Password" /> */}
+                        <p> Password *</p>
+                        <input
+                            id="user_password"
+                            type="password"
+                            // placeholder="password"
+                            onChange={e =>
+                                this.setState({ password: e.target.value })
+                            }
+                            onBlur={this.checkPassword}
+                            value={this.state.password}
+                        />
+                        <p id="validation">{this.state.pwVaildText}</p>
+                        {/* <Label title="Password-Confirmation" /> */}
+                        <p> Password-Confirmation * </p>
+                        <input
+                            id="user_password_confirmation"
+                            type="password"
+                            // placeholder="password_confirmation"
+                            onChange={e =>
+                                this.setState({
+                                    password_confirmation: e.target.value
+                                })
+                            }
+                            onBlur={this.checkPasswordConfirmation}
+                            value={this.state.password_confirmation}
+                        />
+                        <p id="validation">
+                            {this.state.pwConfirmationVaildText}
+                        </p>
+                        {/* <Label title="Nickname" /> */}
+                        <p> Nickname * </p>
+                        <input
+                            id="user_nickname"
+                            // placeholder="nickname"
+                            onChange={e =>
+                                this.setState({ nickname: e.target.value })
+                            }
+                            value={this.state.nickname}
+                        />
+                        <br />
+
+                        <div className="button-container">
+                            <button
+                                id="sign_up_button"
+                                className="primary"
+                                onClick={this.handleSignUp}
+                                disabled={
+                                    !this.state.email ||
+                                    !this.state.password ||
+                                    !this.state.password_confirmation ||
+                                    !this.state.nickname
+                                }>
+                                Sign Up
+                            </button>
+
+                            <div className="signin_ref">
+                                <p> Already a Member? </p>
+                                <a
+                                    // className="primary"
+                                    id="navigate_sign_in_button"
+                                    onClick={this.handleNavigateSignIn}>
+                                    Sign In Here
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         );
     }
