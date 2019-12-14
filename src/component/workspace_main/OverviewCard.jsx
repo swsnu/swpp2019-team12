@@ -27,7 +27,7 @@ const dummyLabels = [
     { color: '#FFCA00', text: 'Demo' }
 ];
 export const NoteCard = props => {
-    const { note, handleNoteClick, clicked } = props;
+    const { note, handleNoteClick, clicked, history } = props;
     const date = moment(note.created_at).format('YYYY-MM-DD HH:MM');
 
     return (
@@ -45,7 +45,9 @@ export const NoteCard = props => {
                     <div>{note.title}</div>
                 </div>
                 <div className="noteCard-title-redirect">
-                    <RedirectIcon />
+                    <RedirectIcon
+                        onClick={() => history.push(`/note/${note.id}`)}
+                    />
                 </div>
             </div>
             <div

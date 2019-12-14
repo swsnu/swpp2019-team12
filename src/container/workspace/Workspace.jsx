@@ -125,7 +125,12 @@ class Workspace extends Component {
                 </div>
 
                 <div className="workspace-main">
-                    <Overview notes={notes} agendas={agendas} todos={todos} />
+                    <Overview
+                        notes={notes}
+                        agendas={agendas}
+                        todos={todos}
+                        history={history}
+                    />
                     {/* <Overview notes={[]} agendas={[]} todos={[]} /> */}
                 </div>
 

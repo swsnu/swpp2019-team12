@@ -52,7 +52,7 @@ class Overview extends Component {
     };
 
     render() {
-        const { notes, agendas, todos } = this.props;
+        const { notes, agendas, todos, history } = this.props;
         const { agendaInNote, todoInNote, clicked } = this.state;
         return (
             <div className="Overview-container">
@@ -95,6 +95,7 @@ class Overview extends Component {
                                     key={i}
                                     handleNoteClick={this.handleNoteClick}
                                     clicked={clicked}
+                                    history={history}
                                 />
                             ))}
                         </div>
