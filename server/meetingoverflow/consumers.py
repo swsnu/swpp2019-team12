@@ -260,16 +260,6 @@ class BlockConsumer(WebsocketConsumer):
             )
         )
 
-    def change_title(self, event):
-        """
-            change title of Note
-        """
-        updated_title = event["updated_title"]
-        self.send(
-            text_data=json.dumps(
-                {"operation_type": "change_title", "updated_title": updated_title}
-            )
-        )
 
     def change_location(self, event):
         """
@@ -292,6 +282,19 @@ class BlockConsumer(WebsocketConsumer):
         """
         children_blocks = event["children_blocks"]
         self.send(text_data=json.dumps({"children_blocks": children_blocks,}))
+
+
+
+    def change_title(self, event):
+        """
+            change title of Note
+        """
+        updated_title = event["updated_title"]
+        self.send(
+            text_data=json.dumps(
+                {"operation_type": "change_title", "updated_title": updated_title}
+            )
+        )
 
 
 class AgendaConsumer(WebsocketConsumer):
@@ -393,6 +396,26 @@ class AgendaConsumer(WebsocketConsumer):
         """
         children_blocks = event["children_blocks"]
         self.send(text_data=json.dumps({"children_blocks": children_blocks,}))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     def change_agenda(self, event):
