@@ -706,8 +706,15 @@ def modify_agenda(request, a_id):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = AgendaSerializer(current_agenda)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        agenda_serializer = AgendaSerializer(current_agenda)
+        tags = Tag.objects.filter(agenda__in=[current_agenda])
+        print(tags)
+        tag_serializer = TagSerializer(tags, many=True)
+        data = {
+            "tags": tag_serializer.data,
+            "agenda": agenda_serializer.data
+        }
+        return Response(data, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
         serializer = AgendaSerializer(
@@ -715,6 +722,7 @@ def modify_agenda(request, a_id):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        print(serializer.errors)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
