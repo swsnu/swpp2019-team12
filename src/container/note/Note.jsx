@@ -368,7 +368,7 @@ class Note extends Component {
 
     handleAddTextBlock = () => {
         const noteId = this.props.match.params.n_id;
-        const documentId = handleDocIdInUrl();
+        const document_id = handleDocIdInUrl();
         // Block Create API call 할 곳.
         const text_info = {
             n_id: noteId,

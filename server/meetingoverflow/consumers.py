@@ -43,7 +43,6 @@ class BlockConsumer(WebsocketConsumer):
         # Receive message from WebSocket
         """
         block_data_json = json.loads(text_data)
-        print(block_data_json)
         operation_type = block_data_json["operation_type"]
         # 현재는 여기서 모든 action에 대해서 모두 처리하게 되어있는데 이건 시간이 된다면 따로 따로 구현하는게 좋을듯.
         # Block을 Add하는 것과 관련된 receive...
@@ -461,7 +460,6 @@ class AgendaConsumer(WebsocketConsumer):
                     },
                 )
             elif block_type == "Image":
-                print("IMAGE!!!!!!!!!")
                 i_id = block_data_json["block"]["id"]
                 content = block_data_json["block"]["content"]
                 layer_x = block_data_json["block"]["layer_x"]
@@ -489,8 +487,6 @@ class AgendaConsumer(WebsocketConsumer):
             """
             # Send message to room group
             """
-            print("이곳으로... 오시게나")
-
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
@@ -527,7 +523,6 @@ class AgendaConsumer(WebsocketConsumer):
         """
             temporary
         """
-        print("ADD_IMAGE")
         i_id = event["id"]
         content = event["content"]
         layer_x = event["layer_x"]

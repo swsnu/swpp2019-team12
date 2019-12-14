@@ -154,7 +154,7 @@ class Agenda extends Component {
                         content: res['content'],
                         layer_x: res['layer_x'],
                         layer_y: res['layer_y'],
-                        documentId: res['document_id']
+                        document_id: res['document_id']
                     })
                 });
             } else if (res['block_type'] === 'Image') {

@@ -8,7 +8,7 @@ class Text extends Component {
         this.state = {
             blk_id: this.props.blk_id,
             content: this.props.content,
-            documentId: this.props.documentId,
+            document_id: this.props.document_id,
             isParentAgenda: this.props.isParentAgenda
         };
     }
