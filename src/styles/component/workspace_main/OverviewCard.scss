@@ -22,7 +22,9 @@
         margin-bottom: 0;
     }
     &.--clicked {
-        background: $whitegray;
+        // background: $whitegray;
+        border-left: 3px solid $primary;
+
         .noteCard-content-label {
             border-top-color: $lightgray;
         }
@@ -220,7 +222,8 @@
         margin-bottom: 0;
     }
     &.--clicked {
-        background: $whitegray;
+        // background: $whitegray;
+        border-left: 3px solid $primary;
         .noteCard-content-label {
             border-top-color: $lightgray;
         }

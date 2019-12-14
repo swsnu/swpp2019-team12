@@ -12181,6 +12181,15 @@ prop-types-exact@^1.2.0:
     object.assign "^4.1.0"
     reflect.ownkeys "^0.2.0"
 
+prop-types@15.6.0:
+  version "15.6.0"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
+  integrity sha1-zq8IMCL8RrSjX2nhPvda7Q1jmFY=
+  dependencies:
+    fbjs "^0.8.16"
+    loose-envify "^1.3.1"
+    object-assign "^4.1.1"
+
 prop-types@15.x, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
@@ -13042,6 +13051,14 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.2, react-lifecycles
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
+react-lineto@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/react-lineto/-/react-lineto-3.1.3.tgz#b15ed10a846d11e5d44a7b7a7951f46307511006"
+  integrity sha512-SLNz9UMlg9S8JQ34RDgPC0E5AwCTEywUDgVfeg1s9ss6E7m2+XFLZOtieHvwuLbzrhLaKTbvVfpe6AthPDe8xA==
+  dependencies:
+    prop-types "15.6.0"
+    react "16.2.0"
+
 react-modal@^3.11.1:
   version "3.11.1"
   resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.11.1.tgz#2a0d6877c9e98f123939ea92d2bb4ad7fa5a17f9"
@@ -13228,6 +13245,16 @@ react-websocket@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/react-websocket/-/react-websocket-2.1.0.tgz#1150ce55aaa38e845f5711684266a823781ee2e4"
   integrity sha512-VstINrNXmp08aol9TQt1LZQgtzmad6CjTvEX8TYAFxU7K0ByMtDP7T2WMtgNEttWtPThVA7TDhHNu+fGTaAExQ==
+
+react@16.2.0:
+  version "16.2.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.2.0.tgz#a31bd2dab89bff65d42134fa187f24d054c273ba"
+  integrity sha512-ZmIomM7EE1DvPEnSFAHZn9Vs9zJl5A9H7el0EGTE6ZbW9FKe/14IYAlPbC8iH25YarEQxZL+E8VW7Mi7kfQrDQ==
+  dependencies:
+    fbjs "^0.8.16"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.0"
 
 react@^15.6.1:
   version "15.6.2"

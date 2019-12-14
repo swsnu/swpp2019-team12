@@ -2,27 +2,8 @@ import React, { Component } from 'react';
 import { map } from 'lodash';
 import moment from 'moment';
 import { ReactComponent as RedirectIcon } from '../../assets/icons/redirect_icon.svg';
-import { ReactComponent as BulletIcon } from '../../assets/icons/bullet_icon.svg';
-import { ReactComponent as CheckIcon } from '../../assets/icons/check_icon.svg';
 import axios from 'axios';
 
-/*
-0:
-created_at: "2019-11-01T05:21:58Z"
-id: 5
-last_modified_at: "2019-11-02T05:21:58Z"
-location: "서울대학교 301동 S-Lab"
-ml_speech_text: ""
-participants: (4) [1, 2, 3, 4]
-tags: []
-title: "Sprint#3 Bakclog 회의록"
-workspace: 1
-__proto__: Object
-1: {id: 6, title: "Demo 작전회의", location: "서울대학교 서울대 공동연구소", created_at: "2019-11-05T00:00:00Z", last_modified_at: "2019-11-05T05:24:16Z", …}
-2: {id: 8, title: "NOTE", location: "302-4XX", created_at: "2019-11-06T08:39:59.870000Z", last_modified_at: "2019-11-06T08:39:59.870000Z", …}
-3: {id: 10, title: "Test3!@@", location: "ADDDasdfasf", created_at: "2019-12-08T17:22:51.266000Z", last_modified_at: "2019-12-04T17:22:51.266000Z", …}
-4: {id: 15, title: "asdf", location: "", created_at: "20
-*/
 const dummyLabels = [
     { color: '#4A90E2', text: 'SWPP' },
     { color: '#FFCA00', text: 'Demo' }
@@ -35,7 +16,8 @@ export const NoteCard = props => {
         <div
             className={`noteCard-container ${
                 clicked === note.id ? '--clicked' : ''
-            }`}>
+            }
+            noteCard-conatiner-${note.id}`}>
             <div className="noteCard-title-container">
                 <div className="noteCard-title-index">
                     <div>{`#${note.id}`}</div>
@@ -130,7 +112,9 @@ export class AgendaCard extends Component {
             <div
                 className={`agendaCard-container ${
                     clicked === agenda.note ? '--clicked' : ''
-                }`}>
+                }
+                agendaCard-container-${agenda.id}
+                `}>
                 <div className="agendaCard-title-container">
                     <div className="agendaCard-title-index">
                         <div>{`#${agenda.id}`}</div>
@@ -173,33 +157,6 @@ export class AgendaCard extends Component {
 export const TodoCard = props => {
     const { notes, agendas, todos, clicked, history } = props;
     console.log(todos, notes, agendas);
-    /*
-    assignees: [1]
-content: "첫번쨰 투두입니당"
-due_date: "2019-12-16"
-id: 75
-is_done: false
-is_parent_note: true
-layer_x: 0
-layer_y: 0
-note: 24
-parent_agenda: null
-workspace: null
-
-0: {id: 58, content: "어젠다 안건 -1", layer_x: 0, layer_y: 0, is_parent_note: true, …}
-0:
-children_blocks: "[{"block_type":"Agenda","id":58,"content":" 어젠다 안건 -1 ","layer_x":0,"layer_y":0},{"block_type":"Agenda","id":59,"content":" 데모 비디오 제작 문제","layer_x":0,"layer_y":0},{"block_type":"Agenda","id":60,"content":" Test 용 안건","layer_x":0,"layer_y":0},{"block_type":"Text","id":33,"content":"새로 생성된 텍스트 블록","layer_x":0,"layer_y":0,"documentId":"1n8q2n63637"},{"block_type":"Text","id":34,"content":"새로 생성된 텍스트 블록","layer_x":0,"layer_y":0,"documentId":"32e7517i32d"},{"block_type":"Agenda","id":68,"content":" 텍스트 블록 없는 안건","layer_x":0,"layer_y":0},{"todos":[{"id":75,"block_type":"TodoContainer","content":"첫번쨰 투두입니당","layer_x":0,"layer_y":0,"assignees":[1],"due_date":"2019-12-16","note":"24","is_parent_note":true,"is_done":false,"parent_agenda":null,"worspace":null,"assignees_info":[{"id":1,"nickname":"CHAEMIN"}]},{"id":76,"block_type":"TodoContainer","content":"두번째 투두입니다아아","layer_x":0,"layer_y":0,"assignees":[2],"due_date":"2019-12-27","note":"24","is_parent_note":true,"is_done":false,"parent_agenda":null,"worspace":null,"assignees_info":[{"id":2,"nickname":"YEJI"}]},{"id":77,"block_type":"TodoContainer","content":"할 일을 채워주세요","layer_x":0,"layer_y":0,"assignees":[4],"due_date":"2019-12-13","note":"24","is_parent_note":true,"is_done":true,"parent_agenda":null,"worspace":null,"assignees_info":[{"id":4,"nickname":"TAEYOUNG"}]},{"id":78,"block_type":"TodoContainer","content":"으어어어어 비디오를 만들자","layer_x":0,"layer_y":0,"assignees":[3],"due_date":"2019-12-21","note":"24","is_parent_note":true,"is_done":false,"parent_agenda":null,"worspace":null,"assignees_info":[{"id":3,"nickname":"SANGYEON"}]}],"block_type":"TodoContainer"}]"
-created_at: "2019-12-14T12:30:46.213000Z"
-id: 24
-last_modified_at: "2019-12-14T12:30:46.213000Z"
-location: "회의 장소asfdasdf"
-ml_speech_text: null
-participants: (4) [1, 2, 3, 4]
-tags: []
-title: "NTOE1"
-workspace: 1
-__proto__: Object
-    */
 
     const renderTitle = () => {
         const { notes, agendas, todos } = props;
@@ -226,7 +183,7 @@ __proto__: Object
                 </div>
                 <div className="todoCard-title-redirect">
                     <RedirectIcon
-                        onClick={() => history.push(`/note/${todos.note}`)}
+                        onClick={() => history.push(`/note/${todos[0].note}`)}
                     />
                 </div>
             </div>
