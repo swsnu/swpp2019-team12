@@ -13,17 +13,6 @@ export default class Tag extends Component {
         };
     }
 
-    // static getDerivedStateFromProps(nextProps, prevState) {
-    //     if (nextProps.id != prevState.tagId) {
-    //         return {
-    //             tagId: nextProps.id,
-    //             title: nextProps.content,
-    //             color: nextProps.color
-    //         };
-    //     }
-    //     return null;
-    // }
-
     render() {
         console.log(this.props);
         return <AntTag color={this.state.color}>{this.state.title}</AntTag>;

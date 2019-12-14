@@ -883,7 +883,6 @@ def api_tag(request, w_id):
 
 @api_view(['GET', 'PATCH', 'DELETE'])
 def single_tag(request, t_id):
-    print("hi")
     """
     /api/tag/t_id/
     특정 태그를 가지고 있는 노트와 어젠다 호출
@@ -967,7 +966,6 @@ def image_child_of_note(request, n_id):
                 'is_submitted': False
             }
         except KeyError:
-            print(e)
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ImageSerializer(data=data)
         if serializer.is_valid():
