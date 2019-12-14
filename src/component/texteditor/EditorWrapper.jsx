@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 // import ConfigurationDialog from './configuration-dialog';
 import Editor from './Editor';
-import axios from 'axios';
 import { css } from '@emotion/core';
 //import { BarLoader } from 'react-spinners';
 import BarLoader from 'react-spinners/BarLoader';
@@ -19,7 +18,7 @@ export default class EditorWrapper extends Component {
             name: '임시'
         },
         configuration: {
-            documentId: '36ur9q8hprg',
+            document_id: '36ur9q8hprg',
             // 토큰 만료 주의
             tokenUrl:
                 'https://43733.cke-cs.com/token/dev/3TvgNvZRyzXDDc7dsBXDBuM0cFITPrq26HUfIlLHXo0Zjcwgm3nxOWSeBSU8',
@@ -57,7 +56,7 @@ export default class EditorWrapper extends Component {
                     return `user.${key}=${data[key]}`;
                 })
                 .join('&');
-        config.documentId = this.props.documentId;
+        config.document_id = this.props.document_id;
 
         this.setState({
             configuration: config,
@@ -77,8 +76,8 @@ export default class EditorWrapper extends Component {
 
     render() {
         return (
-            <div>
-                {/* <p>{this.state.configuration.documentId}</p> */}
+            <div className="EditorWrapper">
+                {/* <p>{this.state.configuration.document_id}</p> */}
                 {this.state.loading && (
                     <PacmanLoader
                         css={override}
@@ -91,7 +90,7 @@ export default class EditorWrapper extends Component {
                     handleLoading={this.handleLoading}
                     selectedUser={this.state.selectedUser}
                     configuration={this.state.configuration}
-                    documentId={this.props.documentId}
+                    document_id={this.props.document_id}
                 />
             </div>
         );

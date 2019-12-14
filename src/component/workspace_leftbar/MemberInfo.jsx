@@ -24,7 +24,7 @@ const MemberInfo = props => {
             </div>
 
             <SubLabel title="Invite Member" />
-            <InviteMember workspace={props.workspace} />
+            <InviteMember workspace={props.workspace} members={members} />
         </div>
     );
 };

@@ -59,12 +59,12 @@ class Agenda extends Component {
     };
 
     handleAddTextBlock = () => {
-        const documentId = handleDocIdInUrl();
+        const document_id = handleDocIdInUrl();
         const text_info = {
             content: '어젠다 속 새로운 텍스트 블록',
             layer_x: 0,
             layer_y: 0,
-            document_id: documentId
+            document_id: document_id
         };
         axios
             .post(`/api/agenda/${this.state.agenda_id}/textblocks/`, text_info)
@@ -255,7 +255,6 @@ class Agenda extends Component {
                 </div>
                 <div className="full-size-block-content Agenda">
                     <div className="full-size-block-content__text Agenda">
-                        <pre>{this.props.content}</pre>
                         <AgendaInside
                             noteId={this.props.noteId}
                             handleClickBlock={this.props.handleClickBlock}

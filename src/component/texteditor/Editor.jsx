@@ -40,7 +40,7 @@ import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-//import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
+import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
 export default class Editor extends Component {
     state = {
@@ -61,8 +61,8 @@ export default class Editor extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (
-            nextProps.configuration.documentId !==
-            prevState.cloudServicesConfig.documentId
+            nextProps.configuration.document_id !==
+            prevState.cloudServicesConfig.document_id
         ) {
             return {
                 cloudServicesConfig: nextProps.configuration
@@ -161,8 +161,8 @@ export default class Editor extends Component {
                                 Strikethrough,
                                 Table,
                                 TableToolbar,
-                                Underline
-                                // UploadAdapter
+                                Underline,
+                                UploadAdapter
                             ],
                             toolbar: [
                                 'heading',
@@ -195,7 +195,7 @@ export default class Editor extends Component {
                                     .uploadUrl,
                                 webSocketUrl: this.state.cloudServicesConfig
                                     .webSocketUrl,
-                                documentId: this.props.documentId
+                                documentId: this.props.document_id
                             },
                             image: {
                                 toolbar: [

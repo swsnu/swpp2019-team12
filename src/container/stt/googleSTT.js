@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { map } from 'lodash';
 import axios from 'axios';
+import STTScript from './STTScript';
+import recordImage from '../../assets/icons/record_icon.png';
 
 const END_POINT = '127.0.0.1:9000/';
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -43,7 +45,11 @@ class googleSTT extends Component {
         this.state = {
             room: this.props.room || Date.now(),
             recording: false,
-            texts: []
+            texts: [],
+            currentText: '',
+            somebodyRecording: false,
+            recorderNickname: '',
+            nickname: this.props.nickname || 'somebody'
         };
 
         // Audio Element
@@ -79,7 +85,10 @@ class googleSTT extends Component {
             if (isFinal) {
                 console.log(transcript);
                 this.setState(
-                    { texts: [...this.state.texts, transcript] },
+                    {
+                        texts: [transcript, ...this.state.texts],
+                        currentText: ''
+                    },
                     () => {
                         //TODO save to DB
                         /*
@@ -89,22 +98,38 @@ class googleSTT extends Component {
                         */
                     }
                 );
+            } else {
+                this.setState({
+                    currentText: transcript
+                });
             }
         });
+
+        socket.on('somebodyStarted', data => {
+            console.log('somebody started socket 받음');
+            this.setState({
+                somebodyRecording: data.somebodyRecording,
+                recorderNickname: data.recorderNickname
+            });
+        });
+
+        socket.emit('join', { room: this.state.room });
     };
 
     startSocket = () => {
         // TODO convert room id to block id
-        socket.emit('join', { room: this.state.room });
+        //socket.emit('somebodyStarted', 'true');
     };
 
     stopSocket = () => {
-        socket.emit('leave', { room: this.state.room });
+        //socket.emit('leave', { room: this.state.room });
+        //socket.emit('somebodyStarted', 'false');
     };
 
     //================= RECORDING =================
     initRecording = () => {
-        socket.emit('startGoogleCloudStream', ''); //init socket Google Speech Connection
+        socket.emit('startGoogleCloudStream', this.state.nickname); //init socket Google Speech Connection
+
         streamStreaming = true;
         processor = context.createScriptProcessor(bufferSize, 1, 1);
         processor.connect(context.destination);
@@ -124,14 +149,23 @@ class googleSTT extends Component {
                 socket.emit('binaryData', left16);
             };
         };
-
         navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess);
+    };
+
+    handleRecordingButton = () => {
+        if (this.state.recording) {
+            this.stopRecording();
+        } else {
+            this.startRecording();
+        }
     };
 
     startRecording = () => {
         this.setState({ recording: true });
         this.startSocket();
-        this.initRecording();
+        if (!this.props.somebodyRecording) {
+            this.initRecording();
+        }
     };
 
     stopRecording = () => {
@@ -211,30 +245,43 @@ class googleSTT extends Component {
     };
 
     render() {
-        const { recording, texts } = this.state;
+        const { recording, texts, somebodyRecording } = this.state;
+        console.log(this.state.somebodyRecording);
         return (
-            <div>
+            <div className="googleSTT-container">
                 <audio id="audio" ref={this.audio}></audio>
 
-                <button
-                    type="button"
-                    onClick={this.startRecording}
-                    disabled={recording}
-                    className={recording ? 'disabled' : ''}>
-                    Start recording
-                </button>
-                <button
+                <div className="googleSTT-recording-view">
+                    <button
+                        type="button"
+                        onClick={this.handleRecordingButton}
+                        disabled={somebodyRecording && !recording}
+                        className={
+                            !recording && somebodyRecording
+                                ? 'disabled'
+                                : 'recording-button'
+                        }>
+                        {recording ? 'Stop' : 'Start'}
+                    </button>
+                    <img className="record-image" src={recordImage} />
+                </div>
+                {/* <button
                     type="button"
                     onClick={this.stopRecording}
-                    disabled={!recording}
-                    className={recording ? '' : 'disabled'}>
+                    disabled={!somebodyRecording || !recording}
+                    className={
+                        recording && somebodyRecording ? '' : 'disabled'
+                    }>
                     Stop recording
-                </button>
+                </button> */}
                 <div>
-                    {map(texts, (text, i) => (
-                        <div key={i}>{text}</div>
-                    ))}
+                    {somebodyRecording &&
+                        this.state.recorderNickname + ' is recording'}
                 </div>
+                <STTScript
+                    scripts={this.state.texts}
+                    lastScript={this.state.currentText}
+                />
             </div>
         );
     }

@@ -51,6 +51,11 @@ class Image extends Component {
         this.props.handleDeleteBlock(axios_path, 'Image', this.state.blk_id);
     };
 
+    handleSubmitValidation = () => {
+        const { image } = this.state;
+        return image !== null;
+    };
+
     handleSubmit = e => {
         e.preventDefault();
         const noteId = this.props.noteId;
@@ -178,10 +183,18 @@ class Image extends Component {
                                     id="image"
                                     accept="image/png, image/jpeg"
                                     onChange={this.handleChangeImage}
-                                    // required
+                                    required
                                 />
                             </p>
-                            <input type="submit" value="submit" />
+                            {this.handleSubmitValidation() ? (
+                                <input type="submit" value="submit" />
+                            ) : (
+                                <input
+                                    className="disabled"
+                                    type="submit"
+                                    value="submit"
+                                />
+                            )}
                         </form>
                     ) : (
                         <div>

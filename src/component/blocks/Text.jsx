@@ -49,7 +49,7 @@ class Text extends Component {
                 <EditorWrapper
                     handleAddTextSocketSend={this.props.handleAddTextSocketSend}
                     blk_id={this.props.blk_id}
-                    documentId={this.props.documentId}
+                    document_id={this.props.document_id}
                     handleChangeText={this.handleChangeText}
                 />
                 <div className="full-size-block-content">
