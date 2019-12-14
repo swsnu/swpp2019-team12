@@ -31,6 +31,8 @@ class NoteLeft extends Component {
                         handleChangeLocation={this.props.handleChangeLocation}
                     />
                     <NoteLeftBlock
+                        workspaceTags={this.props.workspaceTags}
+                        workspaceId={this.props.workspaceId}
                         noteId={this.props.noteId}
                         blocks={this.props.blocks}
                         participants={this.props.participants}

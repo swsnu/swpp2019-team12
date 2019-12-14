@@ -647,8 +647,8 @@ class Note extends Component {
         const loggedInUserNickname = sessionStorage.getItem(
             'LoggedInUserNickname'
         );
-        console.log('note tags: ', this.state.noteTags);
-        console.log('workspace tags: ', this.state.workspaceTags);
+        // console.log('note tags: ', this.state.noteTags);
+        // console.log('workspace tags: ', this.state.workspaceTags);
         return (
             <div className="Note">
                 <div className="file-tree">

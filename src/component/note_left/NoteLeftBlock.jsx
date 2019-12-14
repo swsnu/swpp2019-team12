@@ -67,6 +67,8 @@ class NoteLeftBlock extends Component {
                     } else if (blk.block_type === AGENDA) {
                         result = (
                             <Agenda
+                                workspaceTags={nextProps.workspaceTags}
+                                workspaceId={nextProps.workspaceId}
                                 noteId={nextProps.noteId}
                                 blk_id={blk.id}
                                 type={blk.block_type}

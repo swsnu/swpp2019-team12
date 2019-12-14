@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Websocket from 'react-websocket';
 import AgendaInside from '../agenda_in/AgendaInside';
+import { Button, Menu, Dropdown, Icon } from 'antd';
+import Tag from '../blocks/Tag';
 class Agenda extends Component {
     constructor(props) {
         super(props);
@@ -10,7 +12,9 @@ class Agenda extends Component {
             agenda_id: this.props.blk_id,
             agenda_title: this.props.agenda_title,
             agenda_discussion: this.props.agenda_discussion,
-            blocks: []
+            blocks: [],
+            agendaTags: [],
+            workspaceTags: this.props.workspaceTags
         };
     }
 
@@ -18,13 +22,35 @@ class Agenda extends Component {
         axios
             .get(`/api/agenda/${this.state.agenda_id}/`)
             .then(res => {
-                let blocks = [];
-                if (res['data']['children_blocks'] !== null) {
-                    blocks = JSON.parse(res['data']['children_blocks']);
+                console.log(res);
+                // let blocks = [];
+                // if (res['data']['children_blocks'] !== '') {
+                //     blocks = JSON.parse(res['data']['children_blocks']);
+                // }
+                let blocks = null;
+                if (res.data['agenda']['children_blocks'] === '') {
+                    blocks = [];
+                } else {
+                    blocks = JSON.parse(res.data['agenda']['children_blocks']);
                 }
-                this.setState({ blocks: blocks });
+                const agendaTags = res['data']['tags'];
+                console.log('agendaTags didmount', agendaTags);
+                console.log('blocks: ', blocks);
+                // this.props.handleAddAgendaChildrenBlocks(
+                //     this.state.agenda_id,
+                //     blocks
+                // );
+                this.setState({ blocks: blocks, agendaTags: agendaTags });
             })
             .catch(err => console.log('this agenda has no child block'));
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.workspaceTags != prevState.workspaceTags) {
+            return {
+                workspaceTags: nextProps.workspaceTags
+            };
+        }
     }
 
     onDragEnd = result => {
@@ -229,7 +255,57 @@ class Agenda extends Component {
         );
     };
 
+    handleMenuClick = e => {
+        console.log(e);
+        this.handleAddTag(e.key);
+    };
+
+    handleAddTag = tagId => {
+        const agendaId = this.state.agenda_id;
+        const newTag = this.state.workspaceTags.find(tag => tag.id == tagId);
+        console.log('newTag: ', newTag);
+        console.log(this.state.agendaTags);
+        let duplicate = false;
+        this.state.agendaTags.forEach(tag => {
+            if (tagId == tag.id) {
+                duplicate = true;
+            }
+        });
+
+        if (!duplicate) {
+            const tags = this.state.agendaTags.concat(newTag);
+            const newAgenda = {
+                tags: tags.map(tag => tag.id)
+            };
+            console.log('new agenda', newAgenda);
+            axios.patch(`/api/agenda/${agendaId}/`, newAgenda).then(res => {
+                console.log(res);
+                this.setState({
+                    agendaTags: tags
+                });
+            });
+        }
+    };
+
+    renderTags = () => {
+        return (
+            this.state.agendaTags &&
+            this.state.agendaTags.map((tag, i) => <Tag key={i} tag={tag} />)
+        );
+    };
+
     render() {
+        console.log(this.state.workspaceTags);
+        console.log(this.props.workspaceTags);
+        const menu = (
+            <Menu>
+                {this.state.workspaceTags.map((tag, i) => (
+                    <Menu.Item key={tag.id} onClick={this.handleMenuClick}>
+                        {tag.content}
+                    </Menu.Item>
+                ))}
+            </Menu>
+        );
         return (
             <div
                 className="full-size-block-container Agenda"
@@ -243,15 +319,25 @@ class Agenda extends Component {
                     <div className="full-size-block-title__label Agenda">
                         Agenda
                     </div>
-                    <button onClick={this.handleAddTextBlock}>Add text</button>
-                    <button onClick={this.handleAddImageBlock}>
+                    <Button onClick={this.handleAddTextBlock}>Add text</Button>
+                    <div>
+                        <Dropdown overlay={menu} className="add-tag-button">
+                            <Button>
+                                Add Tag <Icon type="down" />
+                            </Button>
+                        </Dropdown>
+                    </div>
+                    <Button onClick={this.handleAddImageBlock}>
                         Add image
-                    </button>
+                    </Button>
                     <button
                         onClick={this.handleClickDelete}
                         className="delete-button">
                         X
                     </button>
+                </div>
+                <div className="Agenda-tags">
+                    <div>{this.renderTags()}</div>
                 </div>
                 <div className="full-size-block-content Agenda">
                     <div className="full-size-block-content__text Agenda">
