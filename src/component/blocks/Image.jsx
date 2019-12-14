@@ -105,23 +105,15 @@ class Image extends Component {
                                     required
                                 />
                             </p>
-                            {this.handleSubmitValidation() ? (
-                                <input type="submit" value="submit" />
-                            ) : (
-                                <input
-                                    className="disabled"
-                                    type="submit"
-                                    value="submit"
-                                />
-                            )}
+                            <button type="submit" value="submit" />)
                         </form>
                     ) : (
                         <div>
-                            Image Caption: {this.state.content} <br />
-                            Image File Name:{' '}
+                            <p> Image Caption: {this.state.content} </p>
+                            {/* Image File Name:{' '}
                             {typeof this.state.image === 'string'
                                 ? decodeURI(this.state.image)
-                                : decodeURI(this.state.image.name)}
+                                : decodeURI(this.state.image.name)} */}
                             {typeof this.state.image === 'string' ? (
                                 <img src={this.state.image} />
                             ) : (
