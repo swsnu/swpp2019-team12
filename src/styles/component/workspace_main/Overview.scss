@@ -43,7 +43,8 @@
             justify-content: center;
         }
         .Overview-section-note {
-            width: rem(300px);
+            min-width: rem(300px);
+            width: calc(28% - 2.14rem);
         }
         .Overview-section-agenda {
             width: rem(300px);
@@ -69,6 +70,7 @@
             padding-top: rem(10px);
             padding-right: rem(10px);
             overflow: auto;
+            width: 28%;
         }
     }
 }

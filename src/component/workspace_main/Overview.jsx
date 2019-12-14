@@ -42,11 +42,15 @@ const Overview = props => {
             </div>
 
             <div className="Overview-cards">
-                <div className="Overview-note-cards">
-                    {map(notes, (note, i) => (
-                        <NoteCard note={note} key={i} />
-                    ))}
-                </div>
+                {notes.length ? (
+                    <div className="Overview-note-cards">
+                        {map(notes, (note, i) => (
+                            <NoteCard note={note} key={i} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="Overview-note-cards"></div>
+                )}
                 {/* <TodoCard todos={todos} /> */}
             </div>
         </div>
