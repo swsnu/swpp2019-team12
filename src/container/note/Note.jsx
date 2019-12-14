@@ -20,7 +20,7 @@ class Note extends Component {
         super(props);
         this.BlockRef = React.createRef();
         this.state = {
-            currentUserProfile: null,
+            currentUserNickname: null,
             isBlockClicked: false,
             isNoteLeftClicked: true,
             isTitleClicked: false,
@@ -144,12 +144,6 @@ class Note extends Component {
             })
             .catch(err => console.log('note error'));
     }
-
-    getNickName = u_id => {
-        axios.get(`/api/profile/${u_id}`).then(res => {
-            return res['data']['nickname'];
-        });
-    };
 
     /* ==================================================================
         ## handleClickBlock & handleNoteLeft
@@ -565,6 +559,9 @@ class Note extends Component {
     render() {
         const { history } = this.props;
         const noteId = this.props.match.params.n_id;
+        const loggedInUserNickname = sessionStorage.getItem(
+            'LoggedInUserNickname'
+        );
         return (
             <div className="Note">
                 <div className="file-tree">
@@ -611,6 +608,7 @@ class Note extends Component {
                 />
                 <GoogleSTT
                     room={noteId}
+                    nickname={loggedInUserNickname}
                     somebodyRecording={this.state.somebodyRecording}
                 />
             </div>

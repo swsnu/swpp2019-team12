@@ -46,7 +46,9 @@ class googleSTT extends Component {
             recording: false,
             texts: [],
             currentText: '',
-            somebodyRecording: false
+            somebodyRecording: false,
+            recorderNickname: '',
+            nickname: this.props.nickname || 'somebody'
         };
 
         // Audio Element
@@ -104,7 +106,10 @@ class googleSTT extends Component {
 
         socket.on('somebodyStarted', data => {
             console.log('somebody started socket 받음');
-            this.setState({ somebodyRecording: data });
+            this.setState({
+                somebodyRecording: data.somebodyRecording,
+                recorderNickname: data.recorderNickname
+            });
         });
 
         socket.emit('join', { room: this.state.room });
@@ -122,7 +127,7 @@ class googleSTT extends Component {
 
     //================= RECORDING =================
     initRecording = () => {
-        socket.emit('startGoogleCloudStream', ''); //init socket Google Speech Connection
+        socket.emit('startGoogleCloudStream', this.state.nickname); //init socket Google Speech Connection
 
         streamStreaming = true;
         processor = context.createScriptProcessor(bufferSize, 1, 1);
@@ -144,6 +149,14 @@ class googleSTT extends Component {
             };
         };
         navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess);
+    };
+
+    handleRecordingButton = () => {
+        if (this.state.recording) {
+            this.stopRecording();
+        } else {
+            this.startRecording();
+        }
     };
 
     startRecording = () => {
@@ -255,6 +268,10 @@ class googleSTT extends Component {
                     }>
                     Stop recording
                 </button>
+                <div>
+                    {somebodyRecording &&
+                        this.state.recorderNickname + ' is recording'}
+                </div>
                 <STTScript
                     scripts={this.state.texts}
                     lastScript={this.state.currentText}
