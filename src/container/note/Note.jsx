@@ -333,7 +333,6 @@ class Note extends Component {
     handleAddTextBlock = () => {
         const noteId = this.props.match.params.n_id;
         const documentId = handleDocIdInUrl();
-        console.log('새 document Id: ', documentId);
         // Block Create API call 할 곳.
         const text_info = {
             n_id: noteId,
@@ -441,7 +440,6 @@ class Note extends Component {
         const noteId = this.props.match.params.n_id;
         let newBlocks = null;
         let res = JSON.parse(data);
-        console.log(res);
         // Add Block
         if (res.hasOwnProperty('block_type')) {
             if (res['block_type'] == 'Agenda') {

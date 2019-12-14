@@ -185,7 +185,6 @@ class Todo extends Component {
                 axios.get(`/api/note/${noteId}/childrenblocks/`).then(res_2 => {
                     let todoHandleFunc = (original_todo, assignee) => {
                         let doAdd = true;
-                        console.log('FUNC', original_todo);
                         for (
                             let i = 0;
                             i < original_todo.assignees_info.length;

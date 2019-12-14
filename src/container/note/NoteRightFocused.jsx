@@ -16,11 +16,9 @@ class NoteRightFocused extends Component {
     }
 
     componentWillUnmount() {
-        console.log('unmount');
     }
 
     handleOnBlur = () => {
-        console.log('handleOnBlur');
         const data = {
             content: this.state.content
         };

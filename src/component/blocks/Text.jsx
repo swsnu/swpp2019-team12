@@ -14,7 +14,6 @@ class Text extends Component {
     }
 
     handleChangeText = changedText => {
-        console.log(changedText);
         console.log('Need to implement changing text');
     };
 
@@ -24,7 +23,6 @@ class Text extends Component {
 
     handleClickDelete = e => {
         e.preventDefault();
-        console.log('delete textblock');
         const axios_path = `/api/textblock/${this.props.blk_id}/`;
         this.props.handleDeleteBlock(axios_path, 'Text', this.state.blk_id);
     };

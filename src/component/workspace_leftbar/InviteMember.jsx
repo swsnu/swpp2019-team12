@@ -113,8 +113,6 @@ class InviteMember extends Component {
     handleInviteMembers = () => {
         const { addedMemberId } = this.state;
         const { history } = this.props;
-        console.log(this.props.workspace);
-
         axios
             .patch(`/api/workspace/${this.props.workspace.id}/`, {
                 members: addedMemberId

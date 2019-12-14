@@ -15,16 +15,13 @@ class Agenda extends Component {
     }
 
     componentDidMount() {
-        console.log('component did mount');
         axios
             .get(`/api/agenda/${this.state.agenda_id}/`)
             .then(res => {
-                console.log('res of agenda: ', res);
                 let blocks = [];
                 if (res['data']['children_blocks'] !== null) {
                     blocks = JSON.parse(res['data']['children_blocks']);
                 }
-                console.log('blocks: ', blocks);
                 this.setState({ blocks: blocks });
             })
             .catch(err => console.log('this agenda has no child block'));
@@ -72,9 +69,6 @@ class Agenda extends Component {
         axios
             .post(`/api/agenda/${this.state.agenda_id}/textblocks/`, text_info)
             .then(res => {
-                console.log(res);
-                console.log('res doc id: ', res.data.document_id);
-                console.log(this.state.blocks);
                 const block = {
                     block_type: 'Text',
                     id: res['data']['id'],
@@ -105,7 +99,6 @@ class Agenda extends Component {
 
     handleSocketAgenda(data) {
         let res = JSON.parse(data);
-        console.log(res);
         if (res.hasOwnProperty('block_type')) {
             this.setState({
                 blocks: this.state.blocks.concat({
@@ -124,7 +117,6 @@ class Agenda extends Component {
 
     handleClickDelete = e => {
         e.preventDefault();
-        console.log('delete agenda');
         const axios_path = `/api/agenda/${this.state.agenda_id}/`;
         this.props.handleDeleteBlock(
             axios_path,
@@ -134,7 +126,6 @@ class Agenda extends Component {
     };
 
     handleDeleteBlockInAgenda = (axios_path, block_type, block_id) => {
-        console.log('axios path:', axios_path);
         axios
             .delete(axios_path)
             .then(res => {
@@ -159,7 +150,6 @@ class Agenda extends Component {
                         stringifiedBlocks
                     )
                     .then(res => {
-                        console.log(res);
                         this.AgendaRef.current.state.ws.send(
                             JSON.stringify(JSON_data)
                         );
