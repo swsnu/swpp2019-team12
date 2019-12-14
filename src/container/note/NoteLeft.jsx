@@ -5,7 +5,9 @@ class NoteLeft extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tags: this.props.tags
+            noteTags: this.props.noteTags,
+            workspaceId: null,
+            workspaceTags: this.props.workspaceTags
         };
     }
 
@@ -14,7 +16,9 @@ class NoteLeft extends Component {
             <div className="Note-left" onClick={this.props.handleClickNoteLeft}>
                 <div className="Note-left-container">
                     <NoteLeftInfo
-                        tags={this.props.tags}
+                        workspaceTags={this.props.workspaceTags}
+                        workspaceId={this.props.workspaceId}
+                        noteTags={this.props.noteTags}
                         note_title={this.props.note_title}
                         meeting_date={this.props.meeting_date}
                         participants={this.props.participants}

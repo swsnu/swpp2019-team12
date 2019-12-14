@@ -20,6 +20,7 @@ class Note extends Component {
         super(props);
         this.BlockRef = React.createRef();
         this.state = {
+            workspaceId: null,
             currentUserNickname: null,
             isBlockClicked: false,
             isNoteLeftClicked: true,
@@ -42,7 +43,8 @@ class Note extends Component {
             typingTimeout: 0,
             somebodyRecording: false,
             iStartedRecording: false,
-            tags: []
+            noteTags: [],
+            workspaceTags: []
         };
     }
 
@@ -143,6 +145,7 @@ class Note extends Component {
                 console.log(res);
                 const noteData = res['data']['note'];
                 const tagData = res['data']['tags'];
+                const workspaceTags = res['data']['workspace_tags'];
                 this.setState({
                     ...this.state,
                     note_id: noteData['id'],
@@ -153,7 +156,9 @@ class Note extends Component {
                     ml_speech_text: noteData['ml_speech_text'],
                     participants_id: noteData['participants'],
                     moment: moment(noteData['created_at']),
-                    tags: tagData
+                    workspaceId: noteData['workspace'],
+                    noteTags: tagData,
+                    workspaceTags: workspaceTags
                 });
                 return res['data']['participants'];
             })
@@ -588,7 +593,8 @@ class Note extends Component {
         const loggedInUserNickname = sessionStorage.getItem(
             'LoggedInUserNickname'
         );
-        console.log('note tags: ', this.state.tags);
+        console.log('note tags: ', this.state.noteTags);
+        console.log('workspace tags: ', this.state.workspaceTags);
         return (
             <div className="Note">
                 <div className="file-tree">
@@ -599,7 +605,9 @@ class Note extends Component {
                     />
                 </div>
                 <NoteLeft
-                    tags={this.state.tags}
+                    workspaceId={this.state.workspaceId}
+                    workspaceTags={this.state.workspaceTags}
+                    noteTags={this.state.noteTags}
                     handleDeleteBlock={this.handleDeleteBlock}
                     note_title={this.state.title}
                     meeting_date={this.state.created_at}

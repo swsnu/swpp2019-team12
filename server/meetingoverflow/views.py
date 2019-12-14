@@ -456,9 +456,13 @@ def specific_note(request, n_id):
         note_serializer = NoteSerializer(current_note)
         tags = Tag.objects.filter(note__in=[current_note])
         tag_serializer = TagSerializer(tags, many=True)
+        workspace = current_note.workspace
+        workspace_tags = Tag.objects.filter(workspace=workspace)
+        workspace_tags_serializer = TagSerializer(workspace_tags, many=True)
         data = {
             "tags": tag_serializer.data,
-            "note": note_serializer.data
+            "note": note_serializer.data,
+            "workspace_tags": workspace_tags_serializer.data
         }
         return Response(data, status=status.HTTP_200_OK)
 
