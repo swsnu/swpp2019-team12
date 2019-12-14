@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { Label, SubLabel } from './Label';
-import { NoteCard, TodoCard } from './OverviewCard';
+import { NoteCard, TodoCard, AgendaCard } from './OverviewCard';
 import { map } from 'lodash';
 
 class Overview extends Component {
@@ -105,7 +105,14 @@ class Overview extends Component {
                                 agendaInNote.length ? '' : '--empty'
                             }`}>
                             {agendaInNote.length ? (
-                                <div></div>
+                                map(agendaInNote, (agenda, i) => (
+                                    <AgendaCard
+                                        agenda={agenda}
+                                        key={i}
+                                        clicked={clicked}
+                                        history={history}
+                                    />
+                                ))
                             ) : (
                                 <>
                                     <div className="Overview-cards__empty-header">

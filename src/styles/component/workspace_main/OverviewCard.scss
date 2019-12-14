@@ -1,5 +1,7 @@
+.agendaCard-container,
 .noteCard-container {
     min-width: rem(330px);
+    width: 100%;
     height: rem(200px);
 
     box-shadow: 1px 1px 2px 1px $lightgray;
@@ -28,72 +30,6 @@
 
     cursor: pointer;
 
-    .noteCard-title-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        height: rem(60px);
-
-        .noteCard-title-index {
-            width: 15%;
-            height: 100%;
-            display: flex;
-            align-items: flex-start;
-            justify-content: flex-start;
-
-            div {
-                color: $tertiary;
-            }
-        }
-        .noteCard-title-text {
-            width: 70%;
-            height: 100%;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            padding: rem(10px) 0;
-
-            div {
-                display: -webkit-box;
-
-                font-size: rem(16px);
-                font-weight: 800;
-                line-height: 1.15;
-
-                text-align: center;
-
-                word-break: break-all;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                // white-space: nowrap;
-
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-            }
-        }
-        .noteCard-title-redirect {
-            width: 15%;
-            height: 100%;
-
-            display: flex;
-            align-items: flex-start;
-            justify-content: flex-end;
-
-            path {
-                fill: $lightgray;
-            }
-
-            svg:hover {
-                path {
-                    fill: $primary;
-                }
-                cursor: pointer;
-            }
-        }
-    }
     .noteCard-content-container {
         display: flex;
         flex-direction: column;
@@ -125,12 +61,14 @@
         }
     }
 
+    .agendaCard-content-label,
     .noteCard-content-label {
         display: flex;
         padding: rem(8px) rem(5px) rem(5px) rem(5px);
         border-top: 1px solid $whitegray;
         cursor: default;
 
+        .agendaCard-content-label-element,
         .noteCard-content-label-element {
             font-size: rem(12px);
             color: white;
@@ -148,12 +86,113 @@
     }
 }
 
-.noteCard-container {
-    min-width: rem(330px);
-    height: rem(200px);
+.agendaCard-title-container,
+.noteCard-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    height: rem(60px);
+
+    .agendaCard-title-index,
+    .noteCard-title-index {
+        width: 15%;
+        height: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+
+        div {
+            color: $tertiary;
+        }
+    }
+    .agendaCard-title-text,
+    .noteCard-title-text {
+        width: 70%;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: rem(10px) 0;
+
+        div {
+            display: -webkit-box;
+
+            font-size: rem(16px);
+            font-weight: 800;
+            line-height: 1.15;
+
+            text-align: center;
+
+            word-break: break-all;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            // white-space: nowrap;
+
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+    }
+    .agendaCard-title-redirect,
+    .noteCard-title-redirect {
+        width: 15%;
+        height: 100%;
+
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+
+        path {
+            fill: $lightgray;
+        }
+
+        svg:hover {
+            path {
+                fill: $primary;
+            }
+            cursor: pointer;
+        }
+    }
 }
 
-.noteCard-container {
-    min-width: rem(330px);
-    height: rem(200px);
+.agendaCard-container {
+    height: rem(220px);
+
+    .agendaCard-content-container {
+        padding: 0 rem(20px) rem(10px) rem(20px);
+
+        .agendaCard-content-text {
+            color: $tertiary;
+            text-align: center;
+            height: rem(60px);
+            word-break: break-all;
+            text-overflow: ellipsis;
+            overflow: hidden;
+
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+
+            margin-bottom: rem(10px);
+
+            &.--not {
+                color: $lightgray;
+            }
+        }
+        .agendaCard-content-blocks {
+            display: flex;
+            justify-content: space-between;
+
+            .agendaCard-content-blocks__element {
+                color: $lightgray;
+                &.--has {
+                    color: $primary;
+                }
+            }
+        }
+    }
+    .agendaCard-content-label {
+        border-top-color: $lightgray;
+    }
 }

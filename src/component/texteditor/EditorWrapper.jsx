@@ -92,6 +92,7 @@ export default class EditorWrapper extends Component {
                     selectedUser={this.state.selectedUser}
                     configuration={this.state.configuration}
                     documentId={this.props.documentId}
+                    blk_id={this.props.blk_id}
                 />
             </div>
         );

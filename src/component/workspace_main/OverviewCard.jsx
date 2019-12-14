@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { map } from 'lodash';
 import moment from 'moment';
 import { ReactComponent as RedirectIcon } from '../../assets/icons/redirect_icon.svg';
 import { ReactComponent as BulletIcon } from '../../assets/icons/bullet_icon.svg';
 import { ReactComponent as CheckIcon } from '../../assets/icons/check_icon.svg';
+import axios from 'axios';
 
 /*
 0:
@@ -86,25 +87,88 @@ export const NoteCard = props => {
     );
 };
 
-export const AgendaCard = props => {
-    const { agenda } = props;
+export class AgendaCard extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            text: ''
+        };
+    }
+    componentDidMount() {
+        const { agenda, clicked, history } = this.props;
 
-    return (
-        <div className="agendaCard-container">
-            <div className="noteCard-title-container">
-                <div className="noteCard-title-index">
-                    <div>{agenda.id}</div>
+        axios.get(`/api/agenda/${agenda.id}/textblocks/`).then(res => {
+            const text = res.data[0].content.replace(/<[^>]*>/gm, '');
+            this.setState({ text });
+        });
+    }
+
+    renderBlocks = () => {
+        const { agenda } = this.props;
+        const blocks = [
+            { label: 'text', value: agenda.has_text_block },
+            { label: 'image', value: agenda.has_image_block },
+            { label: 'calendar', value: agenda.has_calendar_block },
+            { label: 'todo', value: agenda.has_todo_block }
+        ];
+
+        return map(blocks, (block, i) => (
+            <div
+                className={`agendaCard-content-blocks__element ${
+                    block.value ? '--has' : ''
+                }`}
+                key={i}>
+                {block.label.toUpperCase()}
+            </div>
+        ));
+    };
+
+    render() {
+        const { agenda, clicked, history } = this.props;
+        const { text } = this.state;
+        return (
+            <div
+                className={`agendaCard-container ${
+                    clicked === agenda.note ? '--clicked' : ''
+                }`}>
+                <div className="agendaCard-title-container">
+                    <div className="agendaCard-title-index">
+                        <div>{`#${agenda.id}`}</div>
+                    </div>
+                    <div className="agendaCard-title-text">
+                        <div>{agenda.content}</div>
+                    </div>
+                    <div className="agendaCard-title-redirect">
+                        <RedirectIcon
+                            onClick={() => history.push(`/note/${agenda.note}`)}
+                        />
+                    </div>
                 </div>
-                <div className="noteCard-title-text">
-                    <div>{agenda.title}</div>
+                <div className="agendaCard-content-container">
+                    <div
+                        className={`agendaCard-content-text ${
+                            text ? '' : '--not'
+                        }`}>
+                        {text ? text : '생성된 텍스트 블록이 없습니다 :('}
+                    </div>
+                    <div className="agendaCard-content-blocks">
+                        {this.renderBlocks()}
+                    </div>
                 </div>
-                <div className="noteCard-title-redirect">
-                    <RedirectIcon />
+                <div className="agendaCard-content-label">
+                    {map(dummyLabels, (label, i) => (
+                        <div
+                            className="agendaCard-content-label-element"
+                            key={i}
+                            style={{ backgroundColor: label.color }}>
+                            {label.text}
+                        </div>
+                    ))}
                 </div>
             </div>
-        </div>
-    );
-};
+        );
+    }
+}
 
 export const TodoCard = props => {
     const { todos } = props;
