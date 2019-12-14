@@ -263,7 +263,14 @@ class Agenda extends Component {
                     <div className="full-size-block-title__label Agenda">
                         Agenda
                     </div>
-                    <button onClick={this.handleAddTextBlock}>Add text</button>
+                    <Button onClick={this.handleAddTextBlock}>Add text</Button>
+                    <div>
+                        <Dropdown overlay={menu} className="add-tag-button">
+                            <Button>
+                                Add Tag <Icon type="down" />
+                            </Button>
+                        </Dropdown>
+                    </div>
                     <button
                         onClick={this.handleClickDelete}
                         className="delete-button">
@@ -272,13 +279,6 @@ class Agenda extends Component {
                 </div>
                 <div className="Agenda-tags">
                     <div>{this.renderTags()}</div>
-                    <div>
-                        <Dropdown overlay={menu} className="add-tag-button">
-                            <Button>
-                                Add Tag <Icon type="down" />
-                            </Button>
-                        </Dropdown>
-                    </div>
                 </div>
                 <div className="full-size-block-content Agenda">
                     <div className="full-size-block-content__text Agenda">

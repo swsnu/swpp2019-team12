@@ -4,6 +4,7 @@ import { map } from 'lodash';
 import axios from 'axios';
 import STTScript from './STTScript';
 import recordImage from '../../assets/icons/record_icon.png';
+import { Button } from 'antd';
 
 const END_POINT = '127.0.0.1:9000/';
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -252,7 +253,7 @@ class googleSTT extends Component {
                 <audio id="audio" ref={this.audio}></audio>
 
                 <div className="googleSTT-recording-view">
-                    <button
+                    <Button
                         type="button"
                         onClick={this.handleRecordingButton}
                         disabled={somebodyRecording && !recording}
@@ -262,18 +263,9 @@ class googleSTT extends Component {
                                 : 'recording-button'
                         }>
                         {recording ? 'Stop' : 'Start'}
-                    </button>
+                    </Button>
                     <img className="record-image" src={recordImage} />
                 </div>
-                {/* <button
-                    type="button"
-                    onClick={this.stopRecording}
-                    disabled={!somebodyRecording || !recording}
-                    className={
-                        recording && somebodyRecording ? '' : 'disabled'
-                    }>
-                    Stop recording
-                </button> */}
                 <div>
                     {somebodyRecording &&
                         this.state.recorderNickname + ' is recording'}
