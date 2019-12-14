@@ -105,16 +105,6 @@ class Note extends Component {
                                     });
                             });
                         }
-<<<<<<< HEAD
-                    });
-
-                    this.setState({
-                        blocks: this.state.blocks.concat(todoContainer)
-                    });
-                }
-            });
-        });
-=======
                     });
 
                     this.setState({
@@ -143,7 +133,6 @@ class Note extends Component {
                 });
             })
             .catch(err => console.log('No Images'));
->>>>>>> d8db6e4547222747ae4e82a0bb7a2ae161ec6ee6
 
         axios
             .get(`/api/note/${noteId}/`)
@@ -485,28 +474,6 @@ class Note extends Component {
         );
     };
 
-<<<<<<< HEAD
-    /**
-     *
-     * 나중에 안 돌아가면 살려요
-     */
-    /*
-    // { agendaId: 1, childrenBlocks: [] }
-    handleAddAgendaChildrenBlocks = (agendaId, childrenBlocks) => {
-        console.log('handleAddAgendaChildrenBlocks: ', childrenBlocks);
-        const data = {
-            id: agendaId,
-            childrenBlocks: childrenBlocks
-        };
-        this.setState({
-            agenda_children_blocks: this.state.agenda_children_blocks.concat(
-                data
-            )
-        });
-    };
-    */
-=======
->>>>>>> d8db6e4547222747ae4e82a0bb7a2ae161ec6ee6
     handleSocketBlock(data) {
         const noteId = this.props.match.params.n_id;
         let newBlocks = null;
@@ -646,12 +613,6 @@ class Note extends Component {
                     handleAddTextSocketSend={this.handleAddTextSocketSend}
                     onDragEnd={this.onDragEnd}
                     handleDeleteTodo={this.handleDeleteTodo}
-<<<<<<< HEAD
-                    handleAddAgendaChildrenBlocks={
-                        this.handleAddAgendaChildrenBlocks
-                    }
-=======
->>>>>>> d8db6e4547222747ae4e82a0bb7a2ae161ec6ee6
                     socketRef={this.BlockRef}
                 />
                 <Websocket
@@ -661,14 +622,11 @@ class Note extends Component {
                     // url={`wss://www.meetingoverflow.space:8443/ws/${noteId}/block/`}
                     ref={this.BlockRef}
                     onMessage={this.handleSocketBlock.bind(this)}
-<<<<<<< HEAD
                 />
                 <GoogleSTT
                     room={noteId}
                     nickname={loggedInUserNickname}
                     somebodyRecording={this.state.somebodyRecording}
-=======
->>>>>>> d8db6e4547222747ae4e82a0bb7a2ae161ec6ee6
                 />
             </div>
         );
