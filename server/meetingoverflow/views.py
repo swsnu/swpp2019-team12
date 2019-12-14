@@ -1,6 +1,6 @@
-#import json
+# import json
 import dateutil.parser
-#from django.shortcuts import render
+# from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 import django.contrib
 from django.contrib import auth
 from django.contrib.auth.models import User
-#from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
+# from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.db.models import Q
 from .models import (Profile, Tag, Workspace, Note, Agenda, timezone,
                      Calendar, File, Image, Table, Todo, TextBlock)
@@ -183,10 +183,19 @@ def specific_profile(request, u_id):
     if request.method == 'GET':
         try:
             profile = Profile.objects.get(id=u_id)
+
+
+<< << << < HEAD
         except Profile.DoesNotExist:
+== == == =
+
+        except (Profile.DoesNotExist):
+>>>>>> > d5d8c85bc3de5bb5e4583eb9a6c305b736647957
             return Response(status=status.HTTP_404_NOT_FOUND)
+
         serializer = ProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
     # ===========Front implementation===========
     # Signup 성공시 Response로 반환되는 새 유저의 id 로
@@ -296,7 +305,7 @@ def specific_workspace(request, w_id):
     """
     if request.method == 'GET':
         profile = request.user.profile
-        #profile = Profile.objects.get(id=1)
+        # profile = Profile.objects.get(id=1)
         try:
             workspace = Workspace.objects.get(id=w_id)
             workspaces = Workspace.objects.filter(members__in=[profile])
@@ -488,10 +497,17 @@ def sibling_notes(request, n_id):
         except Note.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         workspace = note.workspace
+<<<<<<< HEAD
         current_sibling_notes = Note.objects.filter(
             workspace=workspace).filter(~Q(id=n_id))
         if current_sibling_notes.count() > 0:
             serializer = NoteSerializer(current_sibling_notes, many=True)
+=======
+        sibling_notes = Note.objects.filter(workspace=workspace).filter(~Q(id = n_id))
+        # print(sibling_notes)
+        if sibling_notes.count() > 0:
+            serializer = NoteSerializer(sibling_notes, many=True)
+>>>>>>> d5d8c85bc3de5bb5e4583eb9a6c305b736647957
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -670,7 +686,13 @@ def agenda_child_of_note(request, n_id):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+<<<<<<< HEAD
         return Response(status=status.HTTP_400_BAD_REQUEST)
+=======
+        else:
+            # print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+>>>>>>> d5d8c85bc3de5bb5e4583eb9a6c305b736647957
 
 
 @api_view(['GET', 'PATCH', 'DELETE'])
@@ -753,7 +775,14 @@ def todoblock_child_of_note(request, n_id):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+<<<<<<< HEAD
         return Response(status=status.HTTP_400_BAD_REQUEST)
+=======
+        else:
+            # print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+>>>>>>> d5d8c85bc3de5bb5e4583eb9a6c305b736647957
 
 
 @api_view(['GET', 'POST'])
@@ -802,7 +831,9 @@ def todoblock_child_of_agenda(request, a_id):
             agenda.has_todo_block = True
             agenda.save()
             return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            # print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PATCH', 'DELETE'])

@@ -24,7 +24,6 @@ class Text extends Component {
 
     handleClickDelete = e => {
         e.preventDefault();
-        console.log('delete textblock');
         const axios_path = `/api/textblock/${this.props.blk_id}/`;
         this.props.handleDeleteBlock(axios_path, 'Text', this.state.blk_id);
     };

@@ -112,7 +112,6 @@ class Note extends Component {
         axios
             .get(`/api/note/${noteId}/images/`)
             .then(res => {
-                console.log('axios get images', res);
                 res['data'].forEach(blk => {
                     this.setState({
                         blocks: this.state.blocks.concat({
@@ -176,8 +175,6 @@ class Note extends Component {
 
     handleDeleteBlock = (axios_path, block_type, block_id) => {
         const noteId = this.props.match.params.n_id;
-        console.log('axios path:', axios_path);
-        console.log(block_type, block_id);
         const newBlocks = this.state.blocks.filter(
             b => !(b.block_type == block_type && b.id == block_id)
         );
@@ -198,7 +195,6 @@ class Note extends Component {
                         stringifiedBlocks
                     )
                     .then(res => {
-                        console.log(res);
                         this.BlockRef.current.state.ws.send(
                             JSON.stringify(JSON_data)
                         );
@@ -479,8 +475,6 @@ class Note extends Component {
         const noteId = this.props.match.params.n_id;
         let newBlocks = null;
         let res = JSON.parse(data);
-        console.log(res);
-        // Add Block
         if (res.hasOwnProperty('block_type')) {
             if (res['block_type'] == 'Agenda') {
                 newBlocks = this.state.blocks.concat({
@@ -542,7 +536,6 @@ class Note extends Component {
         // Drag & Drop
         // Delete
         else {
-            console.log(res['children_blocks']);
             this.setState({ blocks: res['children_blocks'] });
         }
     }

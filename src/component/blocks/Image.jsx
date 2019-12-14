@@ -14,6 +14,7 @@ class Image extends Component {
     }
 
     componentDidMount() {
+        console.log('did mount');
         this.setState({
             is_submitted: this.props.is_submitted,
             content: this.props.content,
@@ -66,6 +67,7 @@ class Image extends Component {
 
     render() {
         console.log('render: ' + this.state.image);
+        console.log('is submitted ', this.state.is_submitted);
         return (
             <div
                 className="full-size-block-container Image"
@@ -131,7 +133,7 @@ class Image extends Component {
                             )}
                         </div>
                     )}
-                    <div className="full-size-block-content__text"></div>
+                    {/* <div className="full-size-block-content__text"></div> */}
                 </div>
             </div>
         );

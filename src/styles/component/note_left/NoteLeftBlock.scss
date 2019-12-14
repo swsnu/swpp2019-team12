@@ -85,10 +85,8 @@
         .full-size-block-title {
             width: 100%;
             padding: rem(10px) rem(10px) 0 rem(10px);
-            // flex-direction: row;
             display: flex;
             justify-content: space-between;
-            // background: $primary;
 
             .full-size-block-title__label {
                 color: $secondary;
@@ -131,13 +129,19 @@
             }
         }
         .full-size-block-content.Image {
-            max-height: rem(149px);
             padding: rem(10px);
-            overflow: auto;
+            // overflow: visible;
             .full-size-block-content__text {
                 color: $black;
                 width: 100%;
             }
+        }
+        img {
+            width: 40%;
+            float: right;
+            margin-top: -1vh;
+            margin-right: 2vw;
+            right: 50px;
         }
     }
 }
