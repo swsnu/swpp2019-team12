@@ -29,7 +29,7 @@ ALLOWED_HOSTS = [
     "meetingoverflow.space",
     "52.141.6.169",
     "www.meetingoverflow.space",
-    "localhost",
+    "localhost"
 ]
 
 

@@ -1,0 +1,35 @@
+.googleSTT-container {
+    height: 80vh;
+    width: 20%;
+    margin-top: 30px;
+    margin-right: 30px;
+    margin-left: 30px;
+
+    .googleSTT-recording-view {
+        display: flex;
+
+        .recording-button {
+            box-shadow: 1px 1px 2px 2px #dfdfdf;
+        }
+
+        .record-image {
+            width: 20px;
+            height: auto;
+        }
+    }
+}
+
+.stt-script-container {
+    overflow: auto;
+    height: 80vh;
+    width: 100%;
+    margin-top: 10px;
+
+    .stt-script-element {
+        background: grey;
+    }
+
+    .stt-script-last-element {
+        background: yellow;
+    }
+}

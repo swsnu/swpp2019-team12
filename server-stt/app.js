@@ -91,13 +91,28 @@ io.on('connection', client => {
         console.log('========= LOG =========');
         console.log('start google cloud stream');
         console.log('========= END =========');
+        const recordingData = {
+            somebodyRecording: true,
+            recorderNickname: data
+        };
+        io.to(room).emit('somebodyStarted', recordingData);
         startRecognitionStream(client);
     });
+
+    // client.on('somebodyStarted', data => {
+    //     console.log('somebody started: ', data);
+    //     io.to(room).emit('somebodyStarted', data);
+    // });
 
     client.on('endGoogleCloudStream', data => {
         console.log('========= LOG =========');
         console.log('end google cloud stream');
         console.log('========= END =========');
+        const recordingData = {
+            somebodyRecording: false,
+            recorderNickname: ''
+        };
+        io.to(room).emit('somebodyStarted', recordingData);
         stopRecognitionStream(client);
     });
 

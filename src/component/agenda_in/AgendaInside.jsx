@@ -44,7 +44,7 @@ export default class AgendaInside extends Component {
                         result = (
                             <Text
                                 blk_id={blk.id}
-                                documentId={blk.documentId}
+                                document_id={blk.document_id}
                                 type={blk.block_type}
                                 content={blk.content}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}

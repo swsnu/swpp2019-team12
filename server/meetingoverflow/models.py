@@ -1,3 +1,4 @@
+import random
 from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
@@ -35,17 +36,6 @@ class Profile(models.Model):
         instance.profile.save()
 
 
-class Tag(models.Model):
-    """
-    Tag model
-    """
-
-    content = models.CharField(max_length=100, blank=False, null=False)
-
-    def __str__(self):
-        return f"content: {self.content}"
-
-
 class Workspace(models.Model):
     """
     Workspace model
@@ -58,6 +48,27 @@ class Workspace(models.Model):
 
     def __str__(self):
         return f"name: {self.name}"
+
+
+def random_color():
+    """
+    generating random color for tag
+    """
+    return "%06x" % random.randint(0, 0xFFFFFF)
+
+
+class Tag(models.Model):
+    """
+    Tag model
+    """
+    content = models.CharField(max_length=100, blank=False, null=False)
+    workspace = models.ForeignKey(
+        Workspace, on_delete=models.CASCADE, null=True)
+    color = models.CharField(
+        max_length=100, default=random_color(), null=False)
+
+    def __str__(self):
+        return f'content: {self.content}'
 
 
 class Note(models.Model):
@@ -107,6 +118,7 @@ class Agenda(models.Model):
     has_file_block = models.BooleanField(default=False)
     has_agenda_block = models.BooleanField(default=False)
     children_blocks = models.TextField(default="", null=True, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
         return f"note_id: {self.note.id}, block_id: {self.id}"

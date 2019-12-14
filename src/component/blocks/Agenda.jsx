@@ -15,16 +15,18 @@ class Agenda extends Component {
     }
 
     componentDidMount() {
-        console.log('component did mount');
         axios
             .get(`/api/agenda/${this.state.agenda_id}/`)
             .then(res => {
-                console.log('res of agenda: ', res);
                 let blocks = [];
                 if (res['data']['children_blocks'] !== null) {
                     blocks = JSON.parse(res['data']['children_blocks']);
                 }
                 console.log('blocks: ', blocks);
+                // this.props.handleAddAgendaChildrenBlocks(
+                //     this.state.agenda_id,
+                //     blocks
+                // );
                 this.setState({ blocks: blocks });
             })
             .catch(err => console.log('this agenda has no child block'));
@@ -62,12 +64,12 @@ class Agenda extends Component {
     };
 
     handleAddTextBlock = () => {
-        const documentId = handleDocIdInUrl();
+        const document_id = handleDocIdInUrl();
         const text_info = {
             content: '어젠다 속 새로운 텍스트 블록',
             layer_x: 0,
             layer_y: 0,
-            document_id: documentId
+            document_id: document_id
         };
         axios
             .post(`/api/agenda/${this.state.agenda_id}/textblocks/`, text_info)
@@ -107,16 +109,17 @@ class Agenda extends Component {
         let res = JSON.parse(data);
         console.log(res);
         if (res.hasOwnProperty('block_type')) {
-            this.setState({
-                blocks: this.state.blocks.concat({
-                    block_type: res['block_type'],
-                    id: res['id'],
-                    content: res['content'],
-                    layer_x: res['layer_x'],
-                    layer_y: res['layer_y'],
-                    documentId: res['document_id']
-                })
-            });
+            if (res['block_type'] == 'Text')
+                this.setState({
+                    blocks: this.state.blocks.concat({
+                        block_type: res['block_type'],
+                        id: res['id'],
+                        content: res['content'],
+                        layer_x: res['layer_x'],
+                        layer_y: res['layer_y'],
+                        document_id: res['document_id']
+                    })
+                });
         } else {
             this.setState({ blocks: res['children_blocks'] });
         }
@@ -198,7 +201,6 @@ class Agenda extends Component {
                 </div>
                 <div className="full-size-block-content Agenda">
                     <div className="full-size-block-content__text Agenda">
-                        <pre>{this.props.content}</pre>
                         <AgendaInside
                             noteId={this.props.noteId}
                             handleClickBlock={this.props.handleClickBlock}
