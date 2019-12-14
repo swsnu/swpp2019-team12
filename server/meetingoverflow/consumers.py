@@ -164,6 +164,16 @@ class BlockConsumer(WebsocketConsumer):
                     "updated_location": block_data_json["updated_location"],
                 },
             )
+
+        elif block_data_json["operation_type"] == "change_datetime":
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "change_datetime",
+                    "updated_datetime": block_data_json["updated_datetime"],
+                },
+            )
+
         # 1) Block을 Drag해서 위치가 변화하는걸 받는 receive
         # 2) Block을 제거해서 변화하는 경우를 받는 receive
         else:
@@ -272,7 +282,7 @@ class BlockConsumer(WebsocketConsumer):
 
     def change_location(self, event):
         """
-            change title of Note
+            change location of Note
         """
         updated_location = event["updated_location"]
         self.send(
@@ -280,6 +290,20 @@ class BlockConsumer(WebsocketConsumer):
                 {
                     "operation_type": "change_location",
                     "updated_location": updated_location,
+                }
+            )
+        )
+
+    def change_datetime(self, event):
+        """
+            change title of Note
+        """
+        updated_datetime = event["updated_datetime"]
+        self.send(
+            text_data=json.dumps(
+                {
+                    "operation_type": "change_datetime",
+                    "updated_datetime": updated_datetime,
                 }
             )
         )

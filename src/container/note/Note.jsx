@@ -171,14 +171,13 @@ class Note extends Component {
         };
         axios
             .delete(axios_path)
-            .then(res => {
+            .then(res_1 => {
                 axios
                     .patch(
                         `/api/note/${noteId}/childrenblocks/`,
                         stringifiedBlocks
                     )
-                    .then(res => {
-                        console.log(res);
+                    .then(res_2 => {
                         this.BlockRef.current.state.ws.send(
                             JSON.stringify(JSON_data)
                         );
@@ -241,12 +240,6 @@ class Note extends Component {
     handleChangeTitle = e => {
         const n_id = this.props.match.params.n_id;
         const title = e.target.value.length ? e.target.value : ' ';
-        // this.setState({ title: e.target.value }, () => {
-        //     axios
-        //         .patch(`/api/note/${n_id}/`, { title: this.state.title })
-        //         .then()
-        //         .catch();
-        // });
         if (this.state.typingTimeout) {
             clearTimeout(this.state.typingTimeout);
         }
@@ -273,23 +266,23 @@ class Note extends Component {
 
     handleChangeDatetime = moment => {
         const n_id = this.props.match.params.n_id;
-        this.setState({ moment }, () => {
-            axios
-                .patch(`/api/note/${n_id}/`, { created_at: this.state.moment })
-                .then()
-                .catch();
-        });
+        axios
+            .patch(`/api/note/${n_id}/`, { created_at: moment })
+            .then(res => {
+                const newDatetime = {
+                    operation_type: 'change_datetime',
+                    updated_datetime: moment
+                };
+                this.BlockRef.current.state.ws.send(
+                    JSON.stringify(newDatetime)
+                );
+            })
+            .catch();
     };
 
     handleChangeLocation = e => {
         const n_id = this.props.match.params.n_id;
         const location = e.target.value.length ? e.target.value : ' ';
-        // this.setState({ location: e.target.value }, () => {
-        //     axios
-        //         .patch(`/api/note/${n_id}/`, { location: this.state.location })
-        //         .then()
-        //         .catch();
-        // });
         if (this.state.typingTimeout) {
             clearTimeout(this.state.typingTimeout);
         }
@@ -498,11 +491,12 @@ class Note extends Component {
             this.setState({ title: res['updated_title'] });
         } else if (res['operation_type'] === 'change_location') {
             this.setState({ location: res['updated_location'] });
+        } else if (res['operation_type'] === 'change_datetime') {
+            this.setState({ moment: moment(res['updated_datetime']) });
         }
         // Drag & Drop
         // Delete
         else {
-            console.log(res['children_blocks']);
             this.setState({ blocks: res['children_blocks'] });
         }
     }
