@@ -10,10 +10,32 @@ class Agenda extends Component {
         this.state = {
             agenda_id: this.props.blk_id,
             agenda_title: '',
+            current_title: '',
+            typingTimeout: 0,
+            typing: false,
             blocks: []
         };
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.content !== prevState.agenda_title) {
+            return {
+                agenda_title: nextProps.content,
+                current_title: nextProps.content
+            };
+        }
+        return prevState;
+    }
+
+    componentDidMount() {
+        axios.get(`/api/agenda/${this.state.agenda_id}/`).then(res => {
+            this.setState({
+                current_title: res['data']['content']
+            });
+        });
+    }
+
+    /*
     componentDidMount() {
         console.log('component did mount');
         axios
@@ -27,11 +49,12 @@ class Agenda extends Component {
                 console.log('blocks: ', blocks);
                 this.setState({
                     blocks: blocks,
-                    agenda_title: res['data'].content
+                    agenda_title: res['data']['content']
                 });
             })
             .catch(err => console.log('this agenda has no child block'));
     }
+    */
 
     onDragEnd = result => {
         if (!result.destination) {
@@ -189,7 +212,8 @@ class Agenda extends Component {
         }
 
         this.setState({
-            agenda_title: agendaTitle,
+            current_title: agendaTitle,
+            // agenda_title: agendaTitle,
             typing: false,
             typingTimeout: setTimeout(() => {
                 axios
@@ -263,6 +287,7 @@ class Agenda extends Component {
     };
 
     render() {
+        const { current_title, agenda_title } = this.state;
         return (
             <div
                 className="full-size-block-container Agenda"
@@ -278,7 +303,7 @@ class Agenda extends Component {
                     </div>
                     <input
                         onChange={this.handleChangeAgendaTitle}
-                        value={this.state.agenda_title}
+                        value={current_title}
                     />
 
                     <button onClick={this.handleAddTextBlock}>Add text</button>
@@ -290,7 +315,6 @@ class Agenda extends Component {
                 </div>
                 <div className="full-size-block-content Agenda">
                     <div className="full-size-block-content__text Agenda">
-                        <pre>{this.props.content}</pre>
                         <AgendaInside
                             noteId={this.props.noteId}
                             handleClickBlock={this.props.handleClickBlock}
