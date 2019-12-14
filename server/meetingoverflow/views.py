@@ -960,8 +960,8 @@ def modify_image(request, i_id):
     ================================================
     url: /api/image/id/
     PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
-    정보를 전달하면 됨. 예를 들어 content만 수정하고자 한다면 
-    다음과 같은 Json을 날리면 됨. 
+    정보를 전달하면 됨. 예를 들어 content만 수정하고자 한다면
+    다음과 같은 Json을 날리면 됨.
         {
             "content": "Modification",
         }
