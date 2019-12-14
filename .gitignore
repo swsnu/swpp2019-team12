@@ -120,7 +120,6 @@ var/
 ## Images ###
 *.jpg
 *.gif
-*.png
 *.svg
 *.ico
 **/private/

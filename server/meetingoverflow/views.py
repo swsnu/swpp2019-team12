@@ -185,6 +185,7 @@ def specific_profile(request, u_id):
             profile = Profile.objects.get(id=u_id)
         except Profile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
         serializer = ProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -296,7 +297,7 @@ def specific_workspace(request, w_id):
     """
     if request.method == 'GET':
         profile = request.user.profile
-        #profile = Profile.objects.get(id=1)
+        # profile = Profile.objects.get(id=1)
         try:
             workspace = Workspace.objects.get(id=w_id)
             workspaces = Workspace.objects.filter(members__in=[profile])
