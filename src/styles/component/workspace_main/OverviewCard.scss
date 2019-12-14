@@ -19,6 +19,12 @@
     &:last-child {
         margin-bottom: 0;
     }
+    &.--clicked {
+        background: $whitegray;
+        .noteCard-content-label {
+            border-top-color: $lightgray;
+        }
+    }
 
     cursor: pointer;
 

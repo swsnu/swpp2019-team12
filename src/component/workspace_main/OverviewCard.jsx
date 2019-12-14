@@ -27,23 +27,30 @@ const dummyLabels = [
     { color: '#FFCA00', text: 'Demo' }
 ];
 export const NoteCard = props => {
-    const { note } = props;
+    const { note, handleNoteClick, clicked } = props;
     const date = moment(note.created_at).format('YYYY-MM-DD HH:MM');
 
     return (
-        <div className="noteCard-container">
+        <div
+            className={`noteCard-container ${
+                clicked === note.id ? '--clicked' : ''
+            }`}>
             <div className="noteCard-title-container">
                 <div className="noteCard-title-index">
                     <div>{`#${note.id}`}</div>
                 </div>
-                <div className="noteCard-title-text">
+                <div
+                    className="noteCard-title-text"
+                    onClick={() => handleNoteClick(note)}>
                     <div>{note.title}</div>
                 </div>
                 <div className="noteCard-title-redirect">
                     <RedirectIcon />
                 </div>
             </div>
-            <div className="noteCard-content-container">
+            <div
+                className="noteCard-content-container"
+                onClick={() => handleNoteClick(note)}>
                 <div className="noteCard-content-date">
                     <div className="noteCard-content-date__label">날짜</div>
                     <div className="noteCard-content-date__data">{date}</div>

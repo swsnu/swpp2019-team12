@@ -8,16 +8,13 @@ class Overview extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            notes: [],
-            agendas: [],
-            todos: [],
-
-            noteLength: 0,
-            agendaLength: 0,
-            todoLength: 0
+            agendaInNote: [],
+            todoInNote: [],
+            clicked: -1
         };
     }
 
+    /*
     static getDerivedStateFromProps(nextProps, prevState) {
         if (
             nextProps.notes !== prevState.notes ||
@@ -38,17 +35,25 @@ class Overview extends Component {
             };
         }
     }
-    handleNoteClick = () => {};
+    */
+
+    handleNoteClick = note => {
+        const { agendas, todos } = this.props;
+        const id = note.id;
+
+        const agendaInNote = agendas.filter(agenda => agenda.note === id);
+        const todoInNote = todos.filter(todo => todo.note === id);
+
+        this.setState({
+            agendaInNote: this.state.clicked !== -1 ? [] : agendaInNote,
+            todoInNote: this.state.clicked !== -1 ? [] : todoInNote,
+            clicked: this.state.clicked !== -1 ? -1 : id
+        });
+    };
 
     render() {
-        const {
-            notes,
-            agendas,
-            todos,
-            noteLength,
-            agendaLength,
-            todoLength
-        } = this.state;
+        const { notes, agendas, todos } = this.props;
+        const { agendaInNote, todoInNote, clicked } = this.state;
         return (
             <div className="Overview-container">
                 <SubLabel title="Meeting Overview" />
@@ -60,7 +65,7 @@ class Overview extends Component {
                             <div className="Overview-section-note__label">
                                 회의록
                             </div>
-                            <div>{noteLength}</div>
+                            <div>{notes.length}</div>
                         </div>
                     </div>
                     <div className="Overview-section-agenda">
@@ -68,7 +73,7 @@ class Overview extends Component {
                             <div className="Overview-section-agenda__label">
                                 안건
                             </div>
-                            <div>{agendaLength}</div>
+                            <div>{agendaInNote.length}</div>
                         </div>
                     </div>
                     <div className="Overview-section-todo">
@@ -76,24 +81,29 @@ class Overview extends Component {
                             <div className="Overview-section-todo__label">
                                 할일
                             </div>
-                            <div>{todoLength}</div>
+                            <div>{todoInNote.length}</div>
                         </div>
                     </div>
                 </div>
 
-                {noteLength ? (
+                {notes.length ? (
                     <div className="Overview-cards">
                         <div className="Overview-note-cards">
                             {map(notes, (note, i) => (
-                                <NoteCard note={note} key={i} />
+                                <NoteCard
+                                    note={note}
+                                    key={i}
+                                    handleNoteClick={this.handleNoteClick}
+                                    clicked={clicked}
+                                />
                             ))}
                         </div>
 
                         <div
                             className={`Overview-agenda-cards ${
-                                agendaLength ? '' : '--empty'
+                                agendaInNote.length ? '' : '--empty'
                             }`}>
-                            {agendaLength ? (
+                            {agendaInNote.length ? (
                                 <div></div>
                             ) : (
                                 <>
@@ -111,9 +121,9 @@ class Overview extends Component {
 
                         <div
                             className={`Overview-todo-cards ${
-                                todoLength ? '' : '--empty'
+                                todoInNote.length ? '' : '--empty'
                             }`}>
-                            {todoLength ? (
+                            {todoInNote.length ? (
                                 <div></div>
                             ) : (
                                 <>
