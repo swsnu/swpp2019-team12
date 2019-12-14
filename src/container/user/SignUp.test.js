@@ -2,7 +2,6 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 import SignUp from './SignUp';
 import axios from 'axios';
-import { createBrowserHistory } from 'history';
 describe('<SignUp />', () => {
     afterEach(() => {
         jest.clearAllMocks();
@@ -241,11 +240,15 @@ describe('<SignUp />', () => {
         expect(mockEvent.preventDefault).toHaveBeenCalledTimes(1);
     });
 
-    it('should submit form when all inputs are vaild', async () => {
+    it('should submit form when all inputs are vaild', async done => {
         axios.post = jest.fn((url, user_info) => {
             return new Promise((resolve, reject) => {
                 const result = {
-                    status: 200
+                    status: 200,
+                    data: {
+                        nickname: 'test',
+                        id: 1
+                    }
                 };
                 resolve(result);
             });
@@ -259,6 +262,7 @@ describe('<SignUp />', () => {
                 resolve(result);
             });
         });
+        sessionStorage = { setItem: jest.fn() };
 
         const email = 'test@test.com';
         const password = 'TestPassword12!@';
@@ -270,25 +274,30 @@ describe('<SignUp />', () => {
 
         let wrapper = component.find('#user_email');
         wrapper.simulate('change', { target: { value: email } });
-        await wrapper.simulate('blur');
+        wrapper.simulate('blur');
 
         wrapper = component.find('#user_password');
         wrapper.simulate('change', { target: { value: password } });
-        wrapper.simulate('blur');
+        await wrapper.simulate('blur');
 
         wrapper = component.find('#user_password_confirmation');
         wrapper.simulate('change', {
             target: { value: password_confirmation }
         });
-        wrapper.simulate('blur');
+        await wrapper.simulate('blur');
 
         wrapper = component.find('#user_nickname');
         wrapper.simulate('change', { target: { value: nickname } });
 
         wrapper = component.find('#sign_up_button');
         await wrapper.simulate('click', mockEvent);
+
+        expect(mockEvent.preventDefault).toHaveBeenCalledTimes(1);
         expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(mockHistory.push).toHaveBeenCalled();
+        // expect(sessionStorage.setItem).toHaveBeenCalled();
         //expect(mockHistory.push).toHaveBeenCalledWith('/signin');
+        done();
     });
 
     it('should not submit form when some inputs are invaild', async () => {

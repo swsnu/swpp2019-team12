@@ -61,6 +61,7 @@ class Note extends Component {
         //axios.get(`/api/`);
 
         axios.get(`/api/note/${noteId}/childrenblocks/`).then(res => {
+            console.log(res.data['children_blocks']);
             let children_blocks = null;
             if (res.data['children_blocks'] === '') {
                 children_blocks = [];
@@ -71,6 +72,7 @@ class Note extends Component {
             children_blocks.map(blk => {
                 let block_type = blk['block_type'];
                 if (block_type == 'Agenda') {
+                    console.log(blk);
                     this.setState({
                         blocks: this.state.blocks.concat({
                             block_type: 'Agenda',

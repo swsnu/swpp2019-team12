@@ -3,16 +3,14 @@ import axios from 'axios';
 
 import WorkspaceInfo from '../../component/workspace_leftbar/WorkspaceInfo';
 import MemberInfo from '../../component/workspace_leftbar/MemberInfo';
-import SettingInfo from '../../component/workspace_leftbar/SettingInfo';
+// import SettingInfo from '../../component/workspace_leftbar/SettingInfo';
 import CreateNote from '../../component/workspace_leftbar/CreateNote';
 
-import AgendaOverview from '../../component/workspace_main/AgendaOverview';
-import MeetingNoteOverview from '../../component/workspace_main/MeetingNoteOverview';
+import Overview from '../../component/workspace_main/Overview';
 
 import CreateNoteModal from '../note/CreateModal';
 import CreateWorkspaceModal from './CreateModal';
-
-import Signout from '../../component/signout/Signout';
+import UserInfo from '../../component/workspace_leftbar/Userinfo';
 
 class Workspace extends Component {
     constructor(props) {
@@ -107,7 +105,7 @@ class Workspace extends Component {
             <div className="workspace">
                 <div className="workspace-leftbar">
                     <div className="leftbar-container">
-                        <Signout history={history} />
+                        <UserInfo history={history} />
                         <WorkspaceInfo
                             history={history}
                             workspace={workspace}
@@ -117,7 +115,7 @@ class Workspace extends Component {
                             }
                         />
                         <MemberInfo members={members} workspace={workspace} />
-                        <SettingInfo />
+                        {/* <SettingInfo /> */}
                         <CreateNote
                             handleShowCreateNoteModal={
                                 this.handleShowCreateNoteModal
@@ -127,13 +125,13 @@ class Workspace extends Component {
                 </div>
 
                 <div className="workspace-main">
-                    <AgendaOverview
-                        currAgendas={currAgendas}
-                        doneAgendas={doneAgendas}
+                    <Overview
+                        notes={notes}
+                        agendas={agendas}
                         todos={todos}
-                        doneTodos={doneTodos}
+                        history={history}
                     />
-                    <MeetingNoteOverview notes={notes} history={history} />
+                    {/* <Overview notes={[]} agendas={[]} todos={[]} /> */}
                 </div>
 
                 {showCreateNoteModal && (

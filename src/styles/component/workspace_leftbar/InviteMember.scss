@@ -34,6 +34,7 @@
             padding: rem(20px) rem(20px);
 
             position: absolute;
+            z-index: 9999;
 
             box-shadow: rem(2px) rem(2px) rem(4px) rem(2px) $lightgray;
             background: $white;

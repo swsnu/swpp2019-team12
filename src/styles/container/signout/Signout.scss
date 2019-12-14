@@ -1,0 +1,32 @@
+.Signout {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: rem(15px);
+
+    .signout-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            .logout-icon {
+                fill: $darkgray;
+            }
+            .logout-button {
+                color: $darkgray;
+            }
+        }
+
+        .logout-icon {
+            height: rem(12px);
+            width: rem(14px);
+            margin-right: rem(5px);
+            fill: $gray;
+        }
+        .logout-button {
+            font-size: rem(12px);
+            color: $gray;
+        }
+    }
+}
