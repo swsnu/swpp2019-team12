@@ -872,6 +872,7 @@ def api_tag(request, w_id):
 def single_tag(request, t_id):
     """
     /api/tag/t_id/
+    특정 태그를 가지고 있는 노트와 어젠다 호출
     """
     try:
         current_tag = Tag.objects.get(id=t_id)
@@ -881,21 +882,24 @@ def single_tag(request, t_id):
     if request.method == 'GET':
         notes = Note.objects.filter(tag__in=[current_tag])
         agendas = Agenda.objcects.filter(tag__in=[current_tag])
-        pass
+        data = {
+            "notes": notes,
+            "agendas": agendas
+        }
+        return Response(data, status=status.HTTP_202_ACCEPTED)
+    
+    elif request.method == 'PATCH':
+        serializer = TagSerializer(current_tag, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'DELETE':
+        current_tag.delete()
+        return Response(status=status.HTTP_200_OK)
 
-
-# current_members = current_workspace.members.all()
-#         new_members = request.data['members']
-#         data = new_members
-#         for current_member in current_members:
-#             if current_member.id not in new_members:
-#                 data.append(current_member.id)
-#         serializer = WorkspaceSerializer(
-#             current_workspace, data={'members': data}, partial=True)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-#         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PATCH'])
 def children_blocks_of_note(request, n_id):
