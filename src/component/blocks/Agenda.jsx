@@ -35,27 +35,6 @@ class Agenda extends Component {
         });
     }
 
-    /*
-    componentDidMount() {
-        console.log('component did mount');
-        axios
-            .get(`/api/agenda/${this.state.agenda_id}/`)
-            .then(res => {
-                console.log('res of agenda: ', res);
-                let blocks = [];
-                if (res['data']['children_blocks'] !== null) {
-                    blocks = JSON.parse(res['data']['children_blocks']);
-                }
-                console.log('blocks: ', blocks);
-                this.setState({
-                    blocks: blocks,
-                    agenda_title: res['data']['content']
-                });
-            })
-            .catch(err => console.log('this agenda has no child block'));
-    }
-    */
-
     onDragEnd = result => {
         if (!result.destination) {
             return;
@@ -225,9 +204,9 @@ class Agenda extends Component {
                             .get(
                                 `/api/note/${this.props.noteId}/childrenblocks/`
                             )
-                            .then(res_2 =>
-                                this.modifyAgendaInfo(res_2, agendaTitle)
-                            );
+                            .then(res_2 => {
+                                this.modifyAgendaInfo(res_2, agendaTitle);
+                            });
                         const newAgenda = {
                             operation_type: 'change_agenda',
                             updated_agenda: agendaTitle
@@ -246,6 +225,7 @@ class Agenda extends Component {
         const agendaId = this.state.agenda_id;
         const socketRef = this.props.socketRef;
         let childrenBlocks = JSON.parse(res['data']['children_blocks']);
+        console.log('childrenBlocks', childrenBlocks);
 
         let agendaBlocks;
         agendaBlocks = childrenBlocks.filter(
@@ -256,16 +236,18 @@ class Agenda extends Component {
         });
         agendaBlocks['content'] = content;
 
+        console.log('agendaBlocks', agendaBlocks);
         let agendaIdx = -1;
         for (let i = 0; i < childrenBlocks.length; i++) {
             if (
-                childrenBlocks[i].blockType === 'Agenda' &&
+                childrenBlocks[i].block_type === 'Agenda' &&
                 childrenBlocks[i].id === agendaId
             ) {
                 agendaIdx = i;
                 break;
             }
         }
+        console.log('agendaIdx', agendaIdx);
 
         childrenBlocks.splice(agendaIdx, 1, agendaBlocks);
         console.log('child', childrenBlocks);
@@ -303,7 +285,7 @@ class Agenda extends Component {
                     </div>
                     <input
                         onChange={this.handleChangeAgendaTitle}
-                        value={current_title}
+                        value={this.state.current_title}
                     />
 
                     <button onClick={this.handleAddTextBlock}>Add text</button>
