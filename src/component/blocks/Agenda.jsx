@@ -28,11 +28,22 @@ class Agenda extends Component {
     }
 
     componentDidMount() {
-        axios.get(`/api/agenda/${this.state.agenda_id}/`).then(res => {
-            this.setState({
-                current_title: res['data']['content']
-            });
-        });
+        console.log('component did mount');
+        axios
+            .get(`/api/agenda/${this.state.agenda_id}/`)
+            .then(res => {
+                console.log('res of agenda: ', res);
+                let blocks = [];
+                if (res['data']['children_blocks'] !== null) {
+                    blocks = JSON.parse(res['data']['children_blocks']);
+                }
+                console.log('blocks: ', blocks);
+                this.setState({
+                    blocks: blocks,
+                    current_title: res['data']['content']
+                });
+            })
+            .catch(err => console.log('this agenda has no child block'));
     }
 
     onDragEnd = result => {

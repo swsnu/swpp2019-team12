@@ -41,6 +41,7 @@ export default class AgendaInside extends Component {
                 nextProps.blocks.map((blk, index) => {
                     let result;
                     if (blk.block_type === TEXT) {
+                        console.log(blk);
                         result = (
                             <Text
                                 blk_id={blk.id}
