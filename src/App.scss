@@ -26,6 +26,10 @@
 // note_right
 @import './styles/container/note/NoteRightUnfocused.scss';
 
+// blocks
+@import './styles/component/blocks/Calendar.scss';
+@import './styles/component/blocks/Todo.scss';
+
 // workspace_leftbar
 @import './styles/component/workspace_leftbar/Label.scss';
 @import './styles/component/workspace_leftbar/WorkspaceInfo.scss';

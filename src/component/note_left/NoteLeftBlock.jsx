@@ -4,8 +4,6 @@ import Text from '../blocks/Text';
 import Image from '../blocks/Image';
 import TodoContainer from '../blocks/TodoContainer';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import axios from 'axios';
-import { bigIntLiteral } from '@babel/types';
 
 const TEXT = 'Text';
 const AGENDA = 'Agenda';
@@ -37,6 +35,7 @@ class NoteLeftBlock extends Component {
         super(props);
 
         this.state = {
+            noteId: this.props.noteId,
             blocks: this.props.blocks,
             isLeft: this.props.isLeft,
             isUpdate: false
@@ -60,24 +59,33 @@ class NoteLeftBlock extends Component {
                                 handleChangeText={nextProps.handleChangeText}
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
+                                handleAddTextSocketSend={
+                                    nextProps.handleAddTextSocketSend
+                                }
                             />
                         );
                     } else if (blk.block_type === AGENDA) {
                         result = (
                             <Agenda
+                                noteId={nextProps.noteId}
                                 blk_id={blk.id}
                                 type={blk.block_type}
                                 content={blk.content}
                                 agenda_discussion={blk.agenda_discussion}
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
+                                socketRef={nextProps.socketRef}
                             />
                         );
                     } else if (blk.block_type === TODO_CONTAINER) {
                         result = (
                             <TodoContainer
                                 todos={blk.todos}
+                                noteId={nextProps.noteId}
+                                participants={nextProps.participants}
                                 handleClickBlock={nextProps.handleClickBlock}
+                                handleDeleteTodo={nextProps.handleDeleteTodo}
+                                socketRef={nextProps.socketRef}
                             />
                         );
                     } else if (blk.block_type === IMAGE) {
@@ -136,8 +144,10 @@ class NoteLeftBlock extends Component {
                         id="add_todo_block"
                         onClick={() =>
                             this.props.handleAddTodoBlock(this.state.noteId)
-                        }
-                    />
+                        }>
+                        Todo
+                    </button>
+
                     <button
                         className="add-block-button"
                         id="add_image_block"

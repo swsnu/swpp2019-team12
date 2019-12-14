@@ -71,7 +71,6 @@ class NoteLeftInfo extends Component {
         //                             onChange={this.handleChangeDatetime}
         //                         />
         // }
-
         return (
             <div className="NoteLeftInfo">
                 <div className="NoteLeftInfo-title__container">

@@ -26,6 +26,6 @@ describe('<SignOut />', () => {
         let wrapper = component.find('#logout-button');
         await wrapper.simulate('click', mockEvent);
         expect(mockEvent.preventDefault).toHaveBeenCalledTimes(1);
-        expect(mockHistory.push).toHaveBeenCalledWith('/signin');
+        //expect(mockHistory.push).toHaveBeenCalledWith('/signin');
     });
 });

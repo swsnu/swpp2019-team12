@@ -1,3 +1,4 @@
+"""This is manage.py of MeetingOverFlow Project"""
 #!/usr/bin/env python
 import os
 import sys

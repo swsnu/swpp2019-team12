@@ -6,7 +6,7 @@
 import React, { Component } from 'react';
 import CKEditor from '@ckeditor/ckeditor5-react';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+// import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
@@ -20,12 +20,12 @@ import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
 import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+// import Image from '@ckeditor/ckeditor5-image/src/image';
+// import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+// import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+// import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
+// import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
+// import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
@@ -40,7 +40,7 @@ import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
+//import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
 export default class Editor extends Component {
     state = {
@@ -53,7 +53,10 @@ export default class Editor extends Component {
     // presenceListElementRef = React.createRef();
 
     componentDidMount() {
-        this.setState({ isLayoutReady: true });
+        this.setState({
+            isLayoutReady: true,
+            cloudServicesConfig: this.props.configuration
+        });
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -70,7 +73,7 @@ export default class Editor extends Component {
 
     render() {
         return (
-            <div className="App">
+            <div className="Editor">
                 <main>
                     {/* <div className="message">
                         <div className="centered"></div>
@@ -81,6 +84,7 @@ export default class Editor extends Component {
                             <div
                                 className="presence"></div>
                         </div> */}
+                        {/* {this.renderLoading()} */}
                         {this.renderEditor()}
                     </div>
                 </main>
@@ -118,6 +122,7 @@ export default class Editor extends Component {
                                 this.boundCheckPendingActions
                             );
                             this.refreshDisplayMode(editor);
+                            this.props.handleLoading();
                         }}
                         onChange={(event, editor) => {
                             console.log({ event, editor });
@@ -137,12 +142,12 @@ export default class Editor extends Component {
                                 FontSize,
                                 Heading,
                                 Highlight,
-                                Image,
-                                ImageCaption,
-                                ImageResize,
-                                ImageStyle,
-                                ImageToolbar,
-                                ImageUpload,
+                                // Image,
+                                // ImageCaption,
+                                // ImageResize,
+                                // ImageStyle,
+                                // ImageToolbar,
+                                // ImageUpload,
                                 Italic,
                                 Link,
                                 List,
@@ -156,8 +161,8 @@ export default class Editor extends Component {
                                 Strikethrough,
                                 Table,
                                 TableToolbar,
-                                Underline,
-                                UploadAdapter
+                                Underline
+                                // UploadAdapter
                             ],
                             toolbar: [
                                 'heading',
@@ -190,8 +195,7 @@ export default class Editor extends Component {
                                     .uploadUrl,
                                 webSocketUrl: this.state.cloudServicesConfig
                                     .webSocketUrl,
-                                documentId: this.state.cloudServicesConfig
-                                    .documentId
+                                documentId: this.props.documentId
                             },
                             image: {
                                 toolbar: [
@@ -226,14 +230,6 @@ export default class Editor extends Component {
                 )}
                 {/* <div ref={this.sidebarElementRef} className="sidebar"></div> */}
             </div>
-        );
-    }
-
-    renderFooter() {
-        return (
-            <footer>
-                <div className="centered"></div>
-            </footer>
         );
     }
 
