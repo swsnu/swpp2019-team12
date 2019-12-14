@@ -97,7 +97,7 @@ class Image extends Component {
                                     id="image"
                                     accept="image/png, image/jpeg"
                                     onChange={this.handleChangeImage}
-                                    // required
+                                    required
                                 />
                             </p>
                             <input type="submit" value="submit" />
