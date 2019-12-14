@@ -535,7 +535,6 @@ def textblock_child_of_note(request, n_id):
             'note': n_id,
             'is_parent_note': True,
         }
-
         serializer = TextBlockSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -589,6 +588,7 @@ def textblock_child_of_agenda(request, a_id):
             serializer.save()
             agenda.has_text_block = True
             agenda.save()
+            # print(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -770,7 +770,6 @@ def todoblock_child_of_agenda(request, a_id):
         }
     ==================================================
     """
-    print("todoblock inside agenda api")
     try:
         agenda = Agenda.objects.get(id=a_id)
     except Agenda.DoesNotExist:
@@ -839,3 +838,224 @@ def modify_todoblock(request, t_id):
     elif request.method == 'DELETE':
         current_todo.delete()
         return Response(status=status.HTTP_200_OK)
+
+
+@api_view(['GET', 'POST'])
+def image_child_of_note(request, n_id):
+    """
+    ===================================================
+    url: /api/note/:id/images/
+    Note에 직접 속해있는 Image를 모두 가져오거나 생성하는 API
+    POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+        {
+            "image": ,
+            "content": "Hello World",
+            "layer_x": 0,
+            "layer_y": 1
+        }
+    ===================================================
+    """
+    # 해당 노트의 모든 Image 리스트 반환
+    if request.method == 'GET':
+        print('child of note GET')
+        queryset = Image.objects.filter(
+            is_parent_note=True,
+            note__id=n_id
+        )
+        if queryset.count() > 0:
+            print('more than 0')
+            serializer = ImageSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            print('not more than 0')
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    elif request.method == 'POST':
+        print('child of note POST')
+        try:
+            Note.objects.get(id=n_id)
+        except(Note.DoesNotExist) as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        try:
+            data = {
+                # 'image': request.data['image'],
+                'content': request.data['content'],
+                'layer_x': request.data['layer_x'],
+                'layer_y': request.data['layer_y'],
+                'note': n_id,
+                'is_parent_note': True,
+                'is_submitted': False
+            }
+        except KeyError:
+            print(e)
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = ImageSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST'])
+def image_child_of_agenda(request, a_id):
+    """
+    ==================================================
+    url: /api/agenda/:id/images/
+    Agenda에 속해있는 Image를 모두 가져오거나 생성하는 API
+
+    POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+        {
+            "image": ,
+            "content": "Hello World",
+            "layer_x": 0,
+            "layer_y": 1
+        }
+    ==================================================
+    """
+    try:
+        agenda = Agenda.objects.get(id=a_id)
+    except Agenda.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        print('child of agenda GET')
+        queryset = Image.objects.filter(
+            is_parent_note=False,
+            note__id=agenda.note.id,
+            parent_agenda__id=a_id
+        )
+        if queryset.count() > 0:
+            serializer = ImageSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    elif request.method == 'POST':
+        print('child of agenda POST')
+        data = {
+            'image': request.data['image'],
+            'content': request.data['content'],
+            'layer_x': request.data['layer_x'],
+            'layer_y': request.data['layer_y'],
+            'note': agenda.note.id,
+            'parent_agenda': a_id,
+            'is_parent_note': False
+        }
+        serializer = ImageSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            agenda.has_image_block = True
+            agenda.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PATCH', 'DELETE'])
+def modify_image(request, i_id):
+    """
+    ================================================
+    url: /api/image/id/
+    PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
+    정보를 전달하면 됨. 예를 들어 content만 수정하고자 한다면
+    다음과 같은 Json을 날리면 됨.
+        {
+            "content": "Modification",
+        }
+    ================================================
+    """
+    try:
+        current_image = Image.objects.get(id=i_id)
+    except Image.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        serializer = ImageSerializer(current_image)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == 'PATCH':
+        current_image.is_submitted = True
+        # current_image.save()
+        serializer = ImageSerializer(
+            current_image, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            print(serializer)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        current_image.delete()
+        return Response(status=status.HTTP_200_OK)
+
+
+@api_view(['GET', 'PATCH'])
+def children_blocks_of_note(request, n_id):
+    """
+    ===================================================
+    url: /api/note/:id/childrenblocks/
+    Note에 직접 속해있는 TextBlock을 모두 가져오거나 생성하는 API
+    POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+        {
+            "content": "Hello World",
+            "layer_x": 0,
+            "layer_y": 1
+        }
+    ===================================================
+    """
+    if request.method == 'GET':
+        try:
+            note = Note.objects.get(id=n_id)
+        except Note.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        response = {
+            'children_blocks': note.children_blocks
+        }
+        return JsonResponse(response, status=status.HTTP_200_OK)
+
+    elif request.method == 'PATCH':
+        try:
+            note = Note.objects.get(id=n_id)
+        except Note.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        new_blocks = request.data['children_blocks']
+        note.children_blocks = new_blocks
+        note.save()
+        return Response(note.children_blocks, status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(['GET', 'PATCH'])
+def children_blocks_of_agenda(request, a_id):
+    """
+    ===================================================
+    url: /api/note/:id/childrenblocks/
+    Agenda에 직접 속해있는 TextBlock을 모두 가져오거나 생성하는 API
+    POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+        {
+            "content": "Hello World",
+            "layer_x": 0,
+            "layer_y": 1
+        }
+    ===================================================
+    """
+    if request.method == 'GET':
+        try:
+            agenda = Agenda.objects.get(id=a_id)
+        except Agenda.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        response = {
+            'children_blocks': agenda.children_blocks
+        }
+        return JsonResponse(response, status=status.HTTP_200_OK)
+
+    elif request.method == 'PATCH':
+        try:
+            agenda = Agenda.objects.get(id=a_id)
+        except Agenda.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        new_blocks = request.data['children_blocks']
+        agenda.children_blocks = new_blocks
+        agenda.save()
+        return Response(agenda.children_blocks, status=status.HTTP_202_ACCEPTED)

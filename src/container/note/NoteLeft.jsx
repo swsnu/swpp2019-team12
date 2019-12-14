@@ -28,15 +28,20 @@ class NoteLeft extends Component {
                         blocks={this.props.blocks}
                         participants={this.props.participants}
                         handleDeleteBlock={this.props.handleDeleteBlock}
+                        handleAddTextSocketSend={
+                            this.props.handleAddTextSocketSend
+                        }
                         handleAddAgendaBlock={this.props.handleAddAgendaBlock}
                         handleAddTextBlock={this.props.handleAddTextBlock}
                         handleAddTodoBlock={this.props.handleAddTodoBlock}
+                        handleAddImageBlock={this.props.handleAddImageBlock}
                         handleAddCalendarBlock={
                             this.props.handleAddCalendarBlock
                         }
                         handleDeleteTodo={this.props.handleDeleteTodo}
                         handleClickBlock={this.props.handleClickBlock}
                         onDragEnd={this.props.onDragEnd}
+                        socketRef={this.props.socketRef}
                     />
                 </div>
             </div>

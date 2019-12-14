@@ -49,6 +49,7 @@ class Text extends Component {
                     </button>
                 </div>
                 <EditorWrapper
+                    handleAddTextSocketSend={this.props.handleAddTextSocketSend}
                     blk_id={this.props.blk_id}
                     documentId={this.props.documentId}
                     handleChangeText={this.handleChangeText}
