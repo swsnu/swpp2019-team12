@@ -54,7 +54,7 @@ urlpatterns = [
          name='image_child_ofnote'),
     path('agenda/<int:a_id>/images/', views.image_child_of_agenda,
          name='image_child_of_agenda'),
-    path('image/<int:id>/', views.modify_image, name='modify_image'),
+    path('image/<int:i_id>/', views.modify_image, name='modify_image'),
 
     # TodoBlock
     path(

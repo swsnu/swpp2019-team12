@@ -874,7 +874,7 @@ def image_child_of_note(request, n_id):
     elif request.method == 'POST':
         print('child of note POST')
         try:
-            note = Note.objects.get(id=n_id)
+            Note.objects.get(id=n_id)
         except(Note.DoesNotExist) as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
         try:
@@ -887,7 +887,7 @@ def image_child_of_note(request, n_id):
                 'is_parent_note': True,
                 'is_submitted': False
             }
-        except(Exception) as e:
+        except KeyError:
             print(e)
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ImageSerializer(data=data)
@@ -899,26 +899,25 @@ def image_child_of_note(request, n_id):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-"""
-==================================================
-url: /api/agenda/:id/images/
-Agenda에 속해있는 Image를 모두 가져오거나 생성하는 API
-
-POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
-    {
-        "image": ,
-        "content": "Hello World",
-        "layer_x": 0,
-        "layer_y": 1
-    }
-==================================================
-"""
 @api_view(['GET', 'POST'])
 def image_child_of_agenda(request, a_id):
-    print('image child of agenda')
+    """
+    ==================================================
+    url: /api/agenda/:id/images/
+    Agenda에 속해있는 Image를 모두 가져오거나 생성하는 API
+
+    POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨
+        {
+            "image": ,
+            "content": "Hello World",
+            "layer_x": 0,
+            "layer_y": 1
+        }
+    ==================================================
+    """
     try:
         agenda = Agenda.objects.get(id=a_id)
-    except(Agenda.DoesNotExist) as e:
+    except Agenda.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         print('child of agenda GET')
@@ -955,25 +954,25 @@ def image_child_of_agenda(request, a_id):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-"""
-================================================
-url: /api/image/id/
-PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
-정보를 전달하면 됨. 예를 들어 content만 수정하고자 한다면 
-다음과 같은 Json을 날리면 됨. 
-    {
-        "content": "Modification",
-    }
-================================================
-"""
 @api_view(['GET', 'PATCH', 'DELETE'])
-def modify_image(request, id):
+def modify_image(request, i_id):
+    """
+    ================================================
+    url: /api/image/id/
+    PATCH 를 하는 경우 수정하고자 하는 field에 대해서만 새로운
+    정보를 전달하면 됨. 예를 들어 content만 수정하고자 한다면 
+    다음과 같은 Json을 날리면 됨. 
+        {
+            "content": "Modification",
+        }
+    ================================================
+    """
     try:
-        current_image = Image.objects.get(id=id)
-    except(Image.DoesNotExist) as e:
+        current_image = Image.objects.get(id=i_id)
+    except Image.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
-        serializer = ImageSerializer(current_textblock)
+        serializer = ImageSerializer(current_image)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':

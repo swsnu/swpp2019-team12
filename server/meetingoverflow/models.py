@@ -152,6 +152,9 @@ class File(models.Model):
 
 
 class Image(models.Model):
+    """
+    Image Model
+    """
     image = models.ImageField(null=True, blank=True,
                               default='/screenshot.png')
     content = models.CharField(max_length=100, null=True, blank=True)
