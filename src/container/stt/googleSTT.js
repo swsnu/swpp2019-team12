@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 import { map } from 'lodash';
 import axios from 'axios';
 import STTScript from './STTScript';
+import recordImage from '../../assets/icons/record_icon.png';
 
 const END_POINT = '127.0.0.1:9000/';
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -250,16 +251,21 @@ class googleSTT extends Component {
             <div className="googleSTT-container">
                 <audio id="audio" ref={this.audio}></audio>
 
-                <button
-                    type="button"
-                    onClick={this.startRecording}
-                    disabled={recording || somebodyRecording}
-                    className={
-                        recording || somebodyRecording ? 'disabled' : ''
-                    }>
-                    Start recording
-                </button>
-                <button
+                <div className="googleSTT-recording-view">
+                    <button
+                        type="button"
+                        onClick={this.handleRecordingButton}
+                        disabled={somebodyRecording && !recording}
+                        className={
+                            !recording && somebodyRecording
+                                ? 'disabled'
+                                : 'recording-button'
+                        }>
+                        {recording ? 'Stop' : 'Start'}
+                    </button>
+                    <img className="record-image" src={recordImage} />
+                </div>
+                {/* <button
                     type="button"
                     onClick={this.stopRecording}
                     disabled={!somebodyRecording || !recording}
@@ -267,7 +273,7 @@ class googleSTT extends Component {
                         recording && somebodyRecording ? '' : 'disabled'
                     }>
                     Stop recording
-                </button>
+                </button> */}
                 <div>
                     {somebodyRecording &&
                         this.state.recorderNickname + ' is recording'}
@@ -276,11 +282,6 @@ class googleSTT extends Component {
                     scripts={this.state.texts}
                     lastScript={this.state.currentText}
                 />
-                {/* <div>
-                    {map(texts, (text, i) => (
-                        <div key={i}>{text}</div>
-                    ))}
-                </div> */}
             </div>
         );
     }
