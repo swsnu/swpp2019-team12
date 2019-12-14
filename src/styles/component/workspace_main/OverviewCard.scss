@@ -1,0 +1,143 @@
+.noteCard-container {
+    width: rem(330px);
+    height: rem(200px);
+
+    box-shadow: 1px 1px 2px 1px $lightgray;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    padding: rem(5px);
+    background: $white;
+
+    border-radius: rem(4px);
+    border: 1px solid $lightgray;
+
+    margin-bottom: rem(30px);
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    cursor: pointer;
+
+    .noteCard-title-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        height: rem(60px);
+
+        .noteCard-title-index {
+            width: 15%;
+            height: 100%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+
+            div {
+                color: $tertiary;
+            }
+        }
+        .noteCard-title-text {
+            width: 70%;
+            height: 100%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: rem(10px) 0;
+
+            div {
+                display: -webkit-box;
+
+                font-size: rem(16px);
+                font-weight: 800;
+                line-height: 1.15;
+
+                text-align: center;
+
+                word-break: break-all;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                // white-space: nowrap;
+
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+        }
+        .noteCard-title-redirect {
+            width: 15%;
+            height: 100%;
+
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+
+            path {
+                fill: $lightgray;
+            }
+
+            svg:hover {
+                path {
+                    fill: $primary;
+                }
+                cursor: pointer;
+            }
+        }
+    }
+    .noteCard-content-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        padding: rem(5px) rem(30px) rem(20px) rem(30px);
+        height: rem(95px);
+
+        .noteCard-content-date,
+        .noteCard-content-location,
+        .noteCard-content-participant {
+            display: flex;
+        }
+        .noteCard-content-date__label,
+        .noteCard-content-location__label,
+        .noteCard-content-participant__label {
+            width: 30%;
+        }
+        .noteCard-content-date__data,
+        .noteCard-content-location__data,
+        .noteCard-content-participant__data {
+            width: 70%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            -webkit-line-clamp: 1;
+
+            color: $tertiary;
+        }
+    }
+
+    .noteCard-content-label {
+        display: flex;
+        padding: rem(8px) rem(5px) rem(5px) rem(5px);
+        border-top: 1px solid $whitegray;
+        cursor: default;
+
+        .noteCard-content-label-element {
+            font-size: rem(12px);
+            color: white;
+
+            border-radius: rem(8px);
+            padding: rem(2px) rem(8px);
+
+            font-weight: 400;
+
+            margin-right: rem(5px);
+            flex-wrap: wrap;
+
+            cursor: pointer;
+        }
+    }
+}

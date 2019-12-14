@@ -6,8 +6,7 @@ import MemberInfo from '../../component/workspace_leftbar/MemberInfo';
 // import SettingInfo from '../../component/workspace_leftbar/SettingInfo';
 import CreateNote from '../../component/workspace_leftbar/CreateNote';
 
-import AgendaOverview from '../../component/workspace_main/AgendaOverview';
-import MeetingNoteOverview from '../../component/workspace_main/MeetingNoteOverview';
+import Overview from '../../component/workspace_main/Overview';
 
 import CreateNoteModal from '../note/CreateModal';
 import CreateWorkspaceModal from './CreateModal';
@@ -126,13 +125,7 @@ class Workspace extends Component {
                 </div>
 
                 <div className="workspace-main">
-                    <AgendaOverview
-                        currAgendas={currAgendas}
-                        doneAgendas={doneAgendas}
-                        todos={todos}
-                        doneTodos={doneTodos}
-                    />
-                    <MeetingNoteOverview notes={notes} history={history} />
+                    <Overview notes={notes} agendas={agendas} todos={todos} />
                 </div>
 
                 {showCreateNoteModal && (

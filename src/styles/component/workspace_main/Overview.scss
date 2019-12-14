@@ -1,0 +1,74 @@
+.Overview-container {
+    width: 100%;
+    height: 100%;
+
+    .Overview-section-divider {
+        display: flex;
+        justify-content: space-between;
+
+        width: 100%;
+        padding: 0 rem(20px);
+
+        margin-bottom: rem(30px);
+        position: relative;
+
+        &:after {
+            content: '';
+            position: absolute;
+            width: calc(100% - 4.28rem);
+            border-top: 1px solid $black;
+
+            top: 49%;
+            z-index: 2;
+        }
+
+        .Overview-section-note-bg,
+        .Overview-section-agenda-bg,
+        .Overview-section-todo-bg {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30%;
+            background: $white;
+
+            position: relative;
+            z-index: 10;
+        }
+
+        .Overview-section-note,
+        .Overview-section-agenda,
+        .Overview-section-todo {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .Overview-section-note {
+            width: rem(300px);
+        }
+        .Overview-section-agenda {
+            width: rem(300px);
+        }
+        .Overview-section-todo {
+            width: rem(300px);
+        }
+
+        .Overview-section-note__label,
+        .Overview-section-agenda__label,
+        .Overview-section-todo__label {
+            font-size: rem(18px);
+            font-weight: 700;
+            margin-right: rem(5px);
+        }
+    }
+
+    .Overview-cards {
+        display: flex;
+        height: 80%;
+
+        .Overview-note-cards {
+            padding-top: rem(10px);
+            padding-right: rem(10px);
+            overflow: auto;
+        }
+    }
+}
