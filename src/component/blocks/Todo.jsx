@@ -154,7 +154,7 @@ class Todo extends Component {
         const { todo } = this.state;
         axios
             .patch(`/api/todo/${todo.id}/`, { is_done: !todo.is_done })
-            .then(res_2 => {
+            .then(res_1 => {
                 axios.get(`/api/note/${noteId}/childrenblocks/`).then(res_2 => {
                     let todoHandleFunc = (original_todo, is_done) => {
                         original_todo.is_done = !is_done;
@@ -185,7 +185,6 @@ class Todo extends Component {
                 axios.get(`/api/note/${noteId}/childrenblocks/`).then(res_2 => {
                     let todoHandleFunc = (original_todo, assignee) => {
                         let doAdd = true;
-                        console.log('FUNC', original_todo);
                         for (
                             let i = 0;
                             i < original_todo.assignees_info.length;

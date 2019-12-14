@@ -1,7 +1,12 @@
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from .serializers import AgendaSerializer, TextBlockSerializer, TodoSerializer
+from .serializers import (
+    AgendaSerializer,
+    TextBlockSerializer,
+    TodoSerializer,
+    ImageSerializer,
+)
 from .models import Agenda
 
 
@@ -148,6 +153,38 @@ class BlockConsumer(WebsocketConsumer):
                         "due_date": due_date,
                     },
                 )
+            elif block_type == "Image":
+                content = block_data_json["block"]["content"]
+                layer_x = block_data_json["block"]["layer_x"]
+                layer_y = block_data_json["block"]["layer_y"]
+                n_id = block_data_json["block"]["n_id"]
+                image = block_data_json["block"]["image"]
+                data = {
+                    "content": content,
+                    "layer_x": layer_x,
+                    "layer_y": layer_y,
+                    "note": n_id,
+                    "image": image,
+                    "is_parent_note": True,
+                    "is_submitted": False,
+                }
+
+                serializer = ImageSerializer(data=data)
+                if serializer.is_valid():
+                    image = serializer.save()
+
+                # Send message to room group
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    {
+                        "type": "add_image_note",
+                        "id": image.id,
+                        "content": content,
+                        "layer_x": layer_x,
+                        "layer_y": layer_y,
+                        "note": n_id,
+                    },
+                )
         elif block_data_json["operation_type"] == "change_title":
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
@@ -164,8 +201,28 @@ class BlockConsumer(WebsocketConsumer):
                     "updated_location": block_data_json["updated_location"],
                 },
             )
+
+        elif block_data_json["operation_type"] == "change_datetime":
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "change_datetime",
+                    "updated_datetime": block_data_json["updated_datetime"],
+                },
+            )
         # 1) Block을 Drag해서 위치가 변화하는걸 받는 receive
         # 2) Block을 제거해서 변화하는 경우를 받는 receive
+        # 3) Image block에 실제 image patch하는 경우.
+
+        # 위의 경우에 해당하는 애들도 다 else로 처리하지 말고 리스트 만들어서 바꾸자.
+        # elif block_data_json["operation_type"] == "patch_image":
+        #     async_to_sync(self.channel_layer.group_send)(
+        #         self.room_group_name,
+        #         {
+        #             "type": "patch_image",
+        #             "children_blocks": block_data_json["children_blocks"],
+        #         },
+        #     )
         else:
             """
             # Send message to room group
@@ -280,6 +337,32 @@ class BlockConsumer(WebsocketConsumer):
             )
         )
 
+    def add_image_note(self, event):
+        """
+        # Add ImageBlock whose parent is note.
+        """
+        content = event["content"]
+        layer_x = event["layer_x"]
+        layer_y = event["layer_y"]
+        n_id = event["note"]
+        i_id = event["id"]
+
+        self.send(
+            text_data=json.dumps(
+                {
+                    "id": i_id,
+                    "block_type": "Image",
+                    "content": content,
+                    "layer_x": layer_x,
+                    "layer_y": layer_y,
+                    "note": n_id,
+                    "is_parent_note": True,
+                    "parent_agenda": None,
+                    "is_submitted": False,
+                }
+            )
+        )
+
     def change_title(self, event):
         """
             change title of Note
@@ -293,7 +376,7 @@ class BlockConsumer(WebsocketConsumer):
 
     def change_location(self, event):
         """
-            change title of Note
+            change location of Note
         """
         updated_location = event["updated_location"]
         self.send(
@@ -301,6 +384,20 @@ class BlockConsumer(WebsocketConsumer):
                 {
                     "operation_type": "change_location",
                     "updated_location": updated_location,
+                }
+            )
+        )
+
+    def change_datetime(self, event):
+        """
+            change title of Note
+        """
+        updated_datetime = event["updated_datetime"]
+        self.send(
+            text_data=json.dumps(
+                {
+                    "operation_type": "change_datetime",
+                    "updated_datetime": updated_datetime,
                 }
             )
         )
@@ -339,31 +436,57 @@ class AgendaConsumer(WebsocketConsumer):
     # Receive message from WebSocket
     def receive(self, text_data):
         block_data_json = json.loads(text_data)
+
         operation_type = block_data_json["operation_type"]
         if operation_type == "add_block":
-            content = block_data_json["block"]["content"]
-            layer_x = block_data_json["block"]["layer_x"]
-            layer_y = block_data_json["block"]["layer_y"]
-            document_id = block_data_json["block"]["document_id"]
-            t_id = block_data_json["block"]["id"]
+            block_type = block_data_json["block"]["block_type"]
+            if block_type == "Text":
+                content = block_data_json["block"]["content"]
+                layer_x = block_data_json["block"]["layer_x"]
+                layer_y = block_data_json["block"]["layer_y"]
+                document_id = block_data_json["block"]["document_id"]
+                t_id = block_data_json["block"]["id"]
 
-            # Send message to room group
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name,
-                {
-                    "type": "add_text",
-                    "id": t_id,
-                    "content": content,
-                    "layer_x": layer_x,
-                    "layer_y": layer_y,
-                    "document_id": document_id,
-                },
-            )
+                # Send message to room group
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    {
+                        "type": "add_text",
+                        "id": t_id,
+                        "content": content,
+                        "layer_x": layer_x,
+                        "layer_y": layer_y,
+                        "document_id": document_id,
+                    },
+                )
+            elif block_type == "Image":
+                i_id = block_data_json["block"]["id"]
+                content = block_data_json["block"]["content"]
+                layer_x = block_data_json["block"]["layer_x"]
+                layer_y = block_data_json["block"]["layer_y"]
+                image = block_data_json["block"]["image"]
+                is_parent_note = block_data_json["block"]["is_parent_note"]
+                is_submitted = block_data_json["block"]["is_submitted"]
+                parent_agenda = block_data_json["block"]["parent_agenda"]
+                # Send message to room group
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    {
+                        "type": "add_image",
+                        "id": i_id,
+                        "content": content,
+                        "layer_x": layer_x,
+                        "layer_y": layer_y,
+                        "image": image,
+                        "is_parent_note": is_parent_note,
+                        "is_submitted": is_submitted,
+                        "parent_agenda": parent_agenda,
+                    },
+                )
         else:
             """
             # Send message to room group
             """
-
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
@@ -392,6 +515,35 @@ class AgendaConsumer(WebsocketConsumer):
                     "layer_x": layer_x,
                     "layer_y": layer_y,
                     "document_id": document_id,
+                }
+            )
+        )
+
+    def add_image(self, event):
+        """
+            temporary
+        """
+        i_id = event["id"]
+        content = event["content"]
+        layer_x = event["layer_x"]
+        layer_y = event["layer_y"]
+        image = event["image"]
+        is_parent_note = event["is_parent_note"]
+        is_submitted = event["is_submitted"]
+        parent_agenda = event["parent_agenda"]
+        # Send message to WebSocket
+        self.send(
+            text_data=json.dumps(
+                {
+                    "id": i_id,
+                    "block_type": "Image",
+                    "content": content,
+                    "layer_x": layer_x,
+                    "layer_y": layer_y,
+                    "image": image,
+                    "is_parent_note": is_parent_note,
+                    "is_submitted": is_submitted,
+                    "parent_agenda": parent_agenda,
                 }
             )
         )

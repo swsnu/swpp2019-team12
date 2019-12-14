@@ -95,9 +95,6 @@ class Agenda extends Component {
         axios
             .post(`/api/agenda/${this.state.agenda_id}/textblocks/`, text_info)
             .then(res => {
-                console.log(res);
-                console.log('res doc id: ', res.data.document_id);
-                console.log(this.state.blocks);
                 const block = {
                     block_type: 'Text',
                     id: res['data']['id'],
@@ -126,11 +123,56 @@ class Agenda extends Component {
             });
     };
 
+    handleAddImageBlock = () => {
+        const image_info = {
+            image: null,
+            content: '',
+            layer_x: 0,
+            layer_y: 0,
+            block_type: 'Image'
+        };
+        axios
+            .post(`/api/agenda/${this.state.agenda_id}/images/`, image_info)
+            .then(res => {
+                console.log(res);
+                const block = {
+                    block_type: 'Image',
+                    id: res['data']['id'],
+                    content: res['data']['content'],
+                    layer_x: res['data']['layer_x'],
+                    layer_y: res['data']['layer_y'],
+                    image: res['data']['image'],
+                    is_parent_note: res['data']['is_parent_note'],
+                    is_submitted: res['data']['is_submitted'],
+                    parent_agenda: res['data']['parent_agenda']
+                };
+
+                const newBlocks = this.state.blocks.concat(block);
+                const JSON_data = {
+                    operation_type: 'add_block',
+                    block: block
+                };
+
+                axios
+                    .patch(`/api/agenda/${this.state.agenda_id}/`, {
+                        children_blocks: JSON.stringify(newBlocks)
+                    })
+                    .then(res => {
+                        console.log(res);
+                        this.AgendaRef.current.state.ws.send(
+                            JSON.stringify(JSON_data)
+                        );
+                    });
+            })
+            .catch(err => {
+                console.log('textblock insid agenda 생성 실패', err);
+            });
+    };
+
     handleSocketAgenda(data) {
         let res = JSON.parse(data);
-        console.log(res);
         if (res.hasOwnProperty('block_type')) {
-            if (res['block_type'] == 'Text')
+            if (res['block_type'] === 'Text') {
                 this.setState({
                     blocks: this.state.blocks.concat({
                         block_type: res['block_type'],
@@ -141,6 +183,22 @@ class Agenda extends Component {
                         document_id: res['document_id']
                     })
                 });
+            } else if (res['block_type'] === 'Image') {
+                console.log(res);
+                this.setState({
+                    blocks: this.state.blocks.concat({
+                        block_type: res['block_type'],
+                        id: res['id'],
+                        content: res['content'],
+                        layer_x: res['layer_x'],
+                        layer_y: res['layer_y'],
+                        image: res['image'],
+                        is_parent_note: res['is_parent_note'],
+                        is_submitted: res['is_submitted'],
+                        parent_agenda: res['parent_agenda']
+                    })
+                });
+            }
         } else {
             this.setState({ blocks: res['children_blocks'] });
         }
@@ -157,7 +215,6 @@ class Agenda extends Component {
     };
 
     handleDeleteBlockInAgenda = (axios_path, block_type, block_id) => {
-        console.log('axios path:', axios_path);
         axios
             .delete(axios_path)
             .then(res => {
@@ -182,7 +239,6 @@ class Agenda extends Component {
                         stringifiedBlocks
                     )
                     .then(res => {
-                        console.log(res);
                         this.AgendaRef.current.state.ws.send(
                             JSON.stringify(JSON_data)
                         );
@@ -271,6 +327,9 @@ class Agenda extends Component {
                             </Button>
                         </Dropdown>
                     </div>
+                    <Button onClick={this.handleAddImageBlock}>
+                        Add image
+                    </Button>
                     <button
                         onClick={this.handleClickDelete}
                         className="delete-button">
@@ -289,9 +348,9 @@ class Agenda extends Component {
                             handleDeleteBlock={this.handleDeleteBlockInAgenda}
                             handleChangeTitle={this.handleChangeTitle}
                             onDragEnd={this.onDragEnd}
-                            handleAddTextBlock={
-                                this.handleAddTextBlock
-                            }></AgendaInside>
+                            handleAddTextBlock={this.handleAddTextBlock}
+                            socketRef={this.AgendaRef}
+                        />
                     </div>
                 </div>
                 <Websocket

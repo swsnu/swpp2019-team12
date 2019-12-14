@@ -90,8 +90,6 @@ describe('<SignIn />', () => {
         wrapper = component.find('#sign_in_button');
         await wrapper.simulate('click', mockEvent);
         const instance = component.instance();
-        console.log(component.debug());
-        console.log(instance.state);
         expect(mockEvent.preventDefault).toHaveBeenCalledTimes(1);
         return expect(axios.post()).rejects.toEqual({ status: 401 });
     });

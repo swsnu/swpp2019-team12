@@ -91,7 +91,7 @@ class NoteLeftBlock extends Component {
                             />
                         );
                     } else if (blk.block_type === IMAGE) {
-                        // console.log('img blk: ', blk);
+                        console.log('img blk: ', blk);
                         result = (
                             <Image
                                 noteId={nextProps.noteId}
@@ -100,8 +100,10 @@ class NoteLeftBlock extends Component {
                                 content={blk.content}
                                 image={blk.image}
                                 is_submitted={blk.is_submitted}
+                                is_parent_note={true}
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
+                                socketRef={nextProps.socketRef}
                             />
                         );
                     } else {
