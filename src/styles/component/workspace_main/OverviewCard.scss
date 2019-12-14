@@ -196,3 +196,137 @@
         border-top-color: $lightgray;
     }
 }
+
+.todoCard-container {
+    min-width: rem(330px);
+    width: 100%;
+    height: rem(200px);
+
+    box-shadow: 1px 1px 2px 1px $lightgray;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    padding: rem(5px);
+    background: $white;
+
+    border-radius: rem(4px);
+    border: 1px solid $lightgray;
+
+    margin-bottom: rem(30px);
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+    &.--clicked {
+        background: $whitegray;
+        .noteCard-content-label {
+            border-top-color: $lightgray;
+        }
+    }
+
+    cursor: pointer;
+
+    .todoCard-title-container {
+        display: flex;
+        justify-content: space-between;
+
+        .todoCard-title-index {
+            color: $tertiary;
+        }
+
+        .todoCard-title-redirect {
+            width: 15%;
+            height: 100%;
+
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+
+            path {
+                fill: $lightgray;
+            }
+
+            svg:hover {
+                path {
+                    fill: $primary;
+                }
+                cursor: pointer;
+            }
+        }
+    }
+
+    .todoCard-label-container {
+        padding: 0 rem(30px);
+
+        display: flex;
+        justify-content: space-between;
+        color: $gray;
+    }
+
+    .todoCard-content-container {
+        padding: 0 rem(20px);
+        height: 65%;
+        overflow: auto;
+
+        .todoCard-content-element:last-child {
+            margin-bottom: rem(5px);
+        }
+        .todoCard-content-element {
+            display: flex;
+            justify-content: space-between;
+
+            .todoCard-content-element__todo {
+                width: 70%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                -webkit-line-clamp: 1;
+
+                display: flex;
+                align-items: center;
+
+                margin-bottom: rem(10px);
+
+                .todoCard-content-element__checkbox-icon {
+                    width: rem(14px);
+                    height: rem(14px);
+
+                    box-shadow: 0px 0px 1px 1px $lightgray inset;
+                    background: white;
+                    border-radius: rem(2px);
+
+                    margin-right: rem(20px);
+
+                    &.done {
+                        background: $secondary;
+                    }
+                }
+                .todoCard-content-element__todo-text {
+                    font-size: rem(15px);
+                    span {
+                        font-size: rem(14px);
+                        color: $quaternary;
+                        margin-right: rem(5px);
+                    }
+
+                    &.done {
+                        color: $lightgray;
+                        span {
+                            color: $lightgray;
+                        }
+                    }
+                }
+            }
+            .todoCard-content-element__due {
+                &.--late {
+                    color: $error;
+                }
+                &.--done {
+                    color: $lightgray;
+                }
+            }
+        }
+    }
+}

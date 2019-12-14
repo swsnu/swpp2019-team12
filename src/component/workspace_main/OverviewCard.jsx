@@ -171,15 +171,68 @@ export class AgendaCard extends Component {
 }
 
 export const TodoCard = props => {
-    const { todos } = props;
+    const { notes, agendas, todos, clicked, history } = props;
+    console.log(todos, notes, agendas);
+    /*
+    assignees: [1]
+content: "첫번쨰 투두입니당"
+due_date: "2019-12-16"
+id: 75
+is_done: false
+is_parent_note: true
+layer_x: 0
+layer_y: 0
+note: 24
+parent_agenda: null
+workspace: null
+
+0: {id: 58, content: "어젠다 안건 -1", layer_x: 0, layer_y: 0, is_parent_note: true, …}
+0:
+children_blocks: "[{"block_type":"Agenda","id":58,"content":" 어젠다 안건 -1 ","layer_x":0,"layer_y":0},{"block_type":"Agenda","id":59,"content":" 데모 비디오 제작 문제","layer_x":0,"layer_y":0},{"block_type":"Agenda","id":60,"content":" Test 용 안건","layer_x":0,"layer_y":0},{"block_type":"Text","id":33,"content":"새로 생성된 텍스트 블록","layer_x":0,"layer_y":0,"documentId":"1n8q2n63637"},{"block_type":"Text","id":34,"content":"새로 생성된 텍스트 블록","layer_x":0,"layer_y":0,"documentId":"32e7517i32d"},{"block_type":"Agenda","id":68,"content":" 텍스트 블록 없는 안건","layer_x":0,"layer_y":0},{"todos":[{"id":75,"block_type":"TodoContainer","content":"첫번쨰 투두입니당","layer_x":0,"layer_y":0,"assignees":[1],"due_date":"2019-12-16","note":"24","is_parent_note":true,"is_done":false,"parent_agenda":null,"worspace":null,"assignees_info":[{"id":1,"nickname":"CHAEMIN"}]},{"id":76,"block_type":"TodoContainer","content":"두번째 투두입니다아아","layer_x":0,"layer_y":0,"assignees":[2],"due_date":"2019-12-27","note":"24","is_parent_note":true,"is_done":false,"parent_agenda":null,"worspace":null,"assignees_info":[{"id":2,"nickname":"YEJI"}]},{"id":77,"block_type":"TodoContainer","content":"할 일을 채워주세요","layer_x":0,"layer_y":0,"assignees":[4],"due_date":"2019-12-13","note":"24","is_parent_note":true,"is_done":true,"parent_agenda":null,"worspace":null,"assignees_info":[{"id":4,"nickname":"TAEYOUNG"}]},{"id":78,"block_type":"TodoContainer","content":"으어어어어 비디오를 만들자","layer_x":0,"layer_y":0,"assignees":[3],"due_date":"2019-12-21","note":"24","is_parent_note":true,"is_done":false,"parent_agenda":null,"worspace":null,"assignees_info":[{"id":3,"nickname":"SANGYEON"}]}],"block_type":"TodoContainer"}]"
+created_at: "2019-12-14T12:30:46.213000Z"
+id: 24
+last_modified_at: "2019-12-14T12:30:46.213000Z"
+location: "회의 장소asfdasdf"
+ml_speech_text: null
+participants: (4) [1, 2, 3, 4]
+tags: []
+title: "NTOE1"
+workspace: 1
+__proto__: Object
+    */
+
+    const renderTitle = () => {
+        const { notes, agendas, todos } = props;
+        const { is_parent_note } = todos[0];
+
+        let text;
+        if (is_parent_note) {
+            text = notes.filter(note => note.id === todos[0].note)[0].title;
+            return `회의록 - ${text}`;
+        } else {
+            text = agendas.filter(
+                agenda => agenda.id === todos[0].parent_agenda
+            )[0].content;
+            return `안건 - ${text}`;
+        }
+    };
+    const renderDue = due => moment(due).format('MMM DD');
 
     return (
-        <div className="todoCard-container">
-            <div className="todoCard-title">
-                <div className="todoCard-title__text">내 할일</div>
+        <div className={`todoCard-container ${clicked ? '--clicked' : ''}`}>
+            <div className="todoCard-title-container">
+                <div className="todoCard-title-index">
+                    <div>{`${renderTitle()}`}</div>
+                </div>
+                <div className="todoCard-title-redirect">
+                    <RedirectIcon
+                        onClick={() => history.push(`/note/${todos.note}`)}
+                    />
+                </div>
             </div>
-            <div className="todoCard-subtitle">
-                <div className="todoCard-subtitle__todo">Todos</div>
+            <div className="todoCard-label-container">
+                <div className="todoCard-label-todos">Todos</div>
+                <div className="todoCard-label-due">Due Date</div>
             </div>
 
             <div className="todoCard-content-container">
@@ -203,6 +256,16 @@ export const TodoCard = props => {
                                     {`${todo.content}`}
                                 </div>
                             )}
+                        </div>
+                        <div
+                            className={`todoCard-content-element__due ${
+                                moment(todo.due_date).diff(moment(), 'days') < 0
+                                    ? '--late'
+                                    : ''
+                            } 
+                                ${todo.is_done ? '--done' : ''}
+                            `}>
+                            {renderDue(todo.due_date)}
                         </div>
                     </div>
                 ))}

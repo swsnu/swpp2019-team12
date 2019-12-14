@@ -43,10 +43,16 @@ class Overview extends Component {
 
         const agendaInNote = agendas.filter(agenda => agenda.note === id);
         const todoInNote = todos.filter(todo => todo.note === id);
+        const todoInAgenda = agendas.map(agenda => {
+            return todos.filter(todo => todo.parent_agenda === agenda.id);
+        });
+        const todoAll = [todoInNote, ...todoInAgenda].filter(
+            todo => todo.length > 0
+        );
 
         this.setState({
             agendaInNote: this.state.clicked !== -1 ? [] : agendaInNote,
-            todoInNote: this.state.clicked !== -1 ? [] : todoInNote,
+            todoInNote: this.state.clicked !== -1 ? [] : todoAll,
             clicked: this.state.clicked !== -1 ? -1 : id
         });
     };
@@ -132,7 +138,16 @@ class Overview extends Component {
                                 todoInNote.length ? '' : '--empty'
                             }`}>
                             {todoInNote.length ? (
-                                <div></div>
+                                map(todoInNote, (todos, i) => (
+                                    <TodoCard
+                                        notes={notes}
+                                        agendas={agendas}
+                                        todos={todos}
+                                        clicked={clicked}
+                                        history={history}
+                                        key={i}
+                                    />
+                                ))
                             ) : (
                                 <>
                                     <div className="Overview-cards__empty-header">
