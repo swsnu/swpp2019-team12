@@ -132,12 +132,19 @@
             // max-height: rem(120px);
             padding: rem(10px);
             overflow: auto;
+            // align-items: center;
+            text-align: center;
             .full-size-block-content__text {
                 color: $black;
             }
+
+            img {
+                width: 40%;
+                // float: right;
+            }
         }
         .full-size-block-content.Image {
-            max-height: rem(149px);
+            // max-height: rem(149px);
             padding: rem(10px);
             overflow: auto;
             .full-size-block-content__text {
