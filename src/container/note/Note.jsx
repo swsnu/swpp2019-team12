@@ -486,6 +486,22 @@ class Note extends Component {
         );
     };
 
+    handleAddTag = tagId => {
+        const newTag = this.state.workspaceTags.find(tag => tag.id == tagId);
+        let duplicate = false;
+        this.state.noteTags.forEach(tag => {
+            if (tagId == tag.id) {
+                duplicate = true;
+            }
+        });
+        if (!duplicate) {
+            this.setState({
+                noteTags: this.state.noteTags.concat(newTag)
+            });
+        }
+        //        const noteTags = this.state.
+    };
+
     handleSocketBlock(data) {
         const noteId = this.props.match.params.n_id;
         let newBlocks = null;
@@ -605,6 +621,7 @@ class Note extends Component {
                     />
                 </div>
                 <NoteLeft
+                    handleAddTag={this.handleAddTag}
                     workspaceId={this.state.workspaceId}
                     workspaceTags={this.state.workspaceTags}
                     noteTags={this.state.noteTags}

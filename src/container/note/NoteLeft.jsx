@@ -16,6 +16,7 @@ class NoteLeft extends Component {
             <div className="Note-left" onClick={this.props.handleClickNoteLeft}>
                 <div className="Note-left-container">
                     <NoteLeftInfo
+                        handleAddTag={this.props.handleAddTag}
                         workspaceTags={this.props.workspaceTags}
                         workspaceId={this.props.workspaceId}
                         noteTags={this.props.noteTags}
