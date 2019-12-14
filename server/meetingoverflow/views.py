@@ -474,7 +474,7 @@ def specific_note(request, n_id):
         serializer = NoteSerializer(
             current_note, data=request.data, partial=True)
         print(request.data)
-        #print(serializer.data)
+        # print(serializer.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
@@ -954,7 +954,7 @@ def image_child_of_note(request, n_id):
         print('child of note POST')
         try:
             Note.objects.get(id=n_id)
-        except(Note.DoesNotExist) as e:
+        except Note.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         try:
             data = {
