@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Agenda from '../blocks/Agenda';
 import Text from '../blocks/Text';
+import Image from '../blocks/Image';
 import TodoContainer from '../blocks/TodoContainer';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
@@ -11,6 +12,13 @@ const IMAGE = 'Image';
 const TABLE = 'Table';
 const CALENDAR = 'Calendar';
 const PDF = 'PDF';
+
+const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+    return result;
+};
 
 /* block color */
 const getItemStyle = (isDragging, draggableStyle) => ({
@@ -66,9 +74,6 @@ class NoteLeftBlock extends Component {
                                 agenda_discussion={blk.agenda_discussion}
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
-                                handleAddAgendaChildrenBlocks={
-                                    nextProps.handleAddAgendaChildrenBlocks
-                                }
                                 socketRef={nextProps.socketRef}
                             />
                         );
@@ -81,6 +86,20 @@ class NoteLeftBlock extends Component {
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteTodo={nextProps.handleDeleteTodo}
                                 socketRef={nextProps.socketRef}
+                            />
+                        );
+                    } else if (blk.block_type === IMAGE) {
+                        // console.log('img blk: ', blk);
+                        result = (
+                            <Image
+                                noteId={nextProps.noteId}
+                                blk_id={blk.id}
+                                type={blk.block_type}
+                                content={blk.content}
+                                image={blk.image}
+                                is_submitted={blk.is_submitted}
+                                handleClickBlock={nextProps.handleClickBlock}
+                                handleDeleteBlock={nextProps.handleDeleteBlock}
                             />
                         );
                     } else {
@@ -134,8 +153,9 @@ class NoteLeftBlock extends Component {
                         id="add_image_block"
                         onClick={() =>
                             this.props.handleAddImageBlock(this.state.noteId)
-                        }
-                    />
+                        }>
+                        이미지
+                    </button>
                     <button
                         className="add-block-button"
                         id="add_calendar_block"

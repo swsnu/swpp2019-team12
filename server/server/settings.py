@@ -91,7 +91,7 @@ DATABASES = {
 }
 
 # Deploy DB
-#DATABASES = {
+# DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.mysql',
 #        'NAME': 'djangodb',
@@ -100,7 +100,7 @@ DATABASES = {
 #        'HOST': 'localhost',
 #        'PORT': '',
 #    }
-#}
+# }
 
 
 # Password validation
@@ -110,9 +110,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator", },
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator", },
 ]
 
 
@@ -133,7 +133,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = "/static/"
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
+
+# Uploading Images
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
+MEDIA_URL = '/media/'
 
 # Django-channels setting
 ASGI_APPLICATION = "server.routing.application"
@@ -141,9 +147,8 @@ ASGI_APPLICATION = "server.routing.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {"hosts": [("127.0.0.1", 6379)],},
+        "CONFIG": {"hosts": [("127.0.0.1", 6379)], },
     },
 }
 
 CORS_ORIGIN_WHITELIST = ("http://127.0.0.1:3000",)
-

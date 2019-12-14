@@ -105,6 +105,7 @@ class Note extends Component {
                                     });
                             });
                         }
+<<<<<<< HEAD
                     });
 
                     this.setState({
@@ -113,6 +114,36 @@ class Note extends Component {
                 }
             });
         });
+=======
+                    });
+
+                    this.setState({
+                        blocks: this.state.blocks.concat(todoContainer)
+                    });
+                }
+            });
+        });
+
+        axios
+            .get(`/api/note/${noteId}/images/`)
+            .then(res => {
+                console.log('axios get images', res);
+                res['data'].forEach(blk => {
+                    this.setState({
+                        blocks: this.state.blocks.concat({
+                            block_type: 'Image',
+                            id: blk['id'],
+                            image: blk['image'],
+                            content: blk['content'],
+                            is_submitted: blk['is_submitted'],
+                            layer_x: blk['layer_x'],
+                            layer_y: blk['layer_y']
+                        })
+                    });
+                });
+            })
+            .catch(err => console.log('No Images'));
+>>>>>>> d8db6e4547222747ae4e82a0bb7a2ae161ec6ee6
 
         axios
             .get(`/api/note/${noteId}/`)
@@ -381,10 +412,28 @@ class Note extends Component {
         this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data));
     };
 
-    handleAddImageBlock = noteId => {
-        console.log(
-            `Need to Implement adding Image Block to specific note whose id is ${noteId}`
-        );
+    handleAddImageBlock = () => {
+        const noteId = this.props.match.params.n_id;
+        // Block Create API call 할 곳.
+        const image_info = {
+            image: null,
+            content: '',
+            layer_x: 0,
+            layer_y: 0
+        };
+        axios.post(`/api/note/${noteId}/images/`, image_info).then(res => {
+            this.setState({
+                blocks: this.state.blocks.concat({
+                    block_type: 'Image',
+                    // image: null,
+                    id: res['data']['id'],
+                    content: res['data']['content'],
+                    layer_x: res['data']['layer_x'],
+                    layer_y: res['data']['layer_y'],
+                    is_submitted: false
+                })
+            });
+        });
     };
 
     handleAddCalendarBlock = () => {
@@ -436,6 +485,7 @@ class Note extends Component {
         );
     };
 
+<<<<<<< HEAD
     /**
      *
      * 나중에 안 돌아가면 살려요
@@ -455,6 +505,8 @@ class Note extends Component {
         });
     };
     */
+=======
+>>>>>>> d8db6e4547222747ae4e82a0bb7a2ae161ec6ee6
     handleSocketBlock(data) {
         const noteId = this.props.match.params.n_id;
         let newBlocks = null;
@@ -588,14 +640,18 @@ class Note extends Component {
                     handleAddAgendaBlock={this.handleAddAgendaBlock}
                     handleAddTextBlock={this.handleAddTextBlock}
                     handleAddTodoBlock={this.handleAddTodoBlock}
+                    handleAddImageBlock={this.handleAddImageBlock}
                     handleAddCalendarBlock={this.handleAddCalendarBlock}
                     handleAddParticipant={this.handleAddParticipant}
                     handleAddTextSocketSend={this.handleAddTextSocketSend}
                     onDragEnd={this.onDragEnd}
                     handleDeleteTodo={this.handleDeleteTodo}
+<<<<<<< HEAD
                     handleAddAgendaChildrenBlocks={
                         this.handleAddAgendaChildrenBlocks
                     }
+=======
+>>>>>>> d8db6e4547222747ae4e82a0bb7a2ae161ec6ee6
                     socketRef={this.BlockRef}
                 />
                 <Websocket
@@ -605,11 +661,14 @@ class Note extends Component {
                     // url={`wss://www.meetingoverflow.space:8443/ws/${noteId}/block/`}
                     ref={this.BlockRef}
                     onMessage={this.handleSocketBlock.bind(this)}
+<<<<<<< HEAD
                 />
                 <GoogleSTT
                     room={noteId}
                     nickname={loggedInUserNickname}
                     somebodyRecording={this.state.somebodyRecording}
+=======
+>>>>>>> d8db6e4547222747ae4e82a0bb7a2ae161ec6ee6
                 />
             </div>
         );
