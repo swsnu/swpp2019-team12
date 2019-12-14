@@ -41,7 +41,8 @@ class Note extends Component {
             typing: false,
             typingTimeout: 0,
             somebodyRecording: false,
-            iStartedRecording: false
+            iStartedRecording: false,
+            tags: []
         };
     }
 
@@ -54,6 +55,8 @@ class Note extends Component {
         }
 
         const noteId = this.props.match.params.n_id;
+
+        //axios.get(`/api/`);
 
         axios.get(`/api/note/${noteId}/childrenblocks/`).then(res => {
             let children_blocks = null;
@@ -137,6 +140,7 @@ class Note extends Component {
         axios
             .get(`/api/note/${noteId}/`)
             .then(res => {
+                console.log(res);
                 this.setState({
                     ...this.state,
                     note_id: res['data']['id'],
@@ -146,7 +150,8 @@ class Note extends Component {
                     last_modified_at: res['data']['last_modified_at'],
                     ml_speech_text: res['data']['ml_speech_text'],
                     participants_id: res['data']['participants'],
-                    moment: moment(res['data']['created_at'])
+                    moment: moment(res['data']['created_at']),
+                    tags: res['data']['tags']
                 });
                 return res['data']['participants'];
             })
@@ -581,6 +586,7 @@ class Note extends Component {
         const loggedInUserNickname = sessionStorage.getItem(
             'LoggedInUserNickname'
         );
+        console.log('note tags: ', this.state.tags);
         return (
             <div className="Note">
                 <div className="file-tree">
@@ -591,6 +597,7 @@ class Note extends Component {
                     />
                 </div>
                 <NoteLeft
+                    tags={this.state.tags}
                     handleDeleteBlock={this.handleDeleteBlock}
                     note_title={this.state.title}
                     meeting_date={this.state.created_at}

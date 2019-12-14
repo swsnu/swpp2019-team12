@@ -109,16 +109,17 @@ class Agenda extends Component {
         let res = JSON.parse(data);
         console.log(res);
         if (res.hasOwnProperty('block_type')) {
-            this.setState({
-                blocks: this.state.blocks.concat({
-                    block_type: res['block_type'],
-                    id: res['id'],
-                    content: res['content'],
-                    layer_x: res['layer_x'],
-                    layer_y: res['layer_y'],
-                    documentId: res['document_id']
-                })
-            });
+            if (res['block_type'] == 'Text')
+                this.setState({
+                    blocks: this.state.blocks.concat({
+                        block_type: res['block_type'],
+                        id: res['id'],
+                        content: res['content'],
+                        layer_x: res['layer_x'],
+                        layer_y: res['layer_y'],
+                        documentId: res['document_id']
+                    })
+                });
         } else {
             this.setState({ blocks: res['children_blocks'] });
         }

@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.utils import timezone
 from django.core.files.storage import FileSystemStorage
+import random
 
 
 class Profile(models.Model):
@@ -49,6 +50,13 @@ class Workspace(models.Model):
         return f"name: {self.name}"
 
 
+def random_color():
+    """
+    generating random color for tag
+    """
+    return random.randint(0, 255)
+
+
 class Tag(models.Model):
     """
     Tag model
@@ -56,6 +64,8 @@ class Tag(models.Model):
     content = models.CharField(max_length=100, blank=False, null=False)
     workspace = models.ForeignKey(
         Workspace, on_delete=models.CASCADE, null=True)
+    color = models.CharField(
+        max_length=100, default=random_color(), null=False)
 
     def __str__(self):
         return f'content: {self.content}'
@@ -108,6 +118,7 @@ class Agenda(models.Model):
     has_file_block = models.BooleanField(default=False)
     has_agenda_block = models.BooleanField(default=False)
     children_blocks = models.TextField(default="", null=True, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
         return f"note_id: {self.note.id}, block_id: {self.id}"

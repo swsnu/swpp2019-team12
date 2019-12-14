@@ -178,6 +178,27 @@ class BlockConsumer(WebsocketConsumer):
                 },
             )
 
+    # def add_tag(self, event):
+    #     """
+    #     # Send message to WebSocket
+    #     """
+    #     content = event["content"]
+    #     color = event["color"]
+    #     workspace_id = event["workspace"]
+    #     tag_id = event["id"]
+
+    #     self.send(
+    #         text_data=json.dumps(
+    #             {
+    #                 "id": tag_id,
+    #                 "block_type": "Tag",
+    #                 "content": content,
+    #                 "color": color,
+    #                 "workspace": workspace_id
+    #             }
+    #         )
+    #     )
+
     # Receive message from room group
     def add_agenda(self, event):
         """
@@ -289,7 +310,7 @@ class BlockConsumer(WebsocketConsumer):
         # Send message to WebSocket
         """
         children_blocks = event["children_blocks"]
-        self.send(text_data=json.dumps({"children_blocks": children_blocks,}))
+        self.send(text_data=json.dumps({"children_blocks": children_blocks, }))
 
 
 class AgendaConsumer(WebsocketConsumer):
@@ -380,4 +401,4 @@ class AgendaConsumer(WebsocketConsumer):
         # Send message to WebSocket
         """
         children_blocks = event["children_blocks"]
-        self.send(text_data=json.dumps({"children_blocks": children_blocks,}))
+        self.send(text_data=json.dumps({"children_blocks": children_blocks, }))

@@ -77,6 +77,9 @@ urlpatterns = [
         "agenda/<int:a_id>/childrenblocks/",
         views.children_blocks_of_agenda,
         name="children_blocks_of_agenda",
-    )
+    ),
+
+    path("tag/<int:t_id>/", views.single_tag, name="single_tag"),
+    path("workspace/<int:w_id>/tag/", views.api_tag, name="api_tag")
     # Websocket
 ]

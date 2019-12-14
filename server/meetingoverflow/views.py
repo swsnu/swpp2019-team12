@@ -870,6 +870,7 @@ def api_tag(request, w_id):
 
 @api_view(['GET', 'PATCH', 'DELETE'])
 def single_tag(request, t_id):
+    print("hi")
     """
     /api/tag/t_id/
     특정 태그를 가지고 있는 노트와 어젠다 호출
@@ -880,24 +881,33 @@ def single_tag(request, t_id):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        notes = Note.objects.filter(tag__in=[current_tag])
-        agendas = Agenda.objcects.filter(tag__in=[current_tag])
+        notes = Note.objects.filter(tags__in=[current_tag])
+        agendas = Agenda.objects.filter(tags__in=[current_tag])
+        print(notes)
+        print(agendas)
+        note_serialzier = NoteSerializer(notes, many=True)
+        agenda_serializer = AgendaSerializer(agendas, many=True)
         data = {
-            "notes": notes,
-            "agendas": agendas
+            "notes": note_serialzier.data,
+            "agendas": agenda_serializer.data,
+            "tag_title": current_tag.content,
+            "tag_color": current_tag.color
         }
         return Response(data, status=status.HTTP_202_ACCEPTED)
-    
+
     elif request.method == 'PATCH':
-        serializer = TagSerializer(current_tag, data=request.data, partial=True)
+        serializer = TagSerializer(
+            current_tag, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status.HTTP_202_ACCEPTED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-    
+
     elif request.method == 'DELETE':
         current_tag.delete()
+
+
 def image_child_of_note(request, n_id):
     """
     ===================================================

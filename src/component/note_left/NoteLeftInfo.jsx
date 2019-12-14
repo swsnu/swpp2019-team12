@@ -3,6 +3,7 @@ import moment from 'moment';
 import DateTime from 'react-datetime';
 import { Label } from './Label';
 import ParticipantInfo from './ParticipantInfo';
+import Tag from '../blocks/Tag';
 
 class NoteLeftInfo extends Component {
     constructor(props) {
@@ -10,7 +11,8 @@ class NoteLeftInfo extends Component {
         this.state = {
             isTitleClicked: false,
             isDateClicked: false,
-            isLocationClicked: false
+            isLocationClicked: false,
+            tags: this.props.tags
         };
     }
 
@@ -27,6 +29,20 @@ class NoteLeftInfo extends Component {
     };
     handleConvertTag_Location = () => {
         this.setState({ isLocationClicked: !this.state.isLocationClicked });
+    };
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.tags != prevState.tags) {
+            return { tags: nextProps.tags };
+        }
+        return null;
+    }
+
+    renderTags = () => {
+        return (
+            this.state.tags &&
+            this.state.tags.map((tag, i) => <Tag key={i} tagId={tag} />)
+        );
     };
 
     render() {
@@ -71,6 +87,7 @@ class NoteLeftInfo extends Component {
         //                             onChange={this.handleChangeDatetime}
         //                         />
         // }
+        console.log('leftinfo tags: ', this.state.tags);
         return (
             <div className="NoteLeftInfo">
                 <div className="NoteLeftInfo-title__container">
@@ -110,6 +127,7 @@ class NoteLeftInfo extends Component {
                         participants={this.props.participants}
                     />
                 </div>
+                {this.renderTags()}
             </div>
         );
     }
