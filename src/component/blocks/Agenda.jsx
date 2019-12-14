@@ -27,6 +27,10 @@ class Agenda extends Component {
                 agenda_title: nextProps.content,
                 current_title: nextProps.content
             };
+        } else if (nextProps.workspaceTags != prevState.workspaceTags) {
+            return {
+                workspaceTags: nextProps.workspaceTags
+            };
         }
         return prevState;
     }
@@ -57,14 +61,6 @@ class Agenda extends Component {
                 });
             })
             .catch(err => console.log('this agenda has no child block'));
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.workspaceTags != prevState.workspaceTags) {
-            return {
-                workspaceTags: nextProps.workspaceTags
-            };
-        }
     }
 
     onDragEnd = result => {
