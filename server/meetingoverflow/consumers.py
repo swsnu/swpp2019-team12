@@ -228,7 +228,6 @@ class BlockConsumer(WebsocketConsumer):
             """
             # Send message to room group
             """
-            print("들어옵니까?")
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
@@ -355,7 +354,6 @@ class BlockConsumer(WebsocketConsumer):
             )
         )
 
-
     def change_location(self, event):
         """
             change location of Note
@@ -418,30 +416,59 @@ class AgendaConsumer(WebsocketConsumer):
     # Receive message from WebSocket
     def receive(self, text_data):
         block_data_json = json.loads(text_data)
+
         operation_type = block_data_json["operation_type"]
         if operation_type == "add_block":
-            content = block_data_json["block"]["content"]
-            layer_x = block_data_json["block"]["layer_x"]
-            layer_y = block_data_json["block"]["layer_y"]
-            document_id = block_data_json["block"]["document_id"]
-            t_id = block_data_json["block"]["id"]
+            block_type = block_data_json["block"]["block_type"]
+            if block_type == "Text":
+                content = block_data_json["block"]["content"]
+                layer_x = block_data_json["block"]["layer_x"]
+                layer_y = block_data_json["block"]["layer_y"]
+                document_id = block_data_json["block"]["document_id"]
+                t_id = block_data_json["block"]["id"]
 
-            # Send message to room group
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name,
-                {
-                    "type": "add_text",
-                    "id": t_id,
-                    "content": content,
-                    "layer_x": layer_x,
-                    "layer_y": layer_y,
-                    "document_id": document_id,
-                },
-            )
+                # Send message to room group
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    {
+                        "type": "add_text",
+                        "id": t_id,
+                        "content": content,
+                        "layer_x": layer_x,
+                        "layer_y": layer_y,
+                        "document_id": document_id,
+                    },
+                )
+            elif block_type == "Image":
+                print("IMAGE!!!!!!!!!")
+                i_id = block_data_json["block"]["id"]
+                content = block_data_json["block"]["content"]
+                layer_x = block_data_json["block"]["layer_x"]
+                layer_y = block_data_json["block"]["layer_y"]
+                image = block_data_json["block"]["image"]
+                is_parent_note = block_data_json["block"]["is_parent_note"]
+                is_submitted = block_data_json["block"]["is_submitted"]
+                parent_agenda = block_data_json["block"]["parent_agenda"]
+                # Send message to room group
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    {
+                        "type": "add_image",
+                        "id": i_id,
+                        "content": content,
+                        "layer_x": layer_x,
+                        "layer_y": layer_y,
+                        "image": image,
+                        "is_parent_note": is_parent_note,
+                        "is_submitted": is_submitted,
+                        "parent_agenda": parent_agenda,
+                    },
+                )
         else:
             """
             # Send message to room group
             """
+            print("이곳으로... 오시게나")
 
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
@@ -471,6 +498,36 @@ class AgendaConsumer(WebsocketConsumer):
                     "layer_x": layer_x,
                     "layer_y": layer_y,
                     "document_id": document_id,
+                }
+            )
+        )
+
+    def add_image(self, event):
+        """
+            temporary
+        """
+        print("ADD_IMAGE")
+        i_id = event["id"]
+        content = event["content"]
+        layer_x = event["layer_x"]
+        layer_y = event["layer_y"]
+        image = event["image"]
+        is_parent_note = event["is_parent_note"]
+        is_submitted = event["is_submitted"]
+        parent_agenda = event["parent_agenda"]
+        # Send message to WebSocket
+        self.send(
+            text_data=json.dumps(
+                {
+                    "id": i_id,
+                    "block_type": "Image",
+                    "content": content,
+                    "layer_x": layer_x,
+                    "layer_y": layer_y,
+                    "image": image,
+                    "is_parent_note": is_parent_note,
+                    "is_submitted": is_submitted,
+                    "parent_agenda": parent_agenda,
                 }
             )
         )

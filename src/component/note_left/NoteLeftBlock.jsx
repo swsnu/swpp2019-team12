@@ -98,6 +98,7 @@ class NoteLeftBlock extends Component {
                                 content={blk.content}
                                 image={blk.image}
                                 is_submitted={blk.is_submitted}
+                                is_parent_note={true}
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
                                 socketRef={nextProps.socketRef}
