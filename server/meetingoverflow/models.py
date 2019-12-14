@@ -54,7 +54,7 @@ def random_color():
     """
     generating random color for tag
     """
-    return random.randint(0, 255)
+    return "%06x" % random.randint(0, 0xFFFFFF)
 
 
 class Tag(models.Model):
