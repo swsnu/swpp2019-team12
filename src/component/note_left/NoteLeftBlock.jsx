@@ -133,7 +133,7 @@ class NoteLeftBlock extends Component {
                         onClick={() =>
                             this.props.handleAddAgendaBlock(this.state.noteId)
                         }>
-                        안건
+                        Agenda
                     </button>
                     <button
                         className="add-block-button"
@@ -158,7 +158,7 @@ class NoteLeftBlock extends Component {
                         onClick={() =>
                             this.props.handleAddImageBlock(this.state.noteId)
                         }>
-                        이미지
+                        Image
                     </button>
                 </div>
 

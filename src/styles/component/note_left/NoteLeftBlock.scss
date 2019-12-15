@@ -33,6 +33,10 @@
         flex-direction: column;
 
         .add-block-button {
+            background: rgb(240, 79, 69);
+            color: white;
+            font-weight: 600;
+            font-size: rem(14px);
             width: 100%;
             height: rem(50px);
             margin: 0 0 rem(6px) 0;
