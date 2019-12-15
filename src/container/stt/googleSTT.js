@@ -6,7 +6,7 @@ import STTScript from './STTScript';
 import recordImage from '../../assets/icons/record_icon.png';
 import { Button } from 'antd';
 
-const END_POINT = '52.141.6.169:9000/';
+const END_POINT = 'wss://www.meetingoverflow.space:9000/sttws/';
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 
 // Stream Audio Configuration
