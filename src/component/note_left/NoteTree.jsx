@@ -30,7 +30,7 @@ export default class NoteTree extends Component {
                         target.scrollIntoView({
                             behavior: 'smooth'
                         });
-                        this.props.history.push(targetId);
+                        //this.props.history.push(targetId);
                     }}
                 />
             </div>
@@ -46,8 +46,7 @@ const changeBlocksToTree = (props, blocks) => {
             data = {
                 key: '[' + blk.block_type + '] ' + blk.content + blk.id,
                 label: '[' + blk.block_type + '] ' + blk.content,
-                type: blk.block_type,
-                nodes: childrenNodes
+                type: blk.block_type
             };
         } else {
             data = {
