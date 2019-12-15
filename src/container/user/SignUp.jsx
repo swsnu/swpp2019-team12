@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Label, SubLabel } from '../../component/signup/Label';
-import Logo from '../../assets/icons/logo.png';
+import Logo from '../../assets/icons/logo_only.png';
 
 class SignUp extends Component {
     constructor(props) {

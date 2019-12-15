@@ -312,8 +312,7 @@ def specific_workspace(request, w_id):
         note_serializer = NoteSerializer(notes, many=True)
         agendas = Agenda.objects.filter(note__workspace=workspace)
         agenda_serializer = AgendaSerializer(agendas, many=True)
-        todos = Todo.objects.filter(
-            workspace__id=w_id).filter(assignees__in=[profile])
+        todos = Todo.objects.all()
         todo_serializer = TodoSerializer(todos, many=True)
 
         # Add workspaces, workspace info
@@ -561,7 +560,7 @@ def textblock_child_of_note(request, n_id):
 def textblock_child_of_agenda(request, a_id):
     """
     ==================================================
-    url: /api/agenda/:id/textblock/
+    url: /api/agenda/:id/textblocks/
     Agenda에 속해있는 TextBlock을 모두 가져오거나 생성하는 API
 
     POST 를 하는 경우 Frontend에서 다음과 같은 Json을 날리면 됨

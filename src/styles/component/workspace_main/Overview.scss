@@ -1,0 +1,163 @@
+.Overview-container {
+    width: 100%;
+    height: 100%;
+
+    .Overview-section-divider {
+        display: flex;
+        justify-content: space-between;
+
+        width: 100%;
+        padding: 0 rem(20px);
+
+        margin-bottom: rem(30px);
+        position: relative;
+
+        &:after {
+            content: '';
+            position: absolute;
+            width: calc(100% - 4.28rem);
+            border-top: 1px solid $black;
+
+            top: 49%;
+            z-index: 2;
+        }
+
+        .Overview-section-note-bg,
+        .Overview-section-agenda-bg,
+        .Overview-section-todo-bg {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30%;
+            background: $white;
+
+            position: relative;
+            z-index: 10;
+        }
+
+        .Overview-section-note,
+        .Overview-section-agenda,
+        .Overview-section-todo {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .Overview-section-note {
+            min-width: rem(300px);
+            width: calc(28% - 2.14rem);
+        }
+        .Overview-section-agenda {
+            width: rem(300px);
+            width: calc(28%);
+        }
+        .Overview-section-todo {
+            width: rem(400px);
+            width: calc(34% - 2.14rem);
+        }
+
+        .Overview-section-note__label,
+        .Overview-section-agenda__label,
+        .Overview-section-todo__label {
+            font-size: rem(18px);
+            font-weight: 700;
+            margin-right: rem(5px);
+        }
+    }
+
+    .Overview-cards__empty {
+        display: flex;
+        height: 80%;
+
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .Overview-cards__empty-header {
+            font-size: rem(20px);
+            font-weight: 700;
+
+            color: $lightgray;
+            margin-bottom: rem(10px);
+            text-align: center;
+        }
+        .Overview-cards__empty-content {
+            font-size: rem(16px);
+            font-weight: 400;
+
+            color: $lightgray;
+            text-align: center;
+        }
+    }
+
+    .Overview-cards {
+        display: flex;
+        justify-content: space-between;
+        height: 80%;
+
+        .Overview-note-cards {
+            padding-top: rem(10px);
+            padding-right: rem(10px);
+            overflow: auto;
+            width: 28%;
+        }
+        .Overview-agenda-cards {
+            padding-top: rem(10px);
+            padding-right: rem(10px);
+            overflow: auto;
+            width: 28%;
+
+            &.--empty {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+                .Overview-cards__empty-header {
+                    font-size: rem(16px);
+                    font-weight: 700;
+                    text-align: center;
+
+                    color: $lightgray;
+                    margin-bottom: rem(10px);
+                }
+                .Overview-cards__empty-content {
+                    font-size: rem(14px);
+                    font-weight: 400;
+                    text-align: center;
+
+                    color: $lightgray;
+                }
+            }
+        }
+
+        .Overview-todo-cards {
+            padding-top: rem(10px);
+            padding-right: rem(10px);
+            overflow: auto;
+            width: 34%;
+
+            &.--empty {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+
+                .Overview-cards__empty-header {
+                    font-size: rem(16px);
+                    font-weight: 700;
+                    text-align: center;
+
+                    color: $lightgray;
+                    margin-bottom: rem(10px);
+                }
+                .Overview-cards__empty-content {
+                    font-size: rem(14px);
+                    font-weight: 400;
+                    text-align: center;
+
+                    color: $lightgray;
+                }
+            }
+        }
+    }
+}

@@ -132,12 +132,19 @@
             // max-height: rem(120px);
             padding: rem(10px);
             overflow: auto;
+            // align-items: center;
+            text-align: center;
             .full-size-block-content__text {
                 color: $black;
             }
+
+            img {
+                width: 40%;
+                // float: right;
+            }
         }
         .full-size-block-content.Image {
-            max-height: rem(149px);
+            // max-height: rem(149px);
             padding: rem(10px);
             overflow: auto;
             .full-size-block-content__text {
@@ -148,7 +155,7 @@
     }
 }
 
-// ClassName 여기에 맞게 적절히 다시 바꿔야한다.
+/*
 .todoCard-content-container {
     margin: rem(10px) 0 rem(20px) 0;
     padding: 0 rem(25px) 0 rem(20px);
@@ -234,3 +241,5 @@
         }
     }
 }
+
+*/

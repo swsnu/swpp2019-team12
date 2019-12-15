@@ -9,22 +9,24 @@
     border-left: rem(5px) solid $primary;
 
     .leftbar-component {
-        margin-top: rem(40px);
+        // margin-top: rem(40px);
     }
     .leftbar-component:first-child {
-        margin-top: 0;
+        // margin-top: 0;
     }
 
     .workspace-leftbar {
         min-width: rem(210px);
         padding: rem(12px) 0 0 rem(10px);
         border-right: 1px solid $lightgray;
-        // box-shadow: 0 rem(2px) rem(5px) rem(7px) $lightgray;
+        box-shadow: rem(2px) 0 rem(3px) rem(2px) $lightgray;
 
         .leftbar-container {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
+            padding-bottom: rem(15px);
+            height: 100%;
         }
     }
 
@@ -39,6 +41,6 @@
         flex-direction: column;
         justify-content: space-between;
 
-        background: $whitegray;
+        // background: $whitegray;
     }
 }

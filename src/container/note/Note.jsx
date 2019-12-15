@@ -61,6 +61,7 @@ class Note extends Component {
         //axios.get(`/api/`);
 
         axios.get(`/api/note/${noteId}/childrenblocks/`).then(res => {
+            console.log(res.data['children_blocks']);
             let children_blocks = null;
             if (res.data['children_blocks'] === '') {
                 children_blocks = [];

@@ -410,6 +410,19 @@ class BlockConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps({"children_blocks": children_blocks, }))
 
 
+
+    def change_title(self, event):
+        """
+            change title of Note
+        """
+        updated_title = event["updated_title"]
+        self.send(
+            text_data=json.dumps(
+                {"operation_type": "change_title", "updated_title": updated_title}
+            )
+        )
+
+
 class AgendaConsumer(WebsocketConsumer):
     """
         For changing agenda child blocks
@@ -446,8 +459,8 @@ class AgendaConsumer(WebsocketConsumer):
                 layer_y = block_data_json["block"]["layer_y"]
                 document_id = block_data_json["block"]["document_id"]
                 t_id = block_data_json["block"]["id"]
-
                 # Send message to room group
+
                 async_to_sync(self.channel_layer.group_send)(
                     self.room_group_name,
                     {
@@ -483,6 +496,15 @@ class AgendaConsumer(WebsocketConsumer):
                         "parent_agenda": parent_agenda,
                     },
                 )
+
+        elif operation_type == "change_agenda":
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "change_agenda",
+                    "content": block_data_json["updated_agenda"],
+                },
+            )
         else:
             """
             # Send message to room group
@@ -494,6 +516,7 @@ class AgendaConsumer(WebsocketConsumer):
                     "children_blocks": block_data_json["children_blocks"],
                 },
             )
+
 
     # Receive message from room group
     def add_text(self, event):
@@ -553,4 +576,21 @@ class AgendaConsumer(WebsocketConsumer):
         # Send message to WebSocket
         """
         children_blocks = event["children_blocks"]
-        self.send(text_data=json.dumps({"children_blocks": children_blocks, }))
+        self.send(text_data=json.dumps({"children_blocks": children_blocks,}))
+
+
+    def change_agenda(self, event):
+        """
+            change title of agenda
+        """
+        updated_agenda= event["content"]
+        self.send(
+            text_data=json.dumps(
+                {
+                    "operation_type": "change_agenda",
+                    "updated_agenda": updated_agenda,
+                }
+            )
+        )
+
+        

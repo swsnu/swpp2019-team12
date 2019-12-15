@@ -76,17 +76,6 @@ class InviteMember extends Component {
         };
     }
 
-    componentDidMount() {
-        axios
-            .get('/api/profile/')
-            .then(res => {
-                const {
-                    data: { user }
-                } = res;
-            })
-            .catch(err => console.error(err));
-    }
-
     handleSearchMember = () => {
         const { emailMember } = this.state;
         if (emailMember) {
@@ -123,7 +112,6 @@ class InviteMember extends Component {
         this.setState({ emailMember: e.target.value }, this.handleSearchMember);
     };
 
-    /******************* TODO ***********************/
     handleInviteMembers = () => {
         const { addedMemberId } = this.state;
         const { history } = this.props;
@@ -135,7 +123,6 @@ class InviteMember extends Component {
                 window.location.reload();
             });
     };
-    /*************************************************/
 
     render() {
         const { emailMember, searchedMember, addedMember } = this.state;
@@ -153,6 +140,7 @@ class InviteMember extends Component {
                     handleDeleteMember={this.handleDeleteMember}
                     members={members}
                 />
+
                 <button
                     className="invite-confirm-button"
                     onClick={this.handleInviteMembers}>

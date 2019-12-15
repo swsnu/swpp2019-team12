@@ -1,24 +1,29 @@
-import React, { Component } from 'react';
+import React from 'react';
 import axios from 'axios';
-import { Button } from 'antd';
+import { ReactComponent as LogoutIcon } from '../../assets/icons/logout_icon.svg';
 
-export default class Signout extends Component {
-    handleClick() {
+const Signout = props => {
+    const handleClick = e => {
         axios
             .get('/api/signout/')
             .then(res => {
                 sessionStorage.removeItem('LoggedInUserNickname');
                 sessionStorage.removeItem('LoggedInUserId');
+                props.history.push('/signin');
             })
-            .catch(err => console.log('로그인 안된 상태'))
-            .finally(res => this.props.history.push('/signin'));
-    }
+            .catch(err => {});
+    };
 
-    render() {
-        return (
-            <div>
-                <Button onClick={() => this.handleClick()}>로그아웃</Button>
+    return (
+        <div className="Signout">
+            <div className="signout-container" onClick={handleClick}>
+                <LogoutIcon className="logout-icon" />
+                <div id="logout-button" className="logout-button">
+                    LOGOUT
+                </div>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
+
+export default Signout;
