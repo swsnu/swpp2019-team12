@@ -125,7 +125,7 @@ io.on('connection', client => {
         }
     });
 
-    const startRecognitionStream = client => {
+    const startRecognitionStream = client_ => {
         recognizeStream = speechClient
             .streamingRecognize(request)
             .on('error', console.error)
@@ -150,7 +150,7 @@ io.on('connection', client => {
             });
     };
 
-    const stopRecognitionStream = client => {
+    const stopRecognitionStream = client_ => {
         if (recognizeStream) {
             recognizeStream.end();
         }

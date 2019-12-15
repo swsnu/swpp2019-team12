@@ -68,7 +68,7 @@ class Note extends Component {
                 children_blocks = JSON.parse(res.data['children_blocks']);
             }
 
-            children_blocks.map(blk => {
+            children_blocks.forEach(blk => {
                 let block_type = blk['block_type'];
                 if (block_type == 'Agenda') {
                     let agendaChildrenBlocks = null;
@@ -125,7 +125,6 @@ class Note extends Component {
                             });
                         }
                     });
-
                     this.setState({
                         blocks: this.state.blocks.concat(todoContainer)
                     });

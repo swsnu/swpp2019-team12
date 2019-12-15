@@ -207,7 +207,6 @@ class Agenda extends Component {
                     parent_agenda: res['parent_agenda']
                 });
             } else if (res['block_type'] === 'TodoContainer') {
-                newBlocks = this.state.blocks;
                 let todoContainer = this.state.blocks.find(
                     blk => blk.block_type === 'TodoContainer'
                 );
@@ -241,7 +240,7 @@ class Agenda extends Component {
                     `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
                     stringifiedBlocks
                 )
-                .then(res => console.log(res));
+                .then(res_ => console.log(res_));
         } else if (res['operation_type'] === 'change_agenda') {
             this.setState({ agenda_title: res['updated_agenda'] });
         } else {
@@ -328,7 +327,7 @@ class Agenda extends Component {
                         `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
                         stringifiedBlocks
                     )
-                    .then(res => {
+                    .then(res_ => {
                         this.AgendaRef.current.state.ws.send(
                             JSON.stringify(JSON_data)
                         );
@@ -377,7 +376,7 @@ class Agenda extends Component {
                             JSON.stringify(newAgenda)
                         );
                     })
-                    .catch(e => console.log(e));
+                    .catch(err => console.log(err));
             }, 1818)
         });
     };
@@ -420,7 +419,7 @@ class Agenda extends Component {
         };
         axios
             .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
-            .then(res => {
+            .then(res_ => {
                 socketRef.current.state.ws.send(JSON.stringify(JSON_data));
             })
             .catch(err => console.log(err));
@@ -465,7 +464,6 @@ class Agenda extends Component {
     };
 
     render() {
-        const { current_title, agenda_title } = this.state;
         const menu = (
             <Menu>
                 {this.state.workspaceTags.map((tag, i) => (

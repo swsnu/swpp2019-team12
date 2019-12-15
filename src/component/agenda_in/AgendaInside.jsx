@@ -114,14 +114,14 @@ export default class AgendaInside extends Component {
                                                 key={blk.id}
                                                 draggableId={blk.id}
                                                 index={index}>
-                                                {(provided, snapshot) => (
+                                                {(provided_, snapshot_) => (
                                                     <div
-                                                        ref={provided.innerRef}
-                                                        {...provided.draggableProps}
-                                                        {...provided.dragHandleProps}
+                                                        ref={provided_.innerRef}
+                                                        {...provided_.draggableProps}
+                                                        {...provided_.dragHandleProps}
                                                         style={getItemStyle(
-                                                            snapshot.isDragging,
-                                                            provided
+                                                            snapshot_.isDragging,
+                                                            provided_
                                                                 .draggableProps
                                                                 .style
                                                         )}>
