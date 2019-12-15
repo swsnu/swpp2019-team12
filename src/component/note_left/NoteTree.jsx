@@ -30,7 +30,17 @@ export default class NoteTree extends Component {
     render() {
         return (
             <div>
-                <TreeMenu data={this.state.treeData} />
+                <TreeMenu
+                    data={this.state.treeData}
+                    onClickItem={item => {
+                        const targetId = `#${item.type}-${item.index}`;
+                        const target = document.querySelector(targetId);
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        this.props.history.push(targetId);
+                    }}
+                />
             </div>
         );
     }
@@ -59,13 +69,15 @@ const changeBlocksToTree = (props, blocks) => {
             }
 
             data = {
-                key: '[' + blk.block_type + '] ' + blk.content,
+                key: '[' + blk.block_type + '] ' + blk.content + blk.id,
                 label: '[' + blk.block_type + '] ' + blk.content,
+                type: blk.block_type,
                 nodes: childrenNodes
             };
         } else {
             data = {
                 key: '[' + blk.block_type + '] ' + blk.id,
+                type: blk.block_type,
                 label: '[' + blk.block_type + ']'
             };
         }

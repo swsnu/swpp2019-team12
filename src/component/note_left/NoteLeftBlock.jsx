@@ -178,6 +178,10 @@ class NoteLeftBlock extends Component {
                                             index={index}>
                                             {(provided_, snapshot_) => (
                                                 <div
+                                                    id={blk.id.replace(
+                                                        /(-\w+$)/g,
+                                                        ''
+                                                    )}
                                                     ref={provided_.innerRef}
                                                     {...provided_.draggableProps}
                                                     {...provided_.dragHandleProps}
