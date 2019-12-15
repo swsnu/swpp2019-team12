@@ -618,6 +618,7 @@ class Note extends Component {
                     <div className="file-tree">
                         <NoteTree
                             blocks={this.state.blocks}
+                            history={history}
                             agendaChildrenBlocks={
                                 this.state.agenda_children_blocks
                             }

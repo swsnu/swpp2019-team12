@@ -21,7 +21,18 @@ export default class NoteTree extends Component {
     render() {
         return (
             <div>
-                <TreeMenu className="tree-menu" data={this.state.treeData} />
+                <TreeMenu
+                    className="tree-menu"
+                    data={this.state.treeData}
+                    onClickItem={item => {
+                        const targetId = `#${item.type}-${item.index}`;
+                        const target = document.querySelector(targetId);
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        this.props.history.push(targetId);
+                    }}
+                />
             </div>
         );
     }
@@ -33,12 +44,15 @@ const changeBlocksToTree = (props, blocks) => {
         let data;
         if (blk.block_type == 'Agenda') {
             data = {
-                key: '[' + blk.block_type + '] ' + blk.content,
-                label: '[' + blk.block_type + '] ' + blk.content
+                key: '[' + blk.block_type + '] ' + blk.content + blk.id,
+                label: '[' + blk.block_type + '] ' + blk.content,
+                type: blk.block_type,
+                nodes: childrenNodes
             };
         } else {
             data = {
                 key: '[' + blk.block_type + '] ' + blk.id,
+                type: blk.block_type,
                 label: '[' + blk.block_type + ']'
             };
         }
