@@ -17,12 +17,6 @@ import Note from './container/note/Note';
 // Not Found Component
 import NotFound from './component/NotFound';
 
-// Google STT
-import googleSTT from './container/stt/googleSTT';
-// Editor
-
-import CalendarBlock from './component/blocks/Calendar';
-
 function App() {
     return (
         <Router>
@@ -49,12 +43,6 @@ function App() {
                         path="/:workspace_name/:w_id/note/:n_id"
                         component={Note}
                     />
-                    <Route
-                        exact
-                        path="/calendar-test"
-                        component={CalendarBlock}
-                    />
-                    <Route exact path="/googleSTT" component={googleSTT} />
                     <Route component={NotFound} />
                 </Switch>
             </div>
