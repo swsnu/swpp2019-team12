@@ -45,18 +45,35 @@ class AgendaConsumer(WebsocketConsumer):
                 layer_x = block_data_json["block"]["layer_x"]
                 layer_y = block_data_json["block"]["layer_y"]
                 document_id = block_data_json["block"]["document_id"]
-                t_id = block_data_json["block"]["id"]
+                a_id = block_data_json["block"]["a_id"]
+                n_id = block_data_json["block"]["n_id"]
                 # Send message to room group
+
+                data = {
+                    "content": content,
+                    "layer_x": layer_x,
+                    "layer_y": layer_y,
+                    "document_id": document_id,
+                    "note": n_id,
+                    "is_parent_note": False,
+                    "parent_agenda": a_id,
+                }
+
+                serializer = TextBlockSerializer(data=data)
+                if serializer.is_valid():
+                    text = serializer.save()
 
                 async_to_sync(self.channel_layer.group_send)(
                     self.room_group_name,
                     {
                         "type": "add_text",
-                        "id": t_id,
+                        "id": text.id,
                         "content": content,
                         "layer_x": layer_x,
                         "layer_y": layer_y,
                         "document_id": document_id,
+                        "note": n_id,
+                        "parent_agenda": a_id,
                     },
                 )
             elif block_type == "Image":
@@ -165,6 +182,8 @@ class AgendaConsumer(WebsocketConsumer):
         layer_y = event["layer_y"]
         t_id = event["id"]
         document_id = event["document_id"]
+        parent_agenda = event["parent_agenda"]
+        n_id = event["note"]
         # Send message to WebSocket
         self.send(
             text_data=json.dumps(
@@ -175,6 +194,9 @@ class AgendaConsumer(WebsocketConsumer):
                     "layer_x": layer_x,
                     "layer_y": layer_y,
                     "document_id": document_id,
+                    "parent_agenda": parent_agenda,
+                    "note": n_id,
+                    "is_parent_note": False,
                 }
             )
         )

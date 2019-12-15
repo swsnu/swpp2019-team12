@@ -415,20 +415,6 @@ class Note extends Component {
         };
 
         this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data));
-
-        // axios.post(`/api/note/${noteId}/images/`, image_info).then(res => {
-        //     this.setState({
-        //         blocks: this.state.blocks.concat({
-        //             block_type: 'Image',
-        //             // image: null,
-        //             id: res['data']['id'],
-        //             content: res['data']['content'],
-        //             layer_x: res['data']['layer_x'],
-        //             layer_y: res['data']['layer_y'],
-        //             is_submitted: false
-        //         })
-        //     });
-        // });
     };
 
     handleAddCalendarBlock = () => {

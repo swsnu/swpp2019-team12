@@ -40,11 +40,6 @@ class Agenda extends Component {
         axios
             .get(`/api/agenda/${this.state.agenda_id}/`)
             .then(res => {
-                console.log(res);
-                // let blocks = [];
-                // if (res['data']['children_blocks'] !== '') {
-                //     blocks = JSON.parse(res['data']['children_blocks']);
-                // }
                 let blocks = null;
                 if (res.data['agenda']['children_blocks'] === '') {
                     blocks = [];
@@ -52,8 +47,6 @@ class Agenda extends Component {
                     blocks = JSON.parse(res.data['agenda']['children_blocks']);
                 }
                 const agendaTags = res['data']['tags'];
-                console.log('agendaTags didmount', agendaTags);
-                console.log('blocks: ', blocks);
 
                 this.setState({
                     blocks: blocks,
@@ -98,41 +91,52 @@ class Agenda extends Component {
     handleAddTextBlock = () => {
         const document_id = handleDocIdInUrl();
         const text_info = {
+            a_id: this.state.agenda_id,
+            n_id: this.props.noteId,
             content: '어젠다 속 새로운 텍스트 블록',
             layer_x: 0,
             layer_y: 0,
-            document_id: document_id
+            document_id: document_id,
+            block_type: 'Text'
         };
-        axios
-            .post(`/api/agenda/${this.state.agenda_id}/textblocks/`, text_info)
-            .then(res => {
-                const block = {
-                    block_type: 'Text',
-                    id: res['data']['id'],
-                    content: res['data']['content'],
-                    layer_x: res['data']['layer_x'],
-                    layer_y: res['data']['layer_y'],
-                    document_id: res['data']['document_id']
-                };
-                const newBlocks = this.state.blocks.concat(block);
-                const JSON_data = {
-                    operation_type: 'add_block',
-                    block: block
-                };
-                axios
-                    .patch(`/api/agenda/${this.state.agenda_id}/`, {
-                        children_blocks: JSON.stringify(newBlocks),
-                        has_text_block: true
-                    })
-                    .then(res => {
-                        this.AgendaRef.current.state.ws.send(
-                            JSON.stringify(JSON_data)
-                        );
-                    });
-            })
-            .catch(err => {
-                console.log('textblock insid agenda 생성 실패', err);
-            });
+
+        const JSON_data = {
+            operation_type: 'add_block',
+            block: text_info
+        };
+
+        this.AgendaRef.current.state.ws.send(JSON.stringify(JSON_data));
+
+        // axios
+        //     .post(`/api/agenda/${this.state.agenda_id}/textblocks/`, text_info)
+        //     .then(res => {
+        //         const block = {
+        //             block_type: 'Text',
+        //             id: res['data']['id'],
+        //             content: res['data']['content'],
+        //             layer_x: res['data']['layer_x'],
+        //             layer_y: res['data']['layer_y'],
+        //             document_id: res['data']['document_id']
+        //         };
+        //         const newBlocks = this.state.blocks.concat(block);
+        //         const JSON_data = {
+        //             operation_type: 'add_block',
+        //             block: block
+        //         };
+        //         axios
+        //             .patch(`/api/agenda/${this.state.agenda_id}/`, {
+        //                 children_blocks: JSON.stringify(newBlocks),
+        //                 has_text_block: true
+        //             })
+        //             .then(res => {
+        //                 this.AgendaRef.current.state.ws.send(
+        //                     JSON.stringify(JSON_data)
+        //                 );
+        //             });
+        //     })
+        //     .catch(err => {
+        //         console.log('textblock insid agenda 생성 실패', err);
+        //     });
     };
 
     handleAddImageBlock = () => {
@@ -152,43 +156,6 @@ class Agenda extends Component {
         };
 
         this.AgendaRef.current.state.ws.send(JSON.stringify(JSON_data));
-
-        // axios
-        //     .post(`/api/agenda/${this.state.agenda_id}/images/`, image_info)
-        //     .then(res => {
-        //         console.log(res);
-        //         const block = {
-        //             block_type: 'Image',
-        //             id: res['data']['id'],
-        //             content: res['data']['content'],
-        //             layer_x: res['data']['layer_x'],
-        //             layer_y: res['data']['layer_y'],
-        //             image: res['data']['image'],
-        //             is_parent_note: res['data']['is_parent_note'],
-        //             is_submitted: res['data']['is_submitted'],
-        //             parent_agenda: res['data']['parent_agenda']
-        //         };
-
-        //         const newBlocks = this.state.blocks.concat(block);
-        //         const JSON_data = {
-        //             operation_type: 'add_block',
-        //             block: block
-        //         };
-
-        //         axios
-        //             .patch(`/api/agenda/${this.state.agenda_id}/`, {
-        //                 children_blocks: JSON.stringify(newBlocks)
-        //             })
-        //             .then(res => {
-        //                 console.log(res);
-        //                 this.AgendaRef.current.state.ws.send(
-        //                     JSON.stringify(JSON_data)
-        //                 );
-        //             });
-        //     })
-        //     .catch(err => {
-        //         console.log('imageblock insid agenda 생성 실패', err);
-        //     });
     };
 
     handleAddTodoBlock = () => {
@@ -210,68 +177,6 @@ class Agenda extends Component {
             block: todo_info
         };
         this.AgendaRef.current.state.ws.send(JSON.stringify(JSON_data));
-
-        // axios
-        //     .post(`/api/agenda/${this.state.agenda_id}/todos/`, todo_info)
-        //     .then(res => {
-        //         console.log(res);
-        //         const todo = {
-        //             block_type: 'TodoContainer',
-        //             id: res['data']['id'],
-        //             content: res['data']['content'],
-        //             layer_x: res['data']['layer_x'],
-        //             layer_y: res['data']['layer_y'],
-        //             due_date: res['data']['due_date'],
-        //             is_parent_note: res['data']['is_parent_note'],
-        //             parent_agenda: res['data']['parent_agenda'],
-        //             workspace: res['data']['workspace'],
-        //             assignees: res['data']['assignees']
-        //         };
-
-        // let newBlocks = this.state.blocks;
-        // let todoContainer = this.state.blocks.find(
-        //     blk => blk.block_type === 'TodoContainer'
-        // );
-        // // res.data.assignees_info = [];
-        // if (todoContainer) {
-        //     newBlocks = this.state.blocks.map(blk => {
-        //         if (blk.block_type == 'TodoContainer') {
-        //             const newTodos = blk.todos.concat(todo);
-        //             blk.todos = newTodos;
-        //             return blk;
-        //         } else {
-        //             return blk;
-        //         }
-        //     });
-        // } else {
-        //     todoContainer = {
-        //         todos: [todo],
-        //         block_type: 'TodoContainer'
-        //     };
-        //     newBlocks = this.state.blocks.concat(todoContainer);
-        // }
-        // console.log(newBlocks);
-
-        // const JSON_data = {
-        //     operation_type: 'add_block',
-        //     block: todo
-        // };
-        // this.AgendaRef.current.state.ws.send(JSON.stringify(JSON_data));
-
-        // axios
-        //     .patch(`/api/agenda/${this.state.agenda_id}/`, {
-        //         children_blocks: JSON.stringify(newBlocks)
-        //     })
-        //     .then(res => {
-        //         console.log(res);
-        //         this.AgendaRef.current.state.ws.send(
-        //             JSON.stringify(JSON_data)
-        //         );
-        //     });
-        // })
-        // .catch(err => {
-        //     console.log('imageblock insid agenda 생성 실패', err);
-        // });
     };
 
     handleSocketAgenda(data) {
@@ -279,18 +184,17 @@ class Agenda extends Component {
         let res = JSON.parse(data);
         if (res.hasOwnProperty('block_type')) {
             if (res['block_type'] === 'Text') {
-                this.setState({
-                    blocks: this.state.blocks.concat({
-                        block_type: res['block_type'],
-                        id: res['id'],
-                        content: res['content'],
-                        layer_x: res['layer_x'],
-                        layer_y: res['layer_y'],
-                        document_id: res['document_id']
-                    })
+                newBlocks = this.state.blocks.concat({
+                    block_type: res['block_type'],
+                    id: res['id'],
+                    content: res['content'],
+                    layer_x: res['layer_x'],
+                    layer_y: res['layer_y'],
+                    document_id: res['document_id'],
+                    parent_agenda: res['parent_agenda'],
+                    note: res['note']
                 });
             } else if (res['block_type'] === 'Image') {
-                console.log(res);
                 newBlocks = this.state.blocks.concat({
                     block_type: res['block_type'],
                     id: res['id'],
@@ -302,20 +206,7 @@ class Agenda extends Component {
                     is_submitted: res['is_submitted'],
                     parent_agenda: res['parent_agenda']
                 });
-                const stringifiedBlocks = {
-                    children_blocks: JSON.stringify(newBlocks)
-                };
-
-                this.setState({ blocks: newBlocks });
-
-                axios
-                    .patch(
-                        `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
-                        stringifiedBlocks
-                    )
-                    .then(res => console.log(res));
             } else if (res['block_type'] === 'TodoContainer') {
-                console.log(res);
                 newBlocks = this.state.blocks;
                 let todoContainer = this.state.blocks.find(
                     blk => blk.block_type === 'TodoContainer'
@@ -338,19 +229,19 @@ class Agenda extends Component {
                     };
                     newBlocks = this.state.blocks.concat(todoContainer);
                 }
-                const stringifiedBlocks = {
-                    children_blocks: JSON.stringify(newBlocks)
-                };
-
-                this.setState({ blocks: newBlocks });
-
-                axios
-                    .patch(
-                        `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
-                        stringifiedBlocks
-                    )
-                    .then(res => console.log(res));
             }
+            const stringifiedBlocks = {
+                children_blocks: JSON.stringify(newBlocks)
+            };
+
+            this.setState({ blocks: newBlocks });
+
+            axios
+                .patch(
+                    `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
+                    stringifiedBlocks
+                )
+                .then(res => console.log(res));
         } else if (res['operation_type'] === 'change_agenda') {
             this.setState({ agenda_title: res['updated_agenda'] });
         } else {
@@ -496,7 +387,6 @@ class Agenda extends Component {
         const agendaId = this.state.agenda_id;
         const socketRef = this.props.socketRef;
         let childrenBlocks = JSON.parse(res['data']['children_blocks']);
-        console.log('childrenBlocks', childrenBlocks);
 
         let agendaBlocks;
         agendaBlocks = childrenBlocks.filter(
@@ -507,7 +397,6 @@ class Agenda extends Component {
         });
         agendaBlocks['content'] = content;
 
-        console.log('agendaBlocks', agendaBlocks);
         let agendaIdx = -1;
         for (let i = 0; i < childrenBlocks.length; i++) {
             if (
@@ -518,10 +407,8 @@ class Agenda extends Component {
                 break;
             }
         }
-        console.log('agendaIdx', agendaIdx);
 
         childrenBlocks.splice(agendaIdx, 1, agendaBlocks);
-        console.log('child', childrenBlocks);
 
         const JSON_data = {
             operation_type: 'change_children_blocks',
@@ -561,7 +448,6 @@ class Agenda extends Component {
             const newAgenda = {
                 tags: tags.map(tag => tag.id)
             };
-            console.log('new agenda', newAgenda);
             axios.patch(`/api/agenda/${agendaId}/`, newAgenda).then(res => {
                 console.log(res);
                 this.setState({
@@ -579,7 +465,6 @@ class Agenda extends Component {
     };
 
     render() {
-        console.log(this.state.blocks);
         const { current_title, agenda_title } = this.state;
         const menu = (
             <Menu>
