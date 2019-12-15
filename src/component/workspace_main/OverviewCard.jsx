@@ -48,7 +48,7 @@ export const NoteCard = props => {
                 </div>
                 <div className="noteCard-content-participant">
                     <div className="noteCard-content-participant__label">
-                        참여 인원
+                        인원
                     </div>
                     <div className="noteCard-content-participant__data">
                         {note.participants.length}
