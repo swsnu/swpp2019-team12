@@ -294,7 +294,6 @@ def specific_workspace(request, w_id):
 
     if request.method == 'GET':
         profile = request.user.profile
-        # profile = Profile.objects.get(id=1)
         try:
             workspaces = Workspace.objects.filter(members__in=[profile])
         except Workspace.DoesNotExist:

@@ -515,7 +515,6 @@ class Note extends Component {
                     document_id: res['document_id']
                 });
             } else if (res['block_type'] == 'TodoContainer') {
-                newBlocks = this.state.blocks;
                 let todoContainer = this.state.blocks.find(
                     blk => blk.block_type === 'TodoContainer'
                 );
@@ -557,7 +556,7 @@ class Note extends Component {
 
             axios
                 .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
-                .then(res => console.log(res));
+                .then(res_ => console.log(res_));
         } else if (res['operation_type'] === 'change_title') {
             this.setState({ title: res['updated_title'] });
         } else if (res['operation_type'] === 'change_location') {
