@@ -713,13 +713,14 @@ class Note extends Component {
                     ref={this.BlockRef}
                     onMessage={this.handleSocketBlock.bind(this)}
                 />
-
+                <div className="note-right-wrapper">
+                    <Signout className="note-signout" history={history} />
+                </div>
                 <GoogleSTT
                     room={noteId}
                     nickname={loggedInUserNickname}
                     somebodyRecording={this.state.somebodyRecording}
                 />
-                <Signout history={history} />
             </div>
         );
     }

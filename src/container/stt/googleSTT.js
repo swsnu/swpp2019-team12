@@ -252,31 +252,31 @@ class googleSTT extends Component {
             <div className="googleSTT-container">
                 <audio id="audio" ref={this.audio}></audio>
 
-                <div className="googleSTT-wrapper">
-                    <div className="googleSTT-recording-view">
-                        <Button
-                            type="button"
-                            onClick={this.handleRecordingButton}
-                            disabled={somebodyRecording && !recording}
-                            className={
-                                !recording && somebodyRecording
-                                    ? 'disabled'
-                                    : 'recording-button'
-                            }>
-                            {recording ? 'Stop' : 'Start'}
-                        </Button>
-                        <img className="record-image" src={recordImage} />
-                    </div>
-                    <div>
-                        {somebodyRecording &&
-                            this.state.recorderNickname + ' is recording'}
-                    </div>
-                    <STTScript
-                        scripts={this.state.texts}
-                        lastScript={this.state.currentText}
-                    />
+                {/* <div className="googleSTT-wrapper"> */}
+                <div className="googleSTT-recording-view">
+                    <Button
+                        type="button"
+                        onClick={this.handleRecordingButton}
+                        disabled={somebodyRecording && !recording}
+                        className={
+                            !recording && somebodyRecording
+                                ? 'disabled'
+                                : 'recording-button'
+                        }>
+                        {recording ? 'Stop' : 'Start'}
+                    </Button>
+                    <img className="record-image" src={recordImage} />
                 </div>
+                <div>
+                    {somebodyRecording &&
+                        this.state.recorderNickname + ' is recording'}
+                </div>
+                <STTScript
+                    scripts={this.state.texts}
+                    lastScript={this.state.currentText}
+                />
             </div>
+            // </div>
         );
     }
 }
