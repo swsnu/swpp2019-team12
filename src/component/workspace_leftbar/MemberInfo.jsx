@@ -6,7 +6,7 @@ import InviteMember from './InviteMember';
 import { ReactComponent as UserIcon } from '../../assets/icons/member_default_icon.svg';
 
 const MemberInfo = props => {
-    const { members } = props;
+    const { members, workspace } = props;
     return (
         <div className="leftbar-component memberInfo-container">
             <Label title="Member" />
@@ -24,7 +24,7 @@ const MemberInfo = props => {
             </div>
 
             <SubLabel title="Invite Member" />
-            <InviteMember workspace={props.workspace} members={members} />
+            <InviteMember workspace={workspace} members={members} />
         </div>
     );
 };

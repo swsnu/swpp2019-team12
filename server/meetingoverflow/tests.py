@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from .models import (Profile, Tag, Workspace, Note, Agenda, timezone,
                      Calendar, File, Image, Table, Todo, TextBlock)
 
+# URL constants
 USER_NAME = "t@t.com"
 USER_2_NAME = 'j@j.com'
 NOTE_ID_CHECK = "note_id: 4"
@@ -18,7 +19,6 @@ WORKSPACE_URL = '/api/workspace/'
 WORKSPACE_1_NOTES = '/api/workspace/1/notes/'
 NOTE_1_URL = '/api/note/1/'
 NOTE_100_URL = '/api/note/100/'
-#####
 NOTE_1_TEXTBLOCKS_URL = '/api/note/1/textblocks/'
 AGENDA_1_TEXTBLOCKS_URL = '/api/agenda/1/textblocks/'
 TEXTBLOCK_1_URL = '/api/textblock/1/'
@@ -28,6 +28,7 @@ NOTE_1_TODOS_URL = '/api/note/1/todos/'
 AGENDA_1_TODOS_URL = '/api/agenda/1/todos/'
 TODO_1_URL = '/api/todo/1/'
 
+APP_JSON = 'application/json'
 
 class MOFTestCase(TestCase):
     """
@@ -200,7 +201,7 @@ class MOFTestCase(TestCase):
                                    'wrong2': '1234',
                                    'wrong3': 'test_nickname'
                                }),
-                               content_type='application/json')
+                               content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
         response = client.post(SIGNUP_URL,
@@ -209,7 +210,7 @@ class MOFTestCase(TestCase):
                                    'password': '',
                                    'nickname': 'test_nickname'
                                }),
-                               content_type='application/json')
+                               content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
         response = client.post(SIGNUP_URL,
@@ -218,7 +219,7 @@ class MOFTestCase(TestCase):
                                    'password': '1234',
                                    'nickname': 'test_nickname'
                                }),
-                               content_type='application/json')
+                               content_type=APP_JSON)
         self.assertEqual(response.status_code, 201)
 
         # PATCH
@@ -226,21 +227,21 @@ class MOFTestCase(TestCase):
                                 json.dumps({
                                     '1': 'usable_name'
                                 }),
-                                content_type='application/json')
+                                content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
         response = client.patch(SIGNUP_URL,
                                 json.dumps({
                                     'username': 'usable_name'
                                 }),
-                                content_type='application/json')
+                                content_type=APP_JSON)
         self.assertEqual(response.status_code, 200)
 
         response = client.patch(SIGNUP_URL,
                                 json.dumps({
                                     'username': 'test_name'
                                 }),
-                                content_type='application/json')
+                                content_type=APP_JSON)
         self.assertEqual(response.status_code, 204)
 
         ##########
@@ -250,19 +251,19 @@ class MOFTestCase(TestCase):
         response = client.post(SIGNIN_URL, json.dumps({
             '1': 'test_name',
             '2': '1234'
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
         response = client.post(SIGNIN_URL, json.dumps({
             'username': 'not_exist',
             'password': '1234'
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 401)
 
         login_response = client.post(SIGNIN_URL, json.dumps({
             'username': 'test_name',
             'password': '1234'
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(login_response.status_code, 200)
 
         ###########
@@ -288,30 +289,30 @@ class MOFTestCase(TestCase):
         response = client.post(PROFILE_URL, json.dumps({
             'username': 'test_name',
             'workspace_id': 1
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 200)
 
         response = client.post(PROFILE_URL, json.dumps({
             'username': 'test_name',
             'workspace_id': 1000
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 404)
 
         response = client.post(PROFILE_URL, json.dumps({
             'username': USER_NAME,
             'workspace_id': 1
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 200)
 
         # workspace 없는 경우
         response = client.post(PROFILE_URL, json.dumps({
             'username': USER_NAME
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 200)
 
         response = client.post(PROFILE_URL, json.dumps({
             'username': 'unavailable_test_name'
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 404)
 
     def test_specific_profile(self):
@@ -328,17 +329,17 @@ class MOFTestCase(TestCase):
 
         response = client.patch(PROFILE_URL_1, json.dumps({
             'nickname': "test_patch"
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 202)
 
         response = client.patch('/api/profile/1000/', json.dumps({
             'nickname': "test_patch"
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 404)
 
         response = client.patch(PROFILE_URL_1, json.dumps({
             'nickname': "longer_than_20_maximum_wowwowwowwowwowwowwow"
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
     def test_workspace(self):
@@ -359,28 +360,28 @@ class MOFTestCase(TestCase):
             'nae': 'test_workspace',
             'admis': [2],
             'membes': [1, 2]
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
         response = client.post(WORKSPACE_URL, json.dumps({
             'name': 'test_workspace',
             'admins': [100],
             'members': [1, 2]
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 404)
 
         response = client.post(WORKSPACE_URL, json.dumps({
             'name': 'test_workspace',
             'admins': [2],
             'members': [100]
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 404)
 
         response = client.post(WORKSPACE_URL, json.dumps({
             'name': 'test_workspace',
             'admins': [2],
             'members': [1, 2]
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 201)
 
     def test_specific_workspace(self):
@@ -400,17 +401,17 @@ class MOFTestCase(TestCase):
 
         response = client.patch(workspace_url_100, json.dumps({
             'name': 'test_workspace'
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 404)
 
         response = client.patch(workspace_url_1, json.dumps({
             'members': [1, 2]
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 202)
 
         response = client.patch(workspace_url_1, json.dumps({
             'members': [3]
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
         response = client.delete(workspace_url_100)
@@ -472,7 +473,7 @@ class MOFTestCase(TestCase):
             'lastModifiedAt':  datetime,
             'location': 'Seoul',
             'workspace': 1,
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 201)
 
         # keyerror
@@ -483,7 +484,7 @@ class MOFTestCase(TestCase):
             'lastModifiedAt':  datetime,
             'location': 'Seoul',
             'workspace': 1,
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
         response = client.post(WORKSPACE_1_NOTES, json.dumps({
@@ -493,7 +494,7 @@ class MOFTestCase(TestCase):
             'lastModifiedAt':  datetime,
             'location': 'Seoul',
             'workspace': 1,
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 404)
 
     def test_specific_note(self):
@@ -511,12 +512,12 @@ class MOFTestCase(TestCase):
 
         response = client.patch(NOTE_100_URL, json.dumps({
             'title': 'patch_title'
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 404)
 
         response = client.patch(NOTE_1_URL, json.dumps({
             'title': 'patch_title'
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 202)
 
         response = client.patch(NOTE_1_URL, json.dumps({
@@ -528,7 +529,7 @@ class MOFTestCase(TestCase):
                         abcdefghijklmnopqrstuvwxyz
                         abcdefghijklmnopqrstuvwxyz
                         abcdefghijklmnopqrstuvwxyz"""
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
         response = client.delete(NOTE_100_URL)
@@ -571,7 +572,7 @@ class MOFTestCase(TestCase):
             'layer_x': 0,
             'layer_y': 0,
             'document_id': 'asfecsm3242a'
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 404)
 
         response = client.post(NOTE_1_TEXTBLOCKS_URL, json.dumps({
@@ -579,7 +580,7 @@ class MOFTestCase(TestCase):
             'layer_x': 0,
             'layer_y': 0,
             'document_id': 'asfecsm3242a'
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 201)
 
         response = client.post(NOTE_1_TEXTBLOCKS_URL, json.dumps({
@@ -587,7 +588,7 @@ class MOFTestCase(TestCase):
             'layer_x': 3.333,
             'layer_y': 0,
             'document_id': 'asfecsm3242a'
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
     def test_textblock_child_of_agenda(self):
@@ -611,7 +612,7 @@ class MOFTestCase(TestCase):
             'layer_x': 3.333,
             'layer_y': 0,
             'document_id': 'asfecsm3242a'
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
         response = client.post(AGENDA_1_TEXTBLOCKS_URL, json.dumps({
@@ -619,7 +620,7 @@ class MOFTestCase(TestCase):
             'layer_x': 0,
             'layer_y': 0,
             'document_id': 'asfecsm3242a'
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 201)
 
     def test_modify_textblock(self):
@@ -639,14 +640,14 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 3.33,
             'layer_y': 0
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
         response = client.patch(TEXTBLOCK_1_URL, json.dumps({
             'content': 'test_content',
             'layer_x': 0,
             'layer_y': 0
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 202)
 
         response = client.delete(TEXTBLOCK_1_URL)
@@ -669,21 +670,21 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 0,
             'layer_y': 0
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 404)
 
         response = client.post(NOTE_1_AGENDAS_URL, json.dumps({
             'content': 'test_content',
             'layer_x': 0,
             'layer_y': 0
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 201)
 
         response = client.post(NOTE_1_AGENDAS_URL, json.dumps({
             'content': 'test_content',
             'layer_x': 3.333,
             'layer_y': 0
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
     def test_modify_agenda(self):
@@ -703,14 +704,14 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 3.33,
             'layer_y': 0,
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
         response = client.patch(AGENDA_1_URL, json.dumps({
             'content': 'test_content',
             'layer_x': 0,
             'layer_y': 0,
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 202)
 
         response = client.delete(AGENDA_1_URL)
@@ -735,7 +736,7 @@ class MOFTestCase(TestCase):
             'layer_y': 0,
             'assignees': [1],
             'due_date': "2020-02-07"
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 404)
 
         response = client.post(NOTE_1_TODOS_URL, json.dumps({
@@ -744,7 +745,7 @@ class MOFTestCase(TestCase):
             'layer_y': 0,
             'assignees': [1],
             'due_date': "2020-02-07"
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 201)
 
         response = client.post(NOTE_1_TODOS_URL, json.dumps({
@@ -753,7 +754,7 @@ class MOFTestCase(TestCase):
             'layer_y': 0,
             'assignees': [1],
             'due_date': "2020-02-07"
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
     def test_todoblock_child_of_agenda(self):
@@ -778,7 +779,7 @@ class MOFTestCase(TestCase):
             'layer_y': 0,
             'assignees': [1],
             'due_date': "2020-02-07"
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
         response = client.post(AGENDA_1_TODOS_URL, json.dumps({
@@ -787,7 +788,7 @@ class MOFTestCase(TestCase):
             'layer_y': 0,
             'assignees': [1],
             'due_date': "2020-02-07"
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 201)
 
     def test_modify_todoblock(self):
@@ -807,14 +808,14 @@ class MOFTestCase(TestCase):
             'content': 'test_content',
             'layer_x': 3.33,
             'layer_y': 0,
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 400)
 
         response = client.patch(TODO_1_URL, json.dumps({
             'content': 'test_content',
             'layer_x': 0,
             'layer_y': 0,
-        }), content_type='application/json')
+        }), content_type=APP_JSON)
         self.assertEqual(response.status_code, 202)
 
         response = client.delete(TODO_1_URL)

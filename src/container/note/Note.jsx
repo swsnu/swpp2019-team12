@@ -465,6 +465,7 @@ class Note extends Component {
 
     handleAddTag = tagId => {
         const noteId = this.props.match.params.n_id;
+        console.log('tag id: ', tagId);
         const newTag = this.state.workspaceTags.find(tag => tag.id == tagId);
         console.log('newTag: ', newTag);
         console.log(this.state.noteTags);
@@ -477,6 +478,7 @@ class Note extends Component {
 
         if (!duplicate) {
             const tags = this.state.noteTags.concat(newTag);
+            console.log(tags);
             const newNote = {
                 tags: tags.map(tag => tag.id)
             };
@@ -515,7 +517,6 @@ class Note extends Component {
                     document_id: res['document_id']
                 });
             } else if (res['block_type'] == 'TodoContainer') {
-                newBlocks = this.state.blocks;
                 let todoContainer = this.state.blocks.find(
                     blk => blk.block_type === 'TodoContainer'
                 );
@@ -557,7 +558,7 @@ class Note extends Component {
 
             axios
                 .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
-                .then(res => console.log(res));
+                .then(res_ => console.log(res_));
         } else if (res['operation_type'] === 'change_title') {
             this.setState({ title: res['updated_title'] });
         } else if (res['operation_type'] === 'change_location') {
@@ -617,6 +618,7 @@ class Note extends Component {
                     <div className="file-tree">
                         <NoteTree
                             blocks={this.state.blocks}
+                            history={history}
                             agendaChildrenBlocks={
                                 this.state.agenda_children_blocks
                             }

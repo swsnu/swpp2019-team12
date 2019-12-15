@@ -259,9 +259,9 @@ def workspace_api(request):
         workspace.admins.set(admin_list)
         workspace.members.set(member_list)
         workspace.save()
+        Tag.create_tags(workspace)
         workspace_serializer = WorkspaceSerializer(workspace)
         return Response(workspace_serializer.data, status=status.HTTP_201_CREATED)
-
 
 # ===================================================
 # workspace id로부터 특정 워크스페이스 GET / PATCH / DELETE
@@ -294,7 +294,6 @@ def specific_workspace(request, w_id):
 
     if request.method == 'GET':
         profile = request.user.profile
-        # profile = Profile.objects.get(id=1)
         try:
             workspaces = Workspace.objects.filter(members__in=[profile])
         except Workspace.DoesNotExist:
