@@ -18,18 +18,12 @@ describe('<TodoContainer />', () => {
     });
 
     it('should return null with getDerivedStateFromProps', () => {
-        const givenProps = {
-            todos: []
-        };
-        const givenState = {
-            todos: []
-        };
         const component = shallow(<TodoContainer todos={[]} />);
         const containerInstance = component.instance();
         let result = containerInstance.constructor.getDerivedStateFromProps(
-            givenProps,
-            givenState
+            [],
+            []
         );
-        expect(result).toEqual({ todos: [] });
+        expect(result).toEqual(null);
     });
 });

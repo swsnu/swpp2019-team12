@@ -6,21 +6,12 @@ export default class NoteTree extends Component {
         super(props);
         this.state = {
             blocks: [],
-            treeData: [],
-            agendaChildrenBlocks: []
+            treeData: []
         };
     }
-    componentDidMount() {
-        const blocks = this.props.blocks;
-        this.setState({
-            treeData: changeBlocksToTree(this.props, blocks)
-        });
-    }
+
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (
-            nextProps.blocks !== prevState.blocks ||
-            nextProps.agendaChildrenBlocks !== prevState.agendaChildrenBlocks
-        ) {
+        if (nextProps.blocks !== prevState.blocks) {
             const treeData = changeBlocksToTree(nextProps, nextProps.blocks);
             return { blocks: nextProps.blocks, treeData: treeData };
         }
@@ -30,7 +21,7 @@ export default class NoteTree extends Component {
     render() {
         return (
             <div>
-                <TreeMenu data={this.state.treeData} />
+                <TreeMenu className="tree-menu" data={this.state.treeData} />
             </div>
         );
     }
@@ -41,27 +32,9 @@ const changeBlocksToTree = (props, blocks) => {
     blocks.forEach(blk => {
         let data;
         if (blk.block_type == 'Agenda') {
-            let childrenDatas = [];
-            if (props.agendaChildrenBlocks) {
-                childrenDatas = props.agendaChildrenBlocks.find(childBlk => {
-                    return childBlk.id == blk.id;
-                });
-            }
-            // console.log('childrenDatas: ', childrenDatas);
-            let childrenNodes = [];
-            if (childrenDatas && childrenDatas.childrenBlocks) {
-                childrenDatas.childrenBlocks.forEach(childBlk => {
-                    childrenNodes.push({
-                        key: childBlk.block_type + childBlk.id,
-                        label: childBlk.block_type + childBlk.id
-                    });
-                });
-            }
-
             data = {
                 key: '[' + blk.block_type + '] ' + blk.content,
-                label: '[' + blk.block_type + '] ' + blk.content,
-                nodes: childrenNodes
+                label: '[' + blk.block_type + '] ' + blk.content
             };
         } else {
             data = {

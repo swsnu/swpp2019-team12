@@ -11,9 +11,6 @@ class TodoContainer extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log('wow');
-        console.log(nextProps);
-        console.log(prevState);
         if (nextProps.todos != prevState.todos) {
             return { todos: nextProps.todos };
         }
