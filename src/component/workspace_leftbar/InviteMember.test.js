@@ -25,6 +25,13 @@ const memberStub2 = {
         username: 'test2@test.com'
     }
 };
+
+const membersStub = {
+    id: 1,
+    nickname: 'TEST1',
+    user: 1
+};
+
 const searchedMemberStub = [memberStub1, memberStub2];
 const addedMemberStub = [{ id: 2, username: 'test2@test.com' }];
 const workspaceStub = {
@@ -53,19 +60,32 @@ describe('<InviteMember />', () => {
     });
 
     it('should render without error', () => {
-        const component = mount(<InviteMember />);
+        const component = mount(<InviteMember members={membersStub} />);
         let wrapper = component.find('.memberInfo__inviteMemberButton');
         expect(wrapper.length).toBe(1);
     });
 
+    it('should render without error - 2', () => {
+        const component = mount(<InviteMember members={[]} />);
+        component.setState({ searchedMember: [] });
+        component.update();
+
+        let wrapper;
+
+        wrapper = component.find('.invite-member__member--searched');
+        expect(wrapper.length).toBe(0);
+        wrapper = component.find('.invite-member__member--searched-email');
+        expect(wrapper.length).toBe(0);
+    });
+
     it('should render without error modla', () => {
-        const component = mount(<InviteMember />);
+        const component = mount(<InviteMember members={membersStub} />);
         let wrapper = component.find('.invite-member');
         expect(wrapper.length).toBe(1);
     });
 
     it('should render without error searched member', () => {
-        const component = mount(<InviteMember />);
+        const component = mount(<InviteMember members={membersStub} />);
         component.setState({ searchedMember: searchedMemberStub });
         component.update();
 
@@ -76,8 +96,9 @@ describe('<InviteMember />', () => {
         wrapper = component.find('.invite-member__member--searched-email');
         expect(wrapper.length).toBe(2);
     });
+
     it('should render without error added member', () => {
-        const component = mount(<InviteMember />);
+        const component = mount(<InviteMember members={membersStub} />);
         component.setState({ addedMember: addedMemberStub });
         component.update();
 
@@ -89,7 +110,9 @@ describe('<InviteMember />', () => {
         expect(wrapper.length).toBe(1);
     });
     it('handle invite mamber', async done => {
-        const component = mount(<InviteMember workspace={workspaceStub} />);
+        const component = mount(
+            <InviteMember workspace={workspaceStub} members={membersStub} />
+        );
         component.setState({ searchedMember: searchedMemberStub });
         component.update();
 
@@ -110,7 +133,9 @@ describe('<InviteMember />', () => {
         done();
     });
     it('handle change input', async done => {
-        const component = mount(<InviteMember workspace={workspaceStub} />);
+        const component = mount(
+            <InviteMember workspace={workspaceStub} members={membersStub} />
+        );
 
         // axios.post = jest.fn(url => {
         //     return new Promise((resolve, reject) => {
@@ -141,7 +166,9 @@ describe('<InviteMember />', () => {
     });
 
     it('handle select member', async done => {
-        const component = mount(<InviteMember workspace={workspaceStub} />);
+        const component = mount(
+            <InviteMember workspace={workspaceStub} members={membersStub} />
+        );
         const dummy = {
             emailMember: '',
             searchedMember: [],
@@ -173,7 +200,9 @@ describe('<InviteMember />', () => {
         done();
     });
     it('handle delete member', async done => {
-        const component = mount(<InviteMember workspace={workspaceStub} />);
+        const component = mount(
+            <InviteMember workspace={workspaceStub} members={membersStub} />
+        );
 
         component.setState({ addedMember: addedMemberStub });
         component.update();
