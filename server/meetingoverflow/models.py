@@ -72,6 +72,9 @@ class Tag(models.Model):
 
     @staticmethod
     def create_tags(workspace):
+        """
+        Tag dummy data
+        """
         Tag.objects.create(content="Frontend",
                            workspace=workspace, color="#4287f5")
         Tag.objects.create(content="Backend",
