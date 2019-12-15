@@ -147,6 +147,7 @@ class Image extends Component {
     };
 
     render() {
+        console.log(this.state.content);
         return (
             <div
                 className="full-size-block-container Image"
@@ -186,11 +187,12 @@ class Image extends Component {
                                     required
                                 />
                             </p>
-                            <button type="submit" value="submit" />)
+                            <button type="submit" value="Submit">
+                                Submit
+                            </button>
                         </form>
                     ) : (
                         <div>
-                            <p> Image Caption: {this.state.content} </p>
                             {/* Image File Name:{' '}
                             {typeof this.state.image === 'string'
                                 ? decodeURI(this.state.image)
@@ -201,6 +203,11 @@ class Image extends Component {
                                 // <img src="blob:{{MEDIA_URL}}{{this.state.file}}" />
                                 /* 개발단계에서 DEBUG=TRUE일 때, 이미지 업로드 되자마자 보여지게 하는 코드 */
                                 <img src={this.state.file} />
+                            )}
+                            {this.state.content != '' ? (
+                                <p> Image Caption: {this.state.content} </p>
+                            ) : (
+                                ''
                             )}
                         </div>
                     )}

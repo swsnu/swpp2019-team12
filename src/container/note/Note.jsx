@@ -478,22 +478,6 @@ class Note extends Component {
         );
     };
 
-    handleAddPdfBlock = noteId => {
-        console.log(
-            `Need to Implement adding Pdf Block to specific note whose id is ${noteId}`
-        );
-    };
-
-    handleAddTableBlock = noteId => {
-        console.log(
-            `Need to Implement adding Table Block to specific note whose id is ${noteId}`
-        );
-    };
-
-    handleStartAutoTyping = noteId => {
-        console.log(`Need to Implement auto-typing in the note ${noteId}`);
-    };
-
     handleAddParticipant = () => {
         console.log(
             'Need to implement add Participant who is a member of specific workspace'

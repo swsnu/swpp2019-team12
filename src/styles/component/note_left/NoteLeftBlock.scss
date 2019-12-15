@@ -25,7 +25,7 @@
     }
     .NoteLeftBlock-create-buttons {
         position: fixed;
-        width: rem(50px);
+        width: rem(70px);
         left: rem(0px);
         transition: left 300ms ease;
 
@@ -33,9 +33,9 @@
         flex-direction: column;
 
         .add-block-button {
-            width: rem(40px);
-            height: rem(40px);
-            margin: 0 0 rem(3px) 0;
+            width: 100%; //rem(60px);
+            height: rem(50px);
+            margin: 0 0 rem(6px) 0;
             padding: 0 0 0 0;
 
             border-top-right-radius: 0.28571rem;
@@ -147,10 +147,15 @@
             // max-height: rem(149px);
             padding: rem(10px);
             overflow: auto;
+            align-items: center;
+            text-align: center;
             .full-size-block-content__text {
                 color: $black;
                 width: 100%;
             }
+            // button {
+            //     text-align: center;
+            // }
         }
     }
 }
