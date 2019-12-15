@@ -1,7 +1,6 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 import Editor from './Editor';
-import axios from 'axios';
 
 function mockComponent(props, className) {
     return <div className={className}>{props.title}</div>;

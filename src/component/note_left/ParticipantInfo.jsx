@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { map } from 'lodash';
 // import { ReactComponent as UserIcon } from '../../assets/icons/member_default_icon.svg';
 import { Label } from './Label';
-import axios from 'axios';
 
 class ParticipantInfo extends Component {
     constructor(props) {

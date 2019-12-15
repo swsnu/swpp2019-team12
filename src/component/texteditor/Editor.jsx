@@ -33,7 +33,7 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
-import PresenceList from '@ckeditor/ckeditor5-real-time-collaboration/src/presencelist';
+// import PresenceList from '@ckeditor/ckeditor5-real-time-collaboration/src/presencelist';
 import RealTimeCollaborativeComments from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativecomments';
 import RealTimeCollaborativeTrackChanges from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativetrackchanges';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
@@ -238,23 +238,7 @@ export default class Editor extends Component {
         );
     }
 
-    refreshDisplayMode(editor) {
-        // const annotations = editor.plugins.get('Annotations');
-        // // const sidebarElement = this.sidebarElementRef.current;
-        // // console.log(sidebarElement);
-        // if (window.innerWidth < 1070) {
-        //     sidebarElement.classList.remove('narrow');
-        //     sidebarElement.classList.add('hidden');
-        //     annotations.switchTo('inline');
-        // } else if (window.innerWidth < 1300) {
-        //     sidebarElement.classList.remove('hidden');
-        //     sidebarElement.classList.add('narrow');
-        //     annotations.switchTo('narrowSidebar');
-        // } else {
-        //     sidebarElement.classList.remove('hidden', 'narrow');
-        //     annotations.switchTo('wideSidebar');
-        // }
-    }
+    refreshDisplayMode(editor) {}
 
     checkPendingActions(editor, domEvt) {
         if (editor.plugins.get('PendingActions').hasAny) {

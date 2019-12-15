@@ -114,7 +114,6 @@ class InviteMember extends Component {
 
     handleInviteMembers = () => {
         const { addedMemberId } = this.state;
-        const { history } = this.props;
         axios
             .patch(`/api/workspace/${this.props.workspace.id}/`, {
                 members: addedMemberId
@@ -126,7 +125,7 @@ class InviteMember extends Component {
 
     render() {
         const { emailMember, searchedMember, addedMember } = this.state;
-        const { handleCancel } = this.props;
+        // const { handleCancel } = this.props;
         const { members } = this.props;
 
         return (
