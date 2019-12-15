@@ -433,7 +433,6 @@ class Agenda extends Component {
     };
 
     render() {
-        console.log(this.props.participants);
         const menu = (
             <Menu>
                 {this.state.workspaceTags.map((tag, i) => (
@@ -446,7 +445,7 @@ class Agenda extends Component {
         return (
             <div
                 className="full-size-block-container Agenda"
-                id="Agenda-Conatiner"
+                id="Agenda-Container"
                 onClick={() =>
                     this.props.handleClickBlock(
                         this.props.type,
