@@ -27,7 +27,11 @@
     }
 
     .NoteLeftInfo__currentNote {
-        max-width: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
     }
     .rdt {
         width: 70%;
@@ -43,7 +47,7 @@
             font-size: rem(30px);
             font-weight: 700;
             color: $black;
-            width: fit-content;
+            width: 80%;
         }
         &.location {
             width: 70%;
@@ -70,12 +74,23 @@
 
     .NoteLeftInfo-tags {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: flex-start;
         width: 100%;
 
+        .Tags-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
         .add-tag-button {
             align-self: flex-end;
+            border: none;
+            box-shadow: none;
+            height: rem(24px);
+            padding-top: rem(3px);
+            padding-bottom: rem(3px);
+            color: black;
         }
     }
 }

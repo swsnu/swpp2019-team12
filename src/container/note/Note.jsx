@@ -61,7 +61,6 @@ class Note extends Component {
         //axios.get(`/api/`);
 
         axios.get(`/api/note/${noteId}/childrenblocks/`).then(res => {
-            console.log(res.data['children_blocks']);
             let children_blocks = null;
             if (res.data['children_blocks'] === '') {
                 children_blocks = [];
@@ -72,14 +71,27 @@ class Note extends Component {
             children_blocks.map(blk => {
                 let block_type = blk['block_type'];
                 if (block_type == 'Agenda') {
+                    let agendaChildrenBlocks = null;
                     console.log(blk);
+                    console.log(blk['children_blocks']);
+                    if (
+                        blk['children_blocks'] === '' ||
+                        blk['children_blocks'] == null
+                    ) {
+                        agendaChildrenBlocks = [];
+                    } else {
+                        agendaChildrenBlocks = JSON.parse(
+                            blk['children_blocks']
+                        );
+                    }
                     this.setState({
                         blocks: this.state.blocks.concat({
                             block_type: 'Agenda',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
-                            layer_y: blk['layer_y']
+                            layer_y: blk['layer_y'],
+                            agenda_children_blocks: agendaChildrenBlocks
                         })
                     });
                 } else if (block_type == 'Text') {
@@ -133,26 +145,6 @@ class Note extends Component {
             });
         });
 
-        // axios
-        //     .get(`/api/note/${noteId}/images/`)
-        //     .then(res => {
-        //         console.log('axios get images', res);
-        //         res['data'].forEach(blk => {
-        //             this.setState({
-        //                 blocks: this.state.blocks.concat({
-        //                     block_type: 'Image',
-        //                     id: blk['id'],
-        //                     image: blk['image'],
-        //                     content: blk['content'],
-        //                     is_submitted: blk['is_submitted'],
-        //                     layer_x: blk['layer_x'],
-        //                     layer_y: blk['layer_y']
-        //                 })
-        //             });
-        //         });
-        //     })
-        //     .catch(err => console.log('No Images'));
-
         axios
             .get(`/api/note/${noteId}/`)
             .then(res => {
@@ -174,7 +166,7 @@ class Note extends Component {
                     noteTags: tagData,
                     workspaceTags: workspaceTags
                 });
-                return res['data']['participants'];
+                return res['data']['note']['participants'];
             })
             .then(participants => {
                 participants.forEach(participant => {
@@ -437,20 +429,6 @@ class Note extends Component {
         };
 
         this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data));
-
-        // axios.post(`/api/note/${noteId}/images/`, image_info).then(res => {
-        //     this.setState({
-        //         blocks: this.state.blocks.concat({
-        //             block_type: 'Image',
-        //             // image: null,
-        //             id: res['data']['id'],
-        //             content: res['data']['content'],
-        //             layer_x: res['data']['layer_x'],
-        //             layer_y: res['data']['layer_y'],
-        //             is_submitted: false
-        //         })
-        //     });
-        // });
     };
 
     handleAddCalendarBlock = () => {
@@ -478,22 +456,6 @@ class Note extends Component {
         console.log(
             `Need to Implement adding Calendar Block to specific note whose id is ${noteId}`
         );
-    };
-
-    handleAddPdfBlock = noteId => {
-        console.log(
-            `Need to Implement adding Pdf Block to specific note whose id is ${noteId}`
-        );
-    };
-
-    handleAddTableBlock = noteId => {
-        console.log(
-            `Need to Implement adding Table Block to specific note whose id is ${noteId}`
-        );
-    };
-
-    handleStartAutoTyping = noteId => {
-        console.log(`Need to Implement auto-typing in the note ${noteId}`);
     };
 
     handleAddParticipant = () => {
@@ -609,7 +571,6 @@ class Note extends Component {
         // Drag & Drop
         // Delete
         else {
-            console.log('여기로 들어오겠지?');
             this.setState({ blocks: res['children_blocks'] });
         }
     }
@@ -653,12 +614,15 @@ class Note extends Component {
         // console.log('workspace tags: ', this.state.workspaceTags);
         return (
             <div className="Note">
-                <div className="file-tree">
-                    <Signout history={history} />
-                    <NoteTree
-                        blocks={this.state.blocks}
-                        agendaChildrenBlocks={this.state.agenda_children_blocks}
-                    />
+                <div className="file-tree-wrapper">
+                    <div className="file-tree">
+                        <NoteTree
+                            blocks={this.state.blocks}
+                            agendaChildrenBlocks={
+                                this.state.agenda_children_blocks
+                            }
+                        />
+                    </div>
                 </div>
                 <NoteLeft
                     handleAddTag={this.handleAddTag}
@@ -697,11 +661,15 @@ class Note extends Component {
                     ref={this.BlockRef}
                     onMessage={this.handleSocketBlock.bind(this)}
                 />
+                <div className="note-right-wrapper">
+                    <Signout className="note-signout" history={history} />
+                </div>
                 <GoogleSTT
                     room={noteId}
                     nickname={loggedInUserNickname}
                     somebodyRecording={this.state.somebodyRecording}
                 />
+                <Signout history={history} />
             </div>
         );
     }

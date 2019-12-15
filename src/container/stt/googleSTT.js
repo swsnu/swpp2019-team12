@@ -252,6 +252,7 @@ class googleSTT extends Component {
             <div className="googleSTT-container">
                 <audio id="audio" ref={this.audio}></audio>
 
+                {/* <div className="googleSTT-wrapper"> */}
                 <div className="googleSTT-recording-view">
                     <Button
                         type="button"
@@ -275,6 +276,7 @@ class googleSTT extends Component {
                     lastScript={this.state.currentText}
                 />
             </div>
+            // </div>
         );
     }
 }

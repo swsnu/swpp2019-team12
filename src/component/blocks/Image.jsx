@@ -9,7 +9,8 @@ class Image extends Component {
             image: null,
             content: this.props.content,
             is_submitted: false,
-            file: null
+            file: null,
+            APIPath: ''
         };
     }
 
@@ -25,10 +26,18 @@ class Image extends Component {
     }
 
     componentDidMount() {
+        let APIPath = '';
+        if (this.props.is_parent_note) {
+            APIPath = `/api/note/${this.props.noteId}/childrenblocks/`;
+        } else {
+            APIPath = `/api/agenda/${this.props.parent_agenda}/childrenblocks/`;
+        }
+
         this.setState({
             is_submitted: this.props.is_submitted,
             content: this.props.content,
-            image: this.props.image
+            image: this.props.image,
+            APIPath: APIPath
         });
     }
 
@@ -68,21 +77,24 @@ class Image extends Component {
                 headers: { 'content-type': 'multipart/form-data' }
             })
             .then(res_1 => {
-                if (this.props.is_parent_note) {
-                    axios
-                        .get(`/api/note/${noteId}/childrenblocks/`)
-                        .then(res_2 => {
-                            this.patchImage(res_2, res_1['data']);
-                        });
-                } else {
-                    axios
-                        .get(
-                            `/api/agenda/${this.props.parent_agenda}/childrenblocks/`
-                        )
-                        .then(res_2 => {
-                            this.patchImage(res_2, res_1['data']);
-                        });
-                }
+                axios.get(`${this.state.APIPath}`).then(res_2 => {
+                    this.patchImage(res_2, res_1['data']);
+                });
+                // if (this.props.is_parent_note) {
+                //     axios
+                //         .get(`${this.state.APIPath}`)
+                //         .then(res_2 => {
+                //             this.patchImage(res_2, res_1['data']);
+                //         });
+                // } else {
+                //     axios
+                //         .get(
+                //             `/api/agenda/${this.props.parent_agenda}/childrenblocks/`
+                //         )
+                //         .then(res_2 => {
+                //             this.patchImage(res_2, res_1['data']);
+                //         });
+                // }
                 // const JSON_data = {
                 //     operation_type: 'patch_image',
                 //     updated_image: res['data']
@@ -126,27 +138,16 @@ class Image extends Component {
         const stringifiedBlocks = {
             children_blocks: newBlocks
         };
-        if (this.props.is_parent_note) {
-            axios
-                .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
-                .then(res => {
-                    socketRef.current.state.ws.send(JSON.stringify(JSON_data));
-                })
-                .catch(err => console.log(err));
-        } else {
-            axios
-                .patch(
-                    `/api/agenda/${agendaId}/childrenblocks/`,
-                    stringifiedBlocks
-                )
-                .then(res => {
-                    socketRef.current.state.ws.send(JSON.stringify(JSON_data));
-                })
-                .catch(err => console.log(err));
-        }
+        axios
+            .patch(`${this.state.APIPath}`, stringifiedBlocks)
+            .then(res => {
+                socketRef.current.state.ws.send(JSON.stringify(JSON_data));
+            })
+            .catch(err => console.log(err));
     };
 
     render() {
+        console.log(this.state.content);
         return (
             <div
                 className="full-size-block-container Image"
@@ -177,7 +178,7 @@ class Image extends Component {
                                     onChange={this.handleChange}
                                 />
                             </p>
-                            <p>
+                            <div className="image-input">
                                 <input
                                     type="file"
                                     id="image"
@@ -185,12 +186,13 @@ class Image extends Component {
                                     onChange={this.handleChangeImage}
                                     required
                                 />
-                            </p>
-                            <button type="submit" value="submit" />)
+                                <button type="submit" className="image-submit">
+                                    Submit
+                                </button>
+                            </div>
                         </form>
                     ) : (
                         <div>
-                            <p> Image Caption: {this.state.content} </p>
                             {/* Image File Name:{' '}
                             {typeof this.state.image === 'string'
                                 ? decodeURI(this.state.image)
@@ -201,6 +203,11 @@ class Image extends Component {
                                 // <img src="blob:{{MEDIA_URL}}{{this.state.file}}" />
                                 /* 개발단계에서 DEBUG=TRUE일 때, 이미지 업로드 되자마자 보여지게 하는 코드 */
                                 <img src={this.state.file} />
+                            )}
+                            {this.state.content != '' ? (
+                                <p> Image Caption: {this.state.content} </p>
+                            ) : (
+                                ''
                             )}
                         </div>
                     )}

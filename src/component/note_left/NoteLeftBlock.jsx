@@ -88,10 +88,10 @@ class NoteLeftBlock extends Component {
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteTodo={nextProps.handleDeleteTodo}
                                 socketRef={nextProps.socketRef}
+                                is_parent_note={true}
                             />
                         );
                     } else if (blk.block_type === IMAGE) {
-                        console.log('img blk: ', blk);
                         result = (
                             <Image
                                 noteId={nextProps.noteId}
@@ -133,7 +133,7 @@ class NoteLeftBlock extends Component {
                         onClick={() =>
                             this.props.handleAddAgendaBlock(this.state.noteId)
                         }>
-                        안건
+                        Agenda
                     </button>
                     <button
                         className="add-block-button"
@@ -158,36 +158,8 @@ class NoteLeftBlock extends Component {
                         onClick={() =>
                             this.props.handleAddImageBlock(this.state.noteId)
                         }>
-                        이미지
+                        Image
                     </button>
-                    <button
-                        className="add-block-button"
-                        id="add_calendar_block"
-                        onClick={() =>
-                            this.props.handleAddCalendarBlock(this.state.noteId)
-                        }
-                    />
-                    <button
-                        className="add-block-button"
-                        id="add_pdf_block"
-                        onClick={() =>
-                            this.props.handleAddPdfBlock(this.state.noteId)
-                        }
-                    />
-                    <button
-                        className="add-block-button"
-                        id="add_table_block"
-                        onClick={() =>
-                            this.props.handleAddTableBlock(this.state.noteId)
-                        }
-                    />
-                    <button
-                        className="auto-type-button"
-                        id="auto_typing"
-                        onClick={() =>
-                            this.props.handleStartAutoTyping(this.state.noteId)
-                        }
-                    />
                 </div>
 
                 <DragDropContext onDragEnd={this.props.onDragEnd}>
