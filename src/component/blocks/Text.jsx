@@ -12,10 +12,6 @@ class Text extends Component {
         };
     }
 
-    handleChangeText = changedText => {
-        console.log('Need to implement changing text');
-    };
-
     handleClickDelete = e => {
         e.preventDefault();
         const axios_path = `/api/textblock/${this.props.blk_id}/`;
@@ -37,7 +33,6 @@ class Text extends Component {
                     handleAddTextSocketSend={this.props.handleAddTextSocketSend}
                     blk_id={this.props.blk_id}
                     document_id={this.props.document_id}
-                    handleChangeText={this.handleChangeText}
                 />
                 <div className="full-size-block-content">
                     <div className="full-size-block-content__text">
