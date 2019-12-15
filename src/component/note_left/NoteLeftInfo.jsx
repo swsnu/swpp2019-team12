@@ -60,7 +60,7 @@ class NoteLeftInfo extends Component {
                 {this.state.workspaceTags.map((tag, i) => (
                     <Menu.Item
                         className="noteLeftInfo-menu-item"
-                        key={i}
+                        key={tag.id}
                         onClick={this.handleMenuClick}>
                         {tag.content}
                     </Menu.Item>

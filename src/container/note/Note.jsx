@@ -465,6 +465,7 @@ class Note extends Component {
 
     handleAddTag = tagId => {
         const noteId = this.props.match.params.n_id;
+        console.log('tag id: ', tagId);
         const newTag = this.state.workspaceTags.find(tag => tag.id == tagId);
         console.log('newTag: ', newTag);
         console.log(this.state.noteTags);
@@ -477,6 +478,7 @@ class Note extends Component {
 
         if (!duplicate) {
             const tags = this.state.noteTags.concat(newTag);
+            console.log(tags);
             const newNote = {
                 tags: tags.map(tag => tag.id)
             };
