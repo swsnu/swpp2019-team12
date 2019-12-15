@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
 import EditorWrapper from '../texteditor/EditorWrapper';
+import { css } from '@emotion/core';
+import PacmanLoader from 'react-spinners/PacmanLoader';
+
+const override = css`
+    display: block;
+    margin: 0 auto;
+    border-color: red;
+    position: relative;
+    z-index: 100;
+`;
 
 class Text extends Component {
     constructor(props) {
@@ -8,9 +18,22 @@ class Text extends Component {
             blk_id: this.props.blk_id,
             content: this.props.content,
             document_id: this.props.document_id,
-            isParentAgenda: this.props.isParentAgenda
+            isParentAgenda: this.props.isParentAgenda,
+
+            loading: true
         };
     }
+
+    handleLoading = () => {
+        this.setState({
+            loading: false
+            // loading: true
+        });
+    };
+
+    handleChangeText = changedText => {
+        console.log('Need to implement changing text');
+    };
 
     handleClickDelete = e => {
         e.preventDefault();
@@ -33,12 +56,20 @@ class Text extends Component {
                     handleAddTextSocketSend={this.props.handleAddTextSocketSend}
                     blk_id={this.props.blk_id}
                     document_id={this.props.document_id}
+                    handleChangeText={this.handleChangeText}
+                    handleLoading={this.handleLoading}
+                    loading={this.state.loading}
                 />
-                <div className="full-size-block-content">
-                    <div className="full-size-block-content__text">
-                        {/* {this.state.content} */}
+                {this.state.loading && (
+                    <div className="EditorWrapper-loader">
+                        <PacmanLoader
+                            css={override}
+                            size={15}
+                            color={'#98c6fa'}
+                            loading={this.state.loading}
+                        />
                     </div>
-                </div>
+                )}
             </div>
         );
     }

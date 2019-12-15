@@ -77,6 +77,7 @@ class NoteLeftBlock extends Component {
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
                                 socketRef={nextProps.socketRef}
+                                participants={nextProps.participants}
                             />
                         );
                     } else if (blk.block_type === TODO_CONTAINER) {
