@@ -16,10 +16,6 @@ class Text extends Component {
         console.log('Need to implement changing text');
     };
 
-    handleClickBlock = e => {
-        // e.stopPropagation();
-    };
-
     handleClickDelete = e => {
         e.preventDefault();
         const axios_path = `/api/textblock/${this.props.blk_id}/`;
@@ -28,15 +24,7 @@ class Text extends Component {
 
     render() {
         return (
-            <div
-                className="full-size-block-container Text"
-                onClick={
-                    () => this.handleClickBlock()
-                    // this.props.handleClickBlock(
-                    //     this.props.type,
-                    //     this.props.blk_id
-                    // )
-                }>
+            <div className="full-size-block-container Text">
                 <div className="full-size-block-title">
                     <div className="full-size-block-title__label">Text</div>
                     <button
