@@ -361,3 +361,33 @@
 .ck-user__marker {
     display: none !important;
 }
+
+.Text {
+    position: relative;
+    .EditorWrapper.--blur {
+        -webkit-filter: blur(3px);
+        -moz-filter: blur(3px);
+        -o-filter: blur(3px);
+        -ms-filter: blur(3px);
+        filter: blur(3px);
+
+        * {
+            text-align: left;
+        }
+    }
+
+    .EditorWrapper-loader {
+        position: absolute;
+
+        width: 100%;
+        height: calc(100% - 2.214rem);
+        top: 2.214rem;
+        left: 0;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        // background: white;
+    }
+}

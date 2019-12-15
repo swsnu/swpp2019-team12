@@ -83,7 +83,8 @@ export default class Editor extends Component {
                         <div className="centered"></div>
                     </div> */}
 
-                    <div className="centered">
+                    {/* <div className="centered"> */}
+                    <div>
                         {/* <div className="row-presence">
                             <div
                                 className="presence"></div>
