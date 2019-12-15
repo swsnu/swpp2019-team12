@@ -638,7 +638,6 @@ class Note extends Component {
         return (
             <div className="Note">
                 <div className="file-tree">
-                    <Signout history={history} />
                     <NoteTree
                         blocks={this.state.blocks}
                         agendaChildrenBlocks={this.state.agenda_children_blocks}
@@ -686,6 +685,7 @@ class Note extends Component {
                     nickname={loggedInUserNickname}
                     somebodyRecording={this.state.somebodyRecording}
                 />
+                <Signout history={history} />
             </div>
         );
     }
