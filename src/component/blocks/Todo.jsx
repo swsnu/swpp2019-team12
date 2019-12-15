@@ -173,6 +173,7 @@ class Todo extends Component {
     };
 
     handleSelectAssignee = assignee => {
+        console.log('CLICK');
         const { todo } = this.state;
         const assignees = uniqBy([...this.state.assignees, assignee], 'id');
         const assigneeInfo = {
@@ -263,7 +264,7 @@ class Todo extends Component {
         const { assignees, todo } = this.state;
         const dateFormat = 'YYYY-MM-DD';
         const dueDate = todo.due_date ? moment(todo.due_date) : moment();
-
+        console.log(this.state);
         return (
             <div
                 className="full-size-block todoCard-content-element"
