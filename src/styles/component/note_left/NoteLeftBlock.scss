@@ -155,7 +155,6 @@
     }
 }
 
-/*
 .todoCard-content-container {
     margin: rem(10px) 0 rem(20px) 0;
     padding: 0 rem(25px) 0 rem(20px);
@@ -242,4 +241,113 @@
     }
 }
 
-*/
+#Agenda {
+    display: flex;
+    flex-direction: column;
+    .Agenda-label {
+        display: flex;
+        justify-content: space-between;
+    }
+    .agenda-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .agenda-title {
+        width: 80%;
+        margin-bottom: rem(15px);
+        text-align: center;
+        color: black;
+
+        input {
+            text-align: center;
+            color: black;
+            border-bottom: 1px solid transparent;
+        }
+
+        input:focus {
+            color: black;
+            text-align: center;
+            border-bottom: 1px solid $black;
+        }
+    }
+
+    .agenda-buttons {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+
+        .add-tag-button,
+        .agenda-add-image-button,
+        .agenda-add-text-button {
+            border: none;
+            box-shadow: none;
+            font-size: rem(12px);
+            height: rem(24px);
+            padding-top: rem(3px);
+            padding-bottom: rem(3px);
+        }
+    }
+}
+
+#Agenda-Conatiner {
+    .NoteLeftBlock__blockList {
+        width: 100%;
+        padding: 0 rem(10px);
+    }
+    div:hover {
+        box-shadow: none;
+    }
+    .full-size-block-container {
+        border-top: 1px solid $tertiary;
+        border-bottom: 1px solid $tertiary;
+        border-radius: 0;
+    }
+    .full-size-block-title {
+        margin-bottom: rem(15px);
+    }
+}
+
+.ck-blurred {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    cursor: text;
+}
+.ck-focused {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    cursor: text;
+}
+
+.Image {
+    form {
+        input#content {
+            width: 50%;
+            text-align: center;
+            border-bottom: 1px solid transparent;
+            &:focus {
+                border-bottom: 1px solid $primary;
+            }
+        }
+        input#image {
+            width: 70%;
+            border: none;
+            text-align: center;
+        }
+
+        .image-input {
+            margin: 0 auto;
+            width: 55%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+    }
+}
+
+.ck-user__marker {
+    display: none !important;
+}

@@ -174,7 +174,7 @@ class Note extends Component {
                     noteTags: tagData,
                     workspaceTags: workspaceTags
                 });
-                return res['data']['participants'];
+                return res['data']['note']['participants'];
             })
             .then(participants => {
                 participants.forEach(participant => {

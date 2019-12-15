@@ -108,15 +108,16 @@ class NoteLeftInfo extends Component {
                             participants={this.props.participants}
                         />
                     </div>
-                    <div className="NoteLeftInfo-tags">
-                        <div>{this.renderTags()}</div>
-                        <div>
-                            <Dropdown overlay={menu} className="add-tag-button">
-                                <Button>
-                                    Add Tag <Icon type="down" />
-                                </Button>
-                            </Dropdown>
-                        </div>
+                </div>
+                <div className="NoteLeftInfo-tags">
+                    <Label title="Labels" />
+                    <div className="Tags-container">
+                        <Dropdown overlay={menu} className="add-tag-button">
+                            <Button>
+                                라벨 추가 <Icon type="down" />
+                            </Button>
+                        </Dropdown>
+                        <div className="Tags-list">{this.renderTags()}</div>
                     </div>
                 </div>
             </div>

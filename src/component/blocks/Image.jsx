@@ -177,7 +177,7 @@ class Image extends Component {
                                     onChange={this.handleChange}
                                 />
                             </p>
-                            <p>
+                            <div className="image-input">
                                 <input
                                     type="file"
                                     id="image"
@@ -185,8 +185,10 @@ class Image extends Component {
                                     onChange={this.handleChangeImage}
                                     required
                                 />
-                            </p>
-                            <button type="submit" value="submit" />)
+                                <button type="submit" className="image-submit">
+                                    Submit
+                                </button>
+                            </div>
                         </form>
                     ) : (
                         <div>

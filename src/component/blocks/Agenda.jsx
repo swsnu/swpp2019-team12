@@ -408,37 +408,52 @@ class Agenda extends Component {
         return (
             <div
                 className="full-size-block-container Agenda"
+                id="Agenda-Conatiner"
                 onClick={() =>
                     this.props.handleClickBlock(
                         this.props.type,
                         this.props.blk_id
                     )
                 }>
-                <div className="full-size-block-title Agenda">
-                    <div className="full-size-block-title__label Agenda">
-                        Agenda
+                <div className="full-size-block-title" id="Agenda">
+                    <div className="full-size-block-title__label Agenda-label">
+                        <div>Agenda</div>
+                        <button
+                            onClick={this.handleClickDelete}
+                            className="delete-button">
+                            X
+                        </button>
                     </div>
-                    <input
-                        onChange={this.handleChangeAgendaTitle}
-                        value={this.state.current_title}
-                    />
-
-                    <Button onClick={this.handleAddTextBlock}>Add text</Button>
-                    <div>
-                        <Dropdown overlay={menu} className="add-tag-button">
-                            <Button>
-                                Add Tag <Icon type="down" />
+                    <div className="agenda-info">
+                        <div className="agenda-title">
+                            <input
+                                onChange={this.handleChangeAgendaTitle}
+                                value={this.state.current_title}
+                                placeholder="안건 이름을 입력하세요"
+                            />
+                        </div>
+                        <div className="agenda-buttons">
+                            <Button
+                                onClick={this.handleAddTextBlock}
+                                className="agenda-add-text-button">
+                                Add text
                             </Button>
-                        </Dropdown>
+                            <Button
+                                onClick={this.handleAddImageBlock}
+                                className="agenda-add-image-button">
+                                Add image
+                            </Button>
+                            <div>
+                                <Dropdown
+                                    overlay={menu}
+                                    className="add-tag-button">
+                                    <Button>
+                                        Add Tag <Icon type="down" />
+                                    </Button>
+                                </Dropdown>
+                            </div>
+                        </div>
                     </div>
-                    <Button onClick={this.handleAddImageBlock}>
-                        Add image
-                    </Button>
-                    <button
-                        onClick={this.handleClickDelete}
-                        className="delete-button">
-                        X
-                    </button>
                 </div>
                 <div className="Agenda-tags">
                     <div>{this.renderTags()}</div>
