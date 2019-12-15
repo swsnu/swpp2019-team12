@@ -815,14 +815,15 @@ def todoblock_child_of_agenda(request, a_id):
             'assignees': request.data['assignees'],
             'note': agenda.note.id,
             'parent_agenda': a_id,
-            'is_parent_note': False
+            'is_parent_note': False,
+            'due_date': request.data['due_date']
         }
         serializer = TodoSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             agenda.has_todo_block = True
             agenda.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 

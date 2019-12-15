@@ -56,9 +56,6 @@ class NoteLeftInfo extends Component {
     };
 
     render() {
-        console.log('leftinfo tags: ', this.state.noteTags);
-        console.log('workspace tags: ', this.state.workspaceTags);
-
         const menu = (
             <Menu>
                 {this.state.workspaceTags.map((tag, i) => (

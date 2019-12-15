@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Text from '../blocks/Text';
 import Image from '../blocks/Image';
+import TodoContainer from '../blocks/TodoContainer';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const TEXT = 'Text';
@@ -68,6 +69,18 @@ export default class AgendaInside extends Component {
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
                                 socketRef={nextProps.socketRef}
+                            />
+                        );
+                    } else if (blk.block_type === TODO_CONTAINER) {
+                        result = (
+                            <TodoContainer
+                                todos={blk.todos}
+                                noteId={nextProps.noteId}
+                                participants={nextProps.participants}
+                                handleClickBlock={nextProps.handleClickBlock}
+                                handleDeleteTodo={nextProps.handleDeleteTodo}
+                                socketRef={nextProps.socketRef}
+                                is_parent_note={false}
                             />
                         );
                     } else {

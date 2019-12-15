@@ -12,7 +12,8 @@ class Todo extends Component {
             todo: {},
             typing: false,
             typingTimeout: 0,
-            content: ''
+            content: '',
+            APIPath: ''
         };
 
         this.inputRef = React.createRef();
@@ -37,10 +38,18 @@ class Todo extends Component {
 
     componentDidMount() {
         const { todo } = this.props;
+        let APIPath = '';
+        if (this.props.is_parent_note) {
+            APIPath = `/api/note/${this.props.noteId}/childrenblocks/`;
+        } else {
+            APIPath = `/api/agenda/${todo.parent_agenda}/childrenblocks/`;
+        }
+
         this.setState({
             assignees: todo.assignees_info,
             todo,
-            content: todo.content
+            content: todo.content,
+            APIPath: APIPath
         });
     }
 
@@ -88,7 +97,7 @@ class Todo extends Component {
             children_blocks: newBlocks
         };
         axios
-            .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
+            .patch(`${this.state.APIPath}`, stringifiedBlocks)
             .then(res => {
                 socketRef.current.state.ws.send(JSON.stringify(JSON_data));
             })
@@ -126,23 +135,18 @@ class Todo extends Component {
                 axios
                     .patch(`/api/todo/${todo.id}/`, { content: content })
                     .then(res_1 => {
-                        axios
-                            .get(`/api/note/${noteId}/childrenblocks/`)
-                            .then(res_2 => {
-                                let todoHandleFunc = (
-                                    original_todo,
-                                    content
-                                ) => {
-                                    original_todo.content = content;
-                                    return original_todo;
-                                };
-                                this.modifyTodoInfo(
-                                    res_2,
-                                    todo,
-                                    res_1['data']['content'],
-                                    todoHandleFunc
-                                );
-                            });
+                        axios.get(`${this.state.APIPath}`).then(res_2 => {
+                            let todoHandleFunc = (original_todo, content) => {
+                                original_todo.content = content;
+                                return original_todo;
+                            };
+                            this.modifyTodoInfo(
+                                res_2,
+                                todo,
+                                res_1['data']['content'],
+                                todoHandleFunc
+                            );
+                        });
                     })
                     .catch(e => console.log(e));
             }, 1818)
@@ -155,7 +159,7 @@ class Todo extends Component {
         axios
             .patch(`/api/todo/${todo.id}/`, { is_done: !todo.is_done })
             .then(res_1 => {
-                axios.get(`/api/note/${noteId}/childrenblocks/`).then(res_2 => {
+                axios.get(`${this.state.APIPath}`).then(res_2 => {
                     let todoHandleFunc = (original_todo, is_done) => {
                         original_todo.is_done = !is_done;
                         return original_todo;
@@ -182,7 +186,7 @@ class Todo extends Component {
         axios
             .patch(`/api/todo/${todo.id}/`, assigneeInfo)
             .then(res_1 => {
-                axios.get(`/api/note/${noteId}/childrenblocks/`).then(res_2 => {
+                axios.get(`${this.state.APIPath}`).then(res_2 => {
                     let todoHandleFunc = (original_todo, assignee) => {
                         let doAdd = true;
                         for (
@@ -229,7 +233,7 @@ class Todo extends Component {
                 due_date: date.format('YYYY-MM-DD')
             })
             .then(res_1 => {
-                axios.get(`/api/note/${noteId}/childrenblocks/`).then(res_2 => {
+                axios.get(`${this.state.APIPath}`).then(res_2 => {
                     let todoHandleFunc = (original_todo, due_date) => {
                         original_todo.due_date = due_date;
                         return original_todo;

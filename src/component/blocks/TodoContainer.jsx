@@ -50,6 +50,7 @@ class TodoContainer extends Component {
                             participants={this.props.participants}
                             handleDeleteTodo={this.props.handleDeleteTodo}
                             socketRef={this.props.socketRef}
+                            is_parent_note={this.props.is_parent_note}
                         />
                     ))}
                 </div>
