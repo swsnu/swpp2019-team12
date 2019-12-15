@@ -5,28 +5,34 @@
     margin-right: 30px;
     margin-left: 30px;
 
-    .googleSTT-recording-view {
-        display: flex;
+    .googleSTT-wrapper {
+        position: fixed;
+        width: 100%;
+        margin-right: 30px;
 
-        .record-image {
-            margin-left: 20px;
-            width: 30px;
-            height: 30px;
+        .googleSTT-recording-view {
+            display: flex;
+
+            .record-image {
+                margin-left: 20px;
+                width: 30px;
+                height: 30px;
+            }
         }
-    }
-}
+        .stt-script-container {
+            overflow: auto;
+            height: 80vh;
+            width: 100%;
+            margin-top: 10px;
+            margin-right: 30px;
 
-.stt-script-container {
-    overflow: auto;
-    height: 80vh;
-    width: 100%;
-    margin-top: 10px;
+            .stt-script-element {
+                background: grey;
+            }
 
-    .stt-script-element {
-        background: grey;
-    }
-
-    .stt-script-last-element {
-        background: yellow;
+            .stt-script-last-element {
+                background: yellow;
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Button } from 'antd';
 
 export default class Signout extends Component {
     handleClick() {
@@ -16,7 +17,7 @@ export default class Signout extends Component {
     render() {
         return (
             <div>
-                <button onClick={() => this.handleClick()}>로그아웃</button>
+                <Button onClick={() => this.handleClick()}>로그아웃</Button>
             </div>
         );
     }
