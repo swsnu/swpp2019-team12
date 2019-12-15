@@ -72,14 +72,27 @@ class Note extends Component {
             children_blocks.map(blk => {
                 let block_type = blk['block_type'];
                 if (block_type == 'Agenda') {
+                    let agendaChildrenBlocks = null;
                     console.log(blk);
+                    console.log(blk['children_blocks']);
+                    if (
+                        blk['children_blocks'] === '' ||
+                        blk['children_blocks'] == null
+                    ) {
+                        agendaChildrenBlocks = [];
+                    } else {
+                        agendaChildrenBlocks = JSON.parse(
+                            blk['children_blocks']
+                        );
+                    }
                     this.setState({
                         blocks: this.state.blocks.concat({
                             block_type: 'Agenda',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
-                            layer_y: blk['layer_y']
+                            layer_y: blk['layer_y'],
+                            agenda_children_blocks: agendaChildrenBlocks
                         })
                     });
                 } else if (block_type == 'Text') {
@@ -637,11 +650,15 @@ class Note extends Component {
         // console.log('workspace tags: ', this.state.workspaceTags);
         return (
             <div className="Note">
-                <div className="file-tree">
-                    <NoteTree
-                        blocks={this.state.blocks}
-                        agendaChildrenBlocks={this.state.agenda_children_blocks}
-                    />
+                <div className="file-tree-wrapper">
+                    <div className="file-tree">
+                        <NoteTree
+                            blocks={this.state.blocks}
+                            agendaChildrenBlocks={
+                                this.state.agenda_children_blocks
+                            }
+                        />
+                    </div>
                 </div>
                 <NoteLeft
                     handleAddTag={this.handleAddTag}
@@ -680,6 +697,9 @@ class Note extends Component {
                     ref={this.BlockRef}
                     onMessage={this.handleSocketBlock.bind(this)}
                 />
+                <div className="note-right-wrapper">
+                    <Signout className="note-signout" history={history} />
+                </div>
                 <GoogleSTT
                     room={noteId}
                     nickname={loggedInUserNickname}
