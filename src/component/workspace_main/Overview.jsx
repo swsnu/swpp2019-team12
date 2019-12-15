@@ -23,7 +23,10 @@ class Overview extends Component {
             todo => todo.note === id && todo.is_parent_note
         );
         const todoInAgenda = agendas.map(agenda => {
-            return todos.filter(todo => todo.parent_agenda === agenda.id);
+            return todos.filter(
+                todo =>
+                    todo.parent_agenda === agenda.id && todo.note === note.id
+            );
         });
         const todoAll = [todoInNote, ...todoInAgenda].filter(
             todo => todo.length > 0
