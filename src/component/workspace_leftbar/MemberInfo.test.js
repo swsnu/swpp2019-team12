@@ -1,33 +1,30 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import MemberInfo from './MemberInfo';
 
-const stubMembers = [
-    {
-        nickname: 'stub1'
-    }
-];
+const memberStub1 = {
+    id: 1,
+    nickname: 'TEST1',
+    user: 1
+};
+const memberStub2 = {
+    id: 2,
+    nickname: 'TEST2',
+    user: 2
+};
 
-const stubWorkspace = [
-    {
-        id: 1
-    }
-];
+const membersStub = [memberStub1, memberStub2];
 
 describe('<MemberInfo />', () => {
-    let memberInfo;
-    beforeEach(() => {
-        memberInfo = (
-            <MemberInfo members={stubMembers} workspace={stubWorkspace} />
-        );
-    });
-    afterEach(() => {
-        jest.clearAllMocks();
+    it('should render without error', () => {
+        const component = shallow(<MemberInfo members={membersStub} />);
+        let wrapper = component.find('.memberInfo-container');
+        expect(wrapper.length).toBe(1);
     });
 
-    it('should render without erros', () => {
-        const component = mount(memberInfo);
-        const wrapper = component.find('.memberInfo-container');
-        expect(wrapper.length).toBe(1);
+    it('render current member list', () => {
+        const component = shallow(<MemberInfo members={membersStub} />);
+        let wrapper = component.find('.memberInfo__memberList--element');
+        expect(wrapper.length).toBe(2);
     });
 });

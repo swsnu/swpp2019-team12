@@ -4,6 +4,7 @@
  */
 
 import React, { Component } from 'react';
+import axios from 'axios';
 import CKEditor from '@ckeditor/ckeditor5-react';
 
 // import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -125,7 +126,11 @@ export default class Editor extends Component {
                             this.props.handleLoading();
                         }}
                         onChange={(event, editor) => {
-                            console.log({ event, editor });
+                            axios
+                                .patch(`/api/textblock/${this.props.blk_id}/`, {
+                                    content: editor.getData()
+                                })
+                                .then(res => {});
                         }}
                         // onReady={                        }
                         editor={BalloonEditor}
