@@ -59,14 +59,14 @@ const changeBlocksToTree = (props, blocks) => {
             }
 
             data = {
-                key: blk.block_type + blk.id,
-                label: blk.block_type + blk.id,
+                key: '[' + blk.block_type + '] ' + blk.content,
+                label: '[' + blk.block_type + '] ' + blk.content,
                 nodes: childrenNodes
             };
         } else {
             data = {
-                key: blk.block_type + blk.id,
-                label: blk.block_type + blk.id
+                key: '[' + blk.block_type + '] ' + blk.id,
+                label: '[' + blk.block_type + ']'
             };
         }
         treeData.push(data);

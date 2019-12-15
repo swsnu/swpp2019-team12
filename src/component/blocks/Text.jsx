@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import EditorWrapper from '../texteditor/EditorWrapper';
-import axios from 'axios';
 
 class Text extends Component {
     constructor(props) {

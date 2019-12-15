@@ -5,7 +5,6 @@ import { Label } from './Label';
 import ParticipantInfo from './ParticipantInfo';
 import Tag from '../blocks/Tag';
 import { Button, Menu, Dropdown, Icon } from 'antd';
-import axios from 'axios';
 
 class NoteLeftInfo extends Component {
     constructor(props) {

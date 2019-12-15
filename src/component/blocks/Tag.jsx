@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Tag as AntTag } from 'antd';
-import { height } from 'dom-helpers';
 
 export default class Tag extends Component {
     constructor(props) {

@@ -35,6 +35,23 @@ const workspaceStub = {
 };
 
 describe('<InviteMember />', () => {
+    beforeEach(() => {
+        axios.post = jest.fn(url => {
+            return new Promise((resolve, reject) => {
+                const result = {
+                    data: {
+                        searchedMember: searchedMemberStub
+                    }
+                };
+                resolve(result);
+            });
+        });
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     it('should render without error', () => {
         const component = mount(<InviteMember />);
         let wrapper = component.find('.memberInfo__inviteMemberButton');
@@ -94,18 +111,17 @@ describe('<InviteMember />', () => {
     });
     it('handle change input', async done => {
         const component = mount(<InviteMember workspace={workspaceStub} />);
-        const email = 'test1@test.com';
 
-        axios.post = jest.fn(url => {
-            return new Promise((resolve, reject) => {
-                const result = {
-                    data: {
-                        searchedMember: searchedMemberStub
-                    }
-                };
-                resolve(result);
-            });
-        });
+        // axios.post = jest.fn(url => {
+        //     return new Promise((resolve, reject) => {
+        //         const result = {
+        //             data: {
+        //                 searchedMember: searchedMemberStub
+        //             }
+        //         };
+        //         resolve(result);
+        //     });
+        // });
 
         let wrapper;
 
@@ -123,6 +139,7 @@ describe('<InviteMember />', () => {
         });
         done();
     });
+
     it('handle select member', async done => {
         const component = mount(<InviteMember workspace={workspaceStub} />);
         const dummy = {
@@ -132,16 +149,16 @@ describe('<InviteMember />', () => {
             addedMemberId: [2]
         };
 
-        axios.post = jest.fn(url => {
-            return new Promise((resolve, reject) => {
-                const result = {
-                    data: {
-                        searchedMember: searchedMemberStub
-                    }
-                };
-                resolve(result);
-            });
-        });
+        // axios.post = jest.fn(url => {
+        //     return new Promise((resolve, reject) => {
+        //         const result = {
+        //             data: {
+        //                 searchedMember: searchedMemberStub
+        //             }
+        //         };
+        //         resolve(result);
+        //     });
+        // });
         component.setState({ searchedMember: searchedMemberStub });
         component.update();
 

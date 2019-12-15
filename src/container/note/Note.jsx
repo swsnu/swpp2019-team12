@@ -68,7 +68,7 @@ class Note extends Component {
                 children_blocks = JSON.parse(res.data['children_blocks']);
             }
 
-            children_blocks.map(blk => {
+            children_blocks.forEach(blk => {
                 let block_type = blk['block_type'];
                 if (block_type == 'Agenda') {
                     let agendaChildrenBlocks = null;
@@ -116,16 +116,15 @@ class Note extends Component {
                             todo.assignees.forEach(assignee_id => {
                                 axios
                                     .get(`/api/profile/${assignee_id}`)
-                                    .then(res => {
+                                    .then(res_ => {
                                         todo.assignees_info.push({
-                                            id: res['data']['id'],
-                                            nickname: res['data']['nickname']
+                                            id: res_['data']['id'],
+                                            nickname: res_['data']['nickname']
                                         });
                                     });
                             });
                         }
                     });
-
                     this.setState({
                         blocks: this.state.blocks.concat(todoContainer)
                     });
@@ -296,19 +295,19 @@ class Note extends Component {
                             JSON.stringify(newTitle)
                         );
                     })
-                    .catch(e => console.log(e));
+                    .catch(err => console.log(err));
             }, 1818)
         });
     };
 
-    handleChangeDatetime = moment => {
+    handleChangeDatetime = moment_ => {
         const n_id = this.props.match.params.n_id;
         axios
-            .patch(`/api/note/${n_id}/`, { created_at: moment })
+            .patch(`/api/note/${n_id}/`, { created_at: moment_ })
             .then(res => {
                 const newDatetime = {
                     operation_type: 'change_datetime',
-                    updated_datetime: moment
+                    updated_datetime: moment_
                 };
                 this.BlockRef.current.state.ws.send(
                     JSON.stringify(newDatetime)
@@ -339,7 +338,7 @@ class Note extends Component {
                             JSON.stringify(newLocation)
                         );
                     })
-                    .catch(e => console.log(e));
+                    .catch(err => console.log(err));
             }, 1818)
         });
     };

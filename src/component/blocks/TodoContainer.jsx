@@ -20,12 +20,6 @@ class TodoContainer extends Component {
         return null;
     }
 
-    // handleDeleteTodo = deleted => {
-    //     const { todos } = this.state;
-    //     const filtered = todos.filter(todo => todo.id !== deleted.id);
-    //     this.setState({ todos: filtered });
-    // };
-
     render() {
         return (
             <div

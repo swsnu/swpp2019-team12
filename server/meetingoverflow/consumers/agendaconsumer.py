@@ -264,7 +264,7 @@ class AgendaConsumer(WebsocketConsumer):
         # Send message to WebSocket
         """
         children_blocks = event["children_blocks"]
-        self.send(text_data=json.dumps({"children_blocks": children_blocks,}))
+        self.send(text_data=json.dumps({"children_blocks": children_blocks, }))
 
     def change_agenda(self, event):
         """
@@ -273,7 +273,7 @@ class AgendaConsumer(WebsocketConsumer):
         updated_agenda = event["content"]
         self.send(
             text_data=json.dumps(
-                {"operation_type": "change_agenda", "updated_agenda": updated_agenda,}
+                {"operation_type": "change_agenda",
+                    "updated_agenda": updated_agenda, }
             )
         )
-

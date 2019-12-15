@@ -67,7 +67,6 @@ class Image extends Component {
 
     handleSubmit = e => {
         e.preventDefault();
-        const noteId = this.props.noteId;
         let form_data = new FormData();
         form_data.append('image', this.state.image, this.state.image.name);
         form_data.append('content', this.state.content);
@@ -80,36 +79,11 @@ class Image extends Component {
                 axios.get(`${this.state.APIPath}`).then(res_2 => {
                     this.patchImage(res_2, res_1['data']);
                 });
-                // if (this.props.is_parent_note) {
-                //     axios
-                //         .get(`${this.state.APIPath}`)
-                //         .then(res_2 => {
-                //             this.patchImage(res_2, res_1['data']);
-                //         });
-                // } else {
-                //     axios
-                //         .get(
-                //             `/api/agenda/${this.props.parent_agenda}/childrenblocks/`
-                //         )
-                //         .then(res_2 => {
-                //             this.patchImage(res_2, res_1['data']);
-                //         });
-                // }
-                // const JSON_data = {
-                //     operation_type: 'patch_image',
-                //     updated_image: res['data']
-                // };
-                // console.log(JSON_data);
-                // console.log('res.data: ', res.data);
-
-                // this.patchImage()
             })
             .catch(err => console.log(err));
     };
 
     patchImage = (res, data) => {
-        const agendaId = this.props.parent_agenda;
-        const noteId = this.props.noteId;
         const socketRef = this.props.socketRef;
         let childrenBlocks = JSON.parse(res['data']['children_blocks']);
 
@@ -140,7 +114,7 @@ class Image extends Component {
         };
         axios
             .patch(`${this.state.APIPath}`, stringifiedBlocks)
-            .then(res => {
+            .then(res_ => {
                 socketRef.current.state.ws.send(JSON.stringify(JSON_data));
             })
             .catch(err => console.log(err));
@@ -167,7 +141,7 @@ class Image extends Component {
                 </div>
 
                 <div className="full-size-block-content Image">
-                    {this.state.is_submitted == false ? (
+                    {!this.state.is_submitted ? (
                         <form onSubmit={this.handleSubmit}>
                             <p>
                                 <input

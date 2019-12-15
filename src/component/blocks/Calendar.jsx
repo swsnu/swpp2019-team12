@@ -6,9 +6,7 @@ import Timeline, {
 } from 'react-calendar-timeline';
 import 'react-calendar-timeline/lib/Timeline.css';
 import moment from 'moment';
-
 import faker from 'faker';
-import axios from 'axios';
 
 const keys = {
     groupIdKey: 'id',
@@ -42,7 +40,9 @@ class CreateModal extends Component {
                     onChange={e => this.setState({ title: e.target.value })}
                     value={title}
                 />
-                <button onClick={title => handleAddItems(title)}>Create</button>
+                <button onClick={title_ => handleAddItems(title_)}>
+                    Create
+                </button>
             </div>
         );
     }
@@ -113,7 +113,7 @@ class Calendar extends Component {
         } = getResizeProps();
         const backgroundColor = itemContext.selected
             ? itemContext.dragging
-                ? '#1d60aa'
+                ? '#1d60ab'
                 : '#1d60aa'
             : '#4a4a4a';
         const borderColor = itemContext.selected ? '#8896b0' : '#4a4a4a';
@@ -236,13 +236,7 @@ class Calendar extends Component {
     };
 
     render() {
-        const {
-            groups,
-            items,
-            defaultTimeStart,
-            defaultTimeEnd,
-            selected
-        } = this.state;
+        const { groups, items, defaultTimeStart, defaultTimeEnd } = this.state;
         return (
             <div className="full-size-block-container Calendar">
                 <div className="full-size-block-title">

@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-// import ConfigurationDialog from './configuration-dialog';
 import Editor from './Editor';
 import { css } from '@emotion/core';
-//import { BarLoader } from 'react-spinners';
-import BarLoader from 'react-spinners/BarLoader';
 import PacmanLoader from 'react-spinners/PacmanLoader';
 
 const override = css`

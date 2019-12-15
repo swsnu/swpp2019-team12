@@ -45,6 +45,11 @@
 
 .createModal-member {
     width: 47%;
+
+    .createNoteModal-member__member--added {
+        height: rem(120px);
+    }
+
     .createModal-member__sublabel {
         margin-bottom: rem(15px);
     }
@@ -155,10 +160,4 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-}
-
-.createModal-member {
-    .createNoteModal-member__member--added {
-        height: rem(120px);
-    }
 }
