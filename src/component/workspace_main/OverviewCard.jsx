@@ -169,7 +169,8 @@ export const TodoCard = props => {
         } else {
             text = agendas.filter(
                 agenda => agenda.id === todos[0].parent_agenda
-            )[0].content;
+            );
+            text = text.length && text[0].content;
             return `안건 - ${text}`;
         }
     };
