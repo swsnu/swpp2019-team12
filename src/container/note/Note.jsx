@@ -480,22 +480,6 @@ class Note extends Component {
         );
     };
 
-    handleAddPdfBlock = noteId => {
-        console.log(
-            `Need to Implement adding Pdf Block to specific note whose id is ${noteId}`
-        );
-    };
-
-    handleAddTableBlock = noteId => {
-        console.log(
-            `Need to Implement adding Table Block to specific note whose id is ${noteId}`
-        );
-    };
-
-    handleStartAutoTyping = noteId => {
-        console.log(`Need to Implement auto-typing in the note ${noteId}`);
-    };
-
     handleAddParticipant = () => {
         console.log(
             'Need to implement add Participant who is a member of specific workspace'
@@ -654,7 +638,6 @@ class Note extends Component {
         return (
             <div className="Note">
                 <div className="file-tree">
-                    <Signout history={history} />
                     <NoteTree
                         blocks={this.state.blocks}
                         agendaChildrenBlocks={this.state.agenda_children_blocks}
@@ -702,6 +685,7 @@ class Note extends Component {
                     nickname={loggedInUserNickname}
                     somebodyRecording={this.state.somebodyRecording}
                 />
+                <Signout history={history} />
             </div>
         );
     }

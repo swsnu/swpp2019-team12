@@ -160,34 +160,6 @@ class NoteLeftBlock extends Component {
                         }>
                         이미지
                     </button>
-                    <button
-                        className="add-block-button"
-                        id="add_calendar_block"
-                        onClick={() =>
-                            this.props.handleAddCalendarBlock(this.state.noteId)
-                        }
-                    />
-                    <button
-                        className="add-block-button"
-                        id="add_pdf_block"
-                        onClick={() =>
-                            this.props.handleAddPdfBlock(this.state.noteId)
-                        }
-                    />
-                    <button
-                        className="add-block-button"
-                        id="add_table_block"
-                        onClick={() =>
-                            this.props.handleAddTableBlock(this.state.noteId)
-                        }
-                    />
-                    <button
-                        className="auto-type-button"
-                        id="auto_typing"
-                        onClick={() =>
-                            this.props.handleStartAutoTyping(this.state.noteId)
-                        }
-                    />
                 </div>
 
                 <DragDropContext onDragEnd={this.props.onDragEnd}>
