@@ -549,7 +549,10 @@ class Agenda extends Component {
                     </div>
                 </div>
                 <Websocket
-                    url={`ws://localhost:8001/ws/${this.state.agenda_id}/agenda/block/`}
+                    // 로컬 개발서버용
+                    //url={`ws://localhost:8001/ws/${this.state.agenda_id}/agenda/block/`}
+                    // 배포 서버용
+                    url={`wss://www.meetingoverflow.space:8443/${this.state.agenda_id}/agenda/block/`}
                     ref={this.AgendaRef}
                     onMessage={this.handleSocketAgenda.bind(this)}
                 />

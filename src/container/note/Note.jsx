@@ -655,9 +655,9 @@ class Note extends Component {
                 />
                 <Websocket
                     // 로컬 테스트용.
-                    url={`ws://localhost:8001/ws/${noteId}/block/`}
+                    // url={`ws://localhost:8001/ws/${noteId}/block/`}
                     // 개발서버용.
-                    // url={`wss://www.meetingoverflow.space:8443/ws/${noteId}/block/`}
+                    url={`wss://www.meetingoverflow.space:8443/ws/${noteId}/block/`}
                     ref={this.BlockRef}
                     onMessage={this.handleSocketBlock.bind(this)}
                 />
