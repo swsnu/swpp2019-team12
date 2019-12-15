@@ -54,9 +54,12 @@ export default class Editor extends Component {
     // presenceListElementRef = React.createRef();
 
     componentDidMount() {
-        this.setState({
-            isLayoutReady: true,
-            cloudServicesConfig: this.props.configuration
+        axios.get(`/api/textblock/${this.props.blk_id}/`).then(res => {
+            this.setState({
+                initialData: res.data['content'],
+                isLayoutReady: true,
+                cloudServicesConfig: this.props.configuration
+            });
         });
     }
 
@@ -80,7 +83,8 @@ export default class Editor extends Component {
                         <div className="centered"></div>
                     </div> */}
 
-                    <div className="centered">
+                    {/* <div className="centered"> */}
+                    <div>
                         {/* <div className="row-presence">
                             <div
                                 className="presence"></div>
@@ -230,7 +234,7 @@ export default class Editor extends Component {
                             //     container: this.presenceListElementRef.current
                             // }
                         }}
-                        // data={this.state.initialData}
+                        data={this.state.initialData}
                     />
                 )}
                 {/* <div ref={this.sidebarElementRef} className="sidebar"></div> */}

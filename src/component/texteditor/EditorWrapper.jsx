@@ -1,13 +1,6 @@
 import React, { Component } from 'react';
 import Editor from './Editor';
-import { css } from '@emotion/core';
-import PacmanLoader from 'react-spinners/PacmanLoader';
 
-const override = css`
-    display: block;
-    margin: 0 auto;
-    border-color: red;
-`;
 export default class EditorWrapper extends Component {
     state = {
         selectedUser: {
@@ -22,8 +15,7 @@ export default class EditorWrapper extends Component {
             uploadUrl: 'https://43733.cke-cs.com/easyimage/upload/',
             webSocketUrl: '43733.cke-cs.com/ws'
         },
-        updated: false,
-        loading: true
+        updated: false
     };
 
     /* 
@@ -65,26 +57,16 @@ export default class EditorWrapper extends Component {
         });
     }
 
-    handleLoading = () => {
-        this.setState({
-            loading: false
-        });
-    };
-
     render() {
         return (
-            <div className="EditorWrapper">
+            <div
+                className={`EditorWrapper ${
+                    this.props.loading ? '--blur' : ''
+                }`}>
                 {/* <p>{this.state.configuration.document_id}</p> */}
-                {this.state.loading && (
-                    <PacmanLoader
-                        css={override}
-                        size={15}
-                        color={'#98c6fa'}
-                        loading={this.state.loading}
-                    />
-                )}
+
                 <Editor
-                    handleLoading={this.handleLoading}
+                    handleLoading={this.props.handleLoading}
                     selectedUser={this.state.selectedUser}
                     configuration={this.state.configuration}
                     document_id={this.props.document_id}

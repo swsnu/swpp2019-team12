@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
 import EditorWrapper from '../texteditor/EditorWrapper';
+import { css } from '@emotion/core';
+import PacmanLoader from 'react-spinners/PacmanLoader';
+
+const override = css`
+    display: block;
+    margin: 0 auto;
+    border-color: red;
+    position: relative;
+    z-index: 100;
+`;
 
 class Text extends Component {
     constructor(props) {
@@ -8,16 +18,21 @@ class Text extends Component {
             blk_id: this.props.blk_id,
             content: this.props.content,
             document_id: this.props.document_id,
-            isParentAgenda: this.props.isParentAgenda
+            isParentAgenda: this.props.isParentAgenda,
+
+            loading: true
         };
     }
 
-    handleChangeText = changedText => {
-        console.log('Need to implement changing text');
+    handleLoading = () => {
+        this.setState({
+            loading: false
+            // loading: true
+        });
     };
 
-    handleClickBlock = e => {
-        // e.stopPropagation();
+    handleChangeText = changedText => {
+        console.log('Need to implement changing text');
     };
 
     handleClickDelete = e => {
@@ -28,15 +43,7 @@ class Text extends Component {
 
     render() {
         return (
-            <div
-                className="full-size-block-container Text"
-                onClick={
-                    () => this.handleClickBlock()
-                    // this.props.handleClickBlock(
-                    //     this.props.type,
-                    //     this.props.blk_id
-                    // )
-                }>
+            <div className="full-size-block-container Text">
                 <div className="full-size-block-title">
                     <div className="full-size-block-title__label">Text</div>
                     <button
@@ -50,12 +57,19 @@ class Text extends Component {
                     blk_id={this.props.blk_id}
                     document_id={this.props.document_id}
                     handleChangeText={this.handleChangeText}
+                    handleLoading={this.handleLoading}
+                    loading={this.state.loading}
                 />
-                <div className="full-size-block-content">
-                    <div className="full-size-block-content__text">
-                        {/* {this.state.content} */}
+                {this.state.loading && (
+                    <div className="EditorWrapper-loader">
+                        <PacmanLoader
+                            css={override}
+                            size={15}
+                            color={'#98c6fa'}
+                            loading={this.state.loading}
+                        />
                     </div>
-                </div>
+                )}
             </div>
         );
     }
