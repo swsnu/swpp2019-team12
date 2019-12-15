@@ -61,7 +61,6 @@ class Note extends Component {
         //axios.get(`/api/`);
 
         axios.get(`/api/note/${noteId}/childrenblocks/`).then(res => {
-            console.log(res.data['children_blocks']);
             let children_blocks = null;
             if (res.data['children_blocks'] === '') {
                 children_blocks = [];
@@ -145,26 +144,6 @@ class Note extends Component {
                 }
             });
         });
-
-        // axios
-        //     .get(`/api/note/${noteId}/images/`)
-        //     .then(res => {
-        //         console.log('axios get images', res);
-        //         res['data'].forEach(blk => {
-        //             this.setState({
-        //                 blocks: this.state.blocks.concat({
-        //                     block_type: 'Image',
-        //                     id: blk['id'],
-        //                     image: blk['image'],
-        //                     content: blk['content'],
-        //                     is_submitted: blk['is_submitted'],
-        //                     layer_x: blk['layer_x'],
-        //                     layer_y: blk['layer_y']
-        //                 })
-        //             });
-        //         });
-        //     })
-        //     .catch(err => console.log('No Images'));
 
         axios
             .get(`/api/note/${noteId}/`)
@@ -450,20 +429,6 @@ class Note extends Component {
         };
 
         this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data));
-
-        // axios.post(`/api/note/${noteId}/images/`, image_info).then(res => {
-        //     this.setState({
-        //         blocks: this.state.blocks.concat({
-        //             block_type: 'Image',
-        //             // image: null,
-        //             id: res['data']['id'],
-        //             content: res['data']['content'],
-        //             layer_x: res['data']['layer_x'],
-        //             layer_y: res['data']['layer_y'],
-        //             is_submitted: false
-        //         })
-        //     });
-        // });
     };
 
     handleAddCalendarBlock = () => {
@@ -606,7 +571,6 @@ class Note extends Component {
         // Drag & Drop
         // Delete
         else {
-            console.log('여기로 들어오겠지?');
             this.setState({ blocks: res['children_blocks'] });
         }
     }

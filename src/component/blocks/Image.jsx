@@ -9,7 +9,8 @@ class Image extends Component {
             image: null,
             content: this.props.content,
             is_submitted: false,
-            file: null
+            file: null,
+            APIPath: ''
         };
     }
 
@@ -25,10 +26,18 @@ class Image extends Component {
     }
 
     componentDidMount() {
+        let APIPath = '';
+        if (this.props.is_parent_note) {
+            APIPath = `/api/note/${this.props.noteId}/childrenblocks/`;
+        } else {
+            APIPath = `/api/agenda/${this.props.parent_agenda}/childrenblocks/`;
+        }
+
         this.setState({
             is_submitted: this.props.is_submitted,
             content: this.props.content,
-            image: this.props.image
+            image: this.props.image,
+            APIPath: APIPath
         });
     }
 
@@ -68,21 +77,24 @@ class Image extends Component {
                 headers: { 'content-type': 'multipart/form-data' }
             })
             .then(res_1 => {
-                if (this.props.is_parent_note) {
-                    axios
-                        .get(`/api/note/${noteId}/childrenblocks/`)
-                        .then(res_2 => {
-                            this.patchImage(res_2, res_1['data']);
-                        });
-                } else {
-                    axios
-                        .get(
-                            `/api/agenda/${this.props.parent_agenda}/childrenblocks/`
-                        )
-                        .then(res_2 => {
-                            this.patchImage(res_2, res_1['data']);
-                        });
-                }
+                axios.get(`${this.state.APIPath}`).then(res_2 => {
+                    this.patchImage(res_2, res_1['data']);
+                });
+                // if (this.props.is_parent_note) {
+                //     axios
+                //         .get(`${this.state.APIPath}`)
+                //         .then(res_2 => {
+                //             this.patchImage(res_2, res_1['data']);
+                //         });
+                // } else {
+                //     axios
+                //         .get(
+                //             `/api/agenda/${this.props.parent_agenda}/childrenblocks/`
+                //         )
+                //         .then(res_2 => {
+                //             this.patchImage(res_2, res_1['data']);
+                //         });
+                // }
                 // const JSON_data = {
                 //     operation_type: 'patch_image',
                 //     updated_image: res['data']
@@ -126,24 +138,12 @@ class Image extends Component {
         const stringifiedBlocks = {
             children_blocks: newBlocks
         };
-        if (this.props.is_parent_note) {
-            axios
-                .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
-                .then(res => {
-                    socketRef.current.state.ws.send(JSON.stringify(JSON_data));
-                })
-                .catch(err => console.log(err));
-        } else {
-            axios
-                .patch(
-                    `/api/agenda/${agendaId}/childrenblocks/`,
-                    stringifiedBlocks
-                )
-                .then(res => {
-                    socketRef.current.state.ws.send(JSON.stringify(JSON_data));
-                })
-                .catch(err => console.log(err));
-        }
+        axios
+            .patch(`${this.state.APIPath}`, stringifiedBlocks)
+            .then(res => {
+                socketRef.current.state.ws.send(JSON.stringify(JSON_data));
+            })
+            .catch(err => console.log(err));
     };
 
     render() {

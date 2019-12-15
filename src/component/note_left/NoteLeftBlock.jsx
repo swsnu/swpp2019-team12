@@ -88,10 +88,10 @@ class NoteLeftBlock extends Component {
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteTodo={nextProps.handleDeleteTodo}
                                 socketRef={nextProps.socketRef}
+                                is_parent_note={true}
                             />
                         );
                     } else if (blk.block_type === IMAGE) {
-                        console.log('img blk: ', blk);
                         result = (
                             <Image
                                 noteId={nextProps.noteId}
