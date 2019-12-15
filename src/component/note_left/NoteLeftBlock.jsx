@@ -13,13 +13,6 @@ const TABLE = 'Table';
 const CALENDAR = 'Calendar';
 const PDF = 'PDF';
 
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-    return result;
-};
-
 /* block color */
 const getItemStyle = (isDragging, draggableStyle) => ({
     // some basic styles to make the items look a bit nicer
@@ -77,6 +70,7 @@ class NoteLeftBlock extends Component {
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
                                 socketRef={nextProps.socketRef}
+                                participants={nextProps.participants}
                             />
                         );
                     } else if (blk.block_type === TODO_CONTAINER) {
@@ -172,11 +166,17 @@ class NoteLeftBlock extends Component {
                                 {this.state.blocks &&
                                     this.state.blocks.map((blk, index) => (
                                         <Draggable
+                                            className="draggable"
                                             key={blk.id}
                                             draggableId={blk.id}
                                             index={index}>
                                             {(provided_, snapshot_) => (
                                                 <div
+                                                    className="draggable-div"
+                                                    id={blk.id.replace(
+                                                        /(-\w+$)/g,
+                                                        ''
+                                                    )}
                                                     ref={provided_.innerRef}
                                                     {...provided_.draggableProps}
                                                     {...provided_.dragHandleProps}

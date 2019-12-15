@@ -26,14 +26,6 @@ jest.mock('./container/workspace/Workspace', () =>
     jest.fn(props => mockComponent(props, 'spyWorkspace'))
 );
 
-jest.mock('./container/stt/googleSTT', () =>
-    jest.fn(props => mockComponent(props, 'googleSTT'))
-);
-
-jest.mock('./component/blocks/Calendar', () =>
-    jest.fn(props => mockComponenet(props, 'calendar'))
-);
-
 describe('<App />', () => {
     //    let app;
 

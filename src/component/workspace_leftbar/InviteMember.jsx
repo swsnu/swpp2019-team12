@@ -15,15 +15,18 @@ const InviteModalMember = props => {
     } = props;
 
     const newlySearchedMember = [];
-    searchedMember.map(member => {
-        var flag = true;
-        members.map(alreadyMember => {
-            if (member['profile'].id == alreadyMember.id) {
-                flag = false;
-            }
+
+    searchedMember.length &&
+        searchedMember.map(member => {
+            let flag = true;
+            members.length &&
+                members.map(alreadyMember => {
+                    if (member['profile'].id == alreadyMember.id) {
+                        flag = false;
+                    }
+                });
+            if (flag) newlySearchedMember.push(member);
         });
-        if (flag) newlySearchedMember.push(member);
-    });
 
     return (
         <div className="invite-member">

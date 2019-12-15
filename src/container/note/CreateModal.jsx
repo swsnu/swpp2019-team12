@@ -272,10 +272,10 @@ class CreateModal extends Component {
                         handleChangeLocation={this.handleChangeLocation}
                     />
                 </div>
-                <CreateModalAgendaNumber
+                {/* <CreateModalAgendaNumber
                     agendaNumber={agendaNumber}
                     handleChangeAgendaNumber={this.handleChangeAgendaNumber}
-                />
+                /> */}
 
                 <CreateModalParticipant
                     hastory

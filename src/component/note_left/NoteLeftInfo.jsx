@@ -50,15 +50,18 @@ class NoteLeftInfo extends Component {
     };
 
     handleMenuClick = e => {
-        console.log(e);
         this.props.handleAddTag(e.key);
     };
 
     render() {
+        console.log(this.state.workspaceTags);
         const menu = (
             <Menu>
                 {this.state.workspaceTags.map((tag, i) => (
-                    <Menu.Item key={tag.id} onClick={this.handleMenuClick}>
+                    <Menu.Item
+                        className="noteLeftInfo-menu-item"
+                        key={tag.id}
+                        onClick={this.handleMenuClick}>
                         {tag.content}
                     </Menu.Item>
                 ))}

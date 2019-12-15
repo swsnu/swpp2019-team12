@@ -5,14 +5,16 @@ export default class Tag extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tagId: this.props.tag.id,
             title: this.props.tag.content,
             color: this.props.tag.color
         };
     }
 
     render() {
-        console.log(this.props);
-        return <AntTag color={this.state.color}>{this.state.title}</AntTag>;
+        return (
+            <AntTag className="ant-tag" color={this.state.color}>
+                {this.state.title}
+            </AntTag>
+        );
     }
 }

@@ -43,7 +43,6 @@ export default class AgendaInside extends Component {
                 nextProps.blocks.map((blk, index) => {
                     let result;
                     if (blk.block_type === TEXT) {
-                        console.log(blk);
                         result = (
                             <Text
                                 blk_id={blk.id}
@@ -55,7 +54,6 @@ export default class AgendaInside extends Component {
                             />
                         );
                     } else if (blk.block_type == IMAGE) {
-                        console.log(blk);
                         result = (
                             <Image
                                 noteId={nextProps.noteId}
@@ -72,6 +70,7 @@ export default class AgendaInside extends Component {
                             />
                         );
                     } else if (blk.block_type === TODO_CONTAINER) {
+                        console.log(nextProps.participants);
                         result = (
                             <TodoContainer
                                 todos={blk.todos}

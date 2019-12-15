@@ -106,37 +106,6 @@ class Agenda extends Component {
         };
 
         this.AgendaRef.current.state.ws.send(JSON.stringify(JSON_data));
-
-        // axios
-        //     .post(`/api/agenda/${this.state.agenda_id}/textblocks/`, text_info)
-        //     .then(res => {
-        //         const block = {
-        //             block_type: 'Text',
-        //             id: res['data']['id'],
-        //             content: res['data']['content'],
-        //             layer_x: res['data']['layer_x'],
-        //             layer_y: res['data']['layer_y'],
-        //             document_id: res['data']['document_id']
-        //         };
-        //         const newBlocks = this.state.blocks.concat(block);
-        //         const JSON_data = {
-        //             operation_type: 'add_block',
-        //             block: block
-        //         };
-        //         axios
-        //             .patch(`/api/agenda/${this.state.agenda_id}/`, {
-        //                 children_blocks: JSON.stringify(newBlocks),
-        //                 has_text_block: true
-        //             })
-        //             .then(res => {
-        //                 this.AgendaRef.current.state.ws.send(
-        //                     JSON.stringify(JSON_data)
-        //                 );
-        //             });
-        //     })
-        //     .catch(err => {
-        //         console.log('textblock insid agenda 생성 실패', err);
-        //     });
     };
 
     handleAddImageBlock = () => {
@@ -464,6 +433,7 @@ class Agenda extends Component {
     };
 
     render() {
+        console.log(this.props.participants);
         const menu = (
             <Menu>
                 {this.state.workspaceTags.map((tag, i) => (
@@ -543,6 +513,7 @@ class Agenda extends Component {
                             handleAddTextBlock={this.handleAddTextBlock}
                             handleDeleteTodo={this.handleDeleteTodo}
                             socketRef={this.AgendaRef}
+                            participants={this.props.participants}
                         />
                     </div>
                 </div>
