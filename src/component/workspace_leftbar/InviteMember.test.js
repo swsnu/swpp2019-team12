@@ -47,6 +47,11 @@ describe('<InviteMember />', () => {
             });
         });
     });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     it('should render without error', () => {
         const component = mount(<InviteMember />);
         let wrapper = component.find('.memberInfo__inviteMemberButton');

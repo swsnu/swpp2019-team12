@@ -96,10 +96,9 @@ class Workspace extends Component {
         } = this.state;
         const { history } = this.props;
 
-        const currAgendas = agendas.filter(a => !a.is_done);
-        const doneAgendas = agendas.filter(a => a.is_done);
-
-        const doneTodos = todos.filter(t => t.is_done);
+        // const currAgendas = agendas.filter(a => !a.is_done);
+        // const doneAgendas = agendas.filter(a => a.is_done);
+        // const doneTodos = todos.filter(t => t.is_done);
 
         return (
             <div className="workspace">

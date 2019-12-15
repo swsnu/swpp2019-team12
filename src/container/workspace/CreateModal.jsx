@@ -104,9 +104,7 @@ const CreateModalAdmin = props => {
                             <div
                                 key={i}
                                 className="createModal-member__member--searched-email"
-                                onClick={() =>
-                                    handleSelectAdmin(admin.user && admin.user)
-                                }>
+                                onClick={() => handleSelectAdmin(admin.user)}>
                                 {admin.user && admin.user.username}
                             </div>
                         ))}

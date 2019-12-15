@@ -4,10 +4,9 @@
 }
 
 .signin-box {
-    font-family: 'Oxygen-Regular';
+    font-family: 'Oxygen-Regular', sans-serif;
     width: 66vw;
     max-width: 1500px;
-    display: inline-block;
     margin: 3vh auto;
     height: 90vh;
     display: flex;
@@ -32,7 +31,7 @@
             display: flex;
             flex-direction: row;
             font-size: 4vh;
-            font-family: 'Oxygen-Regular';
+            font-family: 'Oxygen-Regular', sans-serif;
 
             .logo_text_bold {
                 font-weight: 750;
@@ -64,7 +63,6 @@
                 height: 5.5vh;
                 width: 100%;
                 font-size: 1.8vh;
-                border: none;
                 border: 1px solid #abb2b9;
                 margin-bottom: 10px;
 
@@ -76,7 +74,6 @@
             #password-input {
                 border-radius: 10px;
                 height: 5.5vh;
-                border: none;
                 font-size: 1.8vh;
                 width: 100%;
                 border: 1px solid #abb2b9;
@@ -121,7 +118,6 @@
             }
 
             #navigate_sign_up_button {
-                text-decoration: none;
                 height: 2vh;
                 // font-size: 1.6vh;
                 box-shadow: none;

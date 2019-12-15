@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import { map } from 'lodash';
-import axios from 'axios';
 import STTScript from './STTScript';
 import recordImage from '../../assets/icons/record_icon.png';
 import { Button } from 'antd';
@@ -246,7 +244,7 @@ class googleSTT extends Component {
     };
 
     render() {
-        const { recording, texts, somebodyRecording } = this.state;
+        const { recording, somebodyRecording } = this.state;
         console.log(this.state.somebodyRecording);
         return (
             <div className="googleSTT-container">
