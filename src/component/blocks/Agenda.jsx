@@ -93,7 +93,7 @@ class Agenda extends Component {
         const text_info = {
             a_id: this.state.agenda_id,
             n_id: this.props.noteId,
-            content: '어젠다 속 새로운 텍스트 블록',
+            content: '텍스트를 입력해주세요.',
             layer_x: 0,
             layer_y: 0,
             document_id: document_id,

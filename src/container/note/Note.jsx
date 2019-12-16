@@ -363,7 +363,7 @@ class Note extends Component {
         // Block Create API call 할 곳.
         const text_info = {
             n_id: noteId,
-            content: '새로 생성된 텍스트 블록',
+            content: '텍스트를 입력해주세요.',
             layer_x: 0,
             layer_y: 0,
             document_id: document_id,
@@ -433,7 +433,7 @@ class Note extends Component {
 
         // Block Create API call 할 곳.
         const text_info = {
-            content: '새로 생성된 텍스트 블록',
+            content: '텍스트를 입력해주세요.',
             layer_x: 0,
             layer_y: 0,
             document_id: document_id
