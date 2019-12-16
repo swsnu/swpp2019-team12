@@ -54,9 +54,8 @@ class NoteLeftInfo extends Component {
     };
 
     render() {
-        console.log(this.state.workspaceTags);
         const menu = (
-            <Menu>
+            <Menu className="noteLeftInfo-menu">
                 {this.state.workspaceTags.map((tag, i) => (
                     <Menu.Item
                         className="noteLeftInfo-menu-item"
@@ -87,6 +86,7 @@ class NoteLeftInfo extends Component {
                         <div className="NoteLeftInfo-date__container">
                             <Label title="Meeting Date & Time" />
                             <DateTime
+                                className="NoteLeftInfo-datetime-tag"
                                 value={this.props.moment}
                                 onBlur={this.handleConvertTag_Datetime}
                                 onChange={this.props.handleChangeDatetime}
