@@ -14,29 +14,6 @@ class Overview extends Component {
         };
     }
 
-    /*
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (
-            nextProps.notes !== prevState.notes ||
-            nextProps.agendas !== prevState.agendas ||
-            nextProps.todos !== prevState.todos
-        ) {
-            return { ...nextProps, noteLength: nextProps.notes.length };
-        } else {
-            noteLength = nextProps.notes.length;
-            agendaLength = nextProps.agendas.length;
-            todoLength = nextProps.todos.length;
-
-            return {
-                ...nextProps,
-                noteLength,
-                agendaLength,
-                todoLength
-            };
-        }
-    }
-    */
-
     handleNoteClick = note => {
         const { agendas, todos } = this.props;
         const id = note.id;
@@ -46,7 +23,10 @@ class Overview extends Component {
             todo => todo.note === id && todo.is_parent_note
         );
         const todoInAgenda = agendas.map(agenda => {
-            return todos.filter(todo => todo.parent_agenda === agenda.id);
+            return todos.filter(
+                todo =>
+                    todo.parent_agenda === agenda.id && todo.note === note.id
+            );
         });
         const todoAll = [todoInNote, ...todoInAgenda].filter(
             todo => todo.length > 0
@@ -60,7 +40,7 @@ class Overview extends Component {
     };
 
     render() {
-        const { notes, agendas, todos, history } = this.props;
+        const { notes, agendas, history } = this.props;
         const { agendaInNote, todoInNote, clicked } = this.state;
         return (
             <div className="Overview-container">
@@ -140,11 +120,11 @@ class Overview extends Component {
                                 todoInNote.length ? '' : '--empty'
                             }`}>
                             {todoInNote.length ? (
-                                map(todoInNote, (todos, i) => (
+                                map(todoInNote, (todos_, i) => (
                                     <TodoCard
                                         notes={notes}
                                         agendas={agendas}
-                                        todos={todos}
+                                        todos={todos_}
                                         clicked={clicked}
                                         history={history}
                                         key={i}

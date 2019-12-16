@@ -9,22 +9,13 @@ class TodoContainer extends Component {
             todos: []
         };
     }
-    componentDidMount() {
-        this.setState({ todos: this.props.todos });
-    }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.todos !== prevState.todos) {
+        if (nextProps.todos != prevState.todos) {
             return { todos: nextProps.todos };
         }
         return null;
     }
-
-    // handleDeleteTodo = deleted => {
-    //     const { todos } = this.state;
-    //     const filtered = todos.filter(todo => todo.id !== deleted.id);
-    //     this.setState({ todos: filtered });
-    // };
 
     render() {
         return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import App from './App';
 
 function mockComponent(props, className) {
@@ -24,14 +24,6 @@ jest.mock('./container/workspace/WorkspaceSelection', () =>
 
 jest.mock('./container/workspace/Workspace', () =>
     jest.fn(props => mockComponent(props, 'spyWorkspace'))
-);
-
-jest.mock('./container/stt/googleSTT', () =>
-    jest.fn(props => mockComponent(props, 'googleSTT'))
-);
-
-jest.mock('./component/blocks/Calendar', () =>
-    jest.fn(props => mockComponenet(props, 'calendar'))
 );
 
 describe('<App />', () => {

@@ -48,7 +48,7 @@ export const NoteCard = props => {
                 </div>
                 <div className="noteCard-content-participant">
                     <div className="noteCard-content-participant__label">
-                        참여 인원
+                        인원
                     </div>
                     <div className="noteCard-content-participant__data">
                         {note.participants.length}
@@ -77,7 +77,7 @@ export class AgendaCard extends Component {
         };
     }
     componentDidMount() {
-        const { agenda, clicked, history } = this.props;
+        const { agenda } = this.props;
 
         axios.get(`/api/agenda/${agenda.id}/textblocks/`).then(res => {
             const text = res.data[0].content.replace(/<[^>]*>/gm, '');
@@ -159,7 +159,7 @@ export const TodoCard = props => {
     console.log(todos, notes, agendas);
 
     const renderTitle = () => {
-        const { notes, agendas, todos } = props;
+        // const { notes, agendas, todos } = props;
         const { is_parent_note } = todos[0];
 
         let text;

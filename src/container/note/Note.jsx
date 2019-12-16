@@ -68,7 +68,7 @@ class Note extends Component {
                 children_blocks = JSON.parse(res.data['children_blocks']);
             }
 
-            children_blocks.map(blk => {
+            children_blocks.forEach(blk => {
                 let block_type = blk['block_type'];
                 if (block_type == 'Agenda') {
                     let agendaChildrenBlocks = null;
@@ -116,16 +116,15 @@ class Note extends Component {
                             todo.assignees.forEach(assignee_id => {
                                 axios
                                     .get(`/api/profile/${assignee_id}`)
-                                    .then(res => {
+                                    .then(res_ => {
                                         todo.assignees_info.push({
-                                            id: res['data']['id'],
-                                            nickname: res['data']['nickname']
+                                            id: res_['data']['id'],
+                                            nickname: res_['data']['nickname']
                                         });
                                     });
                             });
                         }
                     });
-
                     this.setState({
                         blocks: this.state.blocks.concat(todoContainer)
                     });
@@ -296,19 +295,19 @@ class Note extends Component {
                             JSON.stringify(newTitle)
                         );
                     })
-                    .catch(e => console.log(e));
+                    .catch(err => console.log(err));
             }, 1818)
         });
     };
 
-    handleChangeDatetime = moment => {
+    handleChangeDatetime = moment_ => {
         const n_id = this.props.match.params.n_id;
         axios
-            .patch(`/api/note/${n_id}/`, { created_at: moment })
+            .patch(`/api/note/${n_id}/`, { created_at: moment_ })
             .then(res => {
                 const newDatetime = {
                     operation_type: 'change_datetime',
-                    updated_datetime: moment
+                    updated_datetime: moment_
                 };
                 this.BlockRef.current.state.ws.send(
                     JSON.stringify(newDatetime)
@@ -339,7 +338,7 @@ class Note extends Component {
                             JSON.stringify(newLocation)
                         );
                     })
-                    .catch(e => console.log(e));
+                    .catch(err => console.log(err));
             }, 1818)
         });
     };
@@ -466,6 +465,7 @@ class Note extends Component {
 
     handleAddTag = tagId => {
         const noteId = this.props.match.params.n_id;
+        console.log('tag id: ', tagId);
         const newTag = this.state.workspaceTags.find(tag => tag.id == tagId);
         console.log('newTag: ', newTag);
         console.log(this.state.noteTags);
@@ -478,6 +478,7 @@ class Note extends Component {
 
         if (!duplicate) {
             const tags = this.state.noteTags.concat(newTag);
+            console.log(tags);
             const newNote = {
                 tags: tags.map(tag => tag.id)
             };
@@ -516,7 +517,6 @@ class Note extends Component {
                     document_id: res['document_id']
                 });
             } else if (res['block_type'] == 'TodoContainer') {
-                newBlocks = this.state.blocks;
                 let todoContainer = this.state.blocks.find(
                     blk => blk.block_type === 'TodoContainer'
                 );
@@ -558,7 +558,7 @@ class Note extends Component {
 
             axios
                 .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
-                .then(res => console.log(res));
+                .then(res_ => console.log(res_));
         } else if (res['operation_type'] === 'change_title') {
             this.setState({ title: res['updated_title'] });
         } else if (res['operation_type'] === 'change_location') {
@@ -618,6 +618,7 @@ class Note extends Component {
                     <div className="file-tree">
                         <NoteTree
                             blocks={this.state.blocks}
+                            history={history}
                             agendaChildrenBlocks={
                                 this.state.agenda_children_blocks
                             }

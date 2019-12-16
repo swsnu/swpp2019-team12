@@ -9,10 +9,6 @@
 @import './styles/Input.scss';
 @import './styles/Datetime.scss';
 
-@import './styles/Datetime.scss';
-@import './styles/Overlay.scss';
-@import './styles/Input.scss';
-
 /* component */
 // SignUp
 @import './styles/container/signup/SignUp.scss';
@@ -27,7 +23,6 @@
 @import './styles/container/note/NoteRightUnfocused.scss';
 
 // blocks
-@import './styles/component/blocks/Calendar.scss';
 @import './styles/component/blocks/Todo.scss';
 
 // workspace_leftbar

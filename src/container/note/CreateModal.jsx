@@ -136,6 +136,15 @@ class CreateModal extends Component {
     }
 
     componentDidMount() {
+        axios
+            .get('/api/profile/')
+            .then(res => {
+                const {
+                    data: { user }
+                } = res;
+                this.setState({ addedParticipant: [user] });
+            })
+            .catch(err => console.log(err));
         const loggedInUserNickname = sessionStorage.getItem(
             'LoggedInUserNickname'
         );
@@ -263,10 +272,10 @@ class CreateModal extends Component {
                         handleChangeLocation={this.handleChangeLocation}
                     />
                 </div>
-                <CreateModalAgendaNumber
+                {/* <CreateModalAgendaNumber
                     agendaNumber={agendaNumber}
                     handleChangeAgendaNumber={this.handleChangeAgendaNumber}
-                />
+                /> */}
 
                 <CreateModalParticipant
                     hastory

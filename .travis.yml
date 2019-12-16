@@ -17,7 +17,6 @@ matrix:
               - yarn run eslint
               - yarn coverage
               - sonar-scanner
-          after_success:
               - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
         - language: python
           python:
@@ -32,5 +31,8 @@ matrix:
               - python manage.py migrate
               - coverage run --source='.' manage.py test meetingoverflow
               - coverage report -m
+              - coverage xml
+              - cd ..
+              - sonar-scanner
           after_success:
               - coveralls

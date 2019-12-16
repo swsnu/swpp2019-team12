@@ -1,6 +1,4 @@
-#import json
 import dateutil.parser
-#from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
@@ -8,7 +6,6 @@ from rest_framework.decorators import api_view
 import django.contrib
 from django.contrib import auth
 from django.contrib.auth.models import User
-#from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.db.models import Q
 from .models import (Profile, Tag, Workspace, Note, Agenda, timezone,
                      Calendar, File, Image, Table, Todo, TextBlock)
@@ -39,7 +36,6 @@ def signup(request):
     elif request.method == 'POST':
         try:
             username = request.data['username']
-            # password = request.data['password']
             nickname = request.data['nickname']
         except KeyError:
             return HttpResponse(status=400)
@@ -98,6 +94,7 @@ def signout(request):
 
 
 # 추가된 api / Profile에 닉네임 저장
+# Code smell - refactor required
 @api_view(['GET', 'POST', 'PATCH'])
 def profile_api(request):
     """
@@ -194,7 +191,6 @@ def specific_profile(request, u_id):
     # /api/profile/:id/ PATCH 호출해서 닉네임 수정
     # ==========================================
     elif request.method == 'PATCH':
-        # queryset = request.user.profile
         try:
             queryset = Profile.objects.get(id=u_id)
         except Profile.DoesNotExist:
@@ -251,25 +247,21 @@ def workspace_api(request):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         admin_list = []
         for admin in admins:
-            try:
-                admin_list.append(Profile.objects.get(user__id=admin))
-            except Profile.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
+            admin_list.append(Profile.objects.filter(user__id=admin).last())
         member_list = []
         # 멤버가 하나도 없는 경우 에러
         for member in members:
-            try:
-                member_list.append(Profile.objects.get(user__id=member))
-            except Profile.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
+            member_list.append(Profile.objects.filter(user__id=member).last())
+        if admin_list == [None] or member_list == [None]:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         Workspace.objects.create(name=name)
         workspace = Workspace.objects.all().last()
         workspace.admins.set(admin_list)
         workspace.members.set(member_list)
         workspace.save()
+        Tag.create_tags(workspace)
         workspace_serializer = WorkspaceSerializer(workspace)
         return Response(workspace_serializer.data, status=status.HTTP_201_CREATED)
-
 
 # ===================================================
 # workspace id로부터 특정 워크스페이스 GET / PATCH / DELETE
@@ -295,28 +287,31 @@ def specific_workspace(request, w_id):
     # 아래의 경우 여러 serializer를 거쳐야 하므로 한 api가 비대해지는 문제점 발생
     # ================================================================
     """
+    try:
+        current_workspace = Workspace.objects.get(id=w_id)
+    except Workspace.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
     if request.method == 'GET':
         profile = request.user.profile
-        # profile = Profile.objects.get(id=1)
         try:
-            workspace = Workspace.objects.get(id=w_id)
             workspaces = Workspace.objects.filter(members__in=[profile])
         except Workspace.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        members = workspace.members.all()
+        members = current_workspace.members.all()
         member_serializer = ProfileSerializer(members, many=True)
-        admins = workspace.admins.all()
+        admins = current_workspace.admins.all()
         admin_serializer = ProfileSerializer(admins, many=True)
-        notes = Note.objects.filter(workspace=workspace)
+        notes = Note.objects.filter(workspace=current_workspace)
         note_serializer = NoteSerializer(notes, many=True)
-        agendas = Agenda.objects.filter(note__workspace=workspace)
+        agendas = Agenda.objects.filter(note__workspace=current_workspace)
         agenda_serializer = AgendaSerializer(agendas, many=True)
         todos = Todo.objects.all()
         todo_serializer = TodoSerializer(todos, many=True)
 
         # Add workspaces, workspace info
-        workspace_serializer = WorkspaceSerializer(workspace)
+        workspace_serializer = WorkspaceSerializer(current_workspace)
         workspaces_serializer = WorkspaceSerializer(workspaces, many=True)
 
         serializer = {
@@ -331,10 +326,6 @@ def specific_workspace(request, w_id):
         return Response(serializer, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
-        try:
-            current_workspace = Workspace.objects.get(id=w_id)
-        except Workspace.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
         current_members = current_workspace.members.all()
         new_members = request.data['members']
         data = new_members
@@ -349,10 +340,6 @@ def specific_workspace(request, w_id):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
-        try:
-            current_workspace = Workspace.objects.get(id=w_id)
-        except Workspace.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
         current_workspace.delete()
         return Response(status=status.HTTP_200_OK)
 
@@ -417,7 +404,6 @@ def notes_api(request, w_id):
             location = request.data['location']
             workspace_id = request.data['workspace']  # workspace id
             workspace = Workspace.objects.get(id=workspace_id)
-            # tags = request.data['tags'] # tag string list
 
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)

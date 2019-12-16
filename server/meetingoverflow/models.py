@@ -54,7 +54,7 @@ def random_color():
     """
     generating random color for tag
     """
-    return "%06x" % random.randint(0, 0xFFFFFF)
+    return "#%06x" % random.randint(0, 0xFFFFFF)
 
 
 class Tag(models.Model):
@@ -69,6 +69,22 @@ class Tag(models.Model):
 
     def __str__(self):
         return f'content: {self.content}'
+
+    @staticmethod
+    def create_tags(workspace):
+        """
+        Tag dummy data
+        """
+        Tag.objects.create(content="Frontend",
+                           workspace=workspace, color="#4287f5")
+        Tag.objects.create(content="Backend",
+                           workspace=workspace, color="#f56845")
+        Tag.objects.create(content="Documentation",
+                           workspace=workspace, color="#58c91a")
+        Tag.objects.create(
+            content="Urgent", workspace=workspace, color="#ff2121")
+        Tag.objects.create(content="Required",
+                           workspace=workspace, color="#c421bc")
 
 
 class Note(models.Model):

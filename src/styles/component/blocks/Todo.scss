@@ -36,6 +36,11 @@
     .todoCard-content-element__todo-text {
         display: flex;
         justify-content: center;
+        width: 100%;
+
+        &.done {
+            justify-content: flex-start;
+        }
 
         div {
             display: flex;
@@ -78,13 +83,7 @@
         width: 55%;
         align-items: center;
     }
-    .todoCard-content-element__todo-text {
-        width: 100%;
 
-        &.done {
-            justify-content: flex-start;
-        }
-    }
     .todoCard-content-element__checkbox-icon {
         width: rem(14px);
         height: rem(14px);

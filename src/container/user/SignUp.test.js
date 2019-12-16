@@ -1,8 +1,31 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import SignUp from './SignUp';
 import axios from 'axios';
 describe('<SignUp />', () => {
+    beforeEach(() => {
+        axios.patch = jest.fn((url, userinfo) => {
+            return new Promise((resolve, reject) => {
+                const result = {
+                    status: 200
+                };
+                resolve(result);
+            });
+        });
+
+        axios.post = jest.fn((url, user_info) => {
+            return new Promise((resolve, reject) => {
+                const result = {
+                    status: 200,
+                    data: {
+                        nickname: 'test',
+                        id: 1
+                    }
+                };
+                resolve(result);
+            });
+        });
+    });
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -22,20 +45,7 @@ describe('<SignUp />', () => {
         expect(instance.state.email).toEqual('test@test.com');
     });
 
-    it('When user enter invaild email', () => {
-        const email = 'test@test.wrong.email';
-        const component = shallow(<SignUp />);
-        let wrapper = component.find('#user_email');
-        wrapper.simulate('change', { target: { value: email } });
-        let instance = component.instance();
-        expect(instance.state.email).toEqual('test@test.wrong.email');
-        wrapper.simulate('blur');
-        instance = component.instance();
-        expect(instance.state.emailVaildText).toEqual('잘못된 형식입니다.');
-        expect(instance.state.isEmailVaild).toEqual(false);
-    });
-
-    it('When user enter invaild email', () => {
+    it('When user enter invalid email', () => {
         const email = 'test@test.wrong.email';
         const component = shallow(<SignUp />);
         let wrapper = component.find('#user_email');
@@ -49,14 +59,14 @@ describe('<SignUp />', () => {
     });
 
     it('When input email is not existing in DB', async () => {
-        axios.patch = jest.fn((url, userinfo) => {
-            return new Promise((resolve, reject) => {
-                const result = {
-                    status: 200
-                };
-                resolve(result);
-            });
-        });
+        // axios.patch = jest.fn((url, userinfo) => {
+        //     return new Promise((resolve, reject) => {
+        //         const result = {
+        //             status: 200
+        //         };
+        //         resolve(result);
+        //     });
+        // });
         const email = 'nonexisting@test.com';
         const component = shallow(<SignUp />);
         let wrapper = component.find('#user_email');
@@ -69,6 +79,7 @@ describe('<SignUp />', () => {
     });
 
     it('When input email is already existing in DB', async () => {
+        jest.clearAllMocks();
         axios.patch = jest.fn((url, userinfo) => {
             return new Promise((resolve, reject) => {
                 const result = {
@@ -241,27 +252,27 @@ describe('<SignUp />', () => {
     });
 
     it('should submit form when all inputs are vaild', async done => {
-        axios.post = jest.fn((url, user_info) => {
-            return new Promise((resolve, reject) => {
-                const result = {
-                    status: 200,
-                    data: {
-                        nickname: 'test',
-                        id: 1
-                    }
-                };
-                resolve(result);
-            });
-        });
+        // axios.post = jest.fn((url, user_info) => {
+        //     return new Promise((resolve, reject) => {
+        //         const result = {
+        //             status: 200,
+        //             data: {
+        //                 nickname: 'test',
+        //                 id: 1
+        //             }
+        //         };
+        //         resolve(result);
+        //     });
+        // });
 
-        axios.patch = jest.fn((url, userinfo) => {
-            return new Promise((resolve, reject) => {
-                const result = {
-                    status: 200
-                };
-                resolve(result);
-            });
-        });
+        // axios.patch = jest.fn((url, userinfo) => {
+        //     return new Promise((resolve, reject) => {
+        //         const result = {
+        //             status: 200
+        //         };
+        //         resolve(result);
+        //     });
+        // });
         sessionStorage = { setItem: jest.fn() };
 
         const email = 'test@test.com';
@@ -301,14 +312,14 @@ describe('<SignUp />', () => {
     });
 
     it('should not submit form when some inputs are invaild', async () => {
-        axios.post = jest.fn((url, user_info) => {
-            return new Promise((resolve, reject) => {
-                const result = {
-                    status: 200
-                };
-                resolve(result);
-            });
-        });
+        // axios.post = jest.fn((url, user_info) => {
+        //     return new Promise((resolve, reject) => {
+        //         const result = {
+        //             status: 200
+        //         };
+        //         resolve(result);
+        //     });
+        // });
 
         axios.patch = jest.fn((url, userinfo) => {
             return new Promise((resolve, reject) => {

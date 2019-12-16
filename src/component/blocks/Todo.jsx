@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Menu, Dropdown, Icon, DatePicker } from 'antd';
 import moment from 'moment';
-import { map, uniqBy, differenceBy, find, pull, remove } from 'lodash';
+import { map, uniqBy, differenceBy, find } from 'lodash';
 import axios from 'axios';
 
 class Todo extends Component {
@@ -54,7 +54,6 @@ class Todo extends Component {
     }
 
     modifyTodoInfo = (res, todo, data, func) => {
-        const noteId = this.props.noteId;
         const socketRef = this.props.socketRef;
         let childrenBlocks = JSON.parse(res['data']['children_blocks']);
         let todoContainer = find(childrenBlocks, {
@@ -98,7 +97,7 @@ class Todo extends Component {
         };
         axios
             .patch(`${this.state.APIPath}`, stringifiedBlocks)
-            .then(res => {
+            .then(res_ => {
                 socketRef.current.state.ws.send(JSON.stringify(JSON_data));
             })
             .catch(err => console.log(err));
@@ -120,7 +119,6 @@ class Todo extends Component {
     };
 
     handleChangeTodo = e => {
-        const noteId = this.props.noteId;
         const { todo } = this.state;
         const content = e.target.value.length ? e.target.value : ' ';
 
@@ -136,8 +134,8 @@ class Todo extends Component {
                     .patch(`/api/todo/${todo.id}/`, { content: content })
                     .then(res_1 => {
                         axios.get(`${this.state.APIPath}`).then(res_2 => {
-                            let todoHandleFunc = (original_todo, content) => {
-                                original_todo.content = content;
+                            let todoHandleFunc = (original_todo, content_) => {
+                                original_todo.content = content_;
                                 return original_todo;
                             };
                             this.modifyTodoInfo(
@@ -148,13 +146,12 @@ class Todo extends Component {
                             );
                         });
                     })
-                    .catch(e => console.log(e));
+                    .catch(err => console.log(err));
             }, 1818)
         });
     };
 
     handleChangeStatus = () => {
-        const noteId = this.props.noteId;
         const { todo } = this.state;
         axios
             .patch(`/api/todo/${todo.id}/`, { is_done: !todo.is_done })
@@ -176,18 +173,18 @@ class Todo extends Component {
     };
 
     handleSelectAssignee = assignee => {
-        const noteId = this.props.noteId;
+        console.log('CLICK');
         const { todo } = this.state;
         const assignees = uniqBy([...this.state.assignees, assignee], 'id');
         const assigneeInfo = {
-            assignees: assignees.map(assignee => assignee.id)
+            assignees: assignees.map(assignee_ => assignee_.id)
         };
 
         axios
             .patch(`/api/todo/${todo.id}/`, assigneeInfo)
             .then(res_1 => {
                 axios.get(`${this.state.APIPath}`).then(res_2 => {
-                    let todoHandleFunc = (original_todo, assignee) => {
+                    let todoHandleFunc = (original_todo, assignee_) => {
                         let doAdd = true;
                         for (
                             let i = 0;
@@ -195,16 +192,16 @@ class Todo extends Component {
                             i++
                         ) {
                             let info = original_todo.assignees_info[i];
-                            if (info.id === assignee.id) {
+                            if (info.id === assignee_.id) {
                                 doAdd = false;
                                 break;
                             }
                         }
                         if (doAdd) {
-                            original_todo.assignees.push(assignee.id);
+                            original_todo.assignees.push(assignee_.id);
                             original_todo.assignees_info.push({
-                                id: assignee.id,
-                                nickname: assignee.nickname
+                                id: assignee_.id,
+                                nickname: assignee_.nickname
                             });
                         }
                         return original_todo;
@@ -226,7 +223,6 @@ class Todo extends Component {
     };
 
     handleChangeDueDate = (date, dateString) => {
-        const noteId = this.props.noteId;
         const { todo } = this.state;
         axios
             .patch(`/api/todo/${todo.id}/`, {
@@ -268,7 +264,7 @@ class Todo extends Component {
         const { assignees, todo } = this.state;
         const dateFormat = 'YYYY-MM-DD';
         const dueDate = todo.due_date ? moment(todo.due_date) : moment();
-
+        console.log(this.state);
         return (
             <div
                 className="full-size-block todoCard-content-element"

@@ -5,10 +5,9 @@
 }
 
 .signup-box {
-    font-family: 'Oxygen-Regular';
+    font-family: 'Oxygen-Regular', sans-serif;
     width: 66vw;
     max-width: 1500px;
-    display: inline-block;
     margin: 3vh auto;
     height: 90vh;
     display: flex;
@@ -32,7 +31,7 @@
             display: flex;
             flex-direction: row;
             font-size: 4vh;
-            font-family: 'Oxygen-Regular';
+            font-family: 'Oxygen-Regular', sans-serif;
 
             .logo_text_bold {
                 font-weight: 750;
@@ -149,7 +148,6 @@
             }
 
             #navigate_sign_in_button {
-                text-decoration: none;
                 // height: 2vh;
                 // font-size: 1.6vh;
                 box-shadow: none;

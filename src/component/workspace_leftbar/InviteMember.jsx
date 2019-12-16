@@ -15,15 +15,18 @@ const InviteModalMember = props => {
     } = props;
 
     const newlySearchedMember = [];
-    searchedMember.map(member => {
-        var flag = true;
-        members.map(alreadyMember => {
-            if (member['profile'].id == alreadyMember.id) {
-                flag = false;
-            }
+
+    searchedMember.length &&
+        searchedMember.map(member => {
+            let flag = true;
+            members.length &&
+                members.map(alreadyMember => {
+                    if (member['profile'].id == alreadyMember.id) {
+                        flag = false;
+                    }
+                });
+            if (flag) newlySearchedMember.push(member);
         });
-        if (flag) newlySearchedMember.push(member);
-    });
 
     return (
         <div className="invite-member">
@@ -114,7 +117,6 @@ class InviteMember extends Component {
 
     handleInviteMembers = () => {
         const { addedMemberId } = this.state;
-        const { history } = this.props;
         axios
             .patch(`/api/workspace/${this.props.workspace.id}/`, {
                 members: addedMemberId
@@ -126,7 +128,7 @@ class InviteMember extends Component {
 
     render() {
         const { emailMember, searchedMember, addedMember } = this.state;
-        const { handleCancel } = this.props;
+        // const { handleCancel } = this.props;
         const { members } = this.props;
 
         return (

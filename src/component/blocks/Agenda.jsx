@@ -106,37 +106,6 @@ class Agenda extends Component {
         };
 
         this.AgendaRef.current.state.ws.send(JSON.stringify(JSON_data));
-
-        // axios
-        //     .post(`/api/agenda/${this.state.agenda_id}/textblocks/`, text_info)
-        //     .then(res => {
-        //         const block = {
-        //             block_type: 'Text',
-        //             id: res['data']['id'],
-        //             content: res['data']['content'],
-        //             layer_x: res['data']['layer_x'],
-        //             layer_y: res['data']['layer_y'],
-        //             document_id: res['data']['document_id']
-        //         };
-        //         const newBlocks = this.state.blocks.concat(block);
-        //         const JSON_data = {
-        //             operation_type: 'add_block',
-        //             block: block
-        //         };
-        //         axios
-        //             .patch(`/api/agenda/${this.state.agenda_id}/`, {
-        //                 children_blocks: JSON.stringify(newBlocks),
-        //                 has_text_block: true
-        //             })
-        //             .then(res => {
-        //                 this.AgendaRef.current.state.ws.send(
-        //                     JSON.stringify(JSON_data)
-        //                 );
-        //             });
-        //     })
-        //     .catch(err => {
-        //         console.log('textblock insid agenda 생성 실패', err);
-        //     });
     };
 
     handleAddImageBlock = () => {
@@ -207,7 +176,6 @@ class Agenda extends Component {
                     parent_agenda: res['parent_agenda']
                 });
             } else if (res['block_type'] === 'TodoContainer') {
-                newBlocks = this.state.blocks;
                 let todoContainer = this.state.blocks.find(
                     blk => blk.block_type === 'TodoContainer'
                 );
@@ -241,7 +209,7 @@ class Agenda extends Component {
                     `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
                     stringifiedBlocks
                 )
-                .then(res => console.log(res));
+                .then(res_ => console.log(res_));
         } else if (res['operation_type'] === 'change_agenda') {
             this.setState({ agenda_title: res['updated_agenda'] });
         } else {
@@ -328,7 +296,7 @@ class Agenda extends Component {
                         `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
                         stringifiedBlocks
                     )
-                    .then(res => {
+                    .then(res_ => {
                         this.AgendaRef.current.state.ws.send(
                             JSON.stringify(JSON_data)
                         );
@@ -377,7 +345,7 @@ class Agenda extends Component {
                             JSON.stringify(newAgenda)
                         );
                     })
-                    .catch(e => console.log(e));
+                    .catch(err => console.log(err));
             }, 1818)
         });
     };
@@ -420,7 +388,7 @@ class Agenda extends Component {
         };
         axios
             .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
-            .then(res => {
+            .then(res_ => {
                 socketRef.current.state.ws.send(JSON.stringify(JSON_data));
             })
             .catch(err => console.log(err));
@@ -465,7 +433,7 @@ class Agenda extends Component {
     };
 
     render() {
-        const { current_title, agenda_title } = this.state;
+        console.log(this.props.participants);
         const menu = (
             <Menu>
                 {this.state.workspaceTags.map((tag, i) => (
@@ -545,6 +513,7 @@ class Agenda extends Component {
                             handleAddTextBlock={this.handleAddTextBlock}
                             handleDeleteTodo={this.handleDeleteTodo}
                             socketRef={this.AgendaRef}
+                            participants={this.props.participants}
                         />
                     </div>
                 </div>
