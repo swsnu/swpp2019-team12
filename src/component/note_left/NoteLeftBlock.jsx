@@ -49,7 +49,6 @@ class NoteLeftBlock extends Component {
                                 document_id={blk.document_id}
                                 type={blk.block_type}
                                 content={blk.content}
-                                handleChangeText={nextProps.handleChangeText}
                                 handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
                                 handleAddTextSocketSend={
@@ -113,8 +112,6 @@ class NoteLeftBlock extends Component {
         }
         return null;
     }
-
-    handleChangeText = () => {};
 
     render() {
         return (
