@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = "i*6_@zz&=^75i)#ht_a=h66j8s3jz^)izk!^jjrx6&xlug(0x$"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "meetingoverflow.space",
@@ -152,3 +152,7 @@ CHANNEL_LAYERS = {
 }
 
 CORS_ORIGIN_WHITELIST = ("http://127.0.0.1:3000",)
+
+SESSION_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+CSRF_COOKIE_SECURE = True
