@@ -58,9 +58,7 @@ export const NoteCard = props => {
             </div>
             <div className="noteCard-content-label">
                 {map(note.tags, (note_tag, i) => {
-                    console.log(workspace_tags);
                     const tag = workspace_tags.find(tag => tag.id == note_tag);
-                    console.log(note_tag);
                     return (
                         <div
                             className="noteCard-content-label-element"
@@ -112,7 +110,7 @@ export class AgendaCard extends Component {
     };
 
     render() {
-        const { agenda, clicked, history } = this.props;
+        const { agenda, clicked, history, workspace_tags } = this.props;
         const { text } = this.state;
         return (
             <div
@@ -146,14 +144,19 @@ export class AgendaCard extends Component {
                     </div>
                 </div>
                 <div className="agendaCard-content-label">
-                    {map(dummyLabels, (label, i) => (
-                        <div
-                            className="agendaCard-content-label-element"
-                            key={i}
-                            style={{ backgroundColor: label.color }}>
-                            {label.text}
-                        </div>
-                    ))}
+                    {map(agenda.tags, (agenda_tag, i) => {
+                        const tag = workspace_tags.find(
+                            tag => tag.id == agenda_tag
+                        );
+                        return (
+                            <div
+                                className="noteCard-content-label-element"
+                                key={i}
+                                style={{ backgroundColor: tag.color }}>
+                                {tag.content}
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         );

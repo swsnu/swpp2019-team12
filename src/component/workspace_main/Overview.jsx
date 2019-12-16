@@ -103,6 +103,7 @@ class Overview extends Component {
                             {agendaInNote.length ? (
                                 map(agendaInNote, (agenda, i) => (
                                     <AgendaCard
+                                        workspace_tags={workspace_tags}
                                         agenda={agenda}
                                         key={i}
                                         clicked={clicked}
