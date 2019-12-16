@@ -32,7 +32,5 @@ matrix:
               - coverage run --source='.' manage.py test meetingoverflow
               - coverage report -m
               - coverage xml
-              - cd ..
-              - sonar-scanner
           after_success:
               - coveralls
