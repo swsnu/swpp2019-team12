@@ -19,6 +19,16 @@ class Overview extends Component {
         // });
     }
 
+    handleReset = e => {
+        e.stopPropagation();
+
+        this.setState({
+            agendaInNote: [],
+            todoInNote: [],
+            clicked: -1
+        });
+    };
+
     handleNoteClick = note => {
         const { agendas, todos } = this.props;
         const id = note.id;
@@ -41,6 +51,38 @@ class Overview extends Component {
             agendaInNote: this.state.clicked !== -1 ? [] : agendaInNote,
             todoInNote: this.state.clicked !== -1 ? [] : todoAll,
             clicked: this.state.clicked !== -1 ? -1 : id
+        });
+    };
+
+    handleTagClick = tag => {
+        const { notes, agendas, todos } = this.props;
+
+        const notesHasTag = notes.filter(note => note.tags.includes(tag));
+        const agendasHasTag = agendas.filter(agenda =>
+            agenda.tags.includes(tag)
+        );
+        console.log('noteHasTag', notesHasTag);
+        console.log('agendaHasTag', agendasHasTag);
+
+        const todoInNote = notesHasTag.map(note => {
+            return todos.filter(
+                todo => todo.note === note.id && todo.is_parent_note
+            );
+        });
+
+        const todoInAgenda = agendasHasTag.map(agenda => {
+            return todos.filter(
+                todo => todo.parent_agenda === agenda.id
+                // todo.parent_agenda === agenda.id && todo.note === note.id
+            );
+        });
+        const todoAll = [...todoInNote, ...todoInAgenda].filter(
+            todo => todo.length > 0
+        );
+        this.setState({
+            agendaInNote: this.state.clicked !== -2 ? [] : agendasHasTag,
+            todoInNote: this.state.clicked !== -2 ? [] : todoAll,
+            clicked: this.state.clicked !== -1 ? -1 : -2
         });
     };
 
@@ -92,6 +134,7 @@ class Overview extends Component {
                                     handleNoteClick={this.handleNoteClick}
                                     clicked={clicked}
                                     history={history}
+                                    handleTagClick={this.handleTagClick}
                                 />
                             ))}
                         </div>
@@ -108,6 +151,7 @@ class Overview extends Component {
                                         key={i}
                                         clicked={clicked}
                                         history={history}
+                                        handleTagClick={this.handleTagClick}
                                     />
                                 ))
                             ) : (

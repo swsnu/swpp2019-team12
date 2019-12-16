@@ -9,7 +9,14 @@ const dummyLabels = [
     { color: '#FFCA00', text: 'Demo' }
 ];
 export const NoteCard = props => {
-    const { note, handleNoteClick, clicked, history, workspace_tags } = props;
+    const {
+        note,
+        handleNoteClick,
+        clicked,
+        history,
+        workspace_tags,
+        handleTagClick
+    } = props;
     const date = moment(note.created_at).format('YYYY-MM-DD HH:MM');
     console.log(workspace_tags);
     console.log(note);
@@ -62,6 +69,7 @@ export const NoteCard = props => {
                     return (
                         <div
                             className="noteCard-content-label-element"
+                            onClick={() => handleTagClick(tag.id)}
                             key={i}
                             style={{ backgroundColor: tag.color }}>
                             {tag.content}
@@ -121,7 +129,13 @@ export class AgendaCard extends Component {
     };
 
     render() {
-        const { agenda, clicked, history, workspace_tags } = this.props;
+        const {
+            agenda,
+            clicked,
+            history,
+            workspace_tags,
+            handleTagClick
+        } = this.props;
         const { text } = this.state;
         return (
             <div
@@ -162,6 +176,7 @@ export class AgendaCard extends Component {
                         return (
                             <div
                                 className="noteCard-content-label-element"
+                                onClick={() => handleTagClick(tag.id)}
                                 key={i}
                                 style={{ backgroundColor: tag.color }}>
                                 {tag.content}
