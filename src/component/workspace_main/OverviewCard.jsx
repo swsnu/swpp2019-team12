@@ -91,12 +91,23 @@ export class AgendaCard extends Component {
 
     renderBlocks = () => {
         const { agenda } = this.props;
+        const childBlocks = JSON.parse(agenda.children_blocks);
+        console.log('agneda child', childBlocks);
+
         const blocks = [
-            { label: 'text', value: agenda.has_text_block },
-            { label: 'image', value: agenda.has_image_block },
-            { label: 'calendar', value: agenda.has_calendar_block },
-            { label: 'todo', value: agenda.has_todo_block }
+            { label: 'text', value: false },
+            { label: 'image', value: false },
+            { label: 'calendar', value: false },
+            { label: 'todo', value: false }
         ];
+
+        childBlocks.forEach(block => {
+            if (block.block_type === 'Text') blocks[0].value = true;
+            else if (block.block_type === 'Image') blocks[1].value = true;
+            else if (block.block_type === 'Agenda') blocks[2].value = true;
+            else if (block.block_type === 'TodoContainer')
+                blocks[3].value = true;
+        });
 
         return map(blocks, (block, i) => (
             <div
