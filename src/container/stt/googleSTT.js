@@ -4,7 +4,10 @@ import STTScript from './STTScript';
 import recordImage from '../../assets/icons/record_icon.png';
 import { Button } from 'antd';
 
-const END_POINT = 'www.meetingoverflow.space/';
+// for 개발 서버
+const END_POINT = '127.0.0.1:9000/';
+// for 배포 서버
+// const END_POINT = 'www.meetingoverflow.space/';
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 
 // Stream Audio Configuration

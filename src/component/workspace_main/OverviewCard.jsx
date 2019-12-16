@@ -9,9 +9,10 @@ const dummyLabels = [
     { color: '#FFCA00', text: 'Demo' }
 ];
 export const NoteCard = props => {
-    const { note, handleNoteClick, clicked, history } = props;
+    const { note, handleNoteClick, clicked, history, workspace_tags } = props;
     const date = moment(note.created_at).format('YYYY-MM-DD HH:MM');
-
+    console.log(workspace_tags);
+    console.log(note);
     return (
         <div
             className={`noteCard-container ${
@@ -56,14 +57,19 @@ export const NoteCard = props => {
                 </div>
             </div>
             <div className="noteCard-content-label">
-                {map(dummyLabels, (label, i) => (
-                    <div
-                        className="noteCard-content-label-element"
-                        key={i}
-                        style={{ backgroundColor: label.color }}>
-                        {label.text}
-                    </div>
-                ))}
+                {map(note.tags, (note_tag, i) => {
+                    console.log(workspace_tags);
+                    const tag = workspace_tags.find(tag => tag.id == note_tag);
+                    console.log(note_tag);
+                    return (
+                        <div
+                            className="noteCard-content-label-element"
+                            key={i}
+                            style={{ backgroundColor: tag.color }}>
+                            {tag.content}
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

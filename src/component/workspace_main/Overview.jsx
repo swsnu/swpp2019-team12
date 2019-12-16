@@ -14,6 +14,11 @@ class Overview extends Component {
         };
     }
 
+    componentDidMount() {
+        // this.setState({
+        // });
+    }
+
     handleNoteClick = note => {
         const { agendas, todos } = this.props;
         const id = note.id;
@@ -40,8 +45,10 @@ class Overview extends Component {
     };
 
     render() {
-        const { notes, agendas, history } = this.props;
+        const { notes, agendas, workspace_tags, history } = this.props;
         const { agendaInNote, todoInNote, clicked } = this.state;
+        console.log('NOTES', notes);
+        console.log('AGENDA', agendas);
         return (
             <div className="Overview-container">
                 <SubLabel title="Meeting Overview" />
@@ -81,6 +88,7 @@ class Overview extends Component {
                                 <NoteCard
                                     note={note}
                                     key={i}
+                                    workspace_tags={workspace_tags}
                                     handleNoteClick={this.handleNoteClick}
                                     clicked={clicked}
                                     history={history}
@@ -122,6 +130,7 @@ class Overview extends Component {
                             {todoInNote.length ? (
                                 map(todoInNote, (todos_, i) => (
                                     <TodoCard
+                                        workspace_tags={workspace_tags}
                                         notes={notes}
                                         agendas={agendas}
                                         todos={todos_}

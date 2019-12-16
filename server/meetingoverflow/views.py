@@ -309,6 +309,8 @@ def specific_workspace(request, w_id):
         agenda_serializer = AgendaSerializer(agendas, many=True)
         todos = Todo.objects.all()
         todo_serializer = TodoSerializer(todos, many=True)
+        workspace_tags = Tag.objects.filter(workspace=current_workspace)
+        workspace_tags_serializer = TagSerializer(workspace_tags, many=True)
 
         # Add workspaces, workspace info
         workspace_serializer = WorkspaceSerializer(current_workspace)
@@ -321,7 +323,8 @@ def specific_workspace(request, w_id):
             "agendas": agenda_serializer.data,
             "todos": todo_serializer.data,
             "workspace": workspace_serializer.data,
-            "workspaces": workspaces_serializer.data
+            "workspaces": workspaces_serializer.data,
+            "workspace_tags": workspace_tags_serializer.data
         }
         return Response(serializer, status=status.HTTP_200_OK)
 
@@ -450,6 +453,7 @@ def specific_note(request, n_id):
             "note": note_serializer.data,
             "workspace_tags": workspace_tags_serializer.data
         }
+        print("NOTE_DATA",data)
         return Response(data, status=status.HTTP_200_OK)
 
     elif request.method == 'PATCH':
@@ -913,6 +917,23 @@ def single_tag(request, t_id):
 
     elif request.method == 'DELETE':
         current_tag.delete()
+
+
+@api_view(['GET'])
+def tag_info(request, t_id):
+    """
+    /api/tag/info/t_id/
+    태그 정보 가져오는 API
+    """
+    try:
+        current_tag = Tag.objects.get(id=t_id)
+    except Tag.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    data = {
+        "tag_title": current_tag.content,
+        "tag_color": current_tag.color
+    }
+    return Response(data, status=status.HTTP_202_ACCEPTED)
 
 
 def image_child_of_note(request, n_id):

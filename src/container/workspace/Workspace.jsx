@@ -23,6 +23,7 @@ class Workspace extends Component {
             agendas: [],
             notes: [],
             todos: [],
+            workspace_tags: [],
 
             showCreateNoteModal: false,
             showCreateWorkspaceModal: false
@@ -54,7 +55,8 @@ class Workspace extends Component {
                 members,
                 agendas,
                 notes,
-                todos
+                todos,
+                workspace_tags
             } = data;
             this.setState({
                 workspaces,
@@ -63,7 +65,8 @@ class Workspace extends Component {
                 members,
                 agendas,
                 notes,
-                todos
+                todos,
+                workspace_tags
             });
         });
     }
@@ -90,6 +93,7 @@ class Workspace extends Component {
             agendas,
             notes,
             todos,
+            workspace_tags,
 
             showCreateNoteModal,
             showCreateWorkspaceModal
@@ -126,6 +130,7 @@ class Workspace extends Component {
                 <div className="workspace-main">
                     <Overview
                         notes={notes}
+                        workspace_tags={workspace_tags}
                         agendas={agendas}
                         todos={todos}
                         history={history}

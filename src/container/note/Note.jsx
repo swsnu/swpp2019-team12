@@ -58,8 +58,6 @@ class Note extends Component {
 
         const noteId = this.props.match.params.n_id;
 
-        //axios.get(`/api/`);
-
         axios.get(`/api/note/${noteId}/childrenblocks/`).then(res => {
             let children_blocks = null;
             if (res.data['children_blocks'] === '') {
