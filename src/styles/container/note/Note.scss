@@ -74,6 +74,8 @@
         position: absolute;
         top: 1vh;
         right: 1vh;
+        z-index: 10000;
+        cursor: pointer;
     }
     // }
 }

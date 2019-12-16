@@ -81,7 +81,7 @@ const CreateModalParticipant = props => {
         handleDeleteParticipant
     } = props;
     return (
-        <div className="createModal-member">
+        <div className="createModal-member createModal-member-note">
             <div className="createModal-member__sublabel">Participants</div>
             <div className="createModal-member__input-container">
                 <input

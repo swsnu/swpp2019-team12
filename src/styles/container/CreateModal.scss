@@ -14,7 +14,7 @@
 }
 
 .createModal-label {
-    padding: rem(30px) rem(150px) rem(75px) rem(150px);
+    padding: rem(30px) rem(150px) rem(30px) rem(150px);
 
     .createModal-label__sublabel {
         margin-bottom: rem(5px);
@@ -92,7 +92,7 @@
 
     .createModal-member__member--added {
         width: 100%;
-        height: rem(220px);
+        height: rem(170px);
 
         padding: rem(15px) 0;
 
@@ -114,6 +114,10 @@
                 cursor: pointer;
             }
         }
+    }
+
+    &.createModal-member-note {
+        width: 100%;
     }
 }
 

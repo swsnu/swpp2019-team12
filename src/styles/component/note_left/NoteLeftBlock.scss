@@ -31,6 +31,7 @@
 
         display: flex;
         flex-direction: column;
+        z-index: 10000;
 
         .add-block-button {
             background: rgb(240, 79, 69);

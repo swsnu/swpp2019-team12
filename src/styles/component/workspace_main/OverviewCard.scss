@@ -66,8 +66,9 @@
     .agendaCard-content-label,
     .noteCard-content-label {
         display: flex;
-        padding: rem(8px) rem(5px) rem(5px) rem(5px);
+        padding: rem(8px) rem(5px) rem(0px) rem(5px);
         border-top: 1px solid $whitegray;
+        flex-wrap: wrap;
         cursor: default;
 
         .agendaCard-content-label-element,
@@ -81,7 +82,7 @@
             font-weight: 400;
 
             margin-right: rem(5px);
-            flex-wrap: wrap;
+            margin-bottom: rem(5px);
 
             cursor: pointer;
         }
