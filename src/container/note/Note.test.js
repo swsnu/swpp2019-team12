@@ -82,6 +82,14 @@ describe('<Note />', () => {
         const axios_path = 'url';
         const block_type = 'Text';
         const block_id = '1';
+        instance.setState({
+            blocks: [
+                {
+                    block_type: 'Text',
+                    id: 1
+                }
+            ]
+        });
 
         axios.delete = jest.fn(url => {
             return new Promise((resolve, reject) => {
@@ -145,6 +153,9 @@ describe('<Note />', () => {
                             id: 2
                         }
                     ]
+                },
+                {
+                    block_type: 'Text'
                 }
             ]
         });
@@ -165,19 +176,18 @@ describe('<Note />', () => {
             typingTimeout: 1,
             typing: true
         });
+        axios.patch = jest.fn(url => {
+            return new Promise((resolve, reject) => {
+                const result = {
+                    status: 200,
+                    data: {}
+                };
+                resolve(result);
+            });
+        });
         noteLeftComponent.props().handleChangeTitle(mockEvent);
         expect(mockFn).toHaveBeenCalledTimes(0);
         expect(instance.state.typing).toBe(false);
-        // axios.patch = jest.fn(url => {
-        //     return new Promise((resolve, reject) => {
-        //         const result = {
-        //             status: 200,
-        //             data: {}
-        //         };
-        //         resolve(result);
-        //     });
-        // });
-        // instance.forceUpdate();
         // await noteLeftComponent.props().handleChangeTitle(mockEvent);
         // expect(noteLeftComponent.length).toBe(1);
         // expect(mockFn).toHaveBeenCalledTimes(0);
@@ -453,7 +463,11 @@ describe('<Note />', () => {
         instance.setState({
             blocks: [
                 {
-                    todoContainer: [{ todo: 1 }]
+                    block_type: 'TodoContainer',
+                    todos: [{ todo: 1 }]
+                },
+                {
+                    block_type: 'Text'
                 }
             ]
         });
@@ -461,5 +475,25 @@ describe('<Note />', () => {
             '{"block_type":"TodoContainer","todos":[{"id":1,"block_type":"TodoContainer","content":"Competitive Analysis","layer_x":0,"layer_y":0,"assignees":[3,14],"due_date":"2019-12-01","note":"23","is_parent_note":true,"is_done":false,"parent_agenda":null,"assignees_info":[{"id":14,"nickname":"채민"},{"id":3,"nickname":"태영"}]},{"id":2,"block_type":"TodoContainer","content":"Customer Needs","layer_x":0,"layer_y":0,"assignees":[13,12],"due_date":"2019-12-01","note":"23","is_parent_note":true,"is_done":false,"parent_agenda":null,"assignees_info":[{"id":12,"nickname":"예지"},{"id":13,"nickname":"상연"}]},{"id":23,"block_type":"TodoContainer","content":"할 일을 채워주세요","layer_x":0,"layer_y":0,"assignees":[],"due_date":"2019-12-16","note":"23","is_parent_note":true,"is_done":false,"parent_agenda":null,"assignees_info":[]}]}';
         websocketComponent.props().onMessage(data);
         expect(spyHandleSocketBlock).toHaveBeenCalledTimes(0);
+    });
+
+    it('should handle drag', () => {
+        const spyOnDragEnd = jest.spyOn(instance, 'onDragEnd');
+        let result = {
+            destination: 1,
+            source: {
+                index: 0
+            }
+        };
+        noteLeftComponent.props().onDragEnd(result);
+        expect(spyOnDragEnd).toHaveBeenCalledTimes(0);
+        result = {
+            destination: null,
+            source: {
+                index: 0
+            }
+        };
+        noteLeftComponent.props().onDragEnd(result);
+        expect(spyOnDragEnd).toHaveBeenCalledTimes(0);
     });
 });

@@ -281,8 +281,7 @@ class Note extends Component {
                         this.BlockRef.current.state.ws.send(
                             JSON.stringify(newLocation)
                         );
-                    })
-                    .catch(err => console.log(err));
+                    });
             }, 1818)
         });
     };
@@ -504,8 +503,7 @@ class Note extends Component {
             .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
             .then(res => {
                 this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data));
-            })
-            .catch(err => console.log(err));
+            });
     };
 
     reorder = (list, startIndex, endIndex) => {
