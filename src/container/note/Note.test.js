@@ -306,30 +306,13 @@ describe('<Note />', () => {
         expect(axios.patch).toHaveBeenCalledTimes(1);
     });
 
-    // it('ComponentDidMount', () => {
-    //     const component = shallow(agenda);
-    //     const instance = component.instance();
-    //     instance.componentDidMount();
-    //     axios.get('', res => {
-    //         instance.setState({
-    //             blocks: res.data.agenda.children_blocks,
-    //             current_title: res.data.agenda.content,
-    //             tags: res.data.tags
-    //         });
-    //         expect(axios.get).toHaveBeenCalledTimes(1);
-    //         expect(instance.state.blocks).toEqual([]);
-    //         expect(instance.current_title).toEqual('STUB_CONTENT');
-    //         expect(instance.agendaTags).toEqual(['STUB_TAG']);
-    //     });
-    //});
-
     it('should do good with didmount', () => {
         axios.get = jest.fn(url => {
             return new Promise((resolve, reject) => {
                 const result = {
                     status: 200,
                     data: {
-                        children_blocks: ['']
+                        children_blocks: ''
                     }
                 };
                 resolve(result);
@@ -343,5 +326,93 @@ describe('<Note />', () => {
             expect(axios.get), toHaveBeenCalledTimes(1);
             expect(instance.state.blocks).toEqual([]);
         });
+        axios.get = jest.fn(url => {
+            return new Promise((resolve, reject) => {
+                const result = {
+                    status: 200,
+                    data: {
+                        children_blocks:
+                            '[{"block_type":"Agenda","id":77,"content":"Modifications","layer_x":0,"layer_y":0,"agenda_children_blocks":[]},{"block_type":"Agenda","id":76,"content":" Accomplishment","layer_x":0,"layer_y":0,"agenda_children_blocks":[]},{"block_type":"Agenda","id":78,"content":"Plans","layer_x":0,"layer_y":0,"agenda_children_blocks":[]},{"block_type":"Text","id":203,"content":"새로 생성된 텍스트 블록","layer_x":0,"layer_y":0,"document_id":"3udj5l9ffv"}]'
+                    }
+                };
+                resolve(result);
+            });
+        });
+        instance.componentDidMount();
+        axios.get('', res => {
+            instance.setState({
+                workspaceId: 1
+            });
+            expect(axios.get), toHaveBeenCalledTimes(1);
+            expect(instance.state.blocks).toEqual([]);
+            expect(instance.state.workspaceId).toEqual(1);
+        });
+        axios.get = jest.fn(url => {
+            return new Promise((resolve, reject) => {
+                const result = {
+                    status: 200,
+                    data: {
+                        children_blocks:
+                            '[{"block_type":"Agenda","id":73,"content":"User Story #1","layer_x":0,"layer_y":0,"agenda_children_blocks":[]},{"block_type":"Agenda","id":72,"content":" Project Abstraction","layer_x":0,"layer_y":0,"agenda_children_blocks":[]},{"block_type":"Agenda","id":74,"content":" User Story #2","layer_x":0,"layer_y":0,"agenda_children_blocks":[]},{"block_type":"Agenda","id":75,"content":"User Story #3","layer_x":0,"layer_y":0,"agenda_children_blocks":[]},{"block_type":"Image","id":2,"image":"/media/66252204-8c34f380-e793-11e9-84da-c60b4ad04b81.png","content":"User Interface Description","is_submitted":true,"layer_x":0,"layer_y":0},{"block_type":"TodoContainer","todos":[{"id":1,"block_type":"TodoContainer","content":"Competitive Analysis","layer_x":0,"layer_y":0,"assignees":[3,14],"due_date":"2019-12-01","note":"23","is_parent_note":true,"is_done":false,"parent_agenda":null,"assignees_info":[{"id":14,"nickname":"채민"},{"id":3,"nickname":"태영"}]},{"id":2,"block_type":"TodoContainer","content":"Customer Needs","layer_x":0,"layer_y":0,"assignees":[13,12],"due_date":"2019-12-01","note":"23","is_parent_note":true,"is_done":false,"parent_agenda":null,"assignees_info":[{"id":12,"nickname":"예지"},{"id":13,"nickname":"상연"}]},{"id":23,"block_type":"TodoContainer","content":"할 일을 채워주세요","layer_x":0,"layer_y":0,"assignees":[],"due_date":"2019-12-16","note":"23","is_parent_note":true,"is_done":false,"parent_agenda":null,"assignees_info":[]}]}]'
+                    }
+                };
+                resolve(result);
+            });
+        });
+        instance.componentDidMount();
+        axios.get('', res => {
+            instance.setState({
+                workspaceId: 1
+            });
+            expect(axios.get), toHaveBeenCalledTimes(1);
+            expect(instance.state.blocks).toEqual([]);
+            expect(instance.state.workspaceId).toEqual(1);
+        });
+        axios.get = jest.fn(url => {
+            if (url == '/api/note/1/') {
+                return new Promise((resolve, reject) => {
+                    const result = {
+                        status: 200,
+                        data: {
+                            note: {
+                                id: 1,
+                                title: 'testTitle',
+                                location: 'testLocation',
+                                created_at: 'testCreatedAt',
+                                last_modified_at: 'testLastModifiedAt',
+                                moment: '2019-02-07',
+                                workspaceId: 1,
+                                participants: [1, 2, 3]
+                            },
+                            tags: [1],
+                            workspace_tags: [1, 2, 3]
+                        }
+                    };
+                    resolve(result);
+                });
+            } else {
+                return new Promise((resolve, reject) => {
+                    const result = {
+                        status: 200,
+                        data: {
+                            id: 1,
+                            nickname: 'testNickname'
+                        }
+                    };
+                    resolve(result);
+                });
+            }
+        });
+        instance.componentDidMount();
+        axios.get('', res => {
+            instance.setState({
+                workspaceId: 1
+            });
+            expect(axios.get), toHaveBeenCalledTimes(1);
+            expect(instance.state.blocks).toEqual([]);
+            expect(instance.state.workspaceId).toEqual(1);
+        });
     });
+
+    it('should work with socket well', () => {});
 });

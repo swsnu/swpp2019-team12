@@ -110,6 +110,7 @@ class Note extends Component {
                 }
             });
         });
+        console.log('note Id: ', noteId);
 
         axios
             .get(`/api/note/${noteId}/`)
