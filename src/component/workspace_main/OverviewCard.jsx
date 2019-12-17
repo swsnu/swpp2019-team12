@@ -156,7 +156,6 @@ export class AgendaCard extends Component {
 
 export const TodoCard = props => {
     const { notes, agendas, todos, clicked, history } = props;
-    console.log(todos, notes, agendas);
 
     const renderTitle = () => {
         // const { notes, agendas, todos } = props;
