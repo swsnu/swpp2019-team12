@@ -123,6 +123,7 @@ class Image extends Component {
     render() {
         return (
             <div
+                id="ImageBlock"
                 className="full-size-block-container Image"
                 onClick={() =>
                     this.props.handleClickBlock(

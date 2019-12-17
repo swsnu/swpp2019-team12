@@ -142,8 +142,7 @@ class Note extends Component {
                         });
                     });
                 });
-            })
-            .catch(err => console.log('note error'));
+            });
     }
 
     handleDeleteBlock = (axios_path, block_type, block_id) => {
