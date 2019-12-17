@@ -11,7 +11,6 @@ class CreateModal extends Component {
             date: new Date(),
             datetime: '',
             location: '',
-            agendaNumber: 1,
             email: '',
             searchedParticipant: [],
             addedParticipant: []
@@ -153,10 +152,6 @@ class CreateModal extends Component {
         this.setState({ location: e.target.value });
     };
 
-    handleChangeAgendaNumber = e => {
-        this.setState({ agendaNumber: e.target.value });
-    };
-
     handleChangeEmail = e => {
         this.setState({ email: e.target.value }, this.handleSearchParticipant);
     };
@@ -196,8 +191,8 @@ class CreateModal extends Component {
     };
 
     handleCreateValidation = () => {
-        const { title, agendaNumber, addedParticipant } = this.state;
-        return !!(title && addedParticipant.length && agendaNumber >= 1);
+        const { title, addedParticipant } = this.state;
+        return !!(title && addedParticipant.length);
     };
 
     handleCreateNote = () => {
@@ -221,14 +216,10 @@ class CreateModal extends Component {
             })
             .then(res => {
                 const {
-                    status,
                     data: { id }
                 } = res;
 
-                if (status === 201) {
-                    history.push(`/note/${id}`);
-                    // window.location.reload();
-                }
+                history.push(`/note/${id}`);
             });
     };
 
@@ -270,7 +261,11 @@ class CreateModal extends Component {
                 })}
 
                 <div className="createModal-button-container">
-                    <button onClick={handleCloseCreateNoteModal}>CANCEL</button>
+                    <button
+                        className="modal-cancel"
+                        onClick={handleCloseCreateNoteModal}>
+                        CANCEL
+                    </button>
                     {this.handleCreateValidation() ? (
                         <button
                             className="primary"

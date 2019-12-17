@@ -225,33 +225,27 @@ describe('<CreateModal />', () => {
         let wrapper = component.find('.createModal-datetime');
         expect(wrapper.length).toBe(1);
 
-        wrapper = shallow(<Datetime />);
-        wrapper.onChange = jest.fn(e => {
-            instance.setState({ datetime: now });
-        });
-        wrapper.simulate('change', { target: { value: now } });
-
-        expect(instance.state.datetime).toEqual('');
+        instance.handleChangeDatetime(now);
+        expect(instance.state.datetime).toEqual(now.toISOString());
     });
-    /*
     it('render location', () => {
-        let wrapper = component.find('.createModal-title');
+        let wrapper = component.find('.createModal-location');
         expect(wrapper.length).toBe(1);
 
-        wrapper = component.find('.createModal-title__input');
+        wrapper = component.find('.createNoteModal-location__input');
         wrapper.simulate('change', { target: { value: 'test' } });
 
-        expect(instance.state.title).toEqual('test');
+        expect(instance.state.location).toEqual('test');
     });
 
-    it('render modal ', async () => {
+    it('render participant', async () => {
         let wrapper = component.find('.createModal-member');
-        expect(wrapper.length).toBe(2);
+        expect(wrapper.length).toBe(1);
 
-        wrapper = component.find('.createModal-member__input').at(0);
+        wrapper = component.find('.createModal-member__input');
         await wrapper.simulate('change', { target: { value: 'test' } });
-        expect(instance.state.emailMember).toEqual('test');
-        expect(instance.state.searchedMember).toEqual({
+        expect(instance.state.email).toEqual('test');
+        expect(instance.state.searchedParticipant).toEqual({
             mockUser,
             mockProfile
         });
@@ -259,13 +253,13 @@ describe('<CreateModal />', () => {
         // handleSearch
 
         await wrapper.simulate('change', { target: { value: '' } });
-        expect(instance.state.emailMember).toEqual('');
-        expect(instance.state.searchedMember).toEqual([]);
+        expect(instance.state.email).toEqual('');
+        expect(instance.state.searchedParticipant).toEqual([]);
 
         // handle Search
 
         component.setState({
-            searchedMember: [{ profile: mockProfile, user: mockUser }]
+            searchedParticipant: [{ profile: mockProfile, user: mockUser }]
         });
         component.update();
 
@@ -274,22 +268,21 @@ describe('<CreateModal />', () => {
         expect(wrapper.length).toBe(1);
 
         wrapper.simulate('click');
-        const { addedMember, addedMemberId } = instance.state;
+        const { addedParticipant } = instance.state;
         expect(instance.state).toEqual({
             ...instance.state,
-            addedMember,
-            addedMemberId,
-            emailMember: '',
-            searchedMember: []
+            addedParticipant,
+            email: '',
+            searchedParticipant: []
         });
     });
 
     it('render delete member', () => {
         let wrapper = component.find('.createModal-member__member--added');
-        expect(wrapper.length).toBe(2);
+        expect(wrapper.length).toBe(1);
 
         component.setState({
-            addedMember: [{ profile: mockProfile, user: mockUser }]
+            addedParticipant: [{ profile: mockProfile, user: mockUser }]
         });
         component.update();
 
@@ -299,7 +292,7 @@ describe('<CreateModal />', () => {
         wrapper.simulate('click');
         expect(instance.state).toEqual({
             ...instance.state,
-            addedMember: []
+            addedParticipant: []
         });
     });
 
@@ -312,7 +305,7 @@ describe('<CreateModal />', () => {
 
         component.setState({
             title: 'test',
-            addedMember: [mockUser]
+            addedParticipant: [mockUser]
         });
         component.update();
         const valid = instance.handleCreateValidation();
@@ -323,7 +316,14 @@ describe('<CreateModal />', () => {
 
         await wrapper.simulate('click');
         expect(mockHistory.push).toHaveBeenCalledTimes(1);
-        expect(window.location.reload).toHaveBeenCalledTimes(1);
+
+        component.setState({
+            datetime: ''
+        });
+        component.update();
+
+        await wrapper.simulate('click');
+        expect(mockHistory.push).toHaveBeenCalledTimes(2);
     });
 
     it('cancel', async () => {
@@ -333,7 +333,17 @@ describe('<CreateModal />', () => {
         expect(wrapper.length).toEqual(1);
 
         await wrapper.simulate('click');
-        expect(workspaceInstance.state.showCreateWorkspaceModal).toEqual(false);
+        expect(workspaceInstance.state.showCreateNoteModal).toEqual(false);
     });
-    */
+
+    it('session test - logged out', () => {
+        instance.componentDidMount();
+        expect(mockHistory.push).toHaveBeenCalledTimes(1);
+    });
+    it('session test - logged in', () => {
+        sessionStorage.setItem('LoggedInUserNickname', 'test');
+        instance.componentDidMount();
+        expect(mockHistory.push).toHaveBeenCalledTimes(0);
+        sessionStorage.clear();
+    });
 });
