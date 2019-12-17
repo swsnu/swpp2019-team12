@@ -1,9 +1,11 @@
 matrix:
     include:
         - language: node_js
-          node_js:
-              - '10'
-          dist: trusty
+          node_js: 10
+          python: 3.7
+          dist: xenial
+          services:
+              - mysql
           addons:
               sonarcloud:
                   organization: 'swsnu'
@@ -12,18 +14,7 @@ matrix:
           install:
               - yarn install
               - yarn add coveralls
-          script:
-              - yarn run prettier
-              - yarn run eslint
-              - yarn coverage
-              - sonar-scanner
-              - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-        - language: python
-          python:
-              - '3.6'
-          before_install:
               - cd server
-          install:
               - pip install -r requirements.txt
           script:
               - pylint **/*.py --load-plugins=pylint_django
@@ -33,6 +24,10 @@ matrix:
               - coverage report -m
               - coverage xml
               - cd ..
+              - yarn run prettier
+              - yarn run eslint
+              - yarn coverage
               - sonar-scanner
+              - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
           after_success:
               - coveralls
