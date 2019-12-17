@@ -19,7 +19,7 @@ class Note extends Component {
             title: '',
             location: '',
             created_at: '',
-            last_modified_at: '',
+            lastModifiedAt: '',
             participants: [],
             moment: null,
             blocks: [],
@@ -123,7 +123,7 @@ class Note extends Component {
                     title: noteData['title'],
                     location: noteData['location'],
                     created_at: noteData['created_at'],
-                    last_modified_at: noteData['last_modified_at'],
+                    lastModifiedAt: noteData['last_modified_at'],
                     moment: moment(noteData['created_at']),
                     workspaceId: noteData['workspace'],
                     noteTags: tagData,
@@ -145,7 +145,7 @@ class Note extends Component {
             });
     }
 
-    handleDeleteBlock = (axios_path, block_type, block_id) => {
+    handleDeleteBlock = (axiosPath, block_type, block_id) => {
         const noteId = this.props.match.params.n_id;
         const newBlocks = this.state.blocks.filter(
             b => !(b.block_type == block_type && b.id == block_id)
@@ -159,7 +159,7 @@ class Note extends Component {
             children_blocks: newBlocks
         };
         axios
-            .delete(axios_path)
+            .delete(axiosPath)
             .then(res_1 => {
                 axios
                     .patch(
