@@ -296,7 +296,9 @@ class CreateModal extends Component {
                     />
                 </div>
                 <div className="createModal-button-container">
-                    <button onClick={handleCancel}>CANCEL</button>
+                    <button onClick={handleCancel} className="modal-cancel">
+                        CANCEL
+                    </button>
                     {this.handleCreateValidation() ? (
                         <button
                             className="primary"

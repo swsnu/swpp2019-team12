@@ -78,6 +78,19 @@ describe('<InviteMember />', () => {
         expect(wrapper.length).toBe(0);
     });
 
+    it('should render without error - 3', () => {
+        const component = mount(<InviteMember members={searchedMemberStub} />);
+        component.setState({ searchedMember: searchedMemberStub });
+        component.update();
+
+        let wrapper;
+
+        wrapper = component.find('.invite-member__member--searched');
+        expect(wrapper.length).toBe(1);
+        wrapper = component.find('.invite-member__member--searched-email');
+        expect(wrapper.length).toBe(2);
+    });
+
     it('should render without error modla', () => {
         const component = mount(<InviteMember members={membersStub} />);
         let wrapper = component.find('.invite-member');

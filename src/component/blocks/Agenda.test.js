@@ -171,17 +171,6 @@ describe('<Agenda />', () => {
         );
     });
 
-    it('handleChangeAgendaTitle ', () => {
-        const component = shallow(agenda);
-        const title = 'TEST_TITLE';
-
-        let wrapper = component.find('.agenda-title-input');
-        wrapper.simulate('change', { target: { value: title } });
-        const instance = component.instance();
-        expect(instance.state.current_title).toEqual('TEST_TITLE');
-        expect(instance.state.typing).toEqual(false);
-    });
-
     it('handleAddImageBlock ', () => {
         const component = shallow(agenda);
 
@@ -191,6 +180,17 @@ describe('<Agenda />', () => {
         let wrapper = component.find('.agenda-add-image-button');
         wrapper.simulate('click');
         expect(instance.handleAddImageBlock).toHaveBeenCalledTimes(1);
+    });
+
+    it('handleChangeAgendaTitle ', () => {
+        const component = shallow(agenda);
+        const title = 'TEST_TITLE';
+
+        let wrapper = component.find('.agenda-title-input');
+        wrapper.simulate('change', { target: { value: title } });
+        const instance = component.instance();
+        expect(instance.state.current_title).toEqual('TEST_TITLE');
+        expect(instance.state.typing).toEqual(false);
     });
 
     it('handleAddTodoBlock ', () => {
@@ -203,16 +203,76 @@ describe('<Agenda />', () => {
         expect(instance.handleAddTodoBlock).toHaveBeenCalledTimes(1);
     });
 
-    xit('handleDeleteBlockInAgenda ', () => {
+    it('handleDeleteBlockInAgenda ', async () => {
+        const axios_path = 'url';
+        const block_type = 'Text';
+        const block_id = '1';
+
+        axios.delete = jest.fn(url => {
+            return new Promise((resolve, reject) => {
+                const result = {
+                    status: 200,
+                    data: {}
+                };
+                resolve(result);
+            });
+        });
+
+        axios.patch = jest.fn(url => {
+            return new Promise((resolve, reject) => {
+                const result = {
+                    status: 200,
+                    data: {}
+                };
+                resolve(result);
+            });
+        });
+
+        JSON.stringify = jest.fn(str => {
+            return 'DATA';
+        });
         const component = mount(agenda);
         const instance = component.instance();
         instance.handleDeleteBlockInAgenda = jest.fn();
         instance.forceUpdate();
         let wrapper = component.find('.AgendaInside');
-        console.log(wrapper.props());
-        wrapper.props().handleDeleteBlock();
+        await wrapper
+            .props()
+            .handleDeleteBlock(axios_path, block_type, block_id);
 
         expect(wrapper.length).toBe(1);
-        expect(instance.handleDeleteBlockInAgenda).toHaveBeenCalledTimes(1);
+        expect(instance.handleDeleteBlockInAgenda).toHaveBeenCalledTimes(0);
+        expect(axios.delete).toHaveBeenCalledTimes(1);
+        expect(axios.patch).toHaveBeenCalledTimes(1);
+    });
+
+    it('handleDeleteTodo ', () => {
+        const deleted = {
+            id: 1
+        };
+
+        const component = mount(agenda);
+        const instance = component.instance();
+        instance.handleDeleteTodo = jest.fn();
+        let wrapper = component.find('.AgendaInside');
+        wrapper.props().handleDeleteTodo(deleted);
+        expect(instance.handleDeleteTodo).toHaveBeenCalledTimes(0);
+
+        instance.setState({
+            blocks: [{ block_type: 'TodoContainer', todos: [{ id: 1 }] }]
+        });
+        instance.handleDeleteTodo = jest.fn();
+        instance.forceUpdate();
+        wrapper.props().handleDeleteTodo(deleted);
+        expect(instance.handleDeleteTodo).toHaveBeenCalledTimes(0);
+
+        instance.setState({
+            blocks: [
+                { block_type: 'TodoContainer', todos: [{ id: 1 }, { id: 2 }] }
+            ]
+        });
+
+        wrapper.props().handleDeleteTodo(deleted);
+        expect(instance.handleDeleteTodo).toHaveBeenCalledTimes(0);
     });
 });

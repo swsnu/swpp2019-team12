@@ -262,6 +262,7 @@ class Agenda extends Component {
         );
         if (!todoContainer) {
             console.log('Todo conatiner가 없습니다. ');
+            return;
         }
         let newBlocks = null;
         // 만약 컨테이너가 존재하지만, 단 한개의 Todo가 존재한다면, 그것을 지우고 컨테이너도 삭제
@@ -538,9 +539,7 @@ class Agenda extends Component {
                             handleClickBlock={this.props.handleClickBlock}
                             blocks={this.state.blocks}
                             handleDeleteBlock={this.handleDeleteBlockInAgenda}
-                            handleChangeTitle={this.handleChangeTitle}
                             onDragEnd={this.onDragEnd}
-                            handleAddTextBlock={this.handleAddTextBlock}
                             handleDeleteTodo={this.handleDeleteTodo}
                             socketRef={this.AgendaRef}
                             participants={this.props.participants}
