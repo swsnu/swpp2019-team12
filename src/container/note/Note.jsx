@@ -6,14 +6,7 @@ import Websocket from 'react-websocket';
 import NoteLeft from './NoteLeft';
 import Signout from '../../component/signout/Signout';
 import NoteTree from '../../component/note_left/NoteTree';
-import GoogleSTT from '../../container/stt/googleSTT';
-
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-    return result;
-};
+import googleSTT from '../stt/googleSTT';
 
 class Note extends Component {
     constructor(props) {
@@ -22,33 +15,23 @@ class Note extends Component {
         this.state = {
             workspaceId: null,
             currentUserNickname: null,
-            isBlockClicked: false,
-            isNoteLeftClicked: true,
-            isTitleClicked: false,
-            isDateClicked: false,
             noteId: null,
             title: '',
             location: '',
             created_at: '',
             last_modified_at: '',
-            //ml_speech_text: '',
-            participants_id: [],
             participants: [],
             moment: null,
             blocks: [],
-            block_focused_id: '',
-            block_focused_name: '',
-            agenda_children_blocks: [],
             typing: false,
             typingTimeout: 0,
-            somebodyRecording: false,
-            iStartedRecording: false,
             noteTags: [],
             workspaceTags: []
         };
     }
 
     componentDidMount() {
+        // Login check through sessionStorage
         const loggedInUserNickname = sessionStorage.getItem(
             'LoggedInUserNickname'
         );
@@ -57,8 +40,6 @@ class Note extends Component {
         }
 
         const noteId = this.props.match.params.n_id;
-
-        //axios.get(`/api/`);
 
         axios.get(`/api/note/${noteId}/childrenblocks/`).then(res => {
             let children_blocks = null;
@@ -71,27 +52,13 @@ class Note extends Component {
             children_blocks.forEach(blk => {
                 let block_type = blk['block_type'];
                 if (block_type == 'Agenda') {
-                    let agendaChildrenBlocks = null;
-                    console.log(blk);
-                    console.log(blk['children_blocks']);
-                    if (
-                        blk['children_blocks'] === '' ||
-                        blk['children_blocks'] == null
-                    ) {
-                        agendaChildrenBlocks = [];
-                    } else {
-                        agendaChildrenBlocks = JSON.parse(
-                            blk['children_blocks']
-                        );
-                    }
                     this.setState({
                         blocks: this.state.blocks.concat({
                             block_type: 'Agenda',
                             id: blk['id'],
                             content: blk['content'],
                             layer_x: blk['layer_x'],
-                            layer_y: blk['layer_y'],
-                            agenda_children_blocks: agendaChildrenBlocks
+                            layer_y: blk['layer_y']
                         })
                     });
                 } else if (block_type == 'Text') {
@@ -147,7 +114,6 @@ class Note extends Component {
         axios
             .get(`/api/note/${noteId}/`)
             .then(res => {
-                console.log(res);
                 const noteData = res['data']['note'];
                 const tagData = res['data']['tags'];
                 const workspaceTags = res['data']['workspace_tags'];
@@ -158,8 +124,6 @@ class Note extends Component {
                     location: noteData['location'],
                     created_at: noteData['created_at'],
                     last_modified_at: noteData['last_modified_at'],
-                    ml_speech_text: noteData['ml_speech_text'],
-                    participants_id: noteData['participants'],
                     moment: moment(noteData['created_at']),
                     workspaceId: noteData['workspace'],
                     noteTags: tagData,
@@ -182,18 +146,8 @@ class Note extends Component {
             .catch(err => console.log('note error'));
     }
 
-    /* ==================================================================
-        ## handleClickBlock & handleNoteLeft
-    handleClickBlock은 NoteLeft에 있는 Block에 해당하는 부분이 클릭되었을 때,
-    handleNoteLeft는 Block들을 제외한 모든 부분이 클릭되었을 때 클릭이벤트 감지.
-    우리가 원하는 기능이 특정 Block을 클릭하면 해당 Block이 우측 창에 Focus되면서
-    큰 화면에서 보고 수정할 수 있도록 하는 것. 따라서 NoteLeft에서는 즉시 수정은 불가.
-    =================================================================== */
-
     handleDeleteBlock = (axios_path, block_type, block_id) => {
         const noteId = this.props.match.params.n_id;
-        console.log('axios path:', axios_path);
-        console.log(block_type, block_id);
         const newBlocks = this.state.blocks.filter(
             b => !(b.block_type == block_type && b.id == block_id)
         );
@@ -230,7 +184,8 @@ class Note extends Component {
             blk => blk.block_type == 'TodoContainer'
         );
         if (!todoContainer) {
-            console.log('Todo conatiner가 없습니다. ');
+            // console.log('Todo conatiner가 없습니다. ');
+            return;
         }
         let newBlocks = null;
         // 만약 컨테이너가 존재하지만, 단 한개의 Todo가 존재한다면, 그것을 지우고 컨테이너도 삭제
@@ -267,12 +222,6 @@ class Note extends Component {
             );
     };
 
-    handleClickBlock = e => {};
-
-    handleClickNoteLeft = e => {};
-
-    handleClickNoteRight = () => {};
-
     handleChangeTitle = e => {
         const n_id = this.props.match.params.n_id;
         const title = e.target.value.length ? e.target.value : ' ';
@@ -294,26 +243,20 @@ class Note extends Component {
                         this.BlockRef.current.state.ws.send(
                             JSON.stringify(newTitle)
                         );
-                    })
-                    .catch(err => console.log(err));
+                    });
             }, 1818)
         });
     };
 
     handleChangeDatetime = moment_ => {
         const n_id = this.props.match.params.n_id;
-        axios
-            .patch(`/api/note/${n_id}/`, { created_at: moment_ })
-            .then(res => {
-                const newDatetime = {
-                    operation_type: 'change_datetime',
-                    updated_datetime: moment_
-                };
-                this.BlockRef.current.state.ws.send(
-                    JSON.stringify(newDatetime)
-                );
-            })
-            .catch();
+        axios.patch(`/api/note/${n_id}/`, { created_at: moment_ }).then(res => {
+            const newDatetime = {
+                operation_type: 'change_datetime',
+                updated_datetime: moment_
+            };
+            this.BlockRef.current.state.ws.send(JSON.stringify(newDatetime));
+        });
     };
 
     handleChangeLocation = e => {
@@ -361,7 +304,7 @@ class Note extends Component {
 
     handleAddTextBlock = () => {
         const noteId = this.props.match.params.n_id;
-        const document_id = handleDocIdInUrl();
+        const document_id = this.handleDocIdInUrl();
         // Block Create API call 할 곳.
         const text_info = {
             n_id: noteId,
@@ -383,7 +326,6 @@ class Note extends Component {
     /**
      * 1. 만약 투두가 전혀 없었다면, 투두 컨테이너가 생성되어야 하고, 첫 투두가 컨테이너에 들어가야함
      * 2. 만약 투두컨테이너가 있고, 투두가 있었다면, 그 컨테이너에 add되어야함
-     * 3.
      */
     handleAddTodoBlock = () => {
         const noteId = this.props.match.params.n_id;
@@ -430,45 +372,9 @@ class Note extends Component {
         this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data));
     };
 
-    handleAddCalendarBlock = () => {
-        const noteId = this.props.match.params.n_id;
-
-        // Block Create API call 할 곳.
-        const text_info = {
-            content: '새로 생성된 텍스트 블록',
-            layer_x: 0,
-            layer_y: 0,
-            document_id: document_id
-        };
-        axios.post(`/api/note/${noteId}/textblocks/`, text_info).then(res => {
-            this.setState({
-                blocks: this.state.blocks.concat({
-                    block_type: 'Text',
-                    id: res['data']['id'],
-                    content: res['data']['content'],
-                    layer_x: res['data']['layer_x'],
-                    layer_y: res['data']['layer_y'],
-                    document_id: res['data']['document_id']
-                })
-            });
-        });
-        console.log(
-            `Need to Implement adding Calendar Block to specific note whose id is ${noteId}`
-        );
-    };
-
-    handleAddParticipant = () => {
-        console.log(
-            'Need to implement add Participant who is a member of specific workspace'
-        );
-    };
-
     handleAddTag = tagId => {
         const noteId = this.props.match.params.n_id;
-        console.log('tag id: ', tagId);
         const newTag = this.state.workspaceTags.find(tag => tag.id == tagId);
-        console.log('newTag: ', newTag);
-        console.log(this.state.noteTags);
         let duplicate = false;
         this.state.noteTags.forEach(tag => {
             if (tagId == tag.id) {
@@ -478,12 +384,10 @@ class Note extends Component {
 
         if (!duplicate) {
             const tags = this.state.noteTags.concat(newTag);
-            console.log(tags);
             const newNote = {
                 tags: tags.map(tag => tag.id)
             };
             axios.patch(`/api/note/${noteId}/`, newNote).then(res => {
-                console.log(res);
                 this.setState({
                     noteTags: tags
                 });
@@ -581,7 +485,7 @@ class Note extends Component {
             return;
         }
 
-        const blocks = reorder(
+        const blocks = this.reorder(
             this.state.blocks,
             result.source.index,
             result.destination.index
@@ -604,14 +508,41 @@ class Note extends Component {
             .catch(err => console.log(err));
     };
 
+    reorder = (list, startIndex, endIndex) => {
+        const result = Array.from(list);
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+        return result;
+    };
+
+    handleDocIdInUrl() {
+        let id = this.randomString();
+        this.updateDocIdInUrl(id);
+        return id;
+    }
+
+    updateDocIdInUrl(id) {
+        window.history.replaceState(
+            {},
+            document.title,
+            this.generateUrlWithDocId(id)
+        );
+    }
+
+    generateUrlWithDocId(id) {
+        return `${window.location.href.split('?')[0]}?docId=${id}`;
+    }
+
+    randomString() {
+        return Math.floor(Math.random() * Math.pow(2, 52)).toString(32);
+    }
+
     render() {
         const { history } = this.props;
         const noteId = this.props.match.params.n_id;
         const loggedInUserNickname = sessionStorage.getItem(
             'LoggedInUserNickname'
         );
-        // console.log('note tags: ', this.state.noteTags);
-        // console.log('workspace tags: ', this.state.workspaceTags);
         return (
             <div className="Note">
                 <div className="file-tree-wrapper">
@@ -619,39 +550,33 @@ class Note extends Component {
                         <NoteTree
                             blocks={this.state.blocks}
                             history={history}
-                            agendaChildrenBlocks={
-                                this.state.agenda_children_blocks
-                            }
                         />
                     </div>
                 </div>
                 <NoteLeft
+                    className="note-left"
                     handleAddTag={this.handleAddTag}
-                    workspaceId={this.state.workspaceId}
-                    workspaceTags={this.state.workspaceTags}
-                    noteTags={this.state.noteTags}
-                    handleDeleteBlock={this.handleDeleteBlock}
-                    note_title={this.state.title}
-                    meeting_date={this.state.created_at}
-                    participants={this.state.participants}
-                    noteId={noteId}
-                    moment={this.state.moment}
-                    location={this.state.location}
-                    blocks={this.state.blocks}
-                    handleClickBlock={this.handleClickBlock}
-                    // handleClickNoteLeft={this.handleClickNoteLeft}
-                    handleChangeTitle={this.handleChangeTitle}
-                    handleChangeDatetime={this.handleChangeDatetime}
-                    handleChangeLocation={this.handleChangeLocation}
                     handleAddAgendaBlock={this.handleAddAgendaBlock}
                     handleAddTextBlock={this.handleAddTextBlock}
                     handleAddTodoBlock={this.handleAddTodoBlock}
                     handleAddImageBlock={this.handleAddImageBlock}
-                    handleAddCalendarBlock={this.handleAddCalendarBlock}
-                    handleAddParticipant={this.handleAddParticipant}
                     handleAddTextSocketSend={this.handleAddTextSocketSend}
-                    onDragEnd={this.onDragEnd}
+                    handleChangeTitle={this.handleChangeTitle}
+                    handleChangeDatetime={this.handleChangeDatetime}
+                    handleChangeLocation={this.handleChangeLocation}
                     handleDeleteTodo={this.handleDeleteTodo}
+                    handleDeleteBlock={this.handleDeleteBlock}
+                    workspaceId={this.state.workspaceId}
+                    workspaceTags={this.state.workspaceTags}
+                    noteId={noteId}
+                    noteTags={this.state.noteTags}
+                    note_title={this.state.title}
+                    blocks={this.state.blocks}
+                    onDragEnd={this.onDragEnd}
+                    location={this.state.location}
+                    meeting_date={this.state.created_at}
+                    participants={this.state.participants}
+                    moment={this.state.moment}
                     socketRef={this.BlockRef}
                 />
                 <Websocket
@@ -665,42 +590,11 @@ class Note extends Component {
                 <div className="note-right-wrapper">
                     <Signout className="note-signout" history={history} />
                 </div>
-                <GoogleSTT
-                    room={noteId}
-                    nickname={loggedInUserNickname}
-                    somebodyRecording={this.state.somebodyRecording}
-                />
+                <googleSTT room={noteId} nickname={loggedInUserNickname} />
                 <Signout history={history} />
             </div>
         );
     }
-}
-
-function handleDocIdInUrl() {
-    // let id = getDocIdFromUrl();
-
-    let id = randomString();
-    updateDocIdInUrl(id);
-
-    return id;
-}
-
-function updateDocIdInUrl(id) {
-    window.history.replaceState({}, document.title, generateUrlWithDocId(id));
-}
-
-function generateUrlWithDocId(id) {
-    return `${window.location.href.split('?')[0]}?docId=${id}`;
-}
-
-function getDocIdFromUrl() {
-    const docIdMatch = window.location.search.match(/docId=(.+)$/);
-
-    return docIdMatch ? decodeURIComponent(docIdMatch[1]) : null;
-}
-
-function randomString() {
-    return Math.floor(Math.random() * Math.pow(2, 52)).toString(32);
 }
 
 export default Note;

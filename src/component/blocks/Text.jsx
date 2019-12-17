@@ -19,7 +19,6 @@ class Text extends Component {
             content: this.props.content,
             document_id: this.props.document_id,
             isParentAgenda: this.props.isParentAgenda,
-
             loading: true
         };
     }
@@ -27,12 +26,7 @@ class Text extends Component {
     handleLoading = () => {
         this.setState({
             loading: false
-            // loading: true
         });
-    };
-
-    handleChangeText = changedText => {
-        console.log('Need to implement changing text');
     };
 
     handleClickDelete = e => {
@@ -53,16 +47,17 @@ class Text extends Component {
                     </button>
                 </div>
                 <EditorWrapper
+                    className="editor-wrapper"
                     handleAddTextSocketSend={this.props.handleAddTextSocketSend}
                     blk_id={this.props.blk_id}
                     document_id={this.props.document_id}
-                    handleChangeText={this.handleChangeText}
                     handleLoading={this.handleLoading}
                     loading={this.state.loading}
                 />
                 {this.state.loading && (
                     <div className="EditorWrapper-loader">
                         <PacmanLoader
+                            className="pacman-loader"
                             css={override}
                             size={15}
                             color={'#98c6fa'}
