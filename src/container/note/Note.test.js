@@ -28,6 +28,7 @@ describe('<Note />', () => {
     let component;
     let instance;
     let noteLeftComponent;
+    let websocketComponent;
     beforeEach(() => {
         note = (
             <Note
@@ -47,6 +48,7 @@ describe('<Note />', () => {
         instance.BlockRef = {
             current: { state: { ws: { send: jest.fn() } } }
         };
+        websocketComponent = component.find('.web-socket');
     });
     afterEach(() => {
         jest.clearAllMocks();
@@ -414,5 +416,50 @@ describe('<Note />', () => {
         });
     });
 
-    it('should work with socket well', () => {});
+    it('should work with socket well', () => {
+        const spyHandleSocketBlock = jest.spyOn(instance, 'handleSocketBlock');
+        let data =
+            '{"block_type":"Text","id":203,"content":"새로 생성된 텍스트 블록","layer_x":0,"layer_y":0,"document_id":"3udj5l9ffv"}';
+        websocketComponent.props().onMessage(data);
+        expect(spyHandleSocketBlock).toHaveBeenCalledTimes(0);
+        data =
+            '{"block_type":"Agenda","id":77,"content":"Modifications","layer_x":0,"layer_y":0,"agenda_children_blocks":[]}';
+        websocketComponent.props().onMessage(data);
+        expect(spyHandleSocketBlock).toHaveBeenCalledTimes(0);
+        data =
+            '{"block_type":"TodoContainer","todos":[{"id":1,"block_type":"TodoContainer","content":"Competitive Analysis","layer_x":0,"layer_y":0,"assignees":[3,14],"due_date":"2019-12-01","note":"23","is_parent_note":true,"is_done":false,"parent_agenda":null,"assignees_info":[{"id":14,"nickname":"채민"},{"id":3,"nickname":"태영"}]},{"id":2,"block_type":"TodoContainer","content":"Customer Needs","layer_x":0,"layer_y":0,"assignees":[13,12],"due_date":"2019-12-01","note":"23","is_parent_note":true,"is_done":false,"parent_agenda":null,"assignees_info":[{"id":12,"nickname":"예지"},{"id":13,"nickname":"상연"}]},{"id":23,"block_type":"TodoContainer","content":"할 일을 채워주세요","layer_x":0,"layer_y":0,"assignees":[],"due_date":"2019-12-16","note":"23","is_parent_note":true,"is_done":false,"parent_agenda":null,"assignees_info":[]}]}';
+        websocketComponent.props().onMessage(data);
+        expect(spyHandleSocketBlock).toHaveBeenCalledTimes(0);
+        data =
+            '{"block_type":"Image","id":2,"image":"/media/66252204-8c34f380-e793-11e9-84da-c60b4ad04b81.png","content":"User Interface Description","is_submitted":true,"layer_x":0,"layer_y":0}';
+        websocketComponent.props().onMessage(data);
+        expect(spyHandleSocketBlock).toHaveBeenCalledTimes(0);
+        data =
+            '{"operation_type": "change_title", "updated_title": "updated_title"}';
+        websocketComponent.props().onMessage(data);
+        expect(spyHandleSocketBlock).toHaveBeenCalledTimes(0);
+        data =
+            '{"operation_type": "change_location", "updated_location": "updated_location"}';
+        websocketComponent.props().onMessage(data);
+        expect(spyHandleSocketBlock).toHaveBeenCalledTimes(0);
+        data =
+            '{"operation_type": "change_datetime", "updated_datetime": "2012-12-12"}';
+        websocketComponent.props().onMessage(data);
+        expect(spyHandleSocketBlock).toHaveBeenCalledTimes(0);
+        data =
+            '{"type": "change_children_blocks","children_blocks": "block_data_json[]"}';
+        websocketComponent.props().onMessage(data);
+        expect(spyHandleSocketBlock).toHaveBeenCalledTimes(0);
+        instance.setState({
+            blocks: [
+                {
+                    todoContainer: [{ todo: 1 }]
+                }
+            ]
+        });
+        data =
+            '{"block_type":"TodoContainer","todos":[{"id":1,"block_type":"TodoContainer","content":"Competitive Analysis","layer_x":0,"layer_y":0,"assignees":[3,14],"due_date":"2019-12-01","note":"23","is_parent_note":true,"is_done":false,"parent_agenda":null,"assignees_info":[{"id":14,"nickname":"채민"},{"id":3,"nickname":"태영"}]},{"id":2,"block_type":"TodoContainer","content":"Customer Needs","layer_x":0,"layer_y":0,"assignees":[13,12],"due_date":"2019-12-01","note":"23","is_parent_note":true,"is_done":false,"parent_agenda":null,"assignees_info":[{"id":12,"nickname":"예지"},{"id":13,"nickname":"상연"}]},{"id":23,"block_type":"TodoContainer","content":"할 일을 채워주세요","layer_x":0,"layer_y":0,"assignees":[],"due_date":"2019-12-16","note":"23","is_parent_note":true,"is_done":false,"parent_agenda":null,"assignees_info":[]}]}';
+        websocketComponent.props().onMessage(data);
+        expect(spyHandleSocketBlock).toHaveBeenCalledTimes(0);
+    });
 });

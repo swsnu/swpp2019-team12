@@ -401,6 +401,7 @@ class Note extends Component {
         const noteId = this.props.match.params.n_id;
         let newBlocks = null;
         let res = JSON.parse(data);
+        console.log(res);
         // Add Block
         if (res.hasOwnProperty('block_type')) {
             if (res['block_type'] == 'Agenda') {
@@ -470,8 +471,6 @@ class Note extends Component {
             this.setState({ location: res['updated_location'] });
         } else if (res['operation_type'] === 'change_datetime') {
             this.setState({ moment: moment(res['updated_datetime']) });
-        } else if (res['operation_type'] === 'patch_image') {
-            this.setState({});
         }
         // Drag & Drop
         // Delete
@@ -581,6 +580,7 @@ class Note extends Component {
                     socketRef={this.BlockRef}
                 />
                 <Websocket
+                    className="web-socket"
                     // 로컬 테스트용.
                     url={`ws://localhost:8001/ws/${noteId}/block/`}
                     // 개발서버용.
