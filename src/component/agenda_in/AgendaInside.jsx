@@ -31,10 +31,6 @@ export default class AgendaInside extends Component {
         };
     }
 
-    handleClickBlock = (type, blk_id) => {
-        console.log('text block inside agenda clicked');
-    };
-
     static getDerivedStateFromProps(nextProps, prevState) {
         let block_array;
         if (nextProps.blocks !== prevState.blocks) {
@@ -98,7 +94,7 @@ export default class AgendaInside extends Component {
 
     render() {
         return (
-            <div>
+            <div className="agenda-inside">
                 <div>
                     <DragDropContext onDragEnd={this.props.onDragEnd}>
                         <Droppable droppableId="droppable">
