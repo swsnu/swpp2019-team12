@@ -22,11 +22,14 @@ class WorkspaceSelection extends Component {
             this.props.history.push('/signin');
         }
 
-        axios.get('/api/workspace/').then(res => {
-            const { data } = res;
-            const { workspaces, admins } = data;
-            this.setState({ workspaces, admins });
-        });
+        axios
+            .get('/api/workspace/')
+            .then(res => {
+                const { data } = res;
+                const { workspaces, admins } = data;
+                this.setState({ workspaces, admins });
+            })
+            .catch(() => {});
     }
 
     handleNavigateWorkspace = workspace => {
