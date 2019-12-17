@@ -16,7 +16,9 @@ const stubContent = 'Test content';
 const stubAgendaDiscussion = 'Test discusssion';
 const stubHandleClickBlock = jest.fn();
 const stubHandleDeleteBlock = jest.fn();
-const stubSocketRef = { current: null };
+const stubSocketRef = {
+    current: { state: { ws: { send: jest.fn(str => {}) } } }
+};
 const stubParticipants = [{ id: 1, nickname: 'TEST_USER' }];
 
 jest.mock('../agenda_in/AgendaInside', () =>
@@ -36,7 +38,7 @@ describe('<Agenda />', () => {
                 content={stubContent}
                 agenda_discussion={stubAgendaDiscussion}
                 handleClickBlock={stubHandleClickBlock}
-                handleDeleteBLock={stubHandleDeleteBlock}
+                handleDeleteBlock={stubHandleDeleteBlock}
                 socketRef={stubSocketRef}
                 participants={stubParticipants}
             />
@@ -119,27 +121,54 @@ describe('<Agenda />', () => {
         });
     });
 
-    xit('handleClickDelete ', () => {
-        const component = mount(agenda);
-        let wrapper = component.find('.delete-button');
-        wrapper.at(0).simulate('click');
-
+    it('handleClickDelete ', () => {
+        const component = shallow(agenda);
         const instance = component.instance();
-        const spyHandleClickDelete = jest
-            .spyOn(instance, 'handleClickDelete')
-            .mockImplementation(() => null);
         instance.handleClickDelete();
-        expect(spyHandleClickDelete).toHaveBeenCalledTimes(1);
 
-        // const component = mount(<ImageUpload setFieldValue={jest.fn()} />);
-        // const wrapper = component.find('.ImageUpload');
-        // wrapper.simulate('click');
-        // const instance = component.instance();
-        // const spyHandleClick = jest
-        //     .spyOn(instance, 'handleClick')
-        //     .mockImplementation(() => null);
-        // instance.handleClick();
-        // expect(spyHandleClick).toHaveBeenCalledTimes(1);
+        expect(stubHandleDeleteBlock).toHaveBeenCalledTimes(1);
+        expect(stubHandleDeleteBlock).toHaveBeenCalledWith(
+            '/api/agenda/1/',
+            'Agenda',
+            1
+        );
+    });
+
+    it('handleAddTextBlock ', () => {
+        JSON.stringify = jest.fn(data => {
+            return 'DATA';
+        });
+        const text_info = {
+            a_id: 1,
+            n_id: 1,
+            content: '어젠다 속 새로운 텍스트 블록',
+            layer_x: 0,
+            layer_y: 0,
+            document_id: 1004,
+            block_type: 'Text'
+        };
+
+        const JSON_data = {
+            operation_type: 'add_block',
+            block: text_info
+        };
+
+        const component = shallow(agenda);
+        const instance = component.instance();
+        instance.handleDocIdInUrl = jest.fn(() => {
+            return 1004;
+        });
+        instance.AgendaRef = {
+            current: { state: { ws: { send: jest.fn() } } }
+        };
+        instance.forceUpdate();
+        instance.handleAddTextBlock();
+
+        expect(JSON.stringify).toHaveBeenCalledTimes(1);
+        expect(JSON.stringify).toHaveBeenCalledWith(JSON_data);
+        expect(instance.AgendaRef.current.state.ws.send).toHaveBeenCalledWith(
+            'DATA'
+        );
     });
 
     it('handleChangeAgendaTitle ', () => {
@@ -150,17 +179,7 @@ describe('<Agenda />', () => {
         wrapper.simulate('change', { target: { value: title } });
         const instance = component.instance();
         expect(instance.state.current_title).toEqual('TEST_TITLE');
-    });
-
-    it('handleAddTextBlock ', () => {
-        const component = shallow(agenda);
-
-        const instance = component.instance();
-        instance.handleAddTextBlock = jest.fn();
-        instance.forceUpdate();
-        let wrapper = component.find('.agenda-add-text-button');
-        wrapper.simulate('click');
-        expect(instance.handleAddTextBlock).toHaveBeenCalledTimes(1);
+        expect(instance.state.typing).toEqual(false);
     });
 
     it('handleAddImageBlock ', () => {
@@ -182,5 +201,18 @@ describe('<Agenda />', () => {
         let wrapper = component.find('.agenda-add-todo-button');
         wrapper.simulate('click');
         expect(instance.handleAddTodoBlock).toHaveBeenCalledTimes(1);
+    });
+
+    xit('handleDeleteBlockInAgenda ', () => {
+        const component = mount(agenda);
+        const instance = component.instance();
+        instance.handleDeleteBlockInAgenda = jest.fn();
+        instance.forceUpdate();
+        let wrapper = component.find('.AgendaInside');
+        console.log(wrapper.props());
+        wrapper.props().handleDeleteBlock();
+
+        expect(wrapper.length).toBe(1);
+        expect(instance.handleDeleteBlockInAgenda).toHaveBeenCalledTimes(1);
     });
 });

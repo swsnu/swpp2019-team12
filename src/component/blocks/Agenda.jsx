@@ -57,12 +57,42 @@ class Agenda extends Component {
             .catch(err => console.log('this agenda has no child block'));
     }
 
+    handleDocIdInUrl = () => {
+        let id = this.randomString();
+        this.updateDocIdInUrl(id);
+
+        return id;
+    };
+
+    updateDocIdInUrl = id => {
+        window.history.replaceState(
+            {},
+            document.title,
+            this.generateUrlWithDocId(id)
+        );
+    };
+
+    generateUrlWithDocId = id => {
+        return `${window.location.href.split('?')[0]}?docId=${id}`;
+    };
+
+    randomString = () => {
+        return Math.floor(Math.random() * Math.pow(2, 52)).toString(32);
+    };
+
+    reorder = (list, startIndex, endIndex) => {
+        const result = Array.from(list);
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+        return result;
+    };
+
     onDragEnd = result => {
         if (!result.destination) {
             return;
         }
 
-        const blocks = reorder(
+        const blocks = this.reorder(
             this.state.blocks,
             result.source.index,
             result.destination.index
@@ -89,7 +119,7 @@ class Agenda extends Component {
     };
 
     handleAddTextBlock = () => {
-        const document_id = handleDocIdInUrl();
+        const document_id = this.handleDocIdInUrl();
         const text_info = {
             a_id: this.state.agenda_id,
             n_id: this.props.noteId,
@@ -219,7 +249,6 @@ class Agenda extends Component {
 
     handleClickDelete = e => {
         const axios_path = `/api/agenda/${this.state.agenda_id}/`;
-        console.log('여긴 들어오지?');
         this.props.handleDeleteBlock(
             axios_path,
             'Agenda',
@@ -504,6 +533,7 @@ class Agenda extends Component {
                 <div className="full-size-block-content Agenda">
                     <div className="full-size-block-content__text Agenda">
                         <AgendaInside
+                            className="AgendaInside"
                             noteId={this.props.noteId}
                             handleClickBlock={this.props.handleClickBlock}
                             blocks={this.state.blocks}
@@ -526,37 +556,5 @@ class Agenda extends Component {
         );
     }
 }
-
-function handleDocIdInUrl() {
-    let id = randomString();
-    updateDocIdInUrl(id);
-
-    return id;
-}
-
-function updateDocIdInUrl(id) {
-    window.history.replaceState({}, document.title, generateUrlWithDocId(id));
-}
-
-function generateUrlWithDocId(id) {
-    return `${window.location.href.split('?')[0]}?docId=${id}`;
-}
-
-function getDocIdFromUrl() {
-    const docIdMatch = window.location.search.match(/docId=(.+)$/);
-
-    return docIdMatch ? decodeURIComponent(docIdMatch[1]) : null;
-}
-
-function randomString() {
-    return Math.floor(Math.random() * Math.pow(2, 52)).toString(32);
-}
-
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-    return result;
-};
 
 export default Agenda;
