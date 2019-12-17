@@ -184,18 +184,16 @@ class Note extends Component {
             blk => blk.block_type == 'TodoContainer'
         );
         if (!todoContainer) {
-            console.log('Todo conatiner가 없습니다. ');
+            // console.log('Todo conatiner가 없습니다. ');
             return;
         }
         let newBlocks = null;
         // 만약 컨테이너가 존재하지만, 단 한개의 Todo가 존재한다면, 그것을 지우고 컨테이너도 삭제
         if (todoContainer.todos.length <= 1) {
-            console.log('todo length <= 1');
             newBlocks = this.state.blocks.filter(
                 blk => blk.block_type !== 'TodoContainer'
             );
         } else {
-            console.log('todo length > 1');
             // 컨테이너가 이미 존재하고 그 안에 2개 이상의 Todo 가 있다면, 지우고자 하는 Todo를 제거한 새로운 배열로 수정
             newBlocks = this.state.blocks.map(blk => {
                 if (blk.block_type == 'TodoContainer') {
@@ -226,7 +224,6 @@ class Note extends Component {
 
     handleChangeTitle = e => {
         const n_id = this.props.match.params.n_id;
-        console.log(e.target);
         const title = e.target.value.length ? e.target.value : ' ';
         if (this.state.typingTimeout) {
             clearTimeout(this.state.typingTimeout);
@@ -308,7 +305,6 @@ class Note extends Component {
     handleAddTextBlock = () => {
         const noteId = this.props.match.params.n_id;
         const document_id = this.handleDocIdInUrl();
-        console.log(document_id);
         // Block Create API call 할 곳.
         const text_info = {
             n_id: noteId,
@@ -378,10 +374,7 @@ class Note extends Component {
 
     handleAddTag = tagId => {
         const noteId = this.props.match.params.n_id;
-        console.log('tag id: ', tagId);
         const newTag = this.state.workspaceTags.find(tag => tag.id == tagId);
-        console.log('newTag: ', newTag);
-        console.log(this.state.noteTags);
         let duplicate = false;
         this.state.noteTags.forEach(tag => {
             if (tagId == tag.id) {
@@ -391,12 +384,10 @@ class Note extends Component {
 
         if (!duplicate) {
             const tags = this.state.noteTags.concat(newTag);
-            console.log(tags);
             const newNote = {
                 tags: tags.map(tag => tag.id)
             };
             axios.patch(`/api/note/${noteId}/`, newNote).then(res => {
-                console.log(res);
                 this.setState({
                     noteTags: tags
                 });

@@ -272,10 +272,76 @@ describe('<Note />', () => {
         expect(spyHandleAddImageBlock).toHaveBeenCalledTimes(0);
     });
 
-    // it('should handle add tag', () => {
-    //     const spyHandleAddTag = jest.spyOn(instance, 'handleAddTag');
-    //     const stubTagId = 1;
-    //     noteLeftComponent.props().handleAddTag(stubTagId);
-    //     expect(spyHandleAddTag).toHaveBeenCalledTimes(0);
-    // });
+    it('should handle add tag', async () => {
+        const spyHandleAddTag = jest.spyOn(instance, 'handleAddTag');
+        const stubTagId = 1;
+        instance.setState({
+            workspaceTags: [
+                {
+                    id: 1
+                },
+                {
+                    id: 2
+                }
+            ],
+            noteTags: [
+                {
+                    id: 1
+                }
+            ]
+        });
+        axios.patch = jest.fn((url, data) => {
+            return new Promise((resolve, reject) => {
+                const result = {
+                    status: 200
+                };
+                resolve(result);
+            });
+        });
+        await noteLeftComponent.props().handleAddTag(stubTagId);
+        expect(spyHandleAddTag).toHaveBeenCalledTimes(0);
+        expect(axios.patch).toHaveBeenCalledTimes(0);
+        await noteLeftComponent.props().handleAddTag(2);
+        expect(spyHandleAddTag).toHaveBeenCalledTimes(0);
+        expect(axios.patch).toHaveBeenCalledTimes(1);
+    });
+
+    // it('ComponentDidMount', () => {
+    //     const component = shallow(agenda);
+    //     const instance = component.instance();
+    //     instance.componentDidMount();
+    //     axios.get('', res => {
+    //         instance.setState({
+    //             blocks: res.data.agenda.children_blocks,
+    //             current_title: res.data.agenda.content,
+    //             tags: res.data.tags
+    //         });
+    //         expect(axios.get).toHaveBeenCalledTimes(1);
+    //         expect(instance.state.blocks).toEqual([]);
+    //         expect(instance.current_title).toEqual('STUB_CONTENT');
+    //         expect(instance.agendaTags).toEqual(['STUB_TAG']);
+    //     });
+    //});
+
+    it('should do good with didmount', () => {
+        axios.get = jest.fn(url => {
+            return new Promise((resolve, reject) => {
+                const result = {
+                    status: 200,
+                    data: {
+                        children_blocks: ['']
+                    }
+                };
+                resolve(result);
+            });
+        });
+        instance.componentDidMount();
+        axios.get('', res => {
+            instance.setState({
+                blocks: []
+            });
+            expect(axios.get), toHaveBeenCalledTimes(1);
+            expect(instance.state.blocks).toEqual([]);
+        });
+    });
 });
