@@ -185,14 +185,17 @@ class Note extends Component {
         );
         if (!todoContainer) {
             console.log('Todo conatiner가 없습니다. ');
+            return;
         }
         let newBlocks = null;
         // 만약 컨테이너가 존재하지만, 단 한개의 Todo가 존재한다면, 그것을 지우고 컨테이너도 삭제
         if (todoContainer.todos.length <= 1) {
+            console.log('todo length <= 1');
             newBlocks = this.state.blocks.filter(
                 blk => blk.block_type !== 'TodoContainer'
             );
         } else {
+            console.log('todo length > 1');
             // 컨테이너가 이미 존재하고 그 안에 2개 이상의 Todo 가 있다면, 지우고자 하는 Todo를 제거한 새로운 배열로 수정
             newBlocks = this.state.blocks.map(blk => {
                 if (blk.block_type == 'TodoContainer') {
@@ -223,6 +226,7 @@ class Note extends Component {
 
     handleChangeTitle = e => {
         const n_id = this.props.match.params.n_id;
+        console.log(e.target);
         const title = e.target.value.length ? e.target.value : ' ';
         if (this.state.typingTimeout) {
             clearTimeout(this.state.typingTimeout);
@@ -242,26 +246,20 @@ class Note extends Component {
                         this.BlockRef.current.state.ws.send(
                             JSON.stringify(newTitle)
                         );
-                    })
-                    .catch(err => console.log(err));
+                    });
             }, 1818)
         });
     };
 
     handleChangeDatetime = moment_ => {
         const n_id = this.props.match.params.n_id;
-        axios
-            .patch(`/api/note/${n_id}/`, { created_at: moment_ })
-            .then(res => {
-                const newDatetime = {
-                    operation_type: 'change_datetime',
-                    updated_datetime: moment_
-                };
-                this.BlockRef.current.state.ws.send(
-                    JSON.stringify(newDatetime)
-                );
-            })
-            .catch();
+        axios.patch(`/api/note/${n_id}/`, { created_at: moment_ }).then(res => {
+            const newDatetime = {
+                operation_type: 'change_datetime',
+                updated_datetime: moment_
+            };
+            this.BlockRef.current.state.ws.send(JSON.stringify(newDatetime));
+        });
     };
 
     handleChangeLocation = e => {
@@ -309,7 +307,8 @@ class Note extends Component {
 
     handleAddTextBlock = () => {
         const noteId = this.props.match.params.n_id;
-        const document_id = handleDocIdInUrl();
+        const document_id = this.handleDocIdInUrl();
+        console.log(document_id);
         // Block Create API call 할 곳.
         const text_info = {
             n_id: noteId,
@@ -375,39 +374,6 @@ class Note extends Component {
         };
 
         this.BlockRef.current.state.ws.send(JSON.stringify(JSON_data));
-    };
-
-    handleAddCalendarBlock = () => {
-        const noteId = this.props.match.params.n_id;
-
-        // Block Create API call 할 곳.
-        const text_info = {
-            content: '새로 생성된 텍스트 블록',
-            layer_x: 0,
-            layer_y: 0,
-            document_id: document_id
-        };
-        axios.post(`/api/note/${noteId}/textblocks/`, text_info).then(res => {
-            this.setState({
-                blocks: this.state.blocks.concat({
-                    block_type: 'Text',
-                    id: res['data']['id'],
-                    content: res['data']['content'],
-                    layer_x: res['data']['layer_x'],
-                    layer_y: res['data']['layer_y'],
-                    document_id: res['data']['document_id']
-                })
-            });
-        });
-        console.log(
-            `Need to Implement adding Calendar Block to specific note whose id is ${noteId}`
-        );
-    };
-
-    handleAddParticipant = () => {
-        console.log(
-            'Need to implement add Participant who is a member of specific workspace'
-        );
     };
 
     handleAddTag = tagId => {
@@ -528,7 +494,7 @@ class Note extends Component {
             return;
         }
 
-        const blocks = reorder(
+        const blocks = this.reorder(
             this.state.blocks,
             result.source.index,
             result.destination.index
@@ -551,6 +517,35 @@ class Note extends Component {
             .catch(err => console.log(err));
     };
 
+    reorder = (list, startIndex, endIndex) => {
+        const result = Array.from(list);
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+        return result;
+    };
+
+    handleDocIdInUrl() {
+        let id = this.randomString();
+        this.updateDocIdInUrl(id);
+        return id;
+    }
+
+    updateDocIdInUrl(id) {
+        window.history.replaceState(
+            {},
+            document.title,
+            this.generateUrlWithDocId(id)
+        );
+    }
+
+    generateUrlWithDocId(id) {
+        return `${window.location.href.split('?')[0]}?docId=${id}`;
+    }
+
+    randomString() {
+        return Math.floor(Math.random() * Math.pow(2, 52)).toString(32);
+    }
+
     render() {
         const { history } = this.props;
         const noteId = this.props.match.params.n_id;
@@ -568,13 +563,12 @@ class Note extends Component {
                     </div>
                 </div>
                 <NoteLeft
+                    className="note-left"
                     handleAddTag={this.handleAddTag}
                     handleAddAgendaBlock={this.handleAddAgendaBlock}
                     handleAddTextBlock={this.handleAddTextBlock}
                     handleAddTodoBlock={this.handleAddTodoBlock}
                     handleAddImageBlock={this.handleAddImageBlock}
-                    handleAddCalendarBlock={this.handleAddCalendarBlock}
-                    handleAddParticipant={this.handleAddParticipant}
                     handleAddTextSocketSend={this.handleAddTextSocketSend}
                     handleChangeTitle={this.handleChangeTitle}
                     handleChangeDatetime={this.handleChangeDatetime}
@@ -610,31 +604,6 @@ class Note extends Component {
             </div>
         );
     }
-}
-
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-    return result;
-};
-
-function handleDocIdInUrl() {
-    let id = randomString();
-    updateDocIdInUrl(id);
-    return id;
-}
-
-function updateDocIdInUrl(id) {
-    window.history.replaceState({}, document.title, generateUrlWithDocId(id));
-}
-
-function generateUrlWithDocId(id) {
-    return `${window.location.href.split('?')[0]}?docId=${id}`;
-}
-
-function randomString() {
-    return Math.floor(Math.random() * Math.pow(2, 52)).toString(32);
 }
 
 export default Note;
