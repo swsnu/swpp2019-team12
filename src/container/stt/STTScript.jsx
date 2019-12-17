@@ -24,6 +24,7 @@ export default class STTScript extends Component {
     }
 
     renderScripts = () => {
+        console.log(this.state.scripts);
         return this.state.scripts.map((script, i) => (
             <div key={i} className="stt-script-element">
                 <SingleScript script={script} />
