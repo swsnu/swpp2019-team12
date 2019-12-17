@@ -34,4 +34,9 @@ describe('<AgendaInside />', () => {
         let wrapper = component.find('.agenda-inside');
         expect(wrapper.length).toBe(1);
     });
+
+    // it('should render getderivedstate properly', () => {
+    //     const component = shallow(agendaInside);
+    //     let instance = component.instance();
+    // });
 });
