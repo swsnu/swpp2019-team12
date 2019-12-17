@@ -37,24 +37,21 @@ class Agenda extends Component {
     }
 
     componentDidMount() {
-        axios
-            .get(`/api/agenda/${this.state.agenda_id}/`)
-            .then(res => {
-                let blocks = null;
-                if (res.data['agenda']['children_blocks'] === '') {
-                    blocks = [];
-                } else {
-                    blocks = JSON.parse(res.data['agenda']['children_blocks']);
-                }
-                const agendaTags = res['data']['tags'];
+        axios.get(`/api/agenda/${this.state.agenda_id}/`).then(res => {
+            let blocks = null;
+            if (res.data['agenda']['children_blocks'] === '') {
+                blocks = [];
+            } else {
+                blocks = JSON.parse(res.data['agenda']['children_blocks']);
+            }
+            const agendaTags = res['data']['tags'];
 
-                this.setState({
-                    blocks: blocks,
-                    current_title: res.data['agenda']['content'],
-                    agendaTags
-                });
-            })
-            .catch(err => console.log('this agenda has no child block'));
+            this.setState({
+                blocks: blocks,
+                current_title: res.data['agenda']['content'],
+                agendaTags
+            });
+        });
     }
 
     handleDocIdInUrl = () => {
@@ -114,8 +111,7 @@ class Agenda extends Component {
             )
             .then(res => {
                 this.AgendaRef.current.state.ws.send(JSON.stringify(JSON_data));
-            })
-            .catch(err => console.log(err));
+            });
     };
 
     handleAddTextBlock = () => {
@@ -304,38 +300,33 @@ class Agenda extends Component {
     };
 
     handleDeleteBlockInAgenda = (axios_path, block_type, block_id) => {
-        axios
-            .delete(axios_path)
-            .then(res => {
-                const newBlocks = [
-                    ...this.state.blocks.filter(
-                        b => !(b.block_type == block_type && b.id == block_id)
-                    )
-                ];
+        axios.delete(axios_path).then(res => {
+            const newBlocks = [
+                ...this.state.blocks.filter(
+                    b => !(b.block_type == block_type && b.id == block_id)
+                )
+            ];
 
-                const stringifiedBlocks = {
-                    children_blocks: JSON.stringify(newBlocks)
-                };
+            const stringifiedBlocks = {
+                children_blocks: JSON.stringify(newBlocks)
+            };
 
-                const JSON_data = {
-                    operation_type: 'delete_block',
-                    children_blocks: newBlocks
-                };
+            const JSON_data = {
+                operation_type: 'delete_block',
+                children_blocks: newBlocks
+            };
 
-                axios
-                    .patch(
-                        `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
-                        stringifiedBlocks
-                    )
-                    .then(res_ => {
-                        this.AgendaRef.current.state.ws.send(
-                            JSON.stringify(JSON_data)
-                        );
-                    });
-            })
-            .catch(err => {
-                console.log('err: ', err);
-            });
+            axios
+                .patch(
+                    `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
+                    stringifiedBlocks
+                )
+                .then(res_ => {
+                    this.AgendaRef.current.state.ws.send(
+                        JSON.stringify(JSON_data)
+                    );
+                });
+        });
     };
 
     handleChangeAgendaTitle = e => {
@@ -369,8 +360,7 @@ class Agenda extends Component {
                         this.AgendaRef.current.state.ws.send(
                             JSON.stringify(newAgenda)
                         );
-                    })
-                    .catch(err => console.log(err));
+                    });
             }, 1818)
         });
     };
@@ -415,8 +405,7 @@ class Agenda extends Component {
             .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
             .then(res_ => {
                 socketRef.current.state.ws.send(JSON.stringify(JSON_data));
-            })
-            .catch(err => console.log(err));
+            });
     };
 
     handleMenuClick = e => {

@@ -257,7 +257,6 @@ describe('<Agenda />', () => {
             instance,
             'handleSocketAgenda'
         );
-        console.log(websocketComponent.props());
         let data =
             '{"id": 1, "block_type": "Text", "content": "content", "layer_x": "layer_x", "layer_y": "layer_y", "document_id": "document_id", "parent_agenda": "parent_agenda", "note": 1, "is_parent_note": "False"}';
         websocketComponent.props().onMessage(data);
@@ -360,7 +359,6 @@ describe('<Agenda />', () => {
                 }
             ]
         });
-        console.log(instance.state);
         axios.patch = jest.fn((url, data) => {
             return new Promise((resolve, reject) => {
                 const result = {
