@@ -969,7 +969,6 @@ class MOFTestCase(TestCase):
 
         client = Client(enforce_csrf_checks=False)
         client.login(username=USER_NAME, password="test")
-        
         response = client.get('/api/agenda/100/childrenblocks/')
         self.assertEqual(response.status_code, 404)
 
@@ -996,7 +995,6 @@ class MOFTestCase(TestCase):
         """
         client = Client(enforce_csrf_checks=False)
         client.login(username=USER_NAME, password="test")
-        
         response = client.get('/api/note/100/childrenblocks/')
         self.assertEqual(response.status_code, 404)
 

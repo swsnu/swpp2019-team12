@@ -274,6 +274,6 @@ class AgendaConsumer(WebsocketConsumer):
         self.send(
             text_data=json.dumps(
                 {"operation_type": "change_agenda",
-                    "updated_agenda": updated_agenda, }
+                 "updated_agenda": updated_agenda, }
             )
         )
