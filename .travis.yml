@@ -25,6 +25,8 @@ matrix:
         - language: python
           python:
               - '3.7'
+          services:
+              - mysql
           env:
               - COVERALLS_PARALLEL=true
           addons:
@@ -33,6 +35,9 @@ matrix:
                   token:
                       secure: 'A4pZaN99Q6qDpAM/kcDJmy8d/njIuU1U5hXISOPrO/QEIy13AQ25n+uLckERLniiLEGYZ5MD8g8NueU5P/nC+zehGl8pQ2BLaahph5eC7FOzNpl/LtAgPGRu7oArkw+PjrnrjcUUqeIHe2ZURHyzkBTKdAoi2Oz0F8IXjX5e5CvFD75neM7chhLRrUDDtR6Zi3H2T7Kl1ElDxW4WOFRdgKl5EH+XxE93fFRlNRSXQ6GOM8jidjHVMcJJb8mTi3Pjul7iYz40m8JC0iAWcWqkzTAeBZqrpdn0DsEOsD9nLXv3w0dTbqd/kgW++ETfcmCBtPMqkUsU2iDr9egzMmlZ5smZT2iK1AIe6ST+5LnJmFEn+qcWmpfynLjsH3XhgiaHwBuMinVEm19pR1fgxdpH/HEYfZi85QeKD26jEXGZcZ1piWzKSRpcW+ZNIJ1YzrsnWBJD9T9e03hYRBw/fIHpZe9tw9fp9f/WCaAFbpcqNSIykKgn4AkrRM1p2ROJYkS0uf33e69evyS17Dr8ryO1NYcHhicGVuDrgPXnV+DWLPtTpMR5tfTzjPJ24FQChIl6He+iyhCYXqAEaTWY90eFRgNabcIfUEDkyhNAVWThriJYyexaoZMuaA+RySYmqLxravOEyCkFEc+w8tcyysMeSPDT2vii6J0v0W8FhTPL9AY='
           before_install:
+              - mysql -e "CREATE DATABASE djangodb;"
+              - mysql -e "CREATE USER 'swpp'@'localhost' IDENTIFIED BY 'swpp';"
+              - mysql -e "GRANT ALL PRIVILEGES ON *.* to 'swpp'@'localhost';"
               - cd server
           install:
               - pip install -r requirements.txt
