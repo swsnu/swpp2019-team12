@@ -121,7 +121,6 @@ class Image extends Component {
     };
 
     render() {
-        console.log(this.state.content);
         return (
             <div
                 className="full-size-block-container Image"

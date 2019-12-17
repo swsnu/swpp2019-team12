@@ -8,6 +8,14 @@ function mockComponent(props, className) {
 
 describe('<Image />', () => {
     let image;
+
+    // beforeEach(() => {
+    //     let image;
+    //     image = <Image />;
+    //     component = shallow(image);
+    //     instance = component.instance();
+    // });
+
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -18,7 +26,7 @@ describe('<Image />', () => {
         expect(wrapper.length).toBe(1);
     });
 
-    it('should handle delete', () => {
+    it('should handle click delete', () => {
         const mockHandleDeleteBlock = jest.fn();
         const mockEvent = { preventDefault: jest.fn() };
         const component = shallow(
@@ -31,6 +39,36 @@ describe('<Image />', () => {
         expect(mockHandleDeleteBlock).toHaveBeenCalledTimes(1);
         expect(mockEvent.preventDefault).toHaveBeenCalledTimes(1);
     });
+
+    //29.63 |    21.43 |       25 |    30.19
+
+    it('should handle click block', () => {
+        const mockHandleClickBlock = jest.fn();
+        const mockEvent = { preventDefault: jest.fn() };
+        const component = shallow(
+            <Image handleClickBlock={mockHandleClickBlock} />
+        );
+        const wrapper = component.find('.full-size-block-container');
+        expect(wrapper.length).toBe(1);
+
+        wrapper.simulate('click', mockEvent);
+        expect(mockHandleClickBlock).toHaveBeenCalledTimes(1);
+        expect(mockEvent.preventDefault).toHaveBeenCalledTimes(0);
+    });
+
+    // 30.19 |    21.43 |    31.25 |    30.77
+
+    it('should handle handle submit', () => {
+        const mockHandleSubmit = jest.fn();
+        const mockEvent = { preventDefault: jest.fn() };
+        const component = shallow(<Image handleSubmit={mockHandleSubmit} />);
+        const wrapper = component.find('.image-submit');
+        expect(wrapper.length).toBe(1);
+    });
+
+    it('should handle handle change', () => {});
+
+    it('should handle handle change image', () => {});
 
     it('should return null with getDerivedStateFromProps', () => {
         const component = shallow(<Image content={''} />);
