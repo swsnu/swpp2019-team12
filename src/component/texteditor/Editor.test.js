@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import Editor from './Editor';
 
 function mockComponent(props, className) {
@@ -92,6 +92,35 @@ describe('<Editor />', () => {
         const component = mount(editor);
         const wrapper = component.find('.Editor');
         expect(wrapper.length).toBe(1);
+    });
+
+    it('should do well with getDerivedStateFromProps', () => {
+        const component = shallow(editor);
+        let instance = component.instance();
+        const stubState = {
+            isLayoutReady: false,
+            initialData: '',
+            cloudServicesConfig: {
+                document_id: 1
+            }
+        };
+        instance.setState({
+            cloudServicesConfig: {
+                document_id: 1
+            }
+        });
+        const stubProps = {
+            configuration: {
+                document_id: 2
+            }
+        };
+        let result = instance.constructor.getDerivedStateFromProps(
+            stubProps,
+            stubState
+        );
+        expect(result).toStrictEqual({
+            cloudServicesConfig: { document_id: 2 }
+        });
     });
 
     // it('should set state properly after didmount', () => {

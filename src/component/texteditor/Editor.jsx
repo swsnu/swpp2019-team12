@@ -102,6 +102,7 @@ export default class Editor extends Component {
             <div className="row row-editor">
                 {this.state.isLayoutReady && (
                     <CKEditor
+                        className="ckeditor"
                         onInit={editor => {
                             console.log(
                                 'A Editor is ready to use!',
@@ -241,8 +242,6 @@ export default class Editor extends Component {
             </div>
         );
     }
-
-    refreshDisplayMode(editor) {}
 
     checkPendingActions(editor, domEvt) {
         if (editor.plugins.get('PendingActions').hasAny) {
