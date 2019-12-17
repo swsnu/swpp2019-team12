@@ -19,6 +19,7 @@ matrix:
               - yarn install
               - yarn add coveralls
               - cd server
+              - source ~/virtualenv/python3.7/bin/activate
               - pip install -r requirements.txt
           script:
               - pylint **/*.py --load-plugins=pylint_django
