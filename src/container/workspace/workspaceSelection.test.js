@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import WorkspaceSelection from './WorkspaceSelection';
 import axios from 'axios';
 
@@ -8,27 +8,6 @@ import {
     WorkspaceCreationCard
 } from '../../component/workspace-selection/SelectionCard';
 import CreateModal from './CreateModal';
-
-/*
-{workspaces: Array(3), admins: Array(3)}
-admins: Array(3)
-0: Array(4)
-0: {id: 1, nickname: "채민왕자", user: 1}
-1: {id: 2, nickname: "예지공쥬", user: 2}
-2: {id: 3, nickname: "상연왕자", user: 3}
-3: {id: 4, nickname: "태영왕자", user: 4}
-length: 4
-__proto__: Array(0)
-1: [{…}]
-2: [{…}]
-length: 3
-__proto__: Array(0)
-workspaces: Array(3)
-0: {id: 13, name: "소개원실 Team12", admins: Array(4), members: Array(4)}
-1: {id: 15, name: "시스템 프로그래밍", admins: Array(1), members: Array(2)}
-2: {id: 16, name: "test", admins: Array(1), members: Array(3)}
-length: 3
-*/
 
 const mockAdmin = [
     { id: 1, nickname: 'test', user: 1 },
@@ -148,6 +127,14 @@ describe('<WorkspaceSelection />', () => {
         );
         card.find('.modal-cancel').simulate('click');
 
+        expect(instance.state.creation).toEqual(false);
+    });
+
+    it('handleCancel', () => {
+        instance.componentDidMount();
+        instance.setState({ creation: true });
+
+        component.find('.overlay').simulate('click');
         expect(instance.state.creation).toEqual(false);
     });
 
