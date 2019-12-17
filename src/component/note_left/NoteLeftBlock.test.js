@@ -119,6 +119,76 @@ describe('<NoteLeftBlock />', () => {
         expect(result).toBe(null);
     });
 
+    it('should derived', () => {
+        const component = mount(<NoteLeftBlock />);
+        let instance = component.instance();
+        const b = [
+            {
+                block_type: 'Text',
+                id: 5
+            },
+            {
+                block_type: 'Text',
+                id: 1
+            },
+            {
+                block_type: 'TodoContainer',
+                id: 2
+            },
+            {
+                block_type: 'Agenda',
+                id: 3
+            },
+            {
+                block_type: 'Image',
+                id: 4
+            }
+        ];
+        const prevState = {
+            blocks: [
+                {
+                    block_tyle: 'Text',
+                    id: 1
+                }
+            ]
+        };
+        const nextProps = {
+            blocks: [
+                {
+                    block_type: 'Text',
+                    id: 5
+                },
+                {
+                    block_type: 'Text',
+                    id: 1
+                },
+                {
+                    block_type: 'TodoContainer',
+                    id: 2
+                },
+                {
+                    block_type: 'Agenda',
+                    id: 3
+                },
+                {
+                    block_type: 'Image',
+                    id: 4
+                },
+                {
+                    block_type: 'wow',
+                    id: 5
+                }
+            ]
+        };
+        console.log('=========');
+        let result = instance.constructor.getDerivedStateFromProps(
+            nextProps,
+            prevState
+        );
+        console.log(result);
+        expect(result.length).toBe(undefined);
+    });
+
     it('should work draggable properly', () => {
         const component = mount(<NoteLeftBlock />);
         let instance = component.instance();

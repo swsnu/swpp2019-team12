@@ -44,33 +44,28 @@ describe('<AgendaInside />', () => {
         const stubPrev = {
             noteId: 1,
             agendaId: 1,
-            blocks: [{ id: 1 }, { id: 2 }]
+            blocks: [
+                { block_type: 'Text', id: 1 },
+                { block_type: 'Image', id: 2 },
+                { block_type: 'TodoContainer', id: 3 },
+                { block_type: 'nothing', id: 4 }
+            ]
         };
         const stubNext = {
             noteId: 1,
             agendaId: 1,
             blocks: [
-                {
-                    block_type: 'Text',
-                    id: 1,
-                    content: 'content',
-                    document_id: 'docId'
-                }
+                { block_type: 'Text', id: 1 },
+                { block_type: 'Image', id: 3 },
+                { block_type: 'TodoContainer', id: 5 },
+                { block_type: 'nothing', id: 4 }
             ]
         };
         let result = instance.constructor.getDerivedStateFromProps(
             stubPrev,
             stubNext
         );
-        expect(result).toEqual({
-            blocks: [
-                {
-                    content: <div>not implemented yet</div>,
-                    id: 'undefined-0-1'
-                },
-                { content: <div>not implemented yet</div>, id: 'undefined-1-2' }
-            ]
-        });
+        expect(result.length).toEqual(undefined);
         result = instance.constructor.getDerivedStateFromProps([], []);
         expect(result).toEqual(null);
     });
