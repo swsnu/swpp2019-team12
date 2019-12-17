@@ -9,9 +9,6 @@ const TEXT = 'Text';
 const AGENDA = 'Agenda';
 const TODO_CONTAINER = 'TodoContainer';
 const IMAGE = 'Image';
-const TABLE = 'Table';
-const CALENDAR = 'Calendar';
-const PDF = 'PDF';
 
 /* block color */
 const getItemStyle = (isDragging, draggableStyle) => ({

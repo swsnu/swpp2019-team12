@@ -46,7 +46,7 @@ class Workspace extends Component {
 
         axios.get(`/api/workspace/${id}/`).then(res => {
             const { data } = res;
-            console.log(data);
+            // console.log(data);
             const {
                 workspaces,
                 workspace,
