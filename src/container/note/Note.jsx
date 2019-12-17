@@ -142,8 +142,7 @@ class Note extends Component {
                         });
                     });
                 });
-            })
-            .catch(err => console.log('note error'));
+            });
     }
 
     handleDeleteBlock = (axios_path, block_type, block_id) => {
@@ -399,7 +398,6 @@ class Note extends Component {
         const noteId = this.props.match.params.n_id;
         let newBlocks = null;
         let res = JSON.parse(data);
-        console.log(res);
         // Add Block
         if (res.hasOwnProperty('block_type')) {
             if (res['block_type'] == 'Agenda') {
