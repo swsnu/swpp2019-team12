@@ -86,6 +86,7 @@ class MOFTestCase(TestCase):
             parent_agenda=agenda1,
             is_parent_note=False,
         )
+        Tag.objects.create(content="test_tag", workspace=workspace1, color="#4287f5")
 
         File.objects.create(content="test_content", note=note1)
         File.objects.create(
@@ -928,3 +929,90 @@ class MOFTestCase(TestCase):
 
         response = client.delete(TODO_1_URL)
         self.assertEqual(response.status_code, 200)
+
+    def test_api_tag(self):
+        """
+        Testing api tag
+        """
+        client = Client(enforce_csrf_checks=False)
+        client.login(username=USER_NAME, password="test")
+
+        response = client.get("/api/workspace/100/tag/")
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get("/api/workspace/1/tag/")
+        self.assertEqual(response.status_code, 200)
+
+        response = client.post("/api/workspace/1/tag/", json.dumps({
+            "content": "test1",
+            "workspaceId":1
+        }), APP_JSON)
+        self.assertEqual(response.status_code, 201)
+        response = client.post("/api/workspace/1/tag/", json.dumps({
+            "content": """title_very_very_long_longer_than_100_
+                        abcdefghijklmnopqrstuvwxyz
+                        abcdefghijklmnopqrstuvwxyz
+                        abcdefghijklmnopqrstuvwxyz
+                        abcdefghijklmnopqrstuvwxyz
+                        abcdefghijklmnopqrstuvwxyz
+                        abcdefghijklmnopqrstuvwxyz
+                        abcdefghijklmnopqrstuvwxyz""",
+            "workspaceId":1
+        }), APP_JSON)
+        self.assertEqual(response.status_code, 400)
+
+
+    def test_children_blocks_of_agenda(self):
+        """
+        Testing children blocks of agenda
+        """
+
+        client = Client(enforce_csrf_checks=False)
+        client.login(username=USER_NAME, password="test")
+        
+        response = client.get('/api/agenda/100/childrenblocks/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get('/api/agenda/1/childrenblocks/')
+        self.assertEqual(response.status_code, 200)
+
+        response = client.patch(
+            '/api/agenda/101/childrenblocks/',
+            json.dumps({"children_blocks": "test"}),
+            content_type=APP_JSON,
+        )
+        self.assertEqual(response.status_code, 404)
+
+        response = client.patch(
+            '/api/agenda/1/childrenblocks/',
+            json.dumps({"children_blocks": "test"}),
+            content_type=APP_JSON,
+        )
+        self.assertEqual(response.status_code, 202)
+
+    def test_children_blocks_of_note(self):
+        """
+        Testing children blocks of note
+        """
+        client = Client(enforce_csrf_checks=False)
+        client.login(username=USER_NAME, password="test")
+        
+        response = client.get('/api/note/100/childrenblocks/')
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get('/api/note/1/childrenblocks/')
+        self.assertEqual(response.status_code, 200)
+
+        response = client.patch(
+            '/api/note/101/childrenblocks/',
+            json.dumps({"children_blocks": "test"}),
+            content_type=APP_JSON,
+        )
+        self.assertEqual(response.status_code, 404)
+
+        response = client.patch(
+            '/api/note/1/childrenblocks/',
+            json.dumps({"children_blocks": "test"}),
+            content_type=APP_JSON,
+        )
+        self.assertEqual(response.status_code, 202)
