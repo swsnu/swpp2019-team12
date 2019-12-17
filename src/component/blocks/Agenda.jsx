@@ -219,6 +219,7 @@ class Agenda extends Component {
 
     handleClickDelete = e => {
         const axios_path = `/api/agenda/${this.state.agenda_id}/`;
+        console.log('여긴 들어오지?');
         this.props.handleDeleteBlock(
             axios_path,
             'Agenda',

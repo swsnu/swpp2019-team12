@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import Agenda from './Agenda';
 import axios from 'axios';
 
@@ -15,9 +15,7 @@ const stubType = 'Text';
 const stubContent = 'Test content';
 const stubAgendaDiscussion = 'Test discusssion';
 const stubHandleClickBlock = jest.fn();
-const stubHandleDeleteBlock = jest.fn(
-    (axios_path, block_type, agenda_id) => {}
-);
+const stubHandleDeleteBlock = jest.fn();
 const stubSocketRef = { current: null };
 const stubParticipants = [{ id: 1, nickname: 'TEST_USER' }];
 
@@ -121,23 +119,27 @@ describe('<Agenda />', () => {
         });
     });
 
-    it('handleClickDelete ', () => {
-        const component = shallow(agenda);
-        const instance = component.instance();
-
-        instance.handleClickDelete = jest.fn();
-        instance.forceUpdate();
-
+    xit('handleClickDelete ', () => {
+        const component = mount(agenda);
         let wrapper = component.find('.delete-button');
-        wrapper.simulate('click');
-        console.log(component.props());
-        expect(component.props().handleClickDelete).toHaveBeenCalledTimes(1);
-        expect(component.props().handleClickDelete).toHaveBeenCalledWith(
-            `/api/agenda/${instance.state.agenda_id}/`,
-            'Agenda',
-            instance.state.agenda_id
-        );
-        expect(instance.handleClickDelete).toHaveBeenCalledTimes(1);
+        wrapper.at(0).simulate('click');
+
+        const instance = component.instance();
+        const spyHandleClickDelete = jest
+            .spyOn(instance, 'handleClickDelete')
+            .mockImplementation(() => null);
+        instance.handleClickDelete();
+        expect(spyHandleClickDelete).toHaveBeenCalledTimes(1);
+
+        // const component = mount(<ImageUpload setFieldValue={jest.fn()} />);
+        // const wrapper = component.find('.ImageUpload');
+        // wrapper.simulate('click');
+        // const instance = component.instance();
+        // const spyHandleClick = jest
+        //     .spyOn(instance, 'handleClick')
+        //     .mockImplementation(() => null);
+        // instance.handleClick();
+        // expect(spyHandleClick).toHaveBeenCalledTimes(1);
     });
 
     it('handleChangeAgendaTitle ', () => {
@@ -174,7 +176,6 @@ describe('<Agenda />', () => {
 
     it('handleAddTodoBlock ', () => {
         const component = shallow(agenda);
-
         const instance = component.instance();
         instance.handleAddTodoBlock = jest.fn();
         instance.forceUpdate();
