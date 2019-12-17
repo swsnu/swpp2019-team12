@@ -218,7 +218,6 @@ class Agenda extends Component {
     }
 
     handleClickDelete = e => {
-        e.preventDefault();
         const axios_path = `/api/agenda/${this.state.agenda_id}/`;
         this.props.handleDeleteBlock(
             axios_path,
@@ -433,11 +432,10 @@ class Agenda extends Component {
     };
 
     render() {
-        console.log(this.props.participants);
         const menu = (
             <Menu>
                 {this.state.workspaceTags.map((tag, i) => (
-                    <Menu.Item key={tag.id} onClick={this.handleMenuClick}>
+                    <Menu.Item key={i} onClick={this.handleMenuClick}>
                         {tag.content}
                     </Menu.Item>
                 ))}
@@ -446,7 +444,7 @@ class Agenda extends Component {
         return (
             <div
                 className="full-size-block-container Agenda"
-                id="Agenda-Conatiner"
+                id="Agenda-Container"
                 onClick={() =>
                     this.props.handleClickBlock(
                         this.props.type,
@@ -465,6 +463,7 @@ class Agenda extends Component {
                     <div className="agenda-info">
                         <div className="agenda-title">
                             <input
+                                className="agenda-title-input"
                                 onChange={this.handleChangeAgendaTitle}
                                 value={this.state.current_title}
                                 placeholder="안건 이름을 입력하세요"
