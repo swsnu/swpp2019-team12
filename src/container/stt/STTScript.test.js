@@ -22,4 +22,5 @@ describe('<STTScript />', () => {
         let wrapper = component.find('.stt-script-container');
         expect(wrapper.length).toBe(1);
     });
+    it('should ');
 });
