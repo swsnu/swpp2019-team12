@@ -1014,3 +1014,146 @@ class MOFTestCase(TestCase):
             content_type=APP_JSON,
         )
         self.assertEqual(response.status_code, 202)
+
+    def test_image_child_of_note(self):
+        """
+        Testing image child of note
+        """
+        get_url = '/api/note/1/images/'
+        client = Client(enforce_csrf_checks=False)
+        client.login(username=USER_NAME, password="test")
+
+        response = client.get("/api/note/100/images/")
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get(get_url)
+        self.assertEqual(response.status_code, 200)
+
+        response = client.post(
+            "/api/note/100/images/",
+            json.dumps(
+                {
+                    "content": "test_content",
+                    "layer_x": 0,
+                    "layer_y": 0
+                }
+            ),
+            content_type=APP_JSON,
+        )
+        self.assertEqual(response.status_code, 404)
+
+        response = client.post(
+            get_url,
+            json.dumps(
+                {
+                    "content": "test_content",
+                    "layer_x": 0,
+                    "layer_y": 0
+                }
+            ),
+            content_type=APP_JSON,
+        )
+        self.assertEqual(response.status_code, 201)
+
+        response = client.post(
+            get_url,
+            json.dumps(
+                {
+                    "conte": "test_content",
+                    "layer_x": 0,
+                    "layer_y": 0
+                }
+            ),
+            content_type=APP_JSON,
+        )
+        self.assertEqual(response.status_code, 404)
+
+        response = client.post(
+            get_url,
+            json.dumps(
+                {
+                    "content": "test_content",
+                    "layer_x": 3.333,
+                    "layer_y": 0
+                }
+            ),
+            content_type=APP_JSON,
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_image_child_of_agenda(self):
+        """
+        Testing image of agenda
+        """
+        url = '/api/agenda/1/images/'
+        client = Client(enforce_csrf_checks=False)
+        client.login(username=USER_NAME, password="test")
+
+        response = client.get("/api/agenda/100/images/")
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        response = client.get("/api/agenda/2/images/")
+        self.assertEqual(response.status_code, 404)
+
+        response = client.post(
+            url,
+            json.dumps(
+                {
+                    "content": "test_content",
+                    "layer_x": 3.333,
+                    "layer_y": 0,
+                    "image": "image"
+                }
+            ),
+            content_type=APP_JSON,
+        )
+        self.assertEqual(response.status_code, 400)
+
+        response = client.post(
+            url,
+            json.dumps(
+                {
+                    "content": "test_content",
+                    "layer_x": 0,
+                    "layer_y": 0,
+                    "image": "image"
+                }
+            ),
+            content_type=APP_JSON,
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_modify_images(self):
+        """
+        Testing modify images
+        """
+        client = Client(enforce_csrf_checks=False)
+        client.login(username=USER_NAME, password="test")
+        url = '/api/image/1/'
+
+        response = client.get("/api/image/100/")
+        self.assertEqual(response.status_code, 404)
+
+        response = client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        response = client.patch(
+            url,
+            json.dumps({"content": "test_content", "layer_x": 3.33, "layer_y": 0}),
+            content_type=APP_JSON,
+        )
+        self.assertEqual(response.status_code, 400)
+
+        response = client.patch(
+            url,
+            json.dumps({"content": "test_content", "layer_x": 0, "layer_y": 0}),
+            content_type=APP_JSON,
+        )
+        self.assertEqual(response.status_code, 202)
+
+        response = client.delete(url)
+        self.assertEqual(response.status_code, 200)
+        

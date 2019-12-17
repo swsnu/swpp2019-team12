@@ -12,9 +12,11 @@ urlpatterns = [
     path("profile/<int:u_id>/", views.specific_profile, name="specific_profile"),
     # Workspace APIs
     path("workspace/", views.workspace_api, name="workspace"),
-    path("workspace/<int:w_id>/", views.specific_workspace, name="specific_workspace"),
+    path("workspace/<int:w_id>/", views.specific_workspace,
+         name="specific_workspace"),
     # 해당 workspace에 속한 로그인한 user의 모든 todo 가져오는 API (필요하지 않다면 추후 삭제)
-    path("workspace/<int:w_id>/todos/", views.workspace_todo, name="workspace_todo"),
+    path("workspace/<int:w_id>/todos/",
+         views.workspace_todo, name="workspace_todo"),
     # 해당 workspace의 모든 agenda 가져오는 API (필요하지 않다면 추후 삭제)
     path(
         "workspace/<int:w_id>/agendas/", views.workspace_agenda, name="workspace_agenda"

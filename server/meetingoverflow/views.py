@@ -870,6 +870,7 @@ def api_tag(request, w_id):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET', 'POST'])
 def image_child_of_note(request, n_id):
     """
     ===================================================
@@ -917,8 +918,7 @@ def image_child_of_note(request, n_id):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'POST'])
