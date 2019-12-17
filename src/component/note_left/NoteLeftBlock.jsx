@@ -9,9 +9,6 @@ const TEXT = 'Text';
 const AGENDA = 'Agenda';
 const TODO_CONTAINER = 'TodoContainer';
 const IMAGE = 'Image';
-const TABLE = 'Table';
-const CALENDAR = 'Calendar';
-const PDF = 'PDF';
 
 /* block color */
 const getItemStyle = (isDragging, draggableStyle) => ({
@@ -49,8 +46,6 @@ class NoteLeftBlock extends Component {
                                 document_id={blk.document_id}
                                 type={blk.block_type}
                                 content={blk.content}
-                                handleChangeText={nextProps.handleChangeText}
-                                handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
                                 handleAddTextSocketSend={
                                     nextProps.handleAddTextSocketSend
@@ -67,7 +62,6 @@ class NoteLeftBlock extends Component {
                                 type={blk.block_type}
                                 content={blk.content}
                                 agenda_discussion={blk.agenda_discussion}
-                                handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
                                 socketRef={nextProps.socketRef}
                                 participants={nextProps.participants}
@@ -79,7 +73,6 @@ class NoteLeftBlock extends Component {
                                 todos={blk.todos}
                                 noteId={nextProps.noteId}
                                 participants={nextProps.participants}
-                                handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteTodo={nextProps.handleDeleteTodo}
                                 socketRef={nextProps.socketRef}
                                 is_parent_note={true}
@@ -95,7 +88,6 @@ class NoteLeftBlock extends Component {
                                 image={blk.image}
                                 is_submitted={blk.is_submitted}
                                 is_parent_note={true}
-                                handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
                                 socketRef={nextProps.socketRef}
                             />
@@ -113,8 +105,6 @@ class NoteLeftBlock extends Component {
         }
         return null;
     }
-
-    handleChangeText = () => {};
 
     render() {
         return (

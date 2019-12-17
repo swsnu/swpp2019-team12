@@ -95,22 +95,16 @@ class Todo extends Component {
         const stringifiedBlocks = {
             children_blocks: newBlocks
         };
-        axios
-            .patch(`${this.state.APIPath}`, stringifiedBlocks)
-            .then(res_ => {
-                socketRef.current.state.ws.send(JSON.stringify(JSON_data));
-            })
-            .catch(err => console.log(err));
+        axios.patch(`${this.state.APIPath}`, stringifiedBlocks).then(res_ => {
+            socketRef.current.state.ws.send(JSON.stringify(JSON_data));
+        });
     };
 
     handleDeleteTodo = () => {
         const { todo } = this.state;
-        axios
-            .delete(`/api/todo/${todo.id}/`)
-            .then(res => {
-                this.props.handleDeleteTodo(todo);
-            })
-            .catch(e => console.log(e));
+        axios.delete(`/api/todo/${todo.id}/`).then(res => {
+            this.props.handleDeleteTodo(todo);
+        });
     };
 
     handleFocus = () => {
@@ -145,8 +139,7 @@ class Todo extends Component {
                                 todoHandleFunc
                             );
                         });
-                    })
-                    .catch(err => console.log(err));
+                    });
             }, 1818)
         });
     };
@@ -173,7 +166,6 @@ class Todo extends Component {
     };
 
     handleSelectAssignee = assignee => {
-        console.log('CLICK');
         const { todo } = this.state;
         const assignees = uniqBy([...this.state.assignees, assignee], 'id');
         const assigneeInfo = {
@@ -218,11 +210,10 @@ class Todo extends Component {
             [assignee],
             'id'
         );
-
         this.setState({ assignees: removedAssignee });
     };
 
-    handleChangeDueDate = (date, dateString) => {
+    handleChangeDueDate = date => {
         const { todo } = this.state;
         axios
             .patch(`/api/todo/${todo.id}/`, {
@@ -264,9 +255,9 @@ class Todo extends Component {
         const { assignees, todo } = this.state;
         const dateFormat = 'YYYY-MM-DD';
         const dueDate = todo.due_date ? moment(todo.due_date) : moment();
-        console.log(this.state);
         return (
             <div
+                id="Todo"
                 className="full-size-block todoCard-content-element"
                 onClick={this.handleFocus}>
                 <div className="full-size-block todoCard-content-element__todo between">
@@ -293,7 +284,6 @@ class Todo extends Component {
                                     value={this.state.content || ''}
                                     ref={this.inputRef}
                                     disabled
-                                    // onChange={this.handleChangeTodo}
                                 />
                             </div>
                         ) : (
@@ -344,6 +334,7 @@ class Todo extends Component {
                     </div>
 
                     <div
+                        id="todo-delete-id"
                         className="full-size-block todoCard-content-element__todo-delete"
                         onClick={this.handleDeleteTodo}>
                         <Icon type="minus-circle" theme="filled" />

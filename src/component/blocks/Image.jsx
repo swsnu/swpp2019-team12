@@ -121,9 +121,9 @@ class Image extends Component {
     };
 
     render() {
-        console.log(this.state.content);
         return (
             <div
+                id="ImageBlock"
                 className="full-size-block-container Image"
                 onClick={() =>
                     this.props.handleClickBlock(

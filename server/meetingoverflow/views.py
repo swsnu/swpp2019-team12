@@ -459,12 +459,9 @@ def specific_note(request, n_id):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = NoteSerializer(
             current_note, data=request.data, partial=True)
-        print(request.data)
-        # print(serializer.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-        print(serializer.errors)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
@@ -588,7 +585,6 @@ def textblock_child_of_agenda(request, a_id):
             serializer.save()
             agenda.has_text_block = True
             agenda.save()
-            # print(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -693,7 +689,6 @@ def modify_agenda(request, a_id):
     if request.method == 'GET':
         agenda_serializer = AgendaSerializer(current_agenda)
         tags = Tag.objects.filter(agenda__in=[current_agenda])
-        print(tags)
         tag_serializer = TagSerializer(tags, many=True)
         data = {
             "tags": tag_serializer.data,
@@ -707,7 +702,6 @@ def modify_agenda(request, a_id):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-        print(serializer.errors)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
@@ -876,45 +870,6 @@ def api_tag(request, w_id):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PATCH', 'DELETE'])
-def single_tag(request, t_id):
-    """
-    /api/tag/t_id/
-    특정 태그를 가지고 있는 노트와 어젠다 호출
-    """
-    try:
-        current_tag = Tag.objects.get(id=t_id)
-    except Tag.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        notes = Note.objects.filter(tags__in=[current_tag])
-        agendas = Agenda.objects.filter(tags__in=[current_tag])
-        print(notes)
-        print(agendas)
-        note_serialzier = NoteSerializer(notes, many=True)
-        agenda_serializer = AgendaSerializer(agendas, many=True)
-        data = {
-            "notes": note_serialzier.data,
-            "agendas": agenda_serializer.data,
-            "tag_title": current_tag.content,
-            "tag_color": current_tag.color
-        }
-        return Response(data, status=status.HTTP_202_ACCEPTED)
-
-    elif request.method == 'PATCH':
-        serializer = TagSerializer(
-            current_tag, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status.HTTP_202_ACCEPTED)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        current_tag.delete()
-
-
 def image_child_of_note(request, n_id):
     """
     ===================================================
@@ -931,21 +886,17 @@ def image_child_of_note(request, n_id):
     """
     # 해당 노트의 모든 Image 리스트 반환
     if request.method == 'GET':
-        print('child of note GET')
         queryset = Image.objects.filter(
             is_parent_note=True,
             note__id=n_id
         )
         if queryset.count() > 0:
-            print('more than 0')
             serializer = ImageSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            print('not more than 0')
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST':
-        print('child of note POST')
         try:
             Note.objects.get(id=n_id)
         except Note.DoesNotExist:
@@ -967,7 +918,6 @@ def image_child_of_note(request, n_id):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -992,7 +942,6 @@ def image_child_of_agenda(request, a_id):
     except Agenda.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
-        print('child of agenda GET')
         queryset = Image.objects.filter(
             is_parent_note=False,
             note__id=agenda.note.id,
@@ -1005,7 +954,6 @@ def image_child_of_agenda(request, a_id):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     elif request.method == 'POST':
-        print('child of agenda POST')
         data = {
             'image': request.data['image'],
             'content': request.data['content'],
@@ -1022,7 +970,6 @@ def image_child_of_agenda(request, a_id):
             agenda.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            print(serializer.errors)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -1054,7 +1001,6 @@ def modify_image(request, i_id):
             current_image, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            print(serializer)
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)

@@ -37,32 +37,59 @@ class Agenda extends Component {
     }
 
     componentDidMount() {
-        axios
-            .get(`/api/agenda/${this.state.agenda_id}/`)
-            .then(res => {
-                let blocks = null;
-                if (res.data['agenda']['children_blocks'] === '') {
-                    blocks = [];
-                } else {
-                    blocks = JSON.parse(res.data['agenda']['children_blocks']);
-                }
-                const agendaTags = res['data']['tags'];
+        axios.get(`/api/agenda/${this.state.agenda_id}/`).then(res => {
+            let blocks = null;
+            if (res.data['agenda']['children_blocks'] === '') {
+                blocks = [];
+            } else {
+                blocks = JSON.parse(res.data['agenda']['children_blocks']);
+            }
+            const agendaTags = res['data']['tags'];
 
-                this.setState({
-                    blocks: blocks,
-                    current_title: res.data['agenda']['content'],
-                    agendaTags
-                });
-            })
-            .catch(err => console.log('this agenda has no child block'));
+            this.setState({
+                blocks: blocks,
+                current_title: res.data['agenda']['content'],
+                agendaTags
+            });
+        });
     }
+
+    handleDocIdInUrl = () => {
+        let id = this.randomString();
+        this.updateDocIdInUrl(id);
+
+        return id;
+    };
+
+    updateDocIdInUrl = id => {
+        window.history.replaceState(
+            {},
+            document.title,
+            this.generateUrlWithDocId(id)
+        );
+    };
+
+    generateUrlWithDocId = id => {
+        return `${window.location.href.split('?')[0]}?docId=${id}`;
+    };
+
+    randomString = () => {
+        return Math.floor(Math.random() * Math.pow(2, 52)).toString(32);
+    };
+
+    reorder = (list, startIndex, endIndex) => {
+        const result = Array.from(list);
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+        return result;
+    };
 
     onDragEnd = result => {
         if (!result.destination) {
             return;
         }
 
-        const blocks = reorder(
+        const blocks = this.reorder(
             this.state.blocks,
             result.source.index,
             result.destination.index
@@ -84,12 +111,11 @@ class Agenda extends Component {
             )
             .then(res => {
                 this.AgendaRef.current.state.ws.send(JSON.stringify(JSON_data));
-            })
-            .catch(err => console.log(err));
+            });
     };
 
     handleAddTextBlock = () => {
-        const document_id = handleDocIdInUrl();
+        const document_id = this.handleDocIdInUrl();
         const text_info = {
             a_id: this.state.agenda_id,
             n_id: this.props.noteId,
@@ -151,6 +177,8 @@ class Agenda extends Component {
     handleSocketAgenda(data) {
         let newBlocks = null;
         let res = JSON.parse(data);
+        console.log(res);
+        console.log(res['block_type']);
         if (res.hasOwnProperty('block_type')) {
             if (res['block_type'] === 'Text') {
                 newBlocks = this.state.blocks.concat({
@@ -218,7 +246,6 @@ class Agenda extends Component {
     }
 
     handleClickDelete = e => {
-        e.preventDefault();
         const axios_path = `/api/agenda/${this.state.agenda_id}/`;
         this.props.handleDeleteBlock(
             axios_path,
@@ -232,7 +259,7 @@ class Agenda extends Component {
             blk => blk.block_type == 'TodoContainer'
         );
         if (!todoContainer) {
-            console.log('Todo conatiner가 없습니다. ');
+            return;
         }
         let newBlocks = null;
         // 만약 컨테이너가 존재하지만, 단 한개의 Todo가 존재한다면, 그것을 지우고 컨테이너도 삭제
@@ -273,44 +300,33 @@ class Agenda extends Component {
     };
 
     handleDeleteBlockInAgenda = (axios_path, block_type, block_id) => {
-        axios
-            .delete(axios_path)
-            .then(res => {
-                const newBlocks = [
-                    ...this.state.blocks.filter(
-                        b => !(b.block_type == block_type && b.id == block_id)
-                    )
-                ];
+        axios.delete(axios_path).then(res => {
+            const newBlocks = [
+                ...this.state.blocks.filter(
+                    b => !(b.block_type == block_type && b.id == block_id)
+                )
+            ];
 
-                const stringifiedBlocks = {
-                    children_blocks: JSON.stringify(newBlocks)
-                };
+            const stringifiedBlocks = {
+                children_blocks: JSON.stringify(newBlocks)
+            };
 
-                const JSON_data = {
-                    operation_type: 'delete_block',
-                    children_blocks: newBlocks
-                };
+            const JSON_data = {
+                operation_type: 'delete_block',
+                children_blocks: newBlocks
+            };
 
-                axios
-                    .patch(
-                        `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
-                        stringifiedBlocks
-                    )
-                    .then(res_ => {
-                        this.AgendaRef.current.state.ws.send(
-                            JSON.stringify(JSON_data)
-                        );
-                    });
-            })
-            .catch(err => {
-                console.log('err: ', err);
-            });
-    };
-
-    handleClickToDetail = () => {
-        console.log(
-            'Need to implement changing to Detail mode from preview mode'
-        );
+            axios
+                .patch(
+                    `/api/agenda/${this.state.agenda_id}/childrenblocks/`,
+                    stringifiedBlocks
+                )
+                .then(res_ => {
+                    this.AgendaRef.current.state.ws.send(
+                        JSON.stringify(JSON_data)
+                    );
+                });
+        });
     };
 
     handleChangeAgendaTitle = e => {
@@ -344,8 +360,7 @@ class Agenda extends Component {
                         this.AgendaRef.current.state.ws.send(
                             JSON.stringify(newAgenda)
                         );
-                    })
-                    .catch(err => console.log(err));
+                    });
             }, 1818)
         });
     };
@@ -390,8 +405,7 @@ class Agenda extends Component {
             .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
             .then(res_ => {
                 socketRef.current.state.ws.send(JSON.stringify(JSON_data));
-            })
-            .catch(err => console.log(err));
+            });
     };
 
     handleMenuClick = e => {
@@ -400,6 +414,7 @@ class Agenda extends Component {
     };
 
     handleAddTag = tagId => {
+        console.log('tagId: ', tagId);
         const agendaId = this.state.agenda_id;
         const newTag = this.state.workspaceTags.find(tag => tag.id == tagId);
         console.log('newTag: ', newTag);
@@ -433,11 +448,10 @@ class Agenda extends Component {
     };
 
     render() {
-        console.log(this.props.participants);
         const menu = (
             <Menu>
                 {this.state.workspaceTags.map((tag, i) => (
-                    <Menu.Item key={tag.id} onClick={this.handleMenuClick}>
+                    <Menu.Item key={i} onClick={this.handleMenuClick}>
                         {tag.content}
                     </Menu.Item>
                 ))}
@@ -446,13 +460,7 @@ class Agenda extends Component {
         return (
             <div
                 className="full-size-block-container Agenda"
-                id="Agenda-Conatiner"
-                onClick={() =>
-                    this.props.handleClickBlock(
-                        this.props.type,
-                        this.props.blk_id
-                    )
-                }>
+                id="Agenda-Container">
                 <div className="full-size-block-title" id="Agenda">
                     <div className="full-size-block-title__label Agenda-label">
                         <div>Agenda</div>
@@ -465,6 +473,7 @@ class Agenda extends Component {
                     <div className="agenda-info">
                         <div className="agenda-title">
                             <input
+                                className="agenda-title-input"
                                 onChange={this.handleChangeAgendaTitle}
                                 value={this.state.current_title}
                                 placeholder="안건 이름을 입력하세요"
@@ -504,13 +513,12 @@ class Agenda extends Component {
                 <div className="full-size-block-content Agenda">
                     <div className="full-size-block-content__text Agenda">
                         <AgendaInside
+                            className="AgendaInside"
                             noteId={this.props.noteId}
                             handleClickBlock={this.props.handleClickBlock}
                             blocks={this.state.blocks}
                             handleDeleteBlock={this.handleDeleteBlockInAgenda}
-                            handleChangeTitle={this.handleChangeTitle}
                             onDragEnd={this.onDragEnd}
-                            handleAddTextBlock={this.handleAddTextBlock}
                             handleDeleteTodo={this.handleDeleteTodo}
                             socketRef={this.AgendaRef}
                             participants={this.props.participants}
@@ -518,6 +526,7 @@ class Agenda extends Component {
                     </div>
                 </div>
                 <Websocket
+                    className="agenda-web-socket"
                     url={`ws://localhost:8001/ws/${this.state.agenda_id}/agenda/block/`}
                     ref={this.AgendaRef}
                     onMessage={this.handleSocketAgenda.bind(this)}
@@ -526,37 +535,5 @@ class Agenda extends Component {
         );
     }
 }
-
-function handleDocIdInUrl() {
-    let id = randomString();
-    updateDocIdInUrl(id);
-
-    return id;
-}
-
-function updateDocIdInUrl(id) {
-    window.history.replaceState({}, document.title, generateUrlWithDocId(id));
-}
-
-function generateUrlWithDocId(id) {
-    return `${window.location.href.split('?')[0]}?docId=${id}`;
-}
-
-function getDocIdFromUrl() {
-    const docIdMatch = window.location.search.match(/docId=(.+)$/);
-
-    return docIdMatch ? decodeURIComponent(docIdMatch[1]) : null;
-}
-
-function randomString() {
-    return Math.floor(Math.random() * Math.pow(2, 52)).toString(32);
-}
-
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-    return result;
-};
 
 export default Agenda;
