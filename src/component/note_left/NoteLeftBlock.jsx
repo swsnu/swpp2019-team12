@@ -35,8 +35,8 @@ class NoteLeftBlock extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         let block_array;
         if (nextProps.blocks !== prevState.blocks) {
-            console.log(nextProps.blocks);
             console.log(prevState.blocks);
+            console.log(nextProps.blocks);
             block_array =
                 nextProps.blocks &&
                 nextProps.blocks.map((blk, index) => {
