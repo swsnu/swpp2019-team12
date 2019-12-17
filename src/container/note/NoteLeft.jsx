@@ -48,7 +48,6 @@ class NoteLeft extends Component {
                             this.props.handleAddCalendarBlock
                         }
                         handleDeleteTodo={this.props.handleDeleteTodo}
-                        handleClickBlock={this.props.handleClickBlock}
                         onDragEnd={this.props.onDragEnd}
                         socketRef={this.props.socketRef}
                     />

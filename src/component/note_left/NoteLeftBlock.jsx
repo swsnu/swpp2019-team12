@@ -46,7 +46,6 @@ class NoteLeftBlock extends Component {
                                 document_id={blk.document_id}
                                 type={blk.block_type}
                                 content={blk.content}
-                                handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
                                 handleAddTextSocketSend={
                                     nextProps.handleAddTextSocketSend
@@ -63,7 +62,6 @@ class NoteLeftBlock extends Component {
                                 type={blk.block_type}
                                 content={blk.content}
                                 agenda_discussion={blk.agenda_discussion}
-                                handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
                                 socketRef={nextProps.socketRef}
                                 participants={nextProps.participants}
@@ -75,7 +73,6 @@ class NoteLeftBlock extends Component {
                                 todos={blk.todos}
                                 noteId={nextProps.noteId}
                                 participants={nextProps.participants}
-                                handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteTodo={nextProps.handleDeleteTodo}
                                 socketRef={nextProps.socketRef}
                                 is_parent_note={true}
@@ -91,7 +88,6 @@ class NoteLeftBlock extends Component {
                                 image={blk.image}
                                 is_submitted={blk.is_submitted}
                                 is_parent_note={true}
-                                handleClickBlock={nextProps.handleClickBlock}
                                 handleDeleteBlock={nextProps.handleDeleteBlock}
                                 socketRef={nextProps.socketRef}
                             />

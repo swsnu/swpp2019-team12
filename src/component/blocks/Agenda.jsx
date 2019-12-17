@@ -181,6 +181,8 @@ class Agenda extends Component {
     handleSocketAgenda(data) {
         let newBlocks = null;
         let res = JSON.parse(data);
+        console.log(res);
+        console.log(res['block_type']);
         if (res.hasOwnProperty('block_type')) {
             if (res['block_type'] === 'Text') {
                 newBlocks = this.state.blocks.concat({
@@ -261,7 +263,7 @@ class Agenda extends Component {
             blk => blk.block_type == 'TodoContainer'
         );
         if (!todoContainer) {
-            console.log('Todo conatiner가 없습니다. ');
+            return;
         }
         let newBlocks = null;
         // 만약 컨테이너가 존재하지만, 단 한개의 Todo가 존재한다면, 그것을 지우고 컨테이너도 삭제
@@ -334,12 +336,6 @@ class Agenda extends Component {
             .catch(err => {
                 console.log('err: ', err);
             });
-    };
-
-    handleClickToDetail = () => {
-        console.log(
-            'Need to implement changing to Detail mode from preview mode'
-        );
     };
 
     handleChangeAgendaTitle = e => {
@@ -429,6 +425,7 @@ class Agenda extends Component {
     };
 
     handleAddTag = tagId => {
+        console.log('tagId: ', tagId);
         const agendaId = this.state.agenda_id;
         const newTag = this.state.workspaceTags.find(tag => tag.id == tagId);
         console.log('newTag: ', newTag);
@@ -474,13 +471,7 @@ class Agenda extends Component {
         return (
             <div
                 className="full-size-block-container Agenda"
-                id="Agenda-Container"
-                onClick={() =>
-                    this.props.handleClickBlock(
-                        this.props.type,
-                        this.props.blk_id
-                    )
-                }>
+                id="Agenda-Container">
                 <div className="full-size-block-title" id="Agenda">
                     <div className="full-size-block-title__label Agenda-label">
                         <div>Agenda</div>
@@ -538,9 +529,7 @@ class Agenda extends Component {
                             handleClickBlock={this.props.handleClickBlock}
                             blocks={this.state.blocks}
                             handleDeleteBlock={this.handleDeleteBlockInAgenda}
-                            handleChangeTitle={this.handleChangeTitle}
                             onDragEnd={this.onDragEnd}
-                            handleAddTextBlock={this.handleAddTextBlock}
                             handleDeleteTodo={this.handleDeleteTodo}
                             socketRef={this.AgendaRef}
                             participants={this.props.participants}
@@ -548,6 +537,7 @@ class Agenda extends Component {
                     </div>
                 </div>
                 <Websocket
+                    className="agenda-web-socket"
                     url={`ws://localhost:8001/ws/${this.state.agenda_id}/agenda/block/`}
                     ref={this.AgendaRef}
                     onMessage={this.handleSocketAgenda.bind(this)}

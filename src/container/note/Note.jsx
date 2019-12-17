@@ -399,7 +399,6 @@ class Note extends Component {
         const noteId = this.props.match.params.n_id;
         let newBlocks = null;
         let res = JSON.parse(data);
-        console.log(res);
         // Add Block
         if (res.hasOwnProperty('block_type')) {
             if (res['block_type'] == 'Agenda') {
@@ -462,7 +461,9 @@ class Note extends Component {
 
             axios
                 .patch(`/api/note/${noteId}/childrenblocks/`, stringifiedBlocks)
-                .then(res_ => console.log(res_));
+                .then(res_ => {
+                    //console.log(res_)
+                });
         } else if (res['operation_type'] === 'change_title') {
             this.setState({ title: res['updated_title'] });
         } else if (res['operation_type'] === 'change_location') {
