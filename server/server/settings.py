@@ -83,24 +83,24 @@ WSGI_APPLICATION = "server.wsgi.application"
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 # Local DB
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-#     }
-# }
-
-# Deploy DB
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "djangodb",
-        "USER": "swpp",
-        "PASSWORD": "swpp",
-        "HOST": "localhost",
-        "PORT": "",
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
+
+# Deploy DB
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": "djangodb",
+#         "USER": "swpp",
+#         "PASSWORD": "swpp",
+#         "HOST": "localhost",
+#         "PORT": "",
+#     }
+# }
 
 
 # Password validation
