@@ -19,7 +19,7 @@
         "@ckeditor/ckeditor5-editor-balloon": "^15.0.0",
         "@ckeditor/ckeditor5-editor-classic": "^15.0.0",
         "@ckeditor/ckeditor5-essentials": "^15.0.0",
-        "@ckeditor/ckeditor5-font": "^15.0.0",
+        "@ckeditor/ckeditor5-font": "^27.0.0",
         "@ckeditor/ckeditor5-heading": "^15.0.0",
         "@ckeditor/ckeditor5-highlight": "^15.0.0",
         "@ckeditor/ckeditor5-image": "^15.0.0",
