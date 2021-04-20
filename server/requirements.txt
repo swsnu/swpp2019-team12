@@ -4,7 +4,7 @@ asgiref==3.2.3
 astroid==2.3.3
 async-timeout==3.0.1
 attrs==19.3.0
-autobahn==19.11.1
+autobahn==20.12.3
 Automat==0.8.0
 black==19.10b0
 certifi==2019.9.11
