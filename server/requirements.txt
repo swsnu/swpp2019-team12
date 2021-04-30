@@ -54,7 +54,7 @@ toml==0.10.0
 Twisted==19.10.0
 txaio==18.8.1
 typed-ast==1.4.0
-urllib3==1.25.7
+urllib3==1.25.8
 uWSGI==2.0.18
 wrapt==1.11.2
 zope.interface==4.7.1
